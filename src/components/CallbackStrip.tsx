@@ -1,6 +1,6 @@
 "use client"
 import { useState } from 'react'
-import { PhoneCall, PhoneOutgoing } from 'lucide-react'
+import { Phone, PhoneForwarded } from 'lucide-react'
 import { submitLead } from '@/lib/api'
 
 export default function CallbackStrip() {
@@ -20,7 +20,7 @@ export default function CallbackStrip() {
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-3.5">
             <div className="w-12 h-12 bg-white/22 rounded-full flex items-center justify-center flex-shrink-0">
-              <PhoneCall size={22} className="text-white" />
+              <Phone size={22} className="text-white" />
             </div>
             <div>
               <div className="font-mont font-extrabold text-white text-[17px] tracking-tight">
@@ -45,7 +45,7 @@ export default function CallbackStrip() {
                 />
                 <button onClick={handleCall} disabled={status === 'loading'}
                   className="flex items-center gap-2 bg-navy text-white text-[12px] font-bold px-5 py-3 rounded-xl hover:brightness-110 transition-all disabled:opacity-60">
-                  <PhoneOutgoing size={14} />
+                  <PhoneForwarded size={14} />
                   {status === 'loading' ? '…' : 'Zadzwoń do mnie'}
                 </button>
                 <a href="https://wa.me/48731554341" target="_blank" rel="noopener noreferrer"
