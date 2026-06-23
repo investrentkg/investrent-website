@@ -4,6 +4,16 @@ import Image from 'next/image'
 import { MapPin, LayoutGrid, Ruler, Layers, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { Offer, PaginatedOffers } from '@/types'
 
+// ── Sample offers — pokazują się gdy CRM jest pusty ──
+const SAMPLE_OFFERS: Offer[] = [
+  { id: 's1', ref_number: 'IVST-MS-155', title: 'Mieszkanie na sprzedaż', property_type: 'mieszkanie', transaction_type: 'sprzedaz', market_type: 'wtorny', price: 410000, price_per_m2: 7884, area: 52, rooms_count: 2, floor: 3, floors_total: 5, address_city: 'Kołobrzeg', address_district: 'os. Pomorskie', address_street: null, is_exclusive: true, no_rent_fee: false, is_swap: false, has_garden: false, status: 'opublikowana', created_at: '2026-01-01', main_photo: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80&fit=crop&h=340', photo_count: 5 },
+  { id: 's2', ref_number: 'IVST-AP-089', title: 'Apartament nad morzem', property_type: 'mieszkanie', transaction_type: 'sprzedaz', market_type: 'pierwotny', price: 549000, price_per_m2: 14447, area: 38, rooms_count: 2, floor: 4, floors_total: 6, address_city: 'Dźwirzyno', address_district: 'przy plaży', address_street: null, is_exclusive: false, no_rent_fee: true, is_swap: false, has_garden: false, status: 'opublikowana', created_at: '2026-01-02', main_photo: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&q=80&fit=crop&h=340', photo_count: 8 },
+  { id: 's3', ref_number: 'IVST-DM-012', title: 'Dom wolnostojący', property_type: 'dom', transaction_type: 'sprzedaz', market_type: 'wtorny', price: 1190000, price_per_m2: 8500, area: 140, rooms_count: 5, floor: 0, floors_total: 2, address_city: 'Mielno', address_district: 'cicha ulica', address_street: null, is_exclusive: false, no_rent_fee: false, is_swap: false, has_garden: true, status: 'opublikowana', created_at: '2026-01-03', main_photo: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&q=80&fit=crop&h=340', photo_count: 12 },
+  { id: 's4', ref_number: 'IVST-MT-067', title: 'Mieszkanie z tarasem', property_type: 'mieszkanie', transaction_type: 'sprzedaz', market_type: 'wtorny', price: 620000, price_per_m2: 9117, area: 68, rooms_count: 3, floor: 5, floors_total: 7, address_city: 'Kołobrzeg', address_district: 'centrum', address_street: null, is_exclusive: true, no_rent_fee: false, is_swap: false, has_garden: false, status: 'opublikowana', created_at: '2026-01-04', main_photo: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&q=80&fit=crop&h=340', photo_count: 6 },
+  { id: 's5', ref_number: 'IVST-KW-034', title: 'Kawalerka inwestycyjna', property_type: 'mieszkanie', transaction_type: 'sprzedaz', market_type: 'wtorny', price: 189000, price_per_m2: 6750, area: 28, rooms_count: 1, floor: 2, floors_total: 4, address_city: 'Kołobrzeg', address_district: 'os. Lęborska', address_street: null, is_exclusive: false, no_rent_fee: false, is_swap: false, has_garden: false, status: 'opublikowana', created_at: '2026-01-05', main_photo: 'https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?w=600&q=80&fit=crop&h=340', photo_count: 4 },
+  { id: 's6', ref_number: 'IVST-DZ-098', title: 'Działka budowlana', property_type: 'dzialka', transaction_type: 'sprzedaz', market_type: 'wtorny', price: 165000, price_per_m2: 206, area: 800, rooms_count: null, floor: null, floors_total: null, address_city: 'Kołobrzeg', address_district: 'Podczele', address_street: null, is_exclusive: false, no_rent_fee: false, is_swap: false, has_garden: false, status: 'opublikowana', created_at: '2026-01-06', main_photo: 'https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?w=600&q=80&fit=crop&h=340', photo_count: 3 },
+]
+
 const TABS = [
   { key: 'new',       label: 'Najnowsze' },
   { key: 'promo',     label: 'W promocji' },
@@ -15,79 +25,61 @@ function priceLabel(p: number | null) {
   return p.toLocaleString('pl-PL') + ' zł'
 }
 
-function OfferCard({ offer, tab }: { offer: Offer; tab: string }) {
-  const badge = offer.is_exclusive
-    ? { label: 'NA WYŁĄCZNOŚCI', color: 'bg-blue' }
-    : offer.no_rent_fee
-    ? { label: 'BEZ PROWIZJI',   color: 'bg-emerald-500' }
-    : tab === 'promo'
-    ? { label: 'W PROMOCJI',     color: 'bg-emerald-500' }
-    : tab === 'exclusive'
-    ? { label: 'NA WYŁĄCZNOŚCI', color: 'bg-blue' }
-    : null
+function getBadge(offer: Offer, tab: string) {
+  if (offer.is_exclusive) return { label: 'NA WYŁĄCZNOŚCI', color: '#1a4fa0' }
+  if (offer.no_rent_fee)  return { label: 'BEZ PROWIZJI',   color: '#10b981' }
+  if (tab === 'promo')    return { label: 'W PROMOCJI',      color: '#10b981' }
+  return null
+}
 
+function OfferCard({ offer, tab }: { offer: Offer; tab: string }) {
+  const badge = getBadge(offer, tab)
   return (
-    <div className="offer-card flex-shrink-0" style={{ width: 'calc(33.333% - 15px)' }}>
-      <div className="relative h-44 bg-slate-100 overflow-hidden">
+    <div style={{ background: 'white', borderRadius: 14, border: '1px solid #e5e7eb', overflow: 'hidden', flexShrink: 0, width: 'calc(33.333% - 15px)', cursor: 'pointer', transition: 'transform .2s, box-shadow .2s' }}
+      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform='translateY(-4px)'; (e.currentTarget as HTMLElement).style.boxShadow='0 14px 32px rgba(0,0,0,.1)' }}
+      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform=''; (e.currentTarget as HTMLElement).style.boxShadow='' }}>
+      <div style={{ height: 180, overflow: 'hidden', position: 'relative', background: '#f8fafc' }}>
         {offer.main_photo ? (
           <Image src={offer.main_photo} alt={offer.title ?? 'Oferta'} fill
-            className="object-cover transition-transform duration-300" sizes="400px" />
+            className="object-cover" sizes="400px" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-slate-300 text-5xl">🏠</div>
+          <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#cbd5e1', fontSize: 48 }}>🏠</div>
         )}
         {badge && (
-          <span className={`absolute top-2.5 left-2.5 ${badge.color} text-white text-[10px] font-bold px-2.5 py-1 rounded-md tracking-wide`}>
+          <span style={{ position: 'absolute', top: 11, left: 11, background: badge.color, color: 'white', fontSize: 10, fontWeight: 700, padding: '3px 10px', borderRadius: 5, letterSpacing: '.3px' }}>
             {badge.label}
           </span>
         )}
-        <span className="absolute top-2.5 right-2.5 bg-white/90 text-slate-500 text-[10px] font-semibold px-2 py-0.5 rounded-md">
+        <span style={{ position: 'absolute', top: 11, right: 11, background: 'rgba(255,255,255,.9)', color: '#6b7280', fontSize: 10, fontWeight: 600, padding: '3px 8px', borderRadius: 5 }}>
           {offer.ref_number}
         </span>
       </div>
-      <div className="p-4">
-        <div className="text-[13px] font-bold text-slate-900 mb-1">
-          {offer.title ?? `${offer.property_type} · ${offer.transaction_type}`}
-        </div>
-        <div className="flex items-center gap-1 text-slate-500 text-[12px] mb-3">
+      <div style={{ padding: 16 }}>
+        <div style={{ fontSize: 13, fontWeight: 700, color: '#111827', marginBottom: 4 }}>{offer.title}</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#6b7280', fontSize: 12, marginBottom: 11 }}>
           <MapPin size={12} /> {offer.address_city}{offer.address_district ? `, ${offer.address_district}` : ''}
         </div>
-        <div className="flex gap-3 mb-3 flex-wrap">
-          {offer.rooms_count && (
-            <span className="flex items-center gap-1 text-[11px] text-slate-500">
-              <LayoutGrid size={12} /> {offer.rooms_count} pok.
-            </span>
-          )}
-          {offer.area && (
-            <span className="flex items-center gap-1 text-[11px] text-slate-500">
-              <Ruler size={12} /> {offer.area} m²
-            </span>
-          )}
-          {offer.floor !== null && offer.floor !== undefined && (
-            <span className="flex items-center gap-1 text-[11px] text-slate-500">
-              <Layers size={12} /> {offer.floor} p.
-            </span>
-          )}
+        <div style={{ display: 'flex', gap: 14, marginBottom: 14, flexWrap: 'wrap' }}>
+          {offer.rooms_count && <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#6b7280' }}><LayoutGrid size={12} /> {offer.rooms_count} pok.</span>}
+          {offer.area && <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#6b7280' }}><Ruler size={12} /> {offer.area} m²</span>}
+          {offer.floor !== null && offer.floor !== undefined && <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#6b7280' }}><Layers size={12} /> {offer.floor} p.</span>}
         </div>
-        <div className="flex items-baseline justify-between">
-          <span style={{fontFamily: 'var(--font-montserrat), system-ui'}} className="font-black text-[20px] text-blue">
-            {priceLabel(offer.price)}
-          </span>
-          {offer.price_per_m2 && (
-            <span className="text-[11px] text-slate-400">{offer.price_per_m2.toLocaleString('pl-PL')} zł/m²</span>
-          )}
+        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
+          <span style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 20, color: '#1a4fa0' }}>{priceLabel(offer.price)}</span>
+          {offer.price_per_m2 && <span style={{ fontSize: 11, color: '#9ca3af' }}>{offer.price_per_m2.toLocaleString('pl-PL')} zł/m²</span>}
         </div>
       </div>
     </div>
   )
 }
 
-interface Props { initialOffers: PaginatedOffers | null }
-
-export default function OffersSection({ initialOffers }: Props) {
+export default function OffersSection({ initialOffers }: { initialOffers: PaginatedOffers | null }) {
+  const hasRealOffers = (initialOffers?.data?.length ?? 0) > 0
   const [tab, setTab]       = useState<'new' | 'promo' | 'exclusive'>('new')
-  const [offers, setOffers] = useState<Offer[]>(initialOffers?.data ?? [])
+  const [offers, setOffers] = useState<Offer[]>(hasRealOffers ? initialOffers!.data : SAMPLE_OFFERS)
   const [loading, setLoading] = useState(false)
   const [cur, setCur]       = useState(0)
+  const [usingSamples, setUsingSamples] = useState(!hasRealOffers)
 
   const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://investrent-crm-production.up.railway.app'
   const perView = 3
@@ -98,68 +90,78 @@ export default function OffersSection({ initialOffers }: Props) {
     try {
       const res = await fetch(`${API}/api/public/offers?tab=${newTab}&limit=9`)
       const data = await res.json()
-      setOffers(data.data ?? [])
+      if (data.data?.length > 0) {
+        setOffers(data.data)
+        setUsingSamples(false)
+      } else {
+        // Filtruj przykładowe oferty po tabie
+        if (newTab === 'exclusive') setOffers(SAMPLE_OFFERS.filter(o => o.is_exclusive))
+        else if (newTab === 'promo') setOffers(SAMPLE_OFFERS.filter(o => o.no_rent_fee))
+        else setOffers(SAMPLE_OFFERS)
+        setUsingSamples(true)
+      }
+    } catch {
+      setOffers(SAMPLE_OFFERS)
+      setUsingSamples(true)
     } finally { setLoading(false) }
   }, [API])
 
   function switchTab(t: typeof tab) { setTab(t); fetchOffers(t) }
 
   return (
-    <section id="oferty" className="section section-alt">
+    <section id="oferty" style={{ padding: '56px 0', background: '#f8fafc' }}>
       <div className="container">
-        <div className="flex items-end justify-between mb-6">
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 26, flexWrap: 'wrap', gap: 12 }}>
           <div>
-            <div className="tag bg-blue/[0.08] text-blue mb-2">Nieruchomości</div>
-            <h2 style={{fontFamily: 'var(--font-montserrat), system-ui'}}
-              className="font-extrabold text-[26px] text-navy tracking-tight">
-              Nasze oferty
-            </h2>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '4px 12px', borderRadius: 100, background: 'rgba(26,79,160,.08)', color: '#1a4fa0', fontSize: 10, fontWeight: 700, letterSpacing: '.5px', textTransform: 'uppercase' as const, marginBottom: 8 }}>
+              Nieruchomości
+            </div>
+            <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 26, color: '#0d2a5c', letterSpacing: '-.4px' }}>Nasze oferty</h2>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="flex gap-1.5">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ display: 'flex', gap: 6 }}>
               {TABS.map(t => (
                 <button key={t.key} onClick={() => switchTab(t.key)}
-                  className={`px-4 py-1.5 rounded-lg text-[12px] font-bold border-[1.5px] transition-all ${
-                    tab === t.key
-                      ? 'bg-blue text-white border-blue'
-                      : 'text-slate-500 border-slate-200 hover:border-blue hover:text-blue'
-                  }`}>
+                  style={{ padding: '7px 18px', borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: '1.5px solid', transition: 'all .2s', background: tab === t.key ? '#1a4fa0' : 'transparent', color: tab === t.key ? 'white' : '#6b7280', borderColor: tab === t.key ? '#1a4fa0' : '#e5e7eb' }}>
                   {t.label}
                 </button>
               ))}
             </div>
-            <a href="/oferty" className="btn-outline text-[13px] py-2 px-4">
+            <a href="#kontakt" style={{ fontSize: 13, fontWeight: 700, color: '#1a4fa0', border: '1.5px solid #1a4fa0', padding: '8px 18px', borderRadius: 9, display: 'flex', alignItems: 'center', gap: 5, textDecoration: 'none' }}>
               Wszystkie <ArrowRight size={14} />
             </a>
           </div>
         </div>
 
+        {usingSamples && (
+          <div style={{ background: 'rgba(26,79,160,.06)', border: '1px solid rgba(26,79,160,.15)', borderRadius: 10, padding: '10px 16px', marginBottom: 20, fontSize: 12, color: '#6b7280' }}>
+            📋 Przykładowe oferty — pojawią się prawdziwe gdy dodasz je w CRM i opublikujesz
+          </div>
+        )}
+
         {loading ? (
-          <div className="flex justify-center py-16 text-slate-400">Ładowanie ofert…</div>
-        ) : offers.length === 0 ? (
-          <div className="text-center py-16 text-slate-400">Brak ofert w tej kategorii</div>
+          <div style={{ textAlign: 'center', padding: '64px 0', color: '#9ca3af' }}>Ładowanie ofert…</div>
         ) : (
           <>
-            <div className="overflow-hidden">
-              <div className="flex gap-5 transition-transform duration-500"
-                style={{ transform: `translateX(-${cur * (100 / perView + 2)}%)` }}>
+            <div style={{ overflow: 'hidden' }}>
+              <div style={{ display: 'flex', gap: 22, transition: 'transform .5s cubic-bezier(.4,0,.2,1)', transform: `translateX(-${cur * (100 / perView + 2)}%)` }}>
                 {offers.map(o => <OfferCard key={o.id} offer={o} tab={tab} />)}
               </div>
             </div>
             {offers.length > perView && (
-              <div className="flex items-center justify-center gap-4 mt-6">
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, marginTop: 24 }}>
                 <button onClick={() => setCur(c => Math.max(0, c - 1))} disabled={cur === 0}
-                  className="w-9 h-9 rounded-full border-[1.5px] border-slate-200 flex items-center justify-center hover:border-blue hover:text-blue transition-all disabled:opacity-30">
+                  style={{ width: 36, height: 36, borderRadius: '50%', border: '1.5px solid #e5e7eb', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: cur === 0 ? .3 : 1 }}>
                   <ChevronLeft size={16} />
                 </button>
-                <div className="flex gap-2">
+                <div style={{ display: 'flex', gap: 7 }}>
                   {Array.from({ length: maxSlide + 1 }).map((_, i) => (
                     <button key={i} onClick={() => setCur(i)}
-                      className={`carousel-dot ${i === cur ? 'active' : ''}`} />
+                      style={{ width: i === cur ? 22 : 8, height: 8, borderRadius: i === cur ? 4 : '50%', background: i === cur ? '#1a4fa0' : '#e5e7eb', border: 'none', cursor: 'pointer', transition: 'all .25s' }} />
                   ))}
                 </div>
                 <button onClick={() => setCur(c => Math.min(maxSlide, c + 1))} disabled={cur === maxSlide}
-                  className="w-9 h-9 rounded-full border-[1.5px] border-slate-200 flex items-center justify-center hover:border-blue hover:text-blue transition-all disabled:opacity-30">
+                  style={{ width: 36, height: 36, borderRadius: '50%', border: '1.5px solid #e5e7eb', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: cur === maxSlide ? .3 : 1 }}>
                   <ChevronRight size={16} />
                 </button>
               </div>
