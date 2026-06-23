@@ -38,7 +38,7 @@ function OfferCard({ offer, tab }: { offer: Offer; tab: string }) {
     <div style={{ background: 'white', borderRadius: 14, border: '1px solid #e5e7eb', overflow: 'hidden', flexShrink: 0, width: 'calc(33.333% - 15px)', cursor: 'pointer', transition: 'transform .2s, box-shadow .2s' }}
       onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform='translateY(-4px)'; (e.currentTarget as HTMLElement).style.boxShadow='0 14px 32px rgba(0,0,0,.1)' }}
       onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform=''; (e.currentTarget as HTMLElement).style.boxShadow='' }}>
-      <div style={{ height: 180, overflow: 'hidden', position: 'relative', background: '#f8fafc' }}>
+      <div style={{ height: 220, overflow: 'hidden', position: 'relative', background: '#f8fafc' }}>
         {offer.main_photo ? (
           <Image src={offer.main_photo} alt={offer.title ?? 'Oferta'} fill
             className="object-cover" sizes="400px" />
@@ -133,11 +133,7 @@ export default function OffersSection({ initialOffers }: { initialOffers: Pagina
           </div>
         </div>
 
-        {usingSamples && (
-          <div style={{ background: 'rgba(26,79,160,.06)', border: '1px solid rgba(26,79,160,.15)', borderRadius: 10, padding: '10px 16px', marginBottom: 20, fontSize: 12, color: '#6b7280' }}>
-            📋 Przykładowe oferty — pojawią się prawdziwe gdy dodasz je w CRM i opublikujesz
-          </div>
-        )}
+
 
         {loading ? (
           <div style={{ textAlign: 'center', padding: '64px 0', color: '#9ca3af' }}>Ładowanie ofert…</div>
