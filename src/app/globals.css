@@ -25,47 +25,93 @@ body {
 }
 
 @layer components {
-  /* Section spacing */
-  .section { @apply py-16; }
-  .section-alt { @apply bg-slate-50; }
-  .container { @apply max-w-[1180px] mx-auto px-8; }
+  .section        { padding-top: 4rem; padding-bottom: 4rem; }
+  .section-alt    { background-color: #f8fafc; }
+  .container      { max-width: 1180px; margin: 0 auto; padding: 0 2rem; }
 
-  /* Heading font — uses CSS variable directly, no @apply for custom font */
   .heading {
-    font-family: var(--font-montserrat), system-ui, sans-serif;
-    @apply font-extrabold tracking-tight;
+    font-family: var(--font-montserrat), Arial, system-ui, sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.025em;
   }
 
-  /* Tag pill */
   .tag {
-    @apply inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full
-           text-[11px] font-bold tracking-widest uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.3rem 0.875rem;
+    border-radius: 9999px;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
   }
 
-  /* Buttons */
   .btn-gold {
-    @apply inline-flex items-center gap-2 bg-gold text-white
-           font-bold rounded-xl px-7 py-3.5 hover:brightness-105 transition-all;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #f5a623;
+    color: white;
+    font-weight: 700;
+    border-radius: 0.75rem;
+    padding: 0.875rem 1.75rem;
+    transition: filter 0.2s;
+    text-decoration: none;
   }
+  .btn-gold:hover { filter: brightness(1.08); }
+
   .btn-navy {
-    @apply inline-flex items-center gap-2 bg-navy text-white
-           font-bold rounded-xl px-7 py-3.5 hover:brightness-110 transition-all;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #0d2a5c;
+    color: white;
+    font-weight: 700;
+    border-radius: 0.75rem;
+    padding: 0.875rem 1.75rem;
+    transition: filter 0.2s;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
   }
+  .btn-navy:hover { filter: brightness(1.1); }
+
   .btn-outline {
-    @apply inline-flex items-center gap-2 border-2 border-blue text-blue
-           font-bold rounded-xl px-7 py-3.5 hover:bg-blue hover:text-white transition-all;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 2px solid #1a4fa0;
+    color: #1a4fa0;
+    font-weight: 700;
+    border-radius: 0.75rem;
+    padding: 0.875rem 1.75rem;
+    transition: all 0.2s;
+    text-decoration: none;
   }
+  .btn-outline:hover { background-color: #1a4fa0; color: white; }
 
-  /* Offer card */
   .offer-card {
-    @apply bg-white rounded-2xl border border-slate-200 overflow-hidden
-           cursor-pointer transition-all duration-200
-           hover:-translate-y-1 hover:shadow-xl;
+    background-color: white;
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
   }
+  .offer-card:hover { transform: translateY(-4px); box-shadow: 0 14px 32px rgba(0,0,0,.1); }
 
-  /* Dot indicator */
   .carousel-dot {
-    @apply w-2 h-2 rounded-full bg-slate-200 cursor-pointer transition-all duration-200;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background-color: #e5e7eb;
+    cursor: pointer;
+    transition: all 0.25s;
   }
-  .carousel-dot.active { @apply bg-blue w-5 rounded-full; }
+  .carousel-dot.active {
+    background-color: #1a4fa0;
+    width: 1.25rem;
+    border-radius: 0.25rem;
+  }
 }
