@@ -1,5 +1,5 @@
 "use client"
-import { Search, Home, Handshake, Clock, Star, BadgeCheck } from 'lucide-react'
+import { Search, Home, Handshake, Clock, Star, Award } from 'lucide-react'
 import type { PublicStats } from '@/types'
 
 interface HeroProps { stats: PublicStats | null }
@@ -28,7 +28,7 @@ export default function Hero({ stats }: HeroProps) {
         <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_.9fr] gap-16 items-center">
           <div>
             <div className="tag bg-gold/20 border border-gold/35 text-gold mb-5">
-              <BadgeCheck size={14} /> Kołobrzeg i okolice
+              <Award size={14} /> Kołobrzeg i okolice
             </div>
             <h1 className="heading text-[50px] text-white leading-[1.08] mb-5">
               Twoje wymarzone<br />
@@ -53,7 +53,7 @@ export default function Hero({ stats }: HeroProps) {
                 { icon: <Handshake size={20} />, val: `${s.completed_transactions}+`, label: 'transakcji' },
                 { icon: <Clock size={20} />,     val: 'do 60 min',       label: 'odpowiedź' },
                 { icon: <Star size={20} />,      val: '4.9/5',           label: 'ocena klientów' },
-                { icon: <BadgeCheck size={20} />,val: 'Bezpłatna',       label: 'wycena' },
+                { icon: <Award size={20} />,val: 'Bezpłatna',       label: 'wycena' },
               ].map(st => (
                 <div key={st.label} className="flex items-center gap-2.5">
                   <span className="text-gold">{st.icon}</span>
