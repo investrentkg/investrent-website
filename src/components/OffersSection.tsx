@@ -40,10 +40,13 @@ function OfferCard({ offer, tab }: { offer: Offer; tab: string }) {
       onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform=''; (e.currentTarget as HTMLElement).style.boxShadow='' }}>
       <div style={{ height: 220, overflow: 'hidden', position: 'relative', background: '#f8fafc' }}>
         {offer.main_photo ? (
-          <Image src={offer.main_photo} alt={offer.title ?? 'Oferta'} fill
-            className="object-cover" sizes="400px" />
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={offer.main_photo} alt={offer.title ?? 'Oferta'}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform .4s' }}
+            onMouseEnter={e => (e.currentTarget.style.transform='scale(1.05)')}
+            onMouseLeave={e => (e.currentTarget.style.transform='')} />
         ) : (
-          <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#cbd5e1', fontSize: 48 }}>🏠</div>
+          <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f0f4ff', fontSize: 48 }}>🏠</div>
         )}
         {badge && (
           <span style={{ position: 'absolute', top: 11, left: 11, background: badge.color, color: 'white', fontSize: 10, fontWeight: 700, padding: '3px 10px', borderRadius: 5, letterSpacing: '.3px' }}>
