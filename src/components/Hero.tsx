@@ -1,5 +1,5 @@
 "use client"
-import { Search, HomeUp, Handshake, Clock, Star, BadgeCheck } from 'lucide-react'
+import { Search, Home, Handshake, Clock, Star, BadgeCheck } from 'lucide-react'
 import type { PublicStats } from '@/types'
 
 interface HeroProps { stats: PublicStats | null }
