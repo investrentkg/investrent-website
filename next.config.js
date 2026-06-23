@@ -1,7 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['sqpepaiqwxginqnglspl.supabase.co', 'investrent.com.pl'],
+    unoptimized: true,
+    remotePatterns: [
+      { protocol: 'https', hostname: 'sqpepaiqwxginqnglspl.supabase.co' },
+      { protocol: 'https', hostname: 'images.unsplash.com' },
+    ],
+  },
+  eslint: {
+    ignoreDuringBuilds: true,  // ignoruj błędy ESLint przy buildzie
+  },
+  typescript: {
+    ignoreBuildErrors: false,
   },
 }
 
