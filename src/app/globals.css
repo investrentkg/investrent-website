@@ -1,28 +1,67 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --blue: #1a4fa0;
-  --orange: #f5a623;
-  --dark: #0d2a5c;
+  --navy:  #0d2a5c;
+  --blue:  #1a4fa0;
+  --gold:  #f5a623;
+  --light: #f8fafc;
 }
-
-* { box-sizing: border-box; margin: 0; padding: 0; }
 
 html { scroll-behavior: smooth; }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  background: #e8edf4;
   color: #111827;
-  background: #fff;
-  -webkit-font-smoothing: antialiased;
 }
 
-.container {
-  max-width: 1200px;
+/* Page wrapper centers content on wide screens */
+.page-wrap {
+  max-width: 1320px;
   margin: 0 auto;
-  padding: 0 24px;
+  background: white;
+  box-shadow: 0 0 80px rgba(0,0,0,.12);
 }
+
+/* Section spacing */
+.section { @apply py-16; }
+.section-alt { @apply bg-slate-50; }
+.container { @apply max-w-[1180px] mx-auto px-8; }
+
+/* Heading font */
+.heading { @apply font-mont font-extrabold tracking-tight; }
+
+/* Tag pill */
+.tag {
+  @apply inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full
+         text-[11px] font-bold tracking-widest uppercase;
+}
+
+/* Buttons */
+.btn-gold {
+  @apply inline-flex items-center gap-2 bg-gold text-white
+         font-bold rounded-xl px-7 py-3.5 hover:brightness-105 transition-all;
+}
+.btn-navy {
+  @apply inline-flex items-center gap-2 bg-navy text-white
+         font-bold rounded-xl px-7 py-3.5 hover:brightness-110 transition-all;
+}
+.btn-outline {
+  @apply inline-flex items-center gap-2 border-2 border-blue text-blue
+         font-bold rounded-xl px-7 py-3.5 hover:bg-blue hover:text-white transition-all;
+}
+
+/* Offer card hover */
+.offer-card {
+  @apply bg-white rounded-2xl border border-slate-200 overflow-hidden
+         cursor-pointer transition-all duration-200
+         hover:-translate-y-1 hover:shadow-xl;
+}
+
+/* Dot indicator */
+.carousel-dot {
+  @apply w-2 h-2 rounded-full bg-slate-200 cursor-pointer transition-all duration-200;
+}
+.carousel-dot.active { @apply bg-blue w-5 rounded-full; }
