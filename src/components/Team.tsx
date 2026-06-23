@@ -1,112 +1,95 @@
-'use client'
-import { useEffect, useState } from 'react'
+"use client"
+import { useState, useRef } from 'react'
+import Image from 'next/image'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+import type { TeamMember } from '@/types'
 
-interface TeamMember {
-  id: string
-  full_name: string
-  role: string
-  phone: string
-  avatar_url: string
-  bio: string
-  position_label: string
+const BADGE_STYLE: Record<string, { bg: string; text: string; label: string }> = {
+  manager:    { bg: 'bg-amber-100',   text: 'text-amber-800',   label: 'Management' },
+  agent:      { bg: 'bg-blue/8',      text: 'text-blue',        label: 'Agent' },
+  superadmin: { bg: 'bg-slate-100',   text: 'text-slate-600',   label: 'Admin' },
 }
-
-const CRM_API = 'https://investrent-crm-production.up.railway.app'
-
-// Fallback jeśli API niedostępne
-const FALLBACK: TeamMember[] = [
-  { id: '1', full_name: 'InvestRent', role: 'manager', phone: '+48 731 554 341', avatar_url: '', bio: 'Biuro nieruchomości w Kołobrzegu', position_label: 'Dyrektor biura' },
+const AVATAR_GRADIENT: string[] = [
+  'from-blue to-navy',
+  'from-gold to-amber-500',
+  'from-emerald-500 to-emerald-700',
+  'from-violet-500 to-violet-700',
+  'from-red-500 to-red-700',
+  'from-sky-500 to-sky-700',
 ]
 
-export default function Team() {
-  const [team, setTeam] = useState<TeamMember[]>([])
-  const [loading, setLoading] = useState(true)
+interface Props { members: TeamMember[] }
 
-  useEffect(() => {
-    fetch(`${CRM_API}/api/users/team/public`)
-      .then(r => r.json())
-      .then(data => {
-        if (Array.isArray(data) && data.length > 0) setTeam(data)
-        else setTeam(FALLBACK)
-      })
-      .catch(() => setTeam(FALLBACK))
-      .finally(() => setLoading(false))
-  }, [])
+export default function Team({ members }: Props) {
+  const [cur, setCur] = useState(0)
+  const perView = 3
+  const maxSlide = Math.max(0, members.length - perView)
 
-  const gridCols = team.length === 1 ? 'max-w-sm mx-auto' :
-                   team.length === 2 ? 'grid md:grid-cols-2 max-w-2xl mx-auto' :
-                   team.length === 3 ? 'grid md:grid-cols-3 max-w-3xl mx-auto' :
-                   'grid md:grid-cols-2 lg:grid-cols-4 max-w-5xl mx-auto'
+  if (members.length === 0) return null
 
   return (
-    <section id="zespol" className="py-20 bg-gray-50">
+    <section id="zespol" className="section section-alt">
       <div className="container">
-        <div className="text-center mb-14">
-          <div className="inline-block px-4 py-1.5 rounded-full text-sm font-semibold mb-4"
-            style={{ background: 'rgba(26,79,160,.08)', color: '#1a4fa0' }}>
-            Nasz zespół
-          </div>
-          <h2 className="text-4xl font-extrabold mb-4"
-            style={{ fontFamily: 'Syne, sans-serif', color: '#111827' }}>
-            Eksperci na których możesz liczyć
-          </h2>
-          <p className="text-gray-500 max-w-xl mx-auto text-sm">
-            Doświadczeni doradcy, którzy przeprowadzą Cię przez każdy etap transakcji.
+        <div className="text-center mb-10">
+          <div className="tag bg-blue/8 text-blue mb-3">Nasz zespół</div>
+          <h2 className="heading text-[30px] text-navy mb-2.5">Eksperci, którym możesz zaufać</h2>
+          <p className="text-slate-500 text-[14px] max-w-lg mx-auto">
+            Każdy klient ma przydzielonego opiekuna prowadzącego przez całą transakcję.
           </p>
         </div>
 
-        {loading ? (
-          <div className={`${gridCols} gap-6`}>
-            {[1, 2].map(i => (
-              <div key={i} className="bg-white rounded-2xl p-6 shadow-sm text-center animate-pulse">
-                <div className="w-20 h-20 rounded-full mx-auto mb-4 bg-gray-200" />
-                <div className="h-4 bg-gray-200 rounded w-3/4 mx-auto mb-2" />
-                <div className="h-3 bg-gray-100 rounded w-1/2 mx-auto" />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className={`${gridCols} gap-6`}>
-            {team.map(member => (
-              <div key={member.id} className="bg-white rounded-2xl p-6 shadow-sm text-center group hover:shadow-md transition-shadow">
-
-                {/* Avatar */}
-                <div className="relative w-20 h-20 mx-auto mb-4">
-                  {member.avatar_url ? (
-                    <img
-                      src={member.avatar_url}
-                      alt={member.full_name}
-                      className="w-20 h-20 rounded-full object-cover ring-4 ring-white shadow-md"
-                    />
-                  ) : (
-                    <div className="w-20 h-20 rounded-full flex items-center justify-center text-2xl font-extrabold text-white ring-4 ring-white shadow-md"
-                      style={{ background: 'linear-gradient(135deg, #1a4fa0, #f5a623)' }}>
-                      {member.full_name.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                    </div>
+        <div className="overflow-hidden">
+          <div className="flex gap-5 transition-transform duration-500"
+            style={{ transform: `translateX(-${cur * (100 / perView + 20 / members.length)}%)` }}>
+            {members.map((m, idx) => {
+              const b = BADGE_STYLE[m.role] ?? BADGE_STYLE.agent
+              const grad = AVATAR_GRADIENT[idx % AVATAR_GRADIENT.length]
+              return (
+                <div key={m.id}
+                  className="bg-white rounded-2xl border border-slate-200 p-7 text-center hover:-translate-y-0.5 transition-all flex-shrink-0"
+                  style={{ width: `calc(${100 / perView}% - ${(perView - 1) * 20 / perView}px)` }}>
+                  <div className="relative w-20 h-20 mx-auto mb-4">
+                    {m.avatar_url ? (
+                      <Image src={m.avatar_url} alt={m.full_name} fill
+                        className="rounded-full object-cover shadow-md" sizes="80px" />
+                    ) : (
+                      <div className={`w-20 h-20 rounded-full bg-gradient-to-br ${grad} flex items-center justify-center shadow-md`}>
+                        <span className="font-mont font-black text-[26px] text-white">
+                          {m.full_name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="text-[15px] font-bold text-slate-900 mb-1">{m.full_name}</div>
+                  <div className="text-[12px] text-slate-500 mb-3 leading-[1.5]">{m.role_label}</div>
+                  {m.specialization && (
+                    <div className="text-[11px] text-slate-400 mb-3">{m.specialization}</div>
                   )}
+                  <span className={`text-[10px] font-bold px-3 py-1 rounded-md ${b.bg} ${b.text}`}>
+                    {m.label ?? b.label}
+                  </span>
                 </div>
+              )
+            })}
+          </div>
+        </div>
 
-                {/* Info */}
-                <h3 className="text-lg font-bold mb-1" style={{ color: '#111827' }}>
-                  {member.full_name}
-                </h3>
-                <p className="text-sm font-semibold mb-1" style={{ color: '#1a4fa0' }}>
-                  {member.position_label || (member.role === 'manager' ? 'Kierownik biura' : 'Doradca ds. nieruchomości')}
-                </p>
-                {member.bio && (
-                  <p className="text-xs text-gray-400 mb-3 leading-relaxed">{member.bio}</p>
-                )}
-
-                {/* Telefon */}
-                {member.phone && (
-                  <a href={`tel:${member.phone}`}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:opacity-90 mt-2"
-                    style={{ background: '#f5a623', color: '#fff' }}>
-                    📞 {member.phone}
-                  </a>
-                )}
-              </div>
-            ))}
+        {members.length > perView && (
+          <div className="flex items-center justify-center gap-4 mt-6">
+            <button onClick={() => setCur(c => Math.max(0, c - 1))} disabled={cur === 0}
+              className="w-9 h-9 rounded-full border-[1.5px] border-slate-200 flex items-center justify-center hover:border-blue hover:text-blue transition-all disabled:opacity-30">
+              <ChevronLeft size={16} />
+            </button>
+            <div className="flex gap-2">
+              {Array.from({ length: maxSlide + 1 }).map((_, i) => (
+                <button key={i} onClick={() => setCur(i)}
+                  className={`carousel-dot ${i === cur ? 'active' : ''}`} />
+              ))}
+            </div>
+            <button onClick={() => setCur(c => Math.min(maxSlide, c + 1))} disabled={cur === maxSlide}
+              className="w-9 h-9 rounded-full border-[1.5px] border-slate-200 flex items-center justify-center hover:border-blue hover:text-blue transition-all disabled:opacity-30">
+              <ChevronRight size={16} />
+            </button>
           </div>
         )}
       </div>
