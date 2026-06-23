@@ -17,7 +17,6 @@ body {
   color: #111827;
 }
 
-/* Page wrapper centers content on wide screens */
 .page-wrap {
   max-width: 1320px;
   margin: 0 auto;
@@ -25,43 +24,48 @@ body {
   box-shadow: 0 0 80px rgba(0,0,0,.12);
 }
 
-/* Section spacing */
-.section { @apply py-16; }
-.section-alt { @apply bg-slate-50; }
-.container { @apply max-w-[1180px] mx-auto px-8; }
+@layer components {
+  /* Section spacing */
+  .section { @apply py-16; }
+  .section-alt { @apply bg-slate-50; }
+  .container { @apply max-w-[1180px] mx-auto px-8; }
 
-/* Heading font */
-.heading { @apply font-mont font-extrabold tracking-tight; }
+  /* Heading font — uses CSS variable directly, no @apply for custom font */
+  .heading {
+    font-family: var(--font-montserrat), system-ui, sans-serif;
+    @apply font-extrabold tracking-tight;
+  }
 
-/* Tag pill */
-.tag {
-  @apply inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full
-         text-[11px] font-bold tracking-widest uppercase;
-}
+  /* Tag pill */
+  .tag {
+    @apply inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full
+           text-[11px] font-bold tracking-widest uppercase;
+  }
 
-/* Buttons */
-.btn-gold {
-  @apply inline-flex items-center gap-2 bg-gold text-white
-         font-bold rounded-xl px-7 py-3.5 hover:brightness-105 transition-all;
-}
-.btn-navy {
-  @apply inline-flex items-center gap-2 bg-navy text-white
-         font-bold rounded-xl px-7 py-3.5 hover:brightness-110 transition-all;
-}
-.btn-outline {
-  @apply inline-flex items-center gap-2 border-2 border-blue text-blue
-         font-bold rounded-xl px-7 py-3.5 hover:bg-blue hover:text-white transition-all;
-}
+  /* Buttons */
+  .btn-gold {
+    @apply inline-flex items-center gap-2 bg-gold text-white
+           font-bold rounded-xl px-7 py-3.5 hover:brightness-105 transition-all;
+  }
+  .btn-navy {
+    @apply inline-flex items-center gap-2 bg-navy text-white
+           font-bold rounded-xl px-7 py-3.5 hover:brightness-110 transition-all;
+  }
+  .btn-outline {
+    @apply inline-flex items-center gap-2 border-2 border-blue text-blue
+           font-bold rounded-xl px-7 py-3.5 hover:bg-blue hover:text-white transition-all;
+  }
 
-/* Offer card hover */
-.offer-card {
-  @apply bg-white rounded-2xl border border-slate-200 overflow-hidden
-         cursor-pointer transition-all duration-200
-         hover:-translate-y-1 hover:shadow-xl;
-}
+  /* Offer card */
+  .offer-card {
+    @apply bg-white rounded-2xl border border-slate-200 overflow-hidden
+           cursor-pointer transition-all duration-200
+           hover:-translate-y-1 hover:shadow-xl;
+  }
 
-/* Dot indicator */
-.carousel-dot {
-  @apply w-2 h-2 rounded-full bg-slate-200 cursor-pointer transition-all duration-200;
+  /* Dot indicator */
+  .carousel-dot {
+    @apply w-2 h-2 rounded-full bg-slate-200 cursor-pointer transition-all duration-200;
+  }
+  .carousel-dot.active { @apply bg-blue w-5 rounded-full; }
 }
-.carousel-dot.active { @apply bg-blue w-5 rounded-full; }
