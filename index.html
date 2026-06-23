@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>InvestRent Nieruchomości — Kołobrzeg</title>
+<title>InvestRent Nieruchomości Kołobrzeg | Kupno, Sprzedaż, Wynajem nad Bałtykiem</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -38,20 +38,20 @@ nav{background:var(--navy);padding:13px 0;position:sticky;top:0;z-index:100}
   position:absolute;inset:0;
   background:
     linear-gradient(to right,
-      rgba(9,30,64,.97) 0%,
-      rgba(9,30,64,.90) 30%,
-      rgba(13,42,92,.72) 50%,
-      rgba(13,42,92,.42) 65%,
-      rgba(9,20,50,.18) 82%,
-      rgba(9,20,50,.08) 100%
+      rgba(13,42,92,.93) 0%,
+      rgba(13,42,92,.85) 30%,
+      rgba(26,79,160,.65) 52%,
+      rgba(26,79,160,.32) 68%,
+      rgba(13,42,92,.10) 85%,
+      rgba(13,42,92,.04) 100%
     ),
     linear-gradient(to bottom,
-      rgba(5,15,38,.75) 0%,
-      rgba(5,15,38,.15) 18%,
-      transparent 38%,
-      transparent 72%,
-      rgba(5,15,38,.45) 88%,
-      rgba(5,15,38,.72) 100%
+      rgba(13,42,92,.68) 0%,
+      rgba(13,42,92,.10) 16%,
+      transparent 36%,
+      transparent 74%,
+      rgba(9,30,64,.40) 88%,
+      rgba(9,30,64,.70) 100%
     );
 }
 .hero-ct{position:relative;z-index:1;width:100%}
@@ -201,7 +201,190 @@ footer{background:var(--navy);padding:32px 0}
 /* ========= FLOATING WA ========= */
 .fwa{position:fixed;bottom:28px;right:28px;background:#25D366;color:var(--white);font-size:13px;font-weight:700;padding:13px 20px;border-radius:100px;display:inline-flex;align-items:center;gap:7px;box-shadow:0 8px 24px rgba(37,211,102,.4);cursor:pointer;z-index:50;text-decoration:none;font-family:var(--inter);transition:transform .2s}
 .fwa:hover{transform:translateY(-2px)}
+
+/* ============================================================
+   RESPONSIVE — MOBILE FIRST
+   ============================================================ */
+
+/* HAMBURGER BUTTON */
+.ham-btn{
+  display:none;flex-direction:column;gap:5px;cursor:pointer;
+  background:transparent;border:none;padding:6px;
+}
+.ham-btn span{
+  display:block;width:24px;height:2px;
+  background:rgba(255,255,255,.8);border-radius:2px;
+  transition:all .3s;
+}
+.mobile-menu{
+  display:none;position:fixed;inset:0;background:rgba(9,30,64,.97);
+  z-index:200;flex-direction:column;align-items:center;justify-content:center;gap:28px;
+}
+.mobile-menu.open{display:flex}
+.mobile-menu a{
+  color:rgba(255,255,255,.85);font-size:22px;font-weight:700;
+  text-decoration:none;font-family:'Montserrat',system-ui,sans-serif;
+}
+.mobile-menu a:hover{color:#f5a623}
+.mobile-menu .close-btn{
+  position:absolute;top:20px;right:24px;
+  color:rgba(255,255,255,.6);font-size:28px;cursor:pointer;
+  background:none;border:none;line-height:1;
+}
+
+/* TABLET (max 1024px) */
+@media (max-width:1024px){
+  .hero-in{grid-template-columns:1fr;gap:36px}
+  .sw{max-width:540px}
+  .hstats{gap:18px}
+  .abin{grid-template-columns:1fr;gap:36px}
+  .abimg img{height:360px}
+  .cntg{grid-template-columns:1fr;gap:36px}
+  .rvg{grid-template-columns:repeat(2,1fr)}
+  .oc{width:calc(50% - 11px)}
+  .tc{width:calc(50% - 11px)}
+  .team-track{transition:transform .5s cubic-bezier(.4,0,.2,1)}
+}
+
+/* MOBILE (max 640px) */
+@media (max-width:640px){
+  /* NAV */
+  .nav-links{display:none !important}
+  .ham-btn{display:flex}
+  .navi{padding:0}
+
+  /* HERO */
+  .hero{padding:48px 0 52px;min-height:auto}
+  .hero-in{grid-template-columns:1fr}
+  .hero h1{font-size:34px;letter-spacing:-1px}
+  .hero p{font-size:14px}
+  .sw{display:none}
+  .htag{font-size:10px;padding:4px 11px}
+  .hbtns{gap:8px}
+  .bg,.bgh{font-size:13px;padding:12px 20px}
+  .hstats{gap:14px;flex-wrap:wrap}
+  .hst-n{font-size:14px}
+  .hst-l{font-size:9px}
+
+  /* CONTAINER */
+  .con{padding:0 16px}
+  .sec{padding:44px 0}
+
+  /* CALLBACK */
+  .cbin{flex-direction:column;align-items:flex-start;gap:14px}
+  .cbf{flex-wrap:wrap;gap:7px;width:100%}
+  .cbi2{width:100%;min-width:0}
+  .bcall,.bwa{flex:1;justify-content:center}
+  .cbti{font-size:15px}
+
+  /* OFFERS CAROUSEL — 1 card */
+  .oc{width:calc(100% - 0px)}
+  .oth{height:200px}
+
+  /* ABOUT */
+  .abin{grid-template-columns:1fr;gap:28px}
+  .abimg img{height:260px}
+  .ab h2{font-size:24px}
+
+  /* SERVICES */
+  .srvg{grid-template-columns:1fr}
+  .sc{padding:22px 18px}
+  .sti{font-size:16px}
+
+  /* REVIEWS */
+  .rvg{grid-template-columns:1fr}
+
+  /* TEAM CAROUSEL — 1 card */
+  .tc{width:calc(100% - 0px)}
+  .team-wrap{overflow:hidden}
+
+  /* CONTACT */
+  .cntg{grid-template-columns:1fr;gap:28px}
+  .cnth{font-size:28px}
+  .fbox{padding:22px 18px}
+
+  /* CTA WYCENA */
+  [style*="display:flex;align-items:center;justify-content:space-between;gap:40px"]{
+    flex-direction:column !important;gap:24px !important;
+  }
+
+  /* FOOTER */
+  .ftin{flex-direction:column;align-items:flex-start;gap:16px}
+  .ftlinks{flex-wrap:wrap;gap:12px}
+
+  /* SECTION HEADERS */
+  .sect{font-size:24px}
+  .secs{font-size:13px}
+  .rvscore{font-size:40px}
+}
+
+/* Very small (max 380px) */
+@media (max-width:380px){
+  .hero h1{font-size:28px}
+  .bg,.bgh{padding:11px 16px;font-size:12px}
+}
+
 </style>
+
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="InvestRent Nieruchomości">
+  <meta name="keywords" content="nieruchomości Kołobrzeg, mieszkania Kołobrzeg, kupno sprzedaż wynajem, biuro nieruchomości Kołobrzeg, apartamenty Bałtyk">
+  <meta property="og:title" content="InvestRent Nieruchomości — Kołobrzeg | Kupno, Sprzedaż, Wynajem">
+  <meta property="og:description" content="Biuro nieruchomości Kołobrzeg. Kupno, sprzedaż i wynajem mieszkań nad Bałtykiem. Odpowiadamy do 60 minut. Bezpłatna wycena.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://investrentkg.github.io/investrent-website/">
+  <meta property="og:locale" content="pl_PL">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="InvestRent Nieruchomości — Kołobrzeg">
+  <meta name="twitter:description" content="Kupno, sprzedaż i wynajem nieruchomości nad Bałtykiem. Odpowiadamy do 60 minut.">
+  <link rel="canonical" href="https://investrentkg.github.io/investrent-website/">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "RealEstateAgent",
+    "name": "InvestRent Nieruchomości",
+    "description": "Biuro nieruchomości w Kołobrzegu. Kupno, sprzedaż i wynajem nieruchomości nad Bałtykiem. Obsługa klientów indywidualnych i inwestycyjnych.",
+    "url": "https://investrentkg.github.io/investrent-website/",
+    "telephone": "+48731554341",
+    "email": "biuro@investrent.com.pl",
+    "image": "https://investrentkg.github.io/investrent-website/og-image.jpg",
+    "priceRange": "$$",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "ul. Twoja Ulica 1",
+      "addressLocality": "Kołobrzeg",
+      "postalCode": "78-100",
+      "addressRegion": "Zachodniopomorskie",
+      "addressCountry": "PL"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 54.1776,
+      "longitude": 15.5734
+    },
+    "openingHoursSpecification": [
+      {"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday"],"opens":"08:00","closes":"18:00"},
+      {"@type":"OpeningHoursSpecification","dayOfWeek":"Saturday","opens":"09:00","closes":"14:00"}
+    ],
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "reviewCount": "127",
+      "bestRating": "5",
+      "worstRating": "1"
+    },
+    "areaServed": [
+      {"@type":"City","name":"Kołobrzeg"},
+      {"@type":"City","name":"Mielno"},
+      {"@type":"City","name":"Dźwirzyno"},
+      {"@type":"City","name":"Trzebiatów"}
+    ],
+    "sameAs": [
+      "https://www.facebook.com/investrent",
+      "https://www.google.com/maps"
+    ]
+  }
+  </script>
 </head>
 <body>
 <div class="page">
@@ -216,12 +399,24 @@ footer{background:var(--navy);padding:32px 0}
       <span class="nav-logo-sub">nieruchomości</span>
     </div>
   </a>
-  <div class="nav-links">
+  <div class="nav-links" id="navLinks">
     <a href="#">Oferty</a><a href="#">Kupno</a><a href="#">Sprzedaż</a><a href="#">Wynajem</a><a href="#">O nas</a><a href="#kontakt">Kontakt</a>
     <a href="tel:+48731554341" class="btn-nav"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="white" d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2l0 4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2"/></svg> +48 731 554 341</a>
   </div>
 </div></div>
 </nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <button class="close-btn" onclick="document.getElementById('mobileMenu').classList.remove('open')" aria-label="Zamknij">&#10005;</button>
+  <a href="#" onclick="document.getElementById('mobileMenu').classList.remove('open')">Oferty</a>
+  <a href="#" onclick="document.getElementById('mobileMenu').classList.remove('open')">Kupno</a>
+  <a href="#" onclick="document.getElementById('mobileMenu').classList.remove('open')">Sprzedaż</a>
+  <a href="#" onclick="document.getElementById('mobileMenu').classList.remove('open')">Wynajem</a>
+  <a href="#" onclick="document.getElementById('mobileMenu').classList.remove('open')">O nas</a>
+  <a href="#kontakt" onclick="document.getElementById('mobileMenu').classList.remove('open')">Kontakt</a>
+  <a href="tel:+48731554341" style="color:#f5a623;margin-top:8px">+48 731 554 341</a>
+</div>
+
 
 <!-- HERO -->
 <!-- ZDJĘCIE HERO: Wstaw prawdziwe zdjęcie Kołobrzegu (latarnia, molo, plaża) zmieniając URL w .hero-bg -->
@@ -287,12 +482,12 @@ footer{background:var(--navy);padding:32px 0}
     </div>
   </div>
   <div class="tw" id="tw"><div class="tr" id="tr">
-    <div class="oc"><div class="oth"><img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80&fit=crop&h=340" alt="" loading="lazy"><div class="ob" style="background:#1a4fa0">NA WYŁĄCZNOŚCI</div><div class="or">IVST-MS-155</div></div><div class="obd"><div class="oti">Mieszkanie na sprzedaż</div><div class="olo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0 M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z"/></svg> Kołobrzeg, os. Pomorskie</div><div class="ode"><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M4 4h6v8h-6z M14 4h6v5h-6z M14 13h6v7h-6z M4 16h6v4h-6z"/></svg> 2 pokoje</div><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M17 3l4 4l-14 14l-4 -4z M16 7l-1.5 -1.5 M19 10l-1.5 -1.5"/></svg> 52 m²</div><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M5 21v-14a2 2 0 0 1 2 -2h3a2 2 0 0 1 2 2v2h3a2 2 0 0 1 2 2v2h2a2 2 0 0 1 2 2v6"/></svg> 3 p.</div></div><div class="opr"><div class="opm">410 000 zł</div><div class="osq">7 884 zł/m²</div></div></div></div>
-    <div class="oc"><div class="oth"><img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&q=80&fit=crop&h=340" alt="" loading="lazy"><div class="ob" style="background:#10b981">BEZ PROWIZJI</div></div><div class="obd"><div class="oti">Apartament nad morzem</div><div class="olo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0 M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z"/></svg> Dźwirzyno, przy plaży</div><div class="ode"><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M4 4h6v8h-6z M14 4h6v5h-6z M14 13h6v7h-6z M4 16h6v4h-6z"/></svg> 2 pokoje</div><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M17 3l4 4l-14 14l-4 -4z M16 7l-1.5 -1.5 M19 10l-1.5 -1.5"/></svg> 38 m²</div><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M2 6c.6 .5 1.2 1 2.5 1c2.5 0 2.5 -2 5 -2s2.5 2 5 2s2.5 -2 5 -2c1.3 0 1.9 .5 2.5 1 M2 12c.6 .5 1.2 1 2.5 1c2.5 0 2.5 -2 5 -2s2.5 2 5 2s2.5 -2 5 -2c1.3 0 1.9 .5 2.5 1 M2 18c.6 .5 1.2 1 2.5 1c2.5 0 2.5 -2 5 -2s2.5 2 5 2s2.5 -2 5 -2c1.3 0 1.9 .5 2.5 1"/></svg> 200m morze</div></div><div class="opr"><div class="opm">549 000 zł</div><div class="osq">14 447 zł/m²</div></div></div></div>
-    <div class="oc"><div class="oth"><img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&q=80&fit=crop&h=340" alt="" loading="lazy"><div class="ob" style="background:#f5a623">NOWE</div></div><div class="obd"><div class="oti">Dom wolnostojący</div><div class="olo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0 M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z"/></svg> Mielno, cicha ulica</div><div class="ode"><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M4 4h6v8h-6z M14 4h6v5h-6z M14 13h6v7h-6z M4 16h6v4h-6z"/></svg> 5 pokoi</div><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M17 3l4 4l-14 14l-4 -4z M16 7l-1.5 -1.5 M19 10l-1.5 -1.5"/></svg> 140 m²</div><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M9 3v7 M12 17c0 -3.3 -3 -5 -3 -7 M15 17c0 -3.3 3 -5 3 -7 M12 21v-12 M9 3c2 0 3 1 3 4 M15 3c-2 0 -3 1 -3 4"/></svg> 600 m²</div></div><div class="opr"><div class="opm">1 190 000 zł</div><div class="osq">8 500 zł/m²</div></div></div></div>
-    <div class="oc"><div class="oth"><img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&q=80&fit=crop&h=340" alt="" loading="lazy"><div class="ob" style="background:#1a4fa0">NA WYŁĄCZNOŚCI</div></div><div class="obd"><div class="oti">Mieszkanie z tarasem</div><div class="olo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0 M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z"/></svg> Kołobrzeg, centrum</div><div class="ode"><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M4 4h6v8h-6z M14 4h6v5h-6z M14 13h6v7h-6z M4 16h6v4h-6z"/></svg> 3 pokoje</div><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M17 3l4 4l-14 14l-4 -4z M16 7l-1.5 -1.5 M19 10l-1.5 -1.5"/></svg> 68 m²</div><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M5 21v-14a2 2 0 0 1 2 -2h3a2 2 0 0 1 2 2v2h3a2 2 0 0 1 2 2v2h2a2 2 0 0 1 2 2v6"/></svg> 5 p.</div></div><div class="opr"><div class="opm">620 000 zł</div><div class="osq">9 117 zł/m²</div></div></div></div>
-    <div class="oc"><div class="oth"><img src="https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?w=600&q=80&fit=crop&h=340" alt="" loading="lazy"><div class="ob" style="background:#ef4444">CENA ↓</div></div><div class="obd"><div class="oti">Kawalerka inwestycyjna</div><div class="olo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0 M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z"/></svg> Kołobrzeg, os. Lęborska</div><div class="ode"><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M4 4h6v8h-6z M14 4h6v5h-6z M14 13h6v7h-6z M4 16h6v4h-6z"/></svg> 1 pokój</div><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M17 3l4 4l-14 14l-4 -4z M16 7l-1.5 -1.5 M19 10l-1.5 -1.5"/></svg> 28 m²</div><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M5 21v-14a2 2 0 0 1 2 -2h3a2 2 0 0 1 2 2v2h3a2 2 0 0 1 2 2v2h2a2 2 0 0 1 2 2v6"/></svg> 2 p.</div></div><div class="opr"><div class="opm">189 000 zł</div><div class="osq">6 750 zł/m²</div></div></div></div>
-    <div class="oc"><div class="oth"><img src="https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?w=600&q=80&fit=crop&h=340" alt="" loading="lazy"><div class="ob" style="background:#8b5cf6">DZIAŁKA</div></div><div class="obd"><div class="oti">Działka budowlana</div><div class="olo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0 M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z"/></svg> Kołobrzeg, Podczele</div><div class="ode"><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M17 3l4 4l-14 14l-4 -4z M16 7l-1.5 -1.5 M19 10l-1.5 -1.5"/></svg> 800 m²</div><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M5 12l5 5l10 -10"/></svg> media</div><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M4 19v.01 M8 3l-4 10.5v.5h16v-.5l-4 -10.5z M8 3h8 M16 6h-10 M8 16h4"/></svg> droga</div></div><div class="opr"><div class="opm">165 000 zł</div><div class="osq">206 zł/m²</div></div></div></div>
+    <div class="oc"><div class="oth"><img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80&fit=crop&h=340" alt="Nieruchomość na sprzedaż Kołobrzeg" loading="lazy"><div class="ob" style="background:#1a4fa0">NA WYŁĄCZNOŚCI</div><div class="or">IVST-MS-155</div></div><div class="obd"><div class="oti">Mieszkanie na sprzedaż</div><div class="olo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0 M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z"/></svg> Kołobrzeg, os. Pomorskie</div><div class="ode"><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M4 4h6v8h-6z M14 4h6v5h-6z M14 13h6v7h-6z M4 16h6v4h-6z"/></svg> 2 pokoje</div><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M17 3l4 4l-14 14l-4 -4z M16 7l-1.5 -1.5 M19 10l-1.5 -1.5"/></svg> 52 m²</div><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M5 21v-14a2 2 0 0 1 2 -2h3a2 2 0 0 1 2 2v2h3a2 2 0 0 1 2 2v2h2a2 2 0 0 1 2 2v6"/></svg> 3 p.</div></div><div class="opr"><div class="opm">410 000 zł</div><div class="osq">7 884 zł/m²</div></div></div></div>
+    <div class="oc"><div class="oth"><img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&q=80&fit=crop&h=340" alt="Nieruchomość na sprzedaż Kołobrzeg" loading="lazy"><div class="ob" style="background:#10b981">BEZ PROWIZJI</div></div><div class="obd"><div class="oti">Apartament nad morzem</div><div class="olo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0 M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z"/></svg> Dźwirzyno, przy plaży</div><div class="ode"><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M4 4h6v8h-6z M14 4h6v5h-6z M14 13h6v7h-6z M4 16h6v4h-6z"/></svg> 2 pokoje</div><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M17 3l4 4l-14 14l-4 -4z M16 7l-1.5 -1.5 M19 10l-1.5 -1.5"/></svg> 38 m²</div><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M2 6c.6 .5 1.2 1 2.5 1c2.5 0 2.5 -2 5 -2s2.5 2 5 2s2.5 -2 5 -2c1.3 0 1.9 .5 2.5 1 M2 12c.6 .5 1.2 1 2.5 1c2.5 0 2.5 -2 5 -2s2.5 2 5 2s2.5 -2 5 -2c1.3 0 1.9 .5 2.5 1 M2 18c.6 .5 1.2 1 2.5 1c2.5 0 2.5 -2 5 -2s2.5 2 5 2s2.5 -2 5 -2c1.3 0 1.9 .5 2.5 1"/></svg> 200m morze</div></div><div class="opr"><div class="opm">549 000 zł</div><div class="osq">14 447 zł/m²</div></div></div></div>
+    <div class="oc"><div class="oth"><img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&q=80&fit=crop&h=340" alt="Nieruchomość na sprzedaż Kołobrzeg" loading="lazy"><div class="ob" style="background:#f5a623">NOWE</div></div><div class="obd"><div class="oti">Dom wolnostojący</div><div class="olo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0 M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z"/></svg> Mielno, cicha ulica</div><div class="ode"><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M4 4h6v8h-6z M14 4h6v5h-6z M14 13h6v7h-6z M4 16h6v4h-6z"/></svg> 5 pokoi</div><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M17 3l4 4l-14 14l-4 -4z M16 7l-1.5 -1.5 M19 10l-1.5 -1.5"/></svg> 140 m²</div><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M9 3v7 M12 17c0 -3.3 -3 -5 -3 -7 M15 17c0 -3.3 3 -5 3 -7 M12 21v-12 M9 3c2 0 3 1 3 4 M15 3c-2 0 -3 1 -3 4"/></svg> 600 m²</div></div><div class="opr"><div class="opm">1 190 000 zł</div><div class="osq">8 500 zł/m²</div></div></div></div>
+    <div class="oc"><div class="oth"><img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&q=80&fit=crop&h=340" alt="Nieruchomość na sprzedaż Kołobrzeg" loading="lazy"><div class="ob" style="background:#1a4fa0">NA WYŁĄCZNOŚCI</div></div><div class="obd"><div class="oti">Mieszkanie z tarasem</div><div class="olo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0 M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z"/></svg> Kołobrzeg, centrum</div><div class="ode"><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M4 4h6v8h-6z M14 4h6v5h-6z M14 13h6v7h-6z M4 16h6v4h-6z"/></svg> 3 pokoje</div><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M17 3l4 4l-14 14l-4 -4z M16 7l-1.5 -1.5 M19 10l-1.5 -1.5"/></svg> 68 m²</div><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M5 21v-14a2 2 0 0 1 2 -2h3a2 2 0 0 1 2 2v2h3a2 2 0 0 1 2 2v2h2a2 2 0 0 1 2 2v6"/></svg> 5 p.</div></div><div class="opr"><div class="opm">620 000 zł</div><div class="osq">9 117 zł/m²</div></div></div></div>
+    <div class="oc"><div class="oth"><img src="https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?w=600&q=80&fit=crop&h=340" alt="Nieruchomość na sprzedaż Kołobrzeg" loading="lazy"><div class="ob" style="background:#ef4444">CENA ↓</div></div><div class="obd"><div class="oti">Kawalerka inwestycyjna</div><div class="olo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0 M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z"/></svg> Kołobrzeg, os. Lęborska</div><div class="ode"><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M4 4h6v8h-6z M14 4h6v5h-6z M14 13h6v7h-6z M4 16h6v4h-6z"/></svg> 1 pokój</div><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M17 3l4 4l-14 14l-4 -4z M16 7l-1.5 -1.5 M19 10l-1.5 -1.5"/></svg> 28 m²</div><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M5 21v-14a2 2 0 0 1 2 -2h3a2 2 0 0 1 2 2v2h3a2 2 0 0 1 2 2v2h2a2 2 0 0 1 2 2v6"/></svg> 2 p.</div></div><div class="opr"><div class="opm">189 000 zł</div><div class="osq">6 750 zł/m²</div></div></div></div>
+    <div class="oc"><div class="oth"><img src="https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?w=600&q=80&fit=crop&h=340" alt="Nieruchomość na sprzedaż Kołobrzeg" loading="lazy"><div class="ob" style="background:#8b5cf6">DZIAŁKA</div></div><div class="obd"><div class="oti">Działka budowlana</div><div class="olo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0 M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z"/></svg> Kołobrzeg, Podczele</div><div class="ode"><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M17 3l4 4l-14 14l-4 -4z M16 7l-1.5 -1.5 M19 10l-1.5 -1.5"/></svg> 800 m²</div><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M5 12l5 5l10 -10"/></svg> media</div><div class="od"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;flex-shrink:0;"><path stroke="#6b7280" d="M4 19v.01 M8 3l-4 10.5v.5h16v-.5l-4 -10.5z M8 3h8 M16 6h-10 M8 16h4"/></svg> droga</div></div><div class="opr"><div class="opm">165 000 zł</div><div class="osq">206 zł/m²</div></div></div></div>
   </div></div>
   <div class="cdts" id="dots"><div class="cdt on" onclick="go(0)"></div><div class="cdt" onclick="go(1)"></div><div class="cdt" onclick="go(2)"></div><div class="cdt" onclick="go(3)"></div></div>
 </div></section>
@@ -300,7 +495,7 @@ footer{background:var(--navy);padding:32px 0}
 <!-- O NAS -->
 <section class="sec"><div class="con"><div class="abin">
   <div class="abimg">
-    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80&fit=crop&h=600" alt="Biuro InvestRent">
+    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80&fit=crop&h=600" alt="Biuro nieruchomości InvestRent w Kołobrzegu">
     <div class="abbadge">
       <div class="abic"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;display:inline-block;vertical-align:-3px;flex-shrink:0;"><path stroke="white" d="M8 21l8 0 M12 17v4 M7 4h-3 M17 4h3 M18 9a6 6 0 0 1 -6 6a6 6 0 0 1 -6 -6v-5h12v5 M4 9c-.175 1.358 .896 2.103 1.5 2.5 M20 9c.175 1.358 -.896 2.103 -1.5 2.5"/></svg></div>
       <div><div style="font-family:var(--mont);font-weight:800;font-size:16px;color:#111827">Nr 1</div><div style="font-size:12px;color:var(--gray)">biuro nad Bałtykiem</div></div>
@@ -469,7 +664,9 @@ footer{background:var(--navy);padding:32px 0}
 
 <script>
 // ===== OFFERS CAROUSEL =====
-var cur=0,max=3,tmr;
+var cur=0,tmr;
+function getMax(){return window.innerWidth<=640?5:3;}
+var max=getMax();
 function cw(){var c=document.querySelector('.oc');return c?c.offsetWidth+22:0}
 function go(n){cur=Math.max(0,Math.min(n,max));document.getElementById('tr').style.transform='translateX(-'+(cur*cw())+'px)';document.querySelectorAll('.cdt').forEach(function(d,i){d.classList.toggle('on',i===cur)})}
 function next(){go(cur>=max?0:cur+1)}
@@ -477,7 +674,7 @@ function sta(){tmr=setInterval(next,4500)}
 function sto(){clearInterval(tmr)}
 document.getElementById('tw').addEventListener('mouseenter',sto);
 document.getElementById('tw').addEventListener('mouseleave',sta);
-window.addEventListener('resize',function(){go(cur)});
+window.addEventListener('resize',function(){max=getMax();go(0)});
 sta();
 function switchTab(el){document.querySelectorAll('.otab').forEach(function(t){t.classList.remove('on')});el.classList.add('on');go(0)}
 var sx=0;
@@ -485,11 +682,15 @@ document.getElementById('tw').addEventListener('touchstart',function(e){sx=e.tou
 document.getElementById('tw').addEventListener('touchend',function(e){var d=sx-e.changedTouches[0].clientX;if(Math.abs(d)>50)d>0?next():go(cur-1)});
 
 // ===== TEAM CAROUSEL =====
-var teamCur=0,teamMax=1,teamTmr;
+var teamCur=0,teamTmr;
+function getTeamMax(){return window.innerWidth<=640?5:1;}
+var teamMax=getTeamMax();
 function tcw(){var c=document.querySelector('.tc');return c?c.offsetWidth+22:0}
 function teamGo(n){
   teamCur=Math.max(0,Math.min(n,teamMax));
-  document.getElementById('teamTrack').style.transform='translateX(-'+(teamCur*tcw()*3)+'px)';
+  var isMobile=window.innerWidth<=640;
+  var perView=isMobile?1:3;
+  document.getElementById('teamTrack').style.transform='translateX(-'+(teamCur*tcw()*perView)+'px)';
   document.querySelectorAll('.tdot').forEach(function(d,i){d.classList.toggle('on',i===teamCur)});
   document.getElementById('teamPrev').style.opacity=teamCur===0?'.4':'1';
   document.getElementById('teamNext').style.opacity=teamCur===teamMax?'.4':'1';
@@ -502,7 +703,7 @@ function teamSta(){teamTmr=setInterval(teamNext,5000)}
 function teamSto(){clearInterval(teamTmr)}
 document.getElementById('teamWrap').addEventListener('mouseenter',teamSto);
 document.getElementById('teamWrap').addEventListener('mouseleave',teamSta);
-window.addEventListener('resize',function(){teamGo(teamCur)});
+window.addEventListener('resize',function(){teamMax=getTeamMax();teamGo(0)});
 teamGo(0); teamSta();
 </script>
 </body>
