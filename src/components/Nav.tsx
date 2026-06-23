@@ -39,12 +39,12 @@ export default function Nav({ office }: { office: Office | null }) {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <a href="#" style={{ display: 'flex', alignItems: 'center', gap: 12, textDecoration: 'none' }}>
               {office?.logo_url ? (
-                <div style={{ background: 'white', borderRadius: 8, padding: '5px 11px', display: 'inline-flex' }}>
+                <div style={{ background: 'white', borderRadius: 9, padding: '6px 14px', display: 'inline-flex' }}>
                   <Image src={office.logo_url} alt={office.name ?? 'InvestRent'}
-                    width={120} height={36} style={{ height: 36, width: 'auto', objectFit: 'contain' }} />
+                    width={140} height={42} style={{ height: 42, width: 'auto', objectFit: 'contain' }} />
                 </div>
               ) : (
-                <div style={{ background: 'white', borderRadius: 8, padding: '5px 11px' }}>
+                <div style={{ background: 'white', borderRadius: 9, padding: '6px 14px' }}>
                   <span style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 900, color: '#0d2a5c', fontSize: 15, letterSpacing: '.5px' }}>INVEST RENT</span>
                 </div>
               )}
