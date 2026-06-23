@@ -1,4 +1,4 @@
-import { Search, DollarSign, KeyRound, Gavel, ArrowRight, BadgeCheck, PhoneCall } from 'lucide-react'
+import { Search, DollarSign, KeyRound, Gavel, ArrowRight, Award, Phone } from 'lucide-react'
 
 const SERVICES = [
   {
@@ -10,7 +10,7 @@ const SERVICES = [
   {
     icon: DollarSign, title: 'Sprzedaż nieruchomości',
     desc: 'Profesjonalne zdjęcia, ekspozycja na wszystkich portalach, aktywna sprzedaż. Sprzedajemy szybko i za dobrą cenę.',
-    link: 'Bezpłatna wycena', linkIcon: BadgeCheck, href: '#kontakt',
+    link: 'Bezpłatna wycena', linkIcon: Award, href: '#kontakt',
     bg: 'bg-amber-50', border: 'border-amber-200', iconBg: 'bg-gold', color: 'text-amber-600',
   },
   {
@@ -22,7 +22,7 @@ const SERVICES = [
   {
     icon: Gavel, title: 'Trudne nieruchomości i doradztwo',
     desc: 'Sprawy spadkowe, hipoteki, współwłasność. Pomagamy też z kredytami hipotecznymi i ubezpieczeniami.',
-    link: 'Zadzwoń — doradzimy', linkIcon: PhoneCall, href: 'tel:+48731554341',
+    link: 'Zadzwoń — doradzimy', linkIcon: Phone, href: 'tel:+48731554341',
     bg: 'bg-red-50', border: 'border-red-200', iconBg: 'bg-red-500', color: 'text-red-600',
   },
 ]
