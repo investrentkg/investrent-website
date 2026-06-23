@@ -66,7 +66,7 @@ export default function Team({ members }: Props) {
                     <div className="text-[11px] text-slate-400 mb-3">{m.specialization}</div>
                   )}
                   <span className={`text-[10px] font-bold px-3 py-1 rounded-md ${b.bg} ${b.text}`}>
-                    {m.label ?? b.label}
+                    {b.label}
                   </span>
                 </div>
               )
