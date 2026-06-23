@@ -11,51 +11,41 @@ import Team          from '@/components/Team'
 import Contact       from '@/components/Contact'
 import Footer        from '@/components/Footer'
 import FloatingWA    from '@/components/FloatingWA'
+import type { Office } from '@/types'
 
-// Schema.org structured data — LocalBusiness
-function JsonLd({ office }: { office: Awaited<ReturnType<typeof getOffice>> }) {
+function JsonLd({ office }: { office: Office | null }) {
   const schema = {
     "@context": "https://schema.org",
     "@type": "RealEstateAgent",
     "name": office?.name ?? "InvestRent Nieruchomości",
     "description": "Biuro nieruchomości w Kołobrzegu. Kupno, sprzedaż i wynajem nieruchomości nad Bałtykiem.",
-    "url": "https://www.investrent.com.pl",
+    "url": "https://investrent-website-production.up.railway.app",
     "telephone": office?.phone ?? "+48731554341",
     "email": office?.email ?? "biuro@investrent.com.pl",
-    "image": "https://www.investrent.com.pl/hero.jpg",
-    "priceRange": "$$",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": office?.address ?? "ul. Twoja Ulica 1",
       "addressLocality": "Kołobrzeg",
       "postalCode": "78-100",
       "addressRegion": "Zachodniopomorskie",
       "addressCountry": "PL"
     },
-    "geo": {
-      "@type": "GeoCoordinates",
-      "latitude": 54.1776,
-      "longitude": 15.5734
-    },
-    "openingHoursSpecification": [
-      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"], "opens": "08:00", "closes": "18:00" },
-      { "@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "09:00", "closes": "14:00" }
-    ],
-    "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "127" },
-    "areaServed": [
-      { "@type": "City", "name": "Kołobrzeg" },
-      { "@type": "City", "name": "Mielno" },
-      { "@type": "City", "name": "Dźwirzyno" }
-    ]
+    "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "127" }
   }
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+}
 
-  return (
-    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
-  )
+// Fallback office gdy API niedostępne
+const FALLBACK_OFFICE: Office = {
+  name: 'InvestRent Nieruchomości',
+  logo_url: '/logo.png',
+  address: 'ul. Twoja Ulica 1, 78-100 Kołobrzeg',
+  phone: '+48 731 554 341',
+  email: 'biuro@investrent.com.pl',
+  website: null,
+  working_hours: null,
 }
 
 export default async function Home() {
-  // Równoległe zapytania do API — szybciej niż sekwencyjne
   const [offersData, teamData, officeData, statsData] = await Promise.all([
     getPublicOffers({ limit: 6, tab: 'new' }),
     getTeam(),
@@ -63,10 +53,12 @@ export default async function Home() {
     getStats(),
   ])
 
+  const office = officeData ?? FALLBACK_OFFICE
+
   return (
     <>
-      <JsonLd office={officeData} />
-      <Nav           office={officeData} />
+      <JsonLd office={office} />
+      <Nav           office={office} />
       <Hero          stats={statsData} />
       <CallbackStrip />
       <OffersSection initialOffers={offersData} />
@@ -75,8 +67,8 @@ export default async function Home() {
       <ValuationCTA />
       <Reviews />
       <Team          members={teamData?.data ?? []} />
-      <Contact       office={officeData} />
-      <Footer        office={officeData} />
+      <Contact       office={office} />
+      <Footer        office={office} />
       <FloatingWA />
     </>
   )
