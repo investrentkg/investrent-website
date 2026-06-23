@@ -1,6 +1,5 @@
 "use client"
 import { useState, useEffect } from 'react'
-import Image from 'next/image'
 import { Phone, Menu, X } from 'lucide-react'
 import type { Office } from '@/types'
 
@@ -40,8 +39,9 @@ export default function Nav({ office }: { office: Office | null }) {
             <a href="#" style={{ display: 'flex', alignItems: 'center', gap: 12, textDecoration: 'none' }}>
               {office?.logo_url ? (
                 <div style={{ background: 'white', borderRadius: 9, padding: '6px 14px', display: 'inline-flex' }}>
-                  <Image src={office.logo_url} alt={office.name ?? 'InvestRent'}
-                    width={140} height={42} style={{ height: 42, width: 'auto', objectFit: 'contain' }} />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={office.logo_url} alt={office.name ?? 'InvestRent'}
+                    style={{ height: 42, width: 'auto', objectFit: 'contain' }} />
                 </div>
               ) : (
                 <div style={{ background: 'white', borderRadius: 9, padding: '6px 14px' }}>
