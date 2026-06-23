@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import { MapPin, ShieldCheck, Clock, Trophy } from 'lucide-react'
 
 const POINTS = [
@@ -18,12 +17,11 @@ export default function About() {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '72px', alignItems: 'center' }}
           className="about-grid">
           <div style={{ borderRadius: 18, overflow: 'hidden', position: 'relative' }}>
-            <Image
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
               src={ABOUT_FALLBACK}
               alt="Biuro nieruchomości InvestRent w Kołobrzegu"
-              width={600} height={500}
-              className="w-full object-cover"
-              style={{ height: 500, objectFit: 'cover', display: 'block', width: '100%' }}
+              style={{ width: '100%', height: 500, objectFit: 'cover', display: 'block' }}
             />
             <div style={{
               position: 'absolute', bottom: 24, left: 24,
