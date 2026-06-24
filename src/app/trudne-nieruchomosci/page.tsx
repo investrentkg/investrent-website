@@ -71,7 +71,7 @@ export default async function TrudneNieruchomosciPage() {
         <div style={{ background: 'linear-gradient(135deg, #1e1b4b, #4338ca)', padding: '56px 0 48px', position: 'relative', overflow: 'hidden' }}>
           <div style={{ position: 'absolute', top: -80, right: -80, width: 320, height: 320, borderRadius: '50%', border: '1.5px solid rgba(255,255,255,.06)' }} />
           <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-            <Breadcrumb crumbs={[{ label: 'Strona główna', href: '/' }, { label: 'Trudne nieruchomości' }]} />
+            <Breadcrumb light={true} crumbs={[{ label: 'Strona główna', href: '/' }, { label: 'Trudne nieruchomości' }]} />
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '4px 14px', borderRadius: 100, background: 'rgba(255,255,255,.15)', color: 'white', fontSize: 11, fontWeight: 700, letterSpacing: '.5px', textTransform: 'uppercase' as const, marginBottom: 18 }}>
               <Gavel size={12} /> Specjalistyczne doradztwo
             </div>
