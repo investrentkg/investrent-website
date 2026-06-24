@@ -40,10 +40,10 @@ export default function Hero({ stats }: HeroProps) {
               Bezpiecznie, skutecznie i bez stresu — od pierwszego kontaktu po klucze.
             </p>
             <div className="flex gap-3 mb-8 flex-wrap">
-              <a href="#oferty" className="btn-gold text-[14px] font-bold">
+              <a href="/oferty" className="btn-gold text-[14px] font-bold">
                 <Search size={17} /> Szukam nieruchomości
               </a>
-              <a href="#kontakt"
+              <a href="/kontakt"
                 className="inline-flex items-center gap-2 bg-white/12 text-white font-semibold text-[14px] px-7 py-3.5 rounded-xl border border-white/28 hover:bg-white/18 transition-all">
                 Chcę sprzedać
               </a>
@@ -84,7 +84,7 @@ export default function Hero({ stats }: HeroProps) {
             <div className="flex items-center gap-2 bg-white/95 rounded-xl px-4 py-3 mb-2.5 text-[13px] text-slate-400">
               Lokalizacja — np. Kołobrzeg, Mielno…
             </div>
-            <a href="#oferty" className="btn-gold w-full justify-center text-[14px]">
+            <a href="/oferty" className="btn-gold w-full justify-center text-[14px]">
               <Search size={16} /> Szukaj ofert
             </a>
             <p className="text-white/40 text-[11px] text-center mt-2">lub zadzwoń — oddzwonimy do 60 min</p>
