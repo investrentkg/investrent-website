@@ -29,7 +29,7 @@ export default async function OffersPage({ searchParams }: { searchParams: { [k:
       <main>
         <div style={{ background: 'linear-gradient(135deg, #0d2a5c, #1a4fa0)', padding: '40px 0 32px' }}>
           <div className="container">
-            <Breadcrumb crumbs={[{ label: 'Strona glowna', href: '/' }, { label: 'Oferty' }]} />
+            <Breadcrumb light={true} crumbs={[{ label: 'Strona glowna', href: '/' }, { label: 'Oferty' }]} />
             <h1 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 36, color: 'white', letterSpacing: '-1px', marginBottom: 8 }}>{title}</h1>
             <p style={{ color: 'rgba(255,255,255,.7)', fontSize: 15 }}>Kolobrzeg, Mielno, Dzwirzyno i okolice Baltyku</p>
           </div>
