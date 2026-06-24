@@ -9,64 +9,45 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Trudne nieruchomości i doradztwo | InvestRent Kołobrzeg',
-  description: 'Sprawy spadkowe, hipoteki, współwłasność, licytacje komornicze. Pomagamy rozwiązać skomplikowane sprawy nieruchomości. Kołobrzeg.',
+  description: 'Sprawy spadkowe, hipoteki, współwłasność, licytacje komornicze. Pomagamy rozwiązać skomplikowane sprawy nieruchomości w Kołobrzegu.',
 }
 
-const FALLBACK_OFFICE = { name: 'InvestRent', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
+const FALLBACK_OFFICE = {
+  name: 'InvestRent', logo_url: '/logo.png',
+  address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg',
+  phone: '+48 731 554 341', email: 'biuro@investrent.com.pl',
+  website: null, working_hours: null,
+}
 
 const CASES = [
-  {
-    icon: Scale,
-    title: 'Sprawy spadkowe',
-    desc: 'Dziedziczysz nieruchomość i nie wiesz co z nią zrobić? Pomagamy w sprzedaży lub podziale nieruchomości między spadkobierców. Współpracujemy z notariuszami i prawnikami specjalizującymi się w prawie spadkowym.',
-    tags: ['Dział spadku', 'Sprzedaż po śmierci właściciela', 'Podział majątku'],
-  },
-  {
-    icon: Building,
-    title: 'Współwłasność',
-    desc: 'Jesteś współwłaścicielem nieruchomości z osobą, z którą trudno się porozumieć? Pomagamy w negocjacjach, sprzedaży udziałów lub zniesieni eniu współwłasności — bez zbędnych konfliktów.',
-    tags: ['Sprzedaż udziałów', 'Zniesienie współwłasności', 'Negocjacje'],
-  },
-  {
-    icon: FileWarning,
-    title: 'Hipoteka i obciążenia',
-    desc: 'Nieruchomość z kredytem hipotecznym, służebnością lub innym obciążeniem? Wiemy jak przeprowadzić sprzedaż tak, żeby wszystkie strony były zabezpieczone prawnie.',
-    tags: ['Sprzedaż z hipoteką', 'Służebności', 'Zaległości czynszowe'],
-  },
-  {
-    icon: Gavel,
-    title: 'Licytacje komornicze',
-    desc: 'Szukasz okazji w licytacjach lub chcesz sprzedać nieruchomość przed licytacją? Znamy procedury, pomagamy kupującym i sprzedającym w najtrudniejszych sytuacjach.',
-    tags: ['Zakup na licytacji', 'Sprzedaż przed egzekucją', 'Doradztwo'],
-  },
-  {
-    icon: Users,
-    title: 'Rozwód i podział majątku',
-    desc: 'Podział wspólnej nieruchomości po rozstaniu to jeden z najtrudniejszych procesów. Działamy dyskretnie, pomagamy znaleźć rozwiązanie satysfakcjonujące obie strony.',
-    tags: ['Podział majątku', 'Sprzedaż za zgodą obu stron', 'Dyskrecja'],
-  },
-  {
-    icon: CreditCard,
-    title: 'Kredyt hipoteczny i doradztwo finansowe',
-    desc: 'Potrzebujesz kredytu na zakup nieruchomości? Współpracujemy z doradcami kredytowymi i pomagamy wybrać najlepszą ofertę. Również dla osób z historią kredytową.',
-    tags: ['Kredyt hipoteczny', 'Ubezpieczenie nieruchomości', 'Doradztwo'],
-  },
+  { icon: Scale,       title: 'Sprawy spadkowe',         desc: 'Dziedziczysz nieruchomość i nie wiesz co z nią zrobić? Pomagamy w sprzedaży lub podziale między spadkobierców. Współpracujemy z notariuszami specjalizującymi się w prawie spadkowym.',   tags: ['Dział spadku', 'Sprzedaż po śmierci', 'Podział majątku'] },
+  { icon: Building,    title: 'Współwłasność',            desc: 'Jesteś współwłaścicielem nieruchomości z osobą, z którą trudno się porozumieć? Pomagamy w negocjacjach, sprzedaży udziałów lub zniesieniu współwłasności.',                              tags: ['Sprzedaż udziałów', 'Zniesienie współwłasności', 'Negocjacje'] },
+  { icon: FileWarning, title: 'Hipoteka i obciążenia',    desc: 'Nieruchomość z kredytem hipotecznym, służebnością lub innym obciążeniem? Wiemy jak przeprowadzić sprzedaż tak, żeby wszystkie strony były zabezpieczone prawnie.',                       tags: ['Sprzedaż z hipoteką', 'Służebności', 'Zaległości'] },
+  { icon: Gavel,       title: 'Licytacje komornicze',     desc: 'Szukasz okazji w licytacjach lub chcesz sprzedać przed licytacją? Znamy procedury, pomagamy kupującym i sprzedającym w najtrudniejszych sytuacjach.',                                   tags: ['Zakup na licytacji', 'Sprzedaż przed egzekucją', 'Doradztwo'] },
+  { icon: Users,       title: 'Rozwód i podział majątku', desc: 'Podział wspólnej nieruchomości po rozstaniu to jeden z najtrudniejszych procesów. Działamy dyskretnie, pomagamy znaleźć rozwiązanie satysfakcjonujące obie strony.',                    tags: ['Podział majątku', 'Sprzedaż za zgodą obu stron', 'Dyskrecja'] },
+  { icon: CreditCard,  title: 'Kredyt i doradztwo',       desc: 'Potrzebujesz kredytu na zakup? Współpracujemy z doradcami kredytowymi i pomagamy wybrać najlepszą ofertę. Również dla osób z trudniejszą historią kredytową.',                          tags: ['Kredyt hipoteczny', 'Ubezpieczenie', 'Doradztwo finansowe'] },
 ]
 
 const PROCESS = [
-  { n: '01', title: 'Bezpłatna konsultacja', desc: 'Zadzwoń lub napisz — opowiedz nam o swojej sytuacji. Pierwsza konsultacja jest całkowicie bezpłatna i bez zobowiązań.' },
+  { n: '01', title: 'Bezpłatna konsultacja',   desc: 'Zadzwoń lub napisz — opowiedz nam o swojej sytuacji. Pierwsza konsultacja jest całkowicie bezpłatna i bez zobowiązań.' },
   { n: '02', title: 'Analiza i plan działania', desc: 'Oceniamy sytuację prawną i finansową. Przygotowujemy konkretny plan rozwiązania problemu.' },
-  { n: '03', title: 'Działamy za Ciebie', desc: 'Negocjujemy, koordynujemy z prawnikami i notariuszami. Ty nie musisz zajmować się formalnościami.' },
-  { n: '04', title: 'Rozwiązanie', desc: 'Doprowadzamy sprawę do końca — sprzedaż, podział lub inne rozwiązanie. Pełna obsługa do ostatniego podpisu.' },
+  { n: '03', title: 'Działamy za Ciebie',       desc: 'Negocjujemy, koordynujemy z prawnikami i notariuszami. Ty nie musisz zajmować się formalnościami.' },
+  { n: '04', title: 'Rozwiązanie',              desc: 'Doprowadzamy sprawę do końca — sprzedaż, podział lub inne rozwiązanie. Pełna obsługa do ostatniego podpisu.' },
 ]
 
-export default async function TrudneNieruchomościPage() {
+export default async function TrudneNieruchomosciPage() {
   const officeData = await getOffice()
   const office = officeData ?? FALLBACK_OFFICE
+
   return (
     <>
       <Nav office={office} />
       <main>
+        <style>{`
+          .case-card { background: white; border-radius: 16px; padding: 28px; border: 1px solid #e5e7eb; transition: transform .2s, box-shadow .2s; }
+          .case-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(0,0,0,.08); }
+        `}</style>
+
         {/* Hero */}
         <div style={{ background: 'linear-gradient(135deg, #1e1b4b, #4338ca)', padding: '56px 0 48px', position: 'relative', overflow: 'hidden' }}>
           <div style={{ position: 'absolute', top: -80, right: -80, width: 320, height: 320, borderRadius: '50%', border: '1.5px solid rgba(255,255,255,.06)' }} />
@@ -75,11 +56,11 @@ export default async function TrudneNieruchomościPage() {
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '4px 14px', borderRadius: 100, background: 'rgba(255,255,255,.15)', color: 'white', fontSize: 11, fontWeight: 700, letterSpacing: '.5px', textTransform: 'uppercase' as const, marginBottom: 18 }}>
               <Gavel size={12} /> Specjalistyczne doradztwo
             </div>
-            <h1 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 42, color: 'white', letterSpacing: '-1px', lineHeight: 1.1, marginBottom: 16 }}>
+            <h1 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 44, color: 'white', letterSpacing: '-1.5px', lineHeight: 1.08, marginBottom: 18 }}>
               Trudne sprawy<br />to nasza specjalność
             </h1>
-            <p style={{ color: 'rgba(255,255,255,.8)', fontSize: 16, maxWidth: 560, lineHeight: 1.8, marginBottom: 32 }}>
-              Sprawy spadkowe, współwłasność, hipoteki, licytacje komornicze — pomagamy rozwiązać najtrudniejsze sytuacje nieruchomościowe. Dyskretnie, skutecznie i bez zbędnego stresu.
+            <p style={{ color: 'rgba(255,255,255,.85)', fontSize: 16, maxWidth: 560, lineHeight: 1.8, marginBottom: 32 }}>
+              Sprawy spadkowe, współwłasność, hipoteki, licytacje komornicze — pomagamy rozwiązać najtrudniejsze sytuacje nieruchomościowe. Dyskretnie i skutecznie.
             </p>
             <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' as const }}>
               <a href="#kontakt-trudne" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'white', color: '#4338ca', fontWeight: 800, fontSize: 15, padding: '14px 28px', borderRadius: 12, textDecoration: 'none' }}>
@@ -92,21 +73,19 @@ export default async function TrudneNieruchomościPage() {
           </div>
         </div>
 
-        {/* Cases grid */}
+        {/* Cases */}
         <div style={{ background: '#f8fafc', padding: '64px 0' }}>
           <div className="container">
             <div style={{ textAlign: 'center' as const, marginBottom: 48 }}>
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '4px 14px', borderRadius: 100, background: 'rgba(67,56,202,.08)', color: '#4338ca', fontSize: 11, fontWeight: 700, letterSpacing: '.5px', textTransform: 'uppercase' as const, marginBottom: 12 }}>Czym się zajmujemy</div>
               <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 32, color: '#0d2a5c', letterSpacing: '-.5px', marginBottom: 10 }}>Rozwiązujemy najtrudniejsze sprawy</h2>
-              <p style={{ color: '#6b7280', fontSize: 15, maxWidth: 560, margin: '0 auto', lineHeight: 1.75 }}>
-                Każda sytuacja jest inna. Nie ma sprawy zbyt skomplikowanej — mamy doświadczenie i kontakty, żeby doprowadzić ją do końca.
-              </p>
+              <p style={{ color: '#6b7280', fontSize: 15, maxWidth: 540, margin: '0 auto', lineHeight: 1.75 }}>Każda sytuacja jest inna. Nie ma sprawy zbyt skomplikowanej.</p>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 22 }}>
               {CASES.map(c => {
                 const Icon = c.icon
                 return (
-                  <div key={c.title} style={{ background: 'white', borderRadius: 16, padding: '28px', border: '1px solid #e5e7eb' }}}}>
+                  <div key={c.title} className="case-card">
                     <div style={{ width: 52, height: 52, background: 'linear-gradient(135deg, #4338ca, #1e1b4b)', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
                       <Icon size={24} color="white" />
                     </div>
@@ -124,22 +103,22 @@ export default async function TrudneNieruchomościPage() {
           </div>
         </div>
 
-        {/* Why us */}
+        {/* Dlaczego my */}
         <div style={{ background: 'white', padding: '56px 0' }}>
           <div className="container">
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'center' }}>
               <div>
                 <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 30, color: '#0d2a5c', marginBottom: 16 }}>Dlaczego warto nam zaufać?</h2>
                 <p style={{ fontSize: 14, color: '#6b7280', lineHeight: 1.8, marginBottom: 20 }}>
-                  Trudne sprawy wymagają doświadczenia, sieci kontaktów i umiejętności negocjacyjnych. Przez lata zbudowaliśmy relacje z prawnikami, notariuszami i innymi specjalistami — co pozwala nam rozwiązywać przypadki, z którymi inne agencje nie chcą się mierzyć.
+                  Trudne sprawy wymagają doświadczenia i sieci kontaktów. Przez lata zbudowaliśmy relacje z prawnikami, notariuszami i specjalistami — co pozwala rozwiązywać przypadki, z którymi inne agencje sobie nie radzą.
                 </p>
                 <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 12 }}>
                   {[
                     'Bezpłatna wstępna konsultacja — bez zobowiązań',
-                    'Sieć prawników i notariuszy specjalizujących się w sprawach nieruchomości',
+                    'Sieć prawników specjalizujących się w nieruchomościach',
                     'Dyskrecja i pełna poufność Twoich spraw',
                     'Działamy nawet przy skomplikowanych stanach prawnych',
-                    'Prowizja tylko od sukcesu — płacisz gdy sprawa jest rozwiązana',
+                    'Prowizja tylko od sukcesu',
                   ].map(w => (
                     <div key={w} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
                       <CheckCircle size={17} color="#10b981" style={{ flexShrink: 0, marginTop: 2 }} />
@@ -150,10 +129,10 @@ export default async function TrudneNieruchomościPage() {
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                 {[
-                  { val: '100%', label: 'Poufność', sub: 'Gwarancja dyskrecji' },
-                  { val: '0 zł', label: 'Konsultacja', sub: 'Pierwsza rozmowa gratis' },
-                  { val: '500+', label: 'Transakcji', sub: 'W tym trudne przypadki' },
-                  { val: '24h', label: 'Odpowiedź', sub: 'Na każde zapytanie' },
+                  { val: '100%', label: 'Poufność',     sub: 'Gwarancja dyskrecji' },
+                  { val: '0 zł', label: 'Konsultacja',  sub: 'Pierwsza rozmowa gratis' },
+                  { val: '500+', label: 'Transakcji',   sub: 'W tym trudne przypadki' },
+                  { val: '24h',  label: 'Odpowiedź',    sub: 'Na każde zapytanie' },
                 ].map(s => (
                   <div key={s.label} style={{ background: '#f8fafc', borderRadius: 14, padding: '24px', textAlign: 'center' as const, border: '1px solid #e5e7eb' }}>
                     <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 900, fontSize: 32, color: '#0d2a5c', marginBottom: 4 }}>{s.val}</div>
@@ -166,7 +145,7 @@ export default async function TrudneNieruchomościPage() {
           </div>
         </div>
 
-        {/* Process */}
+        {/* Proces */}
         <div style={{ background: '#f8fafc', padding: '56px 0' }}>
           <div className="container">
             <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 28, color: '#0d2a5c', textAlign: 'center' as const, marginBottom: 40 }}>Jak działamy</h2>
@@ -182,9 +161,7 @@ export default async function TrudneNieruchomościPage() {
           </div>
         </div>
 
-        <div id="kontakt-trudne">
-          <Contact office={office} />
-        </div>
+        <div id="kontakt-trudne"><Contact office={office} /></div>
       </main>
       <Footer office={office} />
       <FloatingWA />
