@@ -44,7 +44,7 @@ export default function Nav({ office }: { office: Office | null }) {
         <div className="container">
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
 
-            <a href="#" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 11 }}>
+            <a href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 11 }}>
               {/* Białe kontury domków bezpośrednio na granatowym tle */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={HOUSES_ICON} alt="InvestRent"
