@@ -60,7 +60,7 @@ const PROCESS = [
   { n: '04', title: 'Rozwiązanie', desc: 'Doprowadzamy sprawę do końca — sprzedaż, podział lub inne rozwiązanie. Pełna obsługa do ostatniego podpisu.' },
 ]
 
-export default async function TrudneNieruchomosciPage() {
+export default async function TrudneNieruchomościPage() {
   const officeData = await getOffice()
   const office = officeData ?? FALLBACK_OFFICE
   return (
