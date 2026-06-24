@@ -99,7 +99,7 @@ export default function Contact({ office }: { office: Office | null }) {
             {/* Map placeholder */}
             <div className="mt-7 rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 h-[200px] flex flex-col items-center justify-center gap-3 text-slate-400">
               <iframe
-                src="https://maps.google.com/maps?q=ul.+Ratuszowa+12+Kołobrzeg&output=embed&hl=pl&z=16"
+                src="https://maps.google.com/maps?q=54.1770073,15.5744432&output=embed&hl=pl&z=17"
                 width="100%" height="200" style={{border:0,display:'block'}}
                 allowFullScreen loading="lazy"
                 title="InvestRent — lokalizacja biura"
