@@ -23,9 +23,15 @@ interface Props { members: TeamMember[] }
 export default function Team({ members }: Props) {
   const [cur, setCur] = useState(0)
   const perView = 3
-  const maxSlide = Math.max(0, members.length - perView)
+  const maxSlide = Math.max(0, displayMembers.length - perView)
 
-  if (members.length === 0) return null
+  const FALLBACK_MEMBERS = [
+    { id: 'f1', full_name: 'Daniel', role: 'manager', avatar_url: null, phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', bio: 'Właściciel i założyciel InvestRent. Specjalista rynku nadmorskiego z wieloletnim doświadczeniem.', active_offers_count: 0 },
+    { id: 'f2', full_name: 'Weronika', role: 'agent', avatar_url: null, phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', bio: 'Agent nieruchomości specjalizująca się w mieszkaniach i apartamentach inwestycyjnych.', active_offers_count: 0 },
+    { id: 'f3', full_name: 'Marta Semak', role: 'agent', avatar_url: null, phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', bio: 'Ekspertka od transakcji kupna i sprzedaży. Doskonała znajomość lokalnego rynku.', active_offers_count: 0 },
+    { id: 'f4', full_name: 'Dagmara', role: 'agent', avatar_url: null, phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', bio: 'Specjalistka od obsługi po-sprzedażowej i trudnych nieruchomości.', active_offers_count: 0 },
+  ]
+  const displayMembers = members.length > 0 ? members : FALLBACK_MEMBERS
 
   return (
     <section id="zespol" className="section section-alt">
@@ -41,7 +47,7 @@ export default function Team({ members }: Props) {
         <div className="overflow-hidden">
           <div className="flex gap-5 transition-transform duration-500"
             style={{ transform: `translateX(-${cur * (100 / perView + 20 / members.length)}%)` }}>
-            {members.map((m, idx) => {
+            {displayMembers.map((m, idx) => {
               const b = BADGE_STYLE[m.role] ?? BADGE_STYLE.agent
               const grad = AVATAR_GRADIENT[idx % AVATAR_GRADIENT.length]
               return (
