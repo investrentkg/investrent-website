@@ -8,11 +8,11 @@ import { KeyRound, Shield, Clock, Star, ArrowRight } from 'lucide-react'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Wynajem nieruchomosci Kolobrzeg | InvestRent',
-  description: 'Mieszkania i lokale do wynajecia w Kolob rzegu. Sprawdz nasze oferty najmu.',
+  title: 'Wynajem nieruchomości Kołobrzeg | InvestRent',
+  description: 'Mieszkania i lokale do wynajęcia w Kołobrzegu. Sprawdź nasze oferty najmu.',
 }
 
-const FALLBACK_OFFICE = { name: 'InvestRent', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kolobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
+const FALLBACK_OFFICE = { name: 'InvestRent', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
 
 export default async function WynajemPage() {
   const [data, officeData] = await Promise.all([
@@ -26,30 +26,29 @@ export default async function WynajemPage() {
       <main>
         <div style={{ background: 'linear-gradient(135deg, #064e3b, #059669)', padding: '56px 0 48px' }}>
           <div className="container">
-            <Breadcrumb crumbs={[{ label: 'Strona glowna', href: '/' }, { label: 'Wynajem' }]} />
+            <Breadcrumb crumbs={[{ label: 'Strona główna', href: '/' }, { label: 'Wynajem' }]} />
             <h1 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 42, color: 'white', letterSpacing: '-1px', lineHeight: 1.1, marginBottom: 16 }}>
-              Znajdz mieszkanie<br />do wynajecia nad morzem
+              Znajdź mieszkanie<br />do wynajęcia nad morzem
             </h1>
-            <p style={{ color: 'rgba(255,255,255,.8)', fontSize: 16, maxWidth: 520, lineHeight: 1.8, marginBottom: 28 }}>
-              Mieszkania i lokale do wynajecia w Kolob rzegu i okolicach. Dlugoterminowy wynajem.
+            <p style={{ color: 'rgba(255,255,255,.85)', fontSize: 16, maxWidth: 520, lineHeight: 1.8, marginBottom: 28 }}>
+              Mieszkania, apartamenty i lokale do wynajęcia w Kołobrzegu i okolicach. Długoterminowy wynajem dla osób szukających stałego miejsca.
             </p>
             <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' as const }}>
-              {[{ icon: Shield, text: 'Zweryfikowane oferty' }, { icon: Clock, text: 'Szybki kontakt' }, { icon: Star, text: 'Bez ukrytych oplat' }].map(b => {
+              {[{ icon: Shield, text: 'Zweryfikowane oferty' }, { icon: Clock, text: 'Szybki kontakt' }, { icon: Star, text: 'Bez ukrytych opłat' }].map(b => {
                 const Icon = b.icon; return (
                   <div key={b.text} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <Icon size={16} color="rgba(255,255,255,.9)" />
-                    <span style={{ color: 'rgba(255,255,255,.8)', fontSize: 14 }}>{b.text}</span>
+                    <span style={{ color: 'rgba(255,255,255,.85)', fontSize: 14 }}>{b.text}</span>
                   </div>
                 )
               })}
             </div>
           </div>
         </div>
-
         <div style={{ background: '#f8fafc', padding: '32px 0 0' }}>
           <div className="container">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-              <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 24, color: '#0d2a5c' }}>Oferty do wynajecia</h2>
+              <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 24, color: '#0d2a5c' }}>Oferty do wynajęcia</h2>
               <a href="/oferty?transaction_type=wynajem" style={{ display: 'flex', alignItems: 'center', gap: 5, color: '#059669', fontWeight: 700, fontSize: 13, border: '1.5px solid #059669', padding: '8px 18px', borderRadius: 9, textDecoration: 'none' }}>
                 Wszystkie <ArrowRight size={14} />
               </a>
