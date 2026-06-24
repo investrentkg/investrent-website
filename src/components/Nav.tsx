@@ -45,25 +45,46 @@ export default function Nav({ office }: { office: Office | null }) {
         <div className="container">
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
 
-            {/* LOGO */}
-            <a href="#" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10 }}>
+            {/* LOGO — biały kwadrat z SAMĄ IKONKĄ + tekst obok */}
+            <a href="#" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 11 }}>
               <div style={{
-                background: 'white', borderRadius: 8,
-                width: 52, height: 52,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                overflow: 'hidden', flexShrink: 0,
+                background: 'white',
+                borderRadius: 9,
+                width: 52,
+                height: 52,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                padding: 6,
               }}>
+                {/* logo-icon.png = tylko ikonka domku, bez tekstu */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/logo.png" alt="InvestRent"
-                  style={{ width: 52, height: 52, objectFit: 'cover', objectPosition: 'top center' }} />
+                <img
+                  src="/logo-icon.png"
+                  alt="InvestRent"
+                  style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                />
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
-                <span style={{ fontFamily: 'var(--font-montserrat), Arial Black, sans-serif', fontWeight: 800, color: 'white', fontSize: 17, letterSpacing: '.5px' }}>INVEST RENT</span>
-                <span style={{ color: 'rgba(255,255,255,.5)', fontSize: 9, letterSpacing: '2px', textTransform: 'uppercase' as const, marginTop: 3 }}>NIERUCHOMOŚCI</span>
+                <span style={{
+                  fontFamily: 'var(--font-montserrat), Arial Black, sans-serif',
+                  fontWeight: 800,
+                  color: 'white',
+                  fontSize: 17,
+                  letterSpacing: '.5px',
+                }}>INVEST RENT</span>
+                <span style={{
+                  color: 'rgba(255,255,255,.45)',
+                  fontSize: 9,
+                  letterSpacing: '2px',
+                  textTransform: 'uppercase' as const,
+                  marginTop: 3,
+                }}>NIERUCHOMOŚCI</span>
               </div>
             </a>
 
-            {/* Desktop — widoczny tylko >= 1024px (CSS media query) */}
+            {/* Desktop */}
             <div className="nav-desktop">
               {links.map(l => (
                 <a key={l.label} href={l.href}
@@ -77,7 +98,7 @@ export default function Nav({ office }: { office: Office | null }) {
               </a>
             </div>
 
-            {/* Mobile — widoczny tylko < 1024px (CSS media query) */}
+            {/* Mobile */}
             <div className="nav-mobile" style={{ alignItems: 'center', gap: 10 }}>
               <a href={`tel:${phone.replace(/\s/g, '')}`}
                 style={{ background: '#f5a623', color: 'white', fontSize: 12, fontWeight: 700, padding: '8px 12px', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 6, textDecoration: 'none' }}>
