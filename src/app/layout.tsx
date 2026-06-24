@@ -17,6 +17,10 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+  },
   title: 'InvestRent Nieruchomości Kołobrzeg | Kupno, Sprzedaż, Wynajem nad Bałtykiem',
   description: 'Biuro nieruchomości Kołobrzeg. Kupno, sprzedaż i wynajem mieszkań nad Bałtykiem. Odpowiadamy do 60 minut. Bezpłatna wycena nieruchomości.',
   keywords: ['nieruchomości Kołobrzeg', 'mieszkania Kołobrzeg', 'kupno sprzedaż wynajem', 'biuro nieruchomości', 'apartamenty Bałtyk'],
