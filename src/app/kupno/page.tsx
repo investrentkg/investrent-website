@@ -33,7 +33,7 @@ export default async function KupnoPage() {
       <main>
         <div style={{ background: 'linear-gradient(135deg, #0d2a5c, #1a4fa0)', padding: '56px 0 48px' }}>
           <div className="container">
-            <Breadcrumb crumbs={[{ label: 'Strona główna', href: '/' }, { label: 'Kupno' }]} />
+            <Breadcrumb light={true} crumbs={[{ label: 'Strona główna', href: '/' }, { label: 'Kupno' }]} />
             <h1 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 42, color: 'white', letterSpacing: '-1px', lineHeight: 1.1, marginBottom: 16 }}>
               Znajdź wymarzoną<br />nieruchomość nad Bałtykiem
             </h1>
