@@ -106,9 +106,7 @@ export default async function TrudneNieruchomościPage() {
               {CASES.map(c => {
                 const Icon = c.icon
                 return (
-                  <div key={c.title} style={{ background: 'white', borderRadius: 16, padding: '28px', border: '1px solid #e5e7eb', transition: 'transform .2s, box-shadow .2s' }}
-                    onMouseEnter={(e: any) => { e.currentTarget.style.transform='translateY(-3px)'; e.currentTarget.style.boxShadow='0 12px 28px rgba(0,0,0,.08)' }}
-                    onMouseLeave={(e: any) => { e.currentTarget.style.transform=''; e.currentTarget.style.boxShadow='' }}>
+                  <div key={c.title} style={{ background: 'white', borderRadius: 16, padding: '28px', border: '1px solid #e5e7eb' }}}}>
                     <div style={{ width: 52, height: 52, background: 'linear-gradient(135deg, #4338ca, #1e1b4b)', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
                       <Icon size={24} color="white" />
                     </div>
