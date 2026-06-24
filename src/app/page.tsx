@@ -38,7 +38,7 @@ function JsonLd({ office }: { office: Office | null }) {
 const FALLBACK_OFFICE: Office = {
   name: 'InvestRent Nieruchomości',
   logo_url: '/logo.png',
-  address: 'ul. Twoja Ulica 1, 78-100 Kołobrzeg',
+  address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg',
   phone: '+48 731 554 341',
   email: 'biuro@investrent.com.pl',
   website: null,
