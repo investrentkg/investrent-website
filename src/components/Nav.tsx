@@ -3,6 +3,15 @@ import { useState, useEffect } from 'react'
 import { Phone, Menu, X } from 'lucide-react'
 import type { Office } from '@/types'
 
+const NAV_STYLES = `
+  .nav-desktop { display: none; }
+  .nav-mobile  { display: flex; }
+  @media (min-width: 1024px) {
+    .nav-desktop { display: flex !important; align-items: center; gap: 24px; }
+    .nav-mobile  { display: none !important; }
+  }
+`
+
 export default function Nav({ office }: { office: Office | null }) {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -25,6 +34,7 @@ export default function Nav({ office }: { office: Office | null }) {
 
   return (
     <>
+      <style>{NAV_STYLES}</style>
       <nav style={{
         backgroundColor: '#0d2a5c',
         padding: '12px 0',
@@ -35,7 +45,7 @@ export default function Nav({ office }: { office: Office | null }) {
         <div className="container">
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
 
-            {/* LOGO — mały biały kwadrat z ikonką + tekst obok */}
+            {/* LOGO */}
             <a href="#" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10 }}>
               <div style={{
                 background: 'white', borderRadius: 8,
@@ -44,33 +54,17 @@ export default function Nav({ office }: { office: Office | null }) {
                 overflow: 'hidden', flexShrink: 0,
               }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/logo.png"
-                  alt="InvestRent"
-                  style={{
-                    width: 52, height: 52,
-                    objectFit: 'cover',
-                    objectPosition: 'top center',
-                  }}
-                />
+                <img src="/logo.png" alt="InvestRent"
+                  style={{ width: 52, height: 52, objectFit: 'cover', objectPosition: 'top center' }} />
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
-                <span style={{
-                  fontFamily: 'var(--font-montserrat), Arial Black, sans-serif',
-                  fontWeight: 800, color: 'white',
-                  fontSize: 17, letterSpacing: '.5px',
-                }}>INVEST RENT</span>
-                <span style={{
-                  color: 'rgba(255,255,255,.5)',
-                  fontSize: 9, letterSpacing: '2px',
-                  textTransform: 'uppercase' as const,
-                  marginTop: 3,
-                }}>NIERUCHOMOŚCI</span>
+                <span style={{ fontFamily: 'var(--font-montserrat), Arial Black, sans-serif', fontWeight: 800, color: 'white', fontSize: 17, letterSpacing: '.5px' }}>INVEST RENT</span>
+                <span style={{ color: 'rgba(255,255,255,.5)', fontSize: 9, letterSpacing: '2px', textTransform: 'uppercase' as const, marginTop: 3 }}>NIERUCHOMOŚCI</span>
               </div>
             </a>
 
-            {/* Desktop links */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 24 }} className="hidden lg:flex">
+            {/* Desktop — widoczny tylko >= 1024px (CSS media query) */}
+            <div className="nav-desktop">
               {links.map(l => (
                 <a key={l.label} href={l.href}
                   style={{ color: 'rgba(255,255,255,.65)', fontSize: 13, fontWeight: 500, textDecoration: 'none' }}>
@@ -83,8 +77,8 @@ export default function Nav({ office }: { office: Office | null }) {
               </a>
             </div>
 
-            {/* Mobile */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }} className="flex lg:hidden">
+            {/* Mobile — widoczny tylko < 1024px (CSS media query) */}
+            <div className="nav-mobile" style={{ alignItems: 'center', gap: 10 }}>
               <a href={`tel:${phone.replace(/\s/g, '')}`}
                 style={{ background: '#f5a623', color: 'white', fontSize: 12, fontWeight: 700, padding: '8px 12px', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 6, textDecoration: 'none' }}>
                 <Phone size={12} /> {phone}
@@ -94,11 +88,12 @@ export default function Nav({ office }: { office: Office | null }) {
                 <Menu size={22} />
               </button>
             </div>
+
           </div>
         </div>
       </nav>
 
-      {/* Mobile menu */}
+      {/* Mobile overlay */}
       {open && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 200, background: 'rgba(9,30,64,.97)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 28 }}>
           <button onClick={() => setOpen(false)}
