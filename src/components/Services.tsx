@@ -10,19 +10,19 @@ const SERVICES = [
   {
     icon: DollarSign, title: 'Sprzedaż nieruchomości',
     desc: 'Profesjonalne zdjęcia, ekspozycja na wszystkich portalach, aktywna sprzedaż. Sprzedajemy szybko i za dobrą cenę.',
-    link: 'Bezpłatna wycena', linkIcon: Award, href: '/kontakt',
+    link: 'Bezpłatna wycena', linkIcon: Award, href: '/sprzedaz',
     bg: 'bg-amber-50', border: 'border-amber-200', iconBg: 'bg-gold', color: 'text-amber-600',
   },
   {
     icon: KeyRound, title: 'Wynajem i zarządzanie',
     desc: 'Szukasz lokalu lub chcesz wynajmować bez stresu? Obsługujemy kompletnie — lokatorzy, umowy, rozliczenia, naprawy.',
-    link: 'Dowiedz się więcej', linkIcon: ArrowRight, href: '/kontakt',
+    link: 'Sprawdź oferty', linkIcon: ArrowRight, href: '/wynajem',
     bg: 'bg-emerald-50', border: 'border-emerald-200', iconBg: 'bg-emerald-500', color: 'text-emerald-600',
   },
   {
     icon: Gavel, title: 'Trudne nieruchomości i doradztwo',
     desc: 'Sprawy spadkowe, hipoteki, współwłasność. Pomagamy też z kredytami hipotecznymi i ubezpieczeniami.',
-    link: 'Zadzwoń — doradzimy', linkIcon: Phone, href: 'tel:+48731554341',
+    link: 'Dowiedz się więcej', linkIcon: ArrowRight, href: '/trudne-nieruchomosci',
     bg: 'bg-red-50', border: 'border-red-200', iconBg: 'bg-red-500', color: 'text-red-600',
   },
 ]
