@@ -126,10 +126,13 @@ export default async function ONasPage() {
                   )
                 })}
               </div>
-              <div style={{ background: '#f0f4ff', borderRadius: 16, height: 280, display: 'flex', flexDirection: 'column' as const, alignItems: 'center', justifyContent: 'center', gap: 10, color: '#9ca3af', border: '1px solid #e5e7eb' }}>
-                <MapPin size={40} />
-                <div style={{ fontWeight: 600, fontSize: 14 }}>Mapa Google Maps</div>
-                <div style={{ fontSize: 12 }}>ul. Ratuszowa 12/1 lok. 3, Kołobrzeg</div>
+              <div style={{ borderRadius: 16, overflow: 'hidden', height: 280, border: '1px solid #e5e7eb' }}>
+                <iframe
+                  src="https://maps.google.com/maps?q=ul.+Ratuszowa+12+Kołobrzeg&output=embed&hl=pl&z=16"
+                  width="100%" height="280" style={{ border: 0, display: 'block' }}
+                  allowFullScreen loading="lazy"
+                  title="InvestRent — lokalizacja biura"
+                />
               </div>
             </div>
           </div>
