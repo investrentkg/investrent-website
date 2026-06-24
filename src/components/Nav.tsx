@@ -23,40 +23,53 @@ export default function Nav({ office }: { office: Office | null }) {
     { label: 'Kontakt',  href: '#kontakt' },
   ]
 
-  const logoEl = office?.logo_url ? (
-    /* Logo jako obrazek w białym pillboxie — identycznie jak w makiecie */
-    <div style={{ background: 'white', borderRadius: 9, padding: '5px 12px', display: 'inline-flex', alignItems: 'center' }}>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={office.logo_url} alt={office.name ?? 'InvestRent'}
-        style={{ height: 40, width: 'auto', display: 'block' }} />
-    </div>
-  ) : (
-    /* Fallback tekstowy gdy brak logo */
-    <div style={{ background: 'white', borderRadius: 9, padding: '7px 16px', display: 'inline-flex', flexDirection: 'column', lineHeight: 1 }}>
-      <span style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 900, color: '#0d2a5c', fontSize: 16, letterSpacing: '.5px' }}>INVEST RENT</span>
-      <span style={{ color: '#6b7280', fontSize: 9, letterSpacing: '1.5px', textTransform: 'uppercase' as const, marginTop: 2 }}>nieruchomości</span>
-    </div>
-  )
-
   return (
     <>
       <nav style={{
         backgroundColor: '#0d2a5c',
         padding: '12px 0',
-        position: 'sticky',
-        top: 0,
-        zIndex: 100,
+        position: 'sticky', top: 0, zIndex: 100,
         boxShadow: scrolled ? '0 4px 20px rgba(0,0,0,.3)' : 'none',
         transition: 'box-shadow .3s',
       }}>
         <div className="container">
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
 
-            <a href="#" style={{ textDecoration: 'none' }}>
-              {logoEl}
+            {/* LOGO — mały biały kwadrat z ikonką + tekst obok */}
+            <a href="#" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{
+                background: 'white', borderRadius: 8,
+                width: 52, height: 52,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                overflow: 'hidden', flexShrink: 0,
+              }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/logo.png"
+                  alt="InvestRent"
+                  style={{
+                    width: 52, height: 52,
+                    objectFit: 'cover',
+                    objectPosition: 'top center',
+                  }}
+                />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
+                <span style={{
+                  fontFamily: 'var(--font-montserrat), Arial Black, sans-serif',
+                  fontWeight: 800, color: 'white',
+                  fontSize: 17, letterSpacing: '.5px',
+                }}>INVEST RENT</span>
+                <span style={{
+                  color: 'rgba(255,255,255,.5)',
+                  fontSize: 9, letterSpacing: '2px',
+                  textTransform: 'uppercase' as const,
+                  marginTop: 3,
+                }}>NIERUCHOMOŚCI</span>
+              </div>
             </a>
 
-            {/* Desktop */}
+            {/* Desktop links */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 24 }} className="hidden lg:flex">
               {links.map(l => (
                 <a key={l.label} href={l.href}
@@ -81,12 +94,11 @@ export default function Nav({ office }: { office: Office | null }) {
                 <Menu size={22} />
               </button>
             </div>
-
           </div>
         </div>
       </nav>
 
-      {/* Mobile overlay */}
+      {/* Mobile menu */}
       {open && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 200, background: 'rgba(9,30,64,.97)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 28 }}>
           <button onClick={() => setOpen(false)}
