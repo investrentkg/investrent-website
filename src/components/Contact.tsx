@@ -104,6 +104,12 @@ export default function Contact({ office }: { office: Office | null }) {
                 allowFullScreen loading="lazy"
                 title="InvestRent — lokalizacja biura"
               />
+                <a href="https://www.google.com/maps/dir/?api=1&destination=54.1770073%2C15.5744432"
+                  target="_blank" rel="noopener noreferrer"
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, background: '#1a4fa0', color: 'white', padding: '14px 20px', fontWeight: 700, fontSize: 14, textDecoration: 'none' }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+                  Wyznacz trasę do biura
+                </a>
             </div>
           </div>
 
