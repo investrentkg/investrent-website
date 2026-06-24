@@ -1,7 +1,7 @@
 "use client"
 import React, { useState } from 'react'
 import { Search, Handshake, Clock, Star, Award, Phone, CheckCircle } from 'lucide-react'
-import { submitLead } from '@/lib/api'
+import HeroWidget from '@/components/HeroWidget'
 import type { PublicStats } from '@/types'
 
 interface HeroProps { stats: PublicStats | null }
@@ -99,131 +99,10 @@ export default function Hero({ stats }: HeroProps) {
             </div>
           </div>
 
-          {/* Widget */}
-          <div className="hidden lg:block" style={{ background: 'rgba(15,30,70,.75)', border: '1px solid rgba(255,255,255,.18)', borderRadius: 18, padding: 28, position: 'relative', zIndex: 10 }}>
-
-            {/* Tabs */}
-            <div style={{ display: 'flex', background: 'rgba(0,0,0,.3)', borderRadius: 12, padding: 4, marginBottom: 18, gap: 4 }}>
-              {(['search', 'sell'] as const).map(t => (
-                <button key={t} onClick={() => setTab(t)}
-                  style={{
-                    flex: 1, borderRadius: 9, padding: '9px 8px',
-                    border: 'none', cursor: 'pointer',
-                    fontSize: 13, fontWeight: 600,
-                    background: tab === t ? 'white' : 'transparent',
-                    color:      tab === t ? '#1a4fa0' : 'rgba(255,255,255,.55)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                    transition: 'all .2s',
-                  }}>
-                  {t === 'search'
-                    ? <><Search size={13}/> Szukam</>
-                    : <>🏠 Chcę sprzedać</>}
-                </button>
-              ))}
-            </div>
-
-            {/* TAB Szukam */}
-            {tab === 'search' && (
-              <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 10 }}>
-                <select
-                  value={propType}
-                  onChange={e => setPropType(e.target.value)}
-                  style={inputStyle}
-                >
-                  <option value="">Typ nieruchomości</option>
-                  <option value="mieszkanie">Mieszkanie</option>
-                  <option value="dom">Dom</option>
-                  <option value="dzialka">Działka</option>
-                  <option value="lokal">Lokal użytkowy</option>
-                  <option value="inwestycja">Inwestycja</option>
-                </select>
-
-                <select
-                  value={transType}
-                  onChange={e => setTransType(e.target.value)}
-                  style={inputStyle}
-                >
-                  <option value="">Kupno i wynajem</option>
-                  <option value="sprzedaz">Na sprzedaż</option>
-                  <option value="wynajem">Do wynajęcia</option>
-                </select>
-
-                <input
-                  type="text"
-                  placeholder="Lokalizacja — np. Kołobrzeg, Mielno…"
-                  value={city}
-                  onChange={e => setCity(e.target.value)}
-                  onKeyDown={e => { if (e.key === 'Enter') handleSearch() }}
-                  style={inputStyle}
-                />
-
-                <button onClick={handleSearch}
-                  style={{ background: '#f5a623', color: 'white', border: 'none', borderRadius: 10, padding: '13px 20px', fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%' }}>
-                  <Search size={16} /> Szukaj ofert
-                </button>
-                <p style={{ color: 'rgba(255,255,255,.4)', fontSize: 11, textAlign: 'center' as const, margin: 0 }}>
-                  lub zadzwoń — <a href="tel:+48731554341" style={{ color: 'rgba(255,255,255,.6)', textDecoration: 'none', fontWeight: 600 }}>+48 731 554 341</a>
-                </p>
-              </div>
-            )}
-
-            {/* TAB Chcę sprzedać */}
-            {tab === 'sell' && (
-              <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 10 }}>
-                {sellStatus === 'ok' ? (
-                  <div style={{ textAlign: 'center' as const, padding: '28px 0' }}>
-                    <CheckCircle size={48} color="#10b981" style={{ margin: '0 auto 12px' }} />
-                    <div style={{ color: 'white', fontWeight: 700, fontSize: 17, marginBottom: 6 }}>Wysłano!</div>
-                    <div style={{ color: 'rgba(255,255,255,.6)', fontSize: 13 }}>Oddzwonimy do 60 minut</div>
-                  </div>
-                ) : (
-                  <>
-                    <p style={{ color: 'rgba(255,255,255,.7)', fontSize: 13, lineHeight: 1.65, margin: '0 0 4px' }}>
-                      Zostaw numer — ekspert oddzwoni i bezpłatnie wyceni Twoją nieruchomość.
-                    </p>
-                    <input
-                      type="text"
-                      placeholder="Imię i nazwisko"
-                      value={sellName}
-                      onChange={e => setSellName(e.target.value)}
-                      style={inputStyle}
-                    />
-                    <input
-                      type="tel"
-                      placeholder="+48 numer telefonu *"
-                      value={sellPhone}
-                      onChange={e => setSellPhone(e.target.value)}
-                      onKeyDown={e => { if (e.key === 'Enter') handleSell() }}
-                      style={{ ...inputStyle, border: sellStatus === 'error' ? '1.5px solid #ef4444' : 'none' }}
-                    />
-                    <button
-                      onClick={handleSell}
-                      disabled={sellStatus === 'loading' || !sellPhone}
-                      style={{
-                        background: sellPhone ? '#f5a623' : 'rgba(245,166,35,.4)',
-                        color: 'white', border: 'none', borderRadius: 10,
-                        padding: '13px 20px', fontSize: 14, fontWeight: 700,
-                        cursor: sellPhone ? 'pointer' : 'not-allowed',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%',
-                      }}>
-                      <Phone size={15} />
-                      {sellStatus === 'loading' ? 'Wysyłanie…' : 'Chcę bezpłatną wycenę'}
-                    </button>
-                    {sellStatus === 'error' && (
-                      <p style={{ color: '#fca5a5', fontSize: 12, textAlign: 'center' as const, margin: 0 }}>
-                        Błąd — spróbuj ponownie lub zadzwoń
-                      </p>
-                    )}
-                    <p style={{ color: 'rgba(255,255,255,.3)', fontSize: 10, textAlign: 'center' as const, margin: 0 }}>
-                      Dane chronione zgodnie z RODO · Bez zobowiązań
-                    </p>
-                  </>
-                )}
-              </div>
-            )}
+                    {/* Widget */}
+          <div className="hidden lg:block">
+            <HeroWidget />
           </div>
         </div>
       </div>
     </section>
-  )
-}
