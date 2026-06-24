@@ -26,7 +26,7 @@ export default async function WynajemPage() {
       <main>
         <div style={{ background: 'linear-gradient(135deg, #064e3b, #059669)', padding: '56px 0 48px' }}>
           <div className="container">
-            <Breadcrumb crumbs={[{ label: 'Strona główna', href: '/' }, { label: 'Wynajem' }]} />
+            <Breadcrumb light={true} crumbs={[{ label: 'Strona główna', href: '/' }, { label: 'Wynajem' }]} />
             <h1 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 42, color: 'white', letterSpacing: '-1px', lineHeight: 1.1, marginBottom: 16 }}>
               Znajdź mieszkanie<br />do wynajęcia nad morzem
             </h1>
