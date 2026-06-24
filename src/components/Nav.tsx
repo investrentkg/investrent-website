@@ -24,12 +24,12 @@ export default function Nav({ office }: { office: Office | null }) {
 
   const phone = office?.phone ?? '+48 731 554 341'
   const links = [
-    { label: 'Oferty',   href: '#oferty' },
-    { label: 'Kupno',    href: '#uslugi' },
-    { label: 'Sprzedaż', href: '#uslugi' },
-    { label: 'Wynajem',  href: '#uslugi' },
-    { label: 'O nas',    href: '#o-nas' },
-    { label: 'Kontakt',  href: '#kontakt' },
+    { label: 'Oferty',   href: '/oferty' },
+    { label: 'Kupno',    href: '/kupno' },
+    { label: 'Sprzedaż', href: '/sprzedaz' },
+    { label: 'Wynajem',  href: '/wynajem' },
+    { label: 'O nas',    href: '/o-nas' },
+    { label: 'Kontakt',  href: '/kontakt' },
   ]
 
   return (
