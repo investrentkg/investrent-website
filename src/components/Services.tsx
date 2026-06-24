@@ -4,19 +4,19 @@ const SERVICES = [
   {
     icon: Search, title: 'Kupno nieruchomości',
     desc: 'Szukamy dla Ciebie nieruchomości dopasowanej do budżetu i oczekiwań. Cały proces od pierwszego oglądania po akt notarialny.',
-    link: 'Sprawdź oferty', linkIcon: ArrowRight, href: '#oferty',
+    link: 'Sprawdź oferty', linkIcon: ArrowRight, href: '/oferty',
     bg: 'bg-blue/5', border: 'border-blue/15', iconBg: 'bg-blue', color: 'text-blue',
   },
   {
     icon: DollarSign, title: 'Sprzedaż nieruchomości',
     desc: 'Profesjonalne zdjęcia, ekspozycja na wszystkich portalach, aktywna sprzedaż. Sprzedajemy szybko i za dobrą cenę.',
-    link: 'Bezpłatna wycena', linkIcon: Award, href: '#kontakt',
+    link: 'Bezpłatna wycena', linkIcon: Award, href: '/kontakt',
     bg: 'bg-amber-50', border: 'border-amber-200', iconBg: 'bg-gold', color: 'text-amber-600',
   },
   {
     icon: KeyRound, title: 'Wynajem i zarządzanie',
     desc: 'Szukasz lokalu lub chcesz wynajmować bez stresu? Obsługujemy kompletnie — lokatorzy, umowy, rozliczenia, naprawy.',
-    link: 'Dowiedz się więcej', linkIcon: ArrowRight, href: '#kontakt',
+    link: 'Dowiedz się więcej', linkIcon: ArrowRight, href: '/kontakt',
     bg: 'bg-emerald-50', border: 'border-emerald-200', iconBg: 'bg-emerald-500', color: 'text-emerald-600',
   },
   {
