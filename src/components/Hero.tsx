@@ -4,9 +4,9 @@ import { Search, Handshake, Clock, Star, Award, Phone, CheckCircle } from 'lucid
 import HeroWidget from '@/components/HeroWidget'
 import type { PublicStats } from '@/types'
 
-interface HeroProps { stats: PublicStats | null }
+interface HeroProps { stats: PublicStats | null; googleRating?: number; googleTotal?: number }
 
-export default function Hero({ stats }: HeroProps) {
+export default function Hero({ stats, googleRating = 4.8, googleTotal = 55 }: HeroProps) {
   const s = stats ?? { active_offers: 0, completed_transactions: 500, team_size: 6 }
 
   const [tab, setTab]         = useState<'search'|'sell'>('search')
@@ -85,7 +85,7 @@ export default function Hero({ stats }: HeroProps) {
               {[
                 { icon: <Handshake size={20} />, val: `${s.completed_transactions}+`, label: 'transakcji' },
                 { icon: <Clock size={20} />,     val: 'do 60 min',  label: 'odpowiedź' },
-                { icon: <Star size={20} />,      val: '4.9/5',      label: 'ocena klientów' },
+                { icon: <Star size={20} />,      val: `${googleRating}/5`,  label: 'ocena klientów' },
                 { icon: <Award size={20} />,     val: 'Bezpłatna',  label: 'wycena' },
               ].map(st => (
                 <div key={st.label} className="flex items-center gap-2.5">
