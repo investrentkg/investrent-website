@@ -63,7 +63,7 @@ export default function Reviews() {
           </div>
           <p className="text-[14px] text-slate-500">
             Na podstawie 127 opinii w Google &nbsp;·&nbsp;
-            <a href="https://www.google.com/maps/search/InvestRent+Nieruchomości+Kołobrzeg" target="_blank" rel="noopener"
+            <a href="https://www.google.com/maps/place/Invest+Rent+Nieruchomo%C5%9Bci/@54.1770073,15.5744432,17z/#reviews" target="_blank" rel="noopener"
               className="text-blue font-semibold inline-flex items-center gap-1 hover:underline">
               Zobacz wszystkie <ExternalLink size={13} />
             </a>
