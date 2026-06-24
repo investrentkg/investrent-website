@@ -1,5 +1,5 @@
 "use client"
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Search, Handshake, Clock, Star, Award, Phone, CheckCircle } from 'lucide-react'
 import { submitLead } from '@/lib/api'
 import type { PublicStats } from '@/types'
@@ -39,7 +39,7 @@ export default function Hero({ stats }: HeroProps) {
   }
 
   const inputCls = "w-full px-4 py-3 rounded-xl text-[13px] text-slate-700 border-0 outline-none"
-  const inputStyle = { background: 'rgba(255,255,255,.95)', fontSize: 13, color: '#374151', width: '100%', padding: '11px 14px', borderRadius: 10, border: 'none', outline: 'none' }
+  const inputStyle: React.CSSProperties = { background: 'rgba(255,255,255,.95)', fontSize: 13, color: '#374151', width: '100%', padding: '11px 14px', borderRadius: 10, border: 'none', outline: 'none', pointerEvents: 'all', position: 'relative', zIndex: 20, cursor: 'pointer' }
 
   return (
     <section className="relative overflow-hidden flex items-center"
@@ -100,7 +100,7 @@ export default function Hero({ stats }: HeroProps) {
           </div>
 
           {/* Widget */}
-          <div className="hidden lg:block" style={{ background: 'rgba(15,30,70,.75)', backdropFilter: 'blur(16px)', border: '1px solid rgba(255,255,255,.18)', borderRadius: 18, padding: 28, position: 'relative', zIndex: 10 }}>
+          <div className="hidden lg:block" style={{ background: 'rgba(15,30,70,.75)', border: '1px solid rgba(255,255,255,.18)', borderRadius: 18, padding: 28, position: 'relative', zIndex: 10 }}>
 
             {/* Tabs */}
             <div style={{ display: 'flex', background: 'rgba(0,0,0,.3)', borderRadius: 12, padding: 4, marginBottom: 18, gap: 4 }}>
