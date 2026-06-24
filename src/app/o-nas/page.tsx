@@ -128,7 +128,7 @@ export default async function ONasPage() {
               </div>
               <div style={{ borderRadius: 16, overflow: 'hidden', height: 280, border: '1px solid #e5e7eb' }}>
                 <iframe
-                  src="https://maps.google.com/maps?q=ul.+Ratuszowa+12+Kołobrzeg&output=embed&hl=pl&z=16"
+                  src="https://maps.google.com/maps?q=54.1770073,15.5744432&output=embed&hl=pl&z=17"
                   width="100%" height="280" style={{ border: 0, display: 'block' }}
                   allowFullScreen loading="lazy"
                   title="InvestRent — lokalizacja biura"
