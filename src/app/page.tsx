@@ -29,7 +29,7 @@ function JsonLd({ office }: { office: Office | null }) {
       "addressRegion": "Zachodniopomorskie",
       "addressCountry": "PL"
     },
-    "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "127" }
+    "aggregateRating": { "@type": "AggregateRating", `"ratingValue": "${googleRating}", "reviewCount": "${googleTotal}"` }
   }
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
 }
@@ -46,12 +46,16 @@ const FALLBACK_OFFICE: Office = {
 }
 
 export default async function Home() {
-  const [offersData, teamData, officeData, statsData] = await Promise.all([
+  const [offersData, teamData, officeData, statsData, reviewsData] = await Promise.all([
     getPublicOffers({ limit: 6, tab: 'new' }),
     getTeam(),
     getOffice(),
     getStats(),
+    fetch('https://investrent-crm-production.up.railway.app/api/public/google-reviews')
+      .then(r => r.json()).catch(() => null),
   ])
+  const googleRating: number = reviewsData?.rating ?? 4.8
+  const googleTotal: number  = reviewsData?.total  ?? 55
 
   const office = officeData ?? FALLBACK_OFFICE
 
