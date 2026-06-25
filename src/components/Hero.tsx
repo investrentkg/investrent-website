@@ -9,6 +9,8 @@ interface HeroProps { stats: PublicStats | null; googleRating?: number; googleTo
 export default function Hero({ stats, googleRating = 4.8, googleTotal = 55 }: HeroProps) {
   const s = stats ?? { active_offers: 0, completed_transactions: 500, team_size: 6 }
 
+  const [isDesktop, setIsDesktop] = useState(false)
+  useEffect(() => { const check = () => setIsDesktop(window.innerWidth >= 1024); check(); window.addEventListener('resize', check); return () => window.removeEventListener('resize', check) }, [])
   const [tab, setTab]         = useState<'search'|'sell'>('search')
   const [propType, setPropType]   = useState('')
   const [transType, setTransType] = useState('')
@@ -99,8 +101,8 @@ export default function Hero({ stats, googleRating = 4.8, googleTotal = 55 }: He
             </div>
           </div>
 
-                    {/* Widget */}
-          <div className="hidden lg:block">
+                    {/* Widget — JS visibility zamiast Tailwind (Tailwind responsive nie działa w prod) */}
+          <div style={{ display: isDesktop ? 'block' : 'none' }}>
             <HeroWidget />
           </div>
         </div>
