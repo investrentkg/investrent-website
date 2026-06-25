@@ -131,10 +131,10 @@ export default function OffersPageClient({ initialOffers, initialTotal, defaultT
   initialOffers: Offer[]; initialTotal: number; defaultType?: string; defaultTransaction?: string
 }) {
   const initF: Filters = { ...EMPTY_FILTERS, property_type: defaultType, transaction_type: defaultTransaction }
-  const hasReal = initialOffers.length > 0
+  const hasReal = true // zawsze używaj danych z CRM
   const [filters, setFilters] = useState<Filters>(initF)
-  const [offers, setOffers] = useState<Offer[]>(hasReal ? initialOffers : filterSamples(SAMPLE, initF))
-  const [total, setTotal] = useState(hasReal ? initialTotal : filterSamples(SAMPLE, initF).length)
+  const [offers, setOffers] = useState<Offer[]>(initialOffers)
+  const [total, setTotal] = useState(initialTotal)
   const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(1)
   const [showAdvanced, setShowAdvanced] = useState(false)
@@ -165,14 +165,12 @@ export default function OffersPageClient({ initialOffers, initialTotal, defaultT
         setOffers(results)
         setTotal(results.length)
       } else {
-        const filtered = filterSamples(SAMPLE, fil)
-        setOffers(filtered)
-        setTotal(filtered.length)
+        setOffers([])
+        setTotal(0)
       }
     } catch {
-      const filtered = filterSamples(SAMPLE, fil)
-      setOffers(filtered)
-      setTotal(filtered.length)
+      setOffers([])
+      setTotal(0)
     } finally { setLoading(false) }
   }, [])
 
