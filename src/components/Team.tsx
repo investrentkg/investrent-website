@@ -24,11 +24,11 @@ export default function Team({ members }: Props) {
   const [cur, setCur] = useState(0)
   const perView = 3
 
-  const FALLBACK_MEMBERS = [
-    { id: 'f1', full_name: 'Daniel', role: 'manager', avatar_url: null, phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', bio: 'Właściciel i założyciel InvestRent. Specjalista rynku nadmorskiego z wieloletnim doświadczeniem.', active_offers_count: 0 },
-    { id: 'f2', full_name: 'Weronika', role: 'agent', avatar_url: null, phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', bio: 'Agent nieruchomości specjalizująca się w mieszkaniach i apartamentach inwestycyjnych.', active_offers_count: 0 },
-    { id: 'f3', full_name: 'Marta Semak', role: 'agent', avatar_url: null, phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', bio: 'Ekspertka od transakcji kupna i sprzedaży. Doskonała znajomość lokalnego rynku.', active_offers_count: 0 },
-    { id: 'f4', full_name: 'Dagmara', role: 'agent', avatar_url: null, phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', bio: 'Specjalistka od obsługi po-sprzedażowej i trudnych nieruchomości.', active_offers_count: 0 },
+  const FALLBACK_MEMBERS: TeamMember[] = [
+    { id: 'f1', full_name: 'Daniel Kamiński', role: 'manager', role_label: 'Właściciel', avatar_url: null, bio: 'Właściciel i założyciel InvestRent. Specjalista rynku nadmorskiego z wieloletnim doświadczeniem w Kołobrzegu.', specialization: 'Rynek nadmorski' },
+    { id: 'f2', full_name: 'Weronika Skwarek', role: 'agent', role_label: 'Agent nieruchomości', avatar_url: null, bio: 'Specjalistka od mieszkań i apartamentów inwestycyjnych nad morzem.', specialization: 'Mieszkania i apartamenty' },
+    { id: 'f3', full_name: 'Marta Semak', role: 'agent', role_label: 'Agent nieruchomości', avatar_url: null, bio: 'Ekspertka od transakcji kupna i sprzedaży. Doskonała znajomość lokalnego rynku Kołobrzegu.', specialization: 'Kupno i sprzedaż' },
+    { id: 'f4', full_name: 'Dagmara', role: 'agent', role_label: 'Agent nieruchomości', avatar_url: null, bio: 'Specjalistka od obsługi po-sprzedażowej i trudnych nieruchomości. Dyskretna i skuteczna.', specialization: 'Trudne nieruchomości' },
   ]
   const displayMembers = members.length > 0 ? members : FALLBACK_MEMBERS
   const maxSlide = Math.max(0, displayMembers.length - perView)
