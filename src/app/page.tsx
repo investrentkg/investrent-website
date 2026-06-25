@@ -47,7 +47,7 @@ const FALLBACK_OFFICE: Office = {
 
 export default async function Home() {
   const [offersData, teamData, officeData, statsData, reviewsData] = await Promise.all([
-    getPublicOffers({ limit: 6, tab: 'new' }),
+    getPublicOffers({ limit: 6 }),
     getTeam(),
     getOffice(),
     getStats(),
