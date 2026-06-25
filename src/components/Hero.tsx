@@ -1,7 +1,8 @@
 "use client"
 import { useState, useEffect } from 'react'
-import { Search, Handshake, Clock, Star, Award } from 'lucide-react'
+import { Search, Handshake, Clock, Star, Award, Home } from 'lucide-react'
 import HeroWidget from '@/components/HeroWidget'
+import WycenaModal from '@/components/WycenaModal'
 import type { PublicStats } from '@/types'
 
 interface HeroProps {
@@ -13,6 +14,7 @@ interface HeroProps {
 export default function Hero({ stats, googleRating = 4.8, googleTotal = 55 }: HeroProps) {
   const s = stats ?? { active_offers: 0, completed_transactions: 500, team_size: 6 }
   const [isDesktop, setIsDesktop] = useState(false)
+  const [modalOpen, setModalOpen] = useState(false)
 
   useEffect(() => {
     const check = () => setIsDesktop(window.innerWidth >= 1024)
@@ -56,9 +58,11 @@ export default function Hero({ stats, googleRating = 4.8, googleTotal = 55 }: He
               <a href="/oferty" className="btn-gold text-[14px] font-bold">
                 <Search size={17} /> Szukam nieruchomości
               </a>
-              <a href="/sprzedaz" className="inline-flex items-center gap-2 bg-white/12 text-white font-semibold text-[14px] px-7 py-3.5 rounded-xl border border-white/28 hover:bg-white/18 transition-all">
-                Chcę sprzedać
-              </a>
+              <button type="button" onClick={() => setModalOpen(true)}
+                className="inline-flex items-center gap-2 bg-white/12 text-white font-semibold text-[14px] px-7 py-3.5 rounded-xl border border-white/28 hover:bg-white/18 transition-all"
+                style={{ cursor: 'pointer' }}>
+                <Home size={17} /> Chcę sprzedać
+              </button>
             </div>
             <div className="flex gap-7 pt-5 border-t border-white/15 flex-wrap">
               {STATS.map(st => (
@@ -73,6 +77,7 @@ export default function Hero({ stats, googleRating = 4.8, googleTotal = 55 }: He
             </div>
           </div>
 
+          <WycenaModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
           <div style={{ display: isDesktop ? 'block' : 'none' }}>
             <HeroWidget />
           </div>
