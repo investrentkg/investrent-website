@@ -42,10 +42,10 @@ export default function Hero({ stats, googleRating = 4.8, googleTotal = 55 }: He
   const inputStyle: React.CSSProperties = { background: 'rgba(255,255,255,.95)', fontSize: 13, color: '#374151', width: '100%', padding: '11px 14px', borderRadius: 10, border: 'none', outline: 'none', pointerEvents: 'all', position: 'relative', zIndex: 20, cursor: 'pointer' }
 
   return (
-    <section className="relative overflow-hidden flex items-center"
+    <section className="relative flex items-center"
       style={{ minHeight: '620px', padding: '90px 0 96px' }}>
 
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0" style={{ overflow: 'hidden' }}>
         <div className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: 'url(/hero.jpg)', backgroundPosition: 'center 35%' }} />
         <div className="absolute inset-0" style={{background: `
