@@ -23,7 +23,6 @@ interface Props { members: TeamMember[] }
 export default function Team({ members }: Props) {
   const [cur, setCur] = useState(0)
   const perView = 3
-  const maxSlide = Math.max(0, displayMembers.length - perView)
 
   const FALLBACK_MEMBERS = [
     { id: 'f1', full_name: 'Daniel', role: 'manager', avatar_url: null, phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', bio: 'Właściciel i założyciel InvestRent. Specjalista rynku nadmorskiego z wieloletnim doświadczeniem.', active_offers_count: 0 },
@@ -32,6 +31,7 @@ export default function Team({ members }: Props) {
     { id: 'f4', full_name: 'Dagmara', role: 'agent', avatar_url: null, phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', bio: 'Specjalistka od obsługi po-sprzedażowej i trudnych nieruchomości.', active_offers_count: 0 },
   ]
   const displayMembers = members.length > 0 ? members : FALLBACK_MEMBERS
+  const maxSlide = Math.max(0, displayMembers.length - perView)
 
   return (
     <section id="zespol" className="section section-alt">
