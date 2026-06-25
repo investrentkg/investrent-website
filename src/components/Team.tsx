@@ -49,7 +49,7 @@ export default function Team({ members }: Props) {
 
         <div className="overflow-hidden">
           <div className="flex gap-5 transition-transform duration-500"
-            style={{ transform: `translateX(-${cur * (100 / perView + 20 / members.length)}%)` }}>
+            style={{ transform: `translateX(-${cur * (100 / perView + 20 / displayMembers.length)}%)` }}>
             {displayMembers.map((m, idx) => {
               const b = BADGE_STYLE[m.role] ?? BADGE_STYLE.agent
               const grad = AVATAR_GRADIENT[idx % AVATAR_GRADIENT.length]
@@ -83,7 +83,7 @@ export default function Team({ members }: Props) {
           </div>
         </div>
 
-        {members.length > perView && (
+        {displayMembers.length > perView && (
           <div className="flex items-center justify-center gap-4 mt-6">
             <button onClick={() => setCur(c => Math.max(0, c - 1))} disabled={cur === 0}
               className="w-9 h-9 rounded-full border-[1.5px] border-slate-200 flex items-center justify-center hover:border-blue hover:text-blue transition-all disabled:opacity-30">
