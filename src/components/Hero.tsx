@@ -108,3 +108,4 @@ export default function Hero({ stats, googleRating = 4.8, googleTotal = 55 }: He
         </div>
       </div>
     </section>
+}
