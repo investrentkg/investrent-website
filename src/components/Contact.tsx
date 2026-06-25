@@ -99,12 +99,12 @@ export default function Contact({ office }: { office: Office | null }) {
             {/* Map placeholder */}
             <div className="mt-7 rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 h-[200px] flex flex-col items-center justify-center gap-3 text-slate-400">
               <iframe
-                src="https://maps.google.com/maps?q=54.17589,15.57467&output=embed&hl=pl&z=17"
+                src="https://maps.google.com/maps?q=Ratuszowa+12+Ko%C5%82obrzeg&output=embed&hl=pl&z=17"
                 width="100%" height="200" style={{border:0,display:'block'}}
                 allowFullScreen loading="lazy"
                 title="InvestRent — lokalizacja biura"
               />
-                <a href="https://www.google.com/maps/dir/?api=1&destination=54.17589,15.57467"
+                <a href="https://www.google.com/maps/dir/?api=1&destination=Ratuszowa+12+Ko%C5%82obrzeg"
                   target="_blank" rel="noopener noreferrer"
                   style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, background: '#1a4fa0', color: 'white', padding: '14px 20px', fontWeight: 700, fontSize: 14, textDecoration: 'none' }}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
