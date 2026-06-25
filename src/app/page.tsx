@@ -63,7 +63,7 @@ export default async function Home() {
     <>
       <JsonLd office={office} />
       <Nav           office={office} />
-      <Hero          stats={statsData} />
+      <Hero          stats={statsData} googleRating={googleRating} googleTotal={googleTotal} />
       <CallbackStrip />
       <OffersSection initialOffers={offersData} />
       <About />
