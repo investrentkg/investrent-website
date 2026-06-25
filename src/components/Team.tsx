@@ -26,7 +26,7 @@ export default function Team({ members }: Props) {
 
   const FALLBACK_MEMBERS: TeamMember[] = [
     { id: 'f1', full_name: 'Daniel Kamiński', role: 'manager', role_label: 'Właściciel', avatar_url: null, bio: 'Właściciel i założyciel InvestRent. Specjalista rynku nadmorskiego z wieloletnim doświadczeniem w Kołobrzegu.', specialization: 'Rynek nadmorski' },
-    { id: 'f2', full_name: 'Weronika Skwarek', role: 'agent', role_label: 'Agent nieruchomości', avatar_url: null, bio: 'Specjalistka od mieszkań i apartamentów inwestycyjnych nad morzem.', specialization: 'Mieszkania i apartamenty' },
+    { id: 'f2', full_name: 'Weronika Skwarek', role: 'agent', role_label: 'Administracja i obsługa biura', avatar_url: null, bio: 'Odpowiada za sprawne funkcjonowanie biura i obsługę klientów. Dba o dokumentację i koordynację pracy zespołu.', specialization: 'Obsługa biura' },
     { id: 'f3', full_name: 'Marta Semak', role: 'agent', role_label: 'Agent nieruchomości', avatar_url: null, bio: 'Ekspertka od transakcji kupna i sprzedaży. Doskonała znajomość lokalnego rynku Kołobrzegu.', specialization: 'Kupno i sprzedaż' },
     { id: 'f4', full_name: 'Dagmara', role: 'agent', role_label: 'Agent nieruchomości', avatar_url: null, bio: 'Specjalistka od obsługi po-sprzedażowej i trudnych nieruchomości. Dyskretna i skuteczna.', specialization: 'Trudne nieruchomości' },
   ]
