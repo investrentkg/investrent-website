@@ -29,7 +29,7 @@ function JsonLd({ office }: { office: Office | null }) {
       "addressRegion": "Zachodniopomorskie",
       "addressCountry": "PL"
     },
-    "aggregateRating": { "@type": "AggregateRating", `"ratingValue": "${googleRating}", "reviewCount": "${googleTotal}"` }
+    "aggregateRating": { "@type": "AggregateRating", "ratingValue": String(googleRating), "reviewCount": String(googleTotal) }
   }
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
 }
