@@ -14,8 +14,8 @@ export interface Offer {
   address_city: string
   address_district: string | null
   address_street: string | null
-  is_exclusive: boolean
-  no_rent_fee: boolean
+  exclusivity: boolean
+  no_rent_fee: boolean | null
   is_swap: boolean
   has_garden: boolean
   status: 'opublikowana' | 'zarezerwowana'
