@@ -96,7 +96,7 @@ const INP = (props: React.InputHTMLAttributes<HTMLInputElement>) => (
   <input {...props} style={{ padding: '10px 14px', borderRadius: 9, border: '1.5px solid #e5e7eb', fontSize: 13, color: '#374151', background: 'white', outline: 'none', width: '100%', ...props.style }} />
 )
 
-const EMPTY_FILTERS: Filters = { transaction_type: '', property_type: '', city: '', rooms: '', price_min: '', price_max: '', area_min: '', area_max: '' }
+const EMPTY_FILTERS: Filters = { market_type: '', transaction_type: '', property_type: '', city: '', rooms: '', price_min: '', price_max: '', area_min: '', area_max: '' }
 
 export default function OffersPageClient({ initialOffers, initialTotal, defaultType = '', defaultTransaction = '' }: {
   initialOffers: Offer[]; initialTotal: number; defaultType?: string; defaultTransaction?: string
@@ -144,7 +144,8 @@ export default function OffersPageClient({ initialOffers, initialTotal, defaultT
       if ((data.data?.length ?? 0) > 0) {
         let results = data.data as Offer[]
         // Filtruj lokalnie po polach które API nie obsługuje
-        if (fil.city)      results = results.filter(o => o.address_city.toLowerCase().includes(fil.city.toLowerCase()))
+        if (fil.market_type) results = results.filter(o => !fil.market_type || o.market_type === fil.market_type)
+    if (fil.city)      results = results.filter(o => o.address_city.toLowerCase().includes(fil.city.toLowerCase()))
         if (fil.rooms)     results = results.filter(o => { const r = parseInt(fil.rooms); return r === 5 ? (o.rooms_count ?? 0) >= 5 : o.rooms_count === r })
         if (fil.price_min) results = results.filter(o => (o.price ?? 0) >= parseInt(fil.price_min))
         if (fil.price_max) results = results.filter(o => (o.price ?? Infinity) <= parseInt(fil.price_max))
@@ -180,6 +181,11 @@ export default function OffersPageClient({ initialOffers, initialTotal, defaultT
         <div className="container">
           {/* Wiersz główny */}
           <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' as const, marginBottom: showAdvanced ? 14 : 0 }}>
+            <SEL value={filters.market_type} onChange={f('market_type')}>
+              <option value="">Rynek (wszystkie)</option>
+              <option value="pierwotny">Rynek pierwotny</option>
+              <option value="wtorny">Rynek wtórny</option>
+            </SEL>
             <SEL value={filters.transaction_type} onChange={f('transaction_type')}>
               {TRANS_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
             </SEL>
