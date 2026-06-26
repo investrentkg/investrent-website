@@ -48,7 +48,7 @@ function priceLabel(p: number | null, t: string) {
 }
 
 function getBadge(o: Offer) {
-  if (o.is_exclusive) return { label: 'NA WYŁĄCZNOŚCI', bg: '#1a4fa0' }
+  if (o.exclusivity) return { label: 'NA WYŁĄCZNOŚCI', bg: '#1a4fa0' }
   if (o.no_rent_fee) return { label: 'BEZ PROWIZJI', bg: '#10b981' }
   if (o.status === 'zarezerwowana') return { label: 'ZAREZERWOWANA', bg: '#f59e0b' }
   return null
