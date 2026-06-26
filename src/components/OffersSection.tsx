@@ -1,18 +1,9 @@
 "use client"
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import Image from 'next/image'
 import { MapPin, LayoutGrid, Ruler, Layers, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { Offer, PaginatedOffers } from '@/types'
 
-// ── Sample offers — pokazują się gdy CRM jest pusty ──
-const SAMPLE_OFFERS: Offer[] = [
-  { id: 's1', ref_number: 'IVST-MS-155', title: 'Mieszkanie na sprzedaż', property_type: 'mieszkanie', transaction_type: 'sprzedaz', market_type: 'wtorny', price: 410000, price_per_m2: 7884, area: 52, rooms_count: 2, floor: 3, floors_total: 5, address_city: 'Kołobrzeg', address_district: 'os. Pomorskie', address_street: null, is_exclusive: true, no_rent_fee: false, is_swap: false, has_garden: false, status: 'opublikowana', created_at: '2026-01-01', main_photo: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80&fit=crop&h=340', photo_count: 5 },
-  { id: 's2', ref_number: 'IVST-AP-089', title: 'Apartament nad morzem', property_type: 'mieszkanie', transaction_type: 'sprzedaz', market_type: 'pierwotny', price: 549000, price_per_m2: 14447, area: 38, rooms_count: 2, floor: 4, floors_total: 6, address_city: 'Dźwirzyno', address_district: 'przy plaży', address_street: null, is_exclusive: false, no_rent_fee: true, is_swap: false, has_garden: false, status: 'opublikowana', created_at: '2026-01-02', main_photo: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&q=80&fit=crop&h=340', photo_count: 8 },
-  { id: 's3', ref_number: 'IVST-DM-012', title: 'Dom wolnostojący', property_type: 'dom', transaction_type: 'sprzedaz', market_type: 'wtorny', price: 1190000, price_per_m2: 8500, area: 140, rooms_count: 5, floor: 0, floors_total: 2, address_city: 'Mielno', address_district: 'cicha ulica', address_street: null, is_exclusive: false, no_rent_fee: false, is_swap: false, has_garden: true, status: 'opublikowana', created_at: '2026-01-03', main_photo: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&q=80&fit=crop&h=340', photo_count: 12 },
-  { id: 's4', ref_number: 'IVST-MT-067', title: 'Mieszkanie z tarasem', property_type: 'mieszkanie', transaction_type: 'sprzedaz', market_type: 'wtorny', price: 620000, price_per_m2: 9117, area: 68, rooms_count: 3, floor: 5, floors_total: 7, address_city: 'Kołobrzeg', address_district: 'centrum', address_street: null, is_exclusive: true, no_rent_fee: false, is_swap: false, has_garden: false, status: 'opublikowana', created_at: '2026-01-04', main_photo: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&q=80&fit=crop&h=340', photo_count: 6 },
-  { id: 's5', ref_number: 'IVST-KW-034', title: 'Kawalerka inwestycyjna', property_type: 'mieszkanie', transaction_type: 'sprzedaz', market_type: 'wtorny', price: 189000, price_per_m2: 6750, area: 28, rooms_count: 1, floor: 2, floors_total: 4, address_city: 'Kołobrzeg', address_district: 'os. Lęborska', address_street: null, is_exclusive: false, no_rent_fee: false, is_swap: false, has_garden: false, status: 'opublikowana', created_at: '2026-01-05', main_photo: 'https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?w=600&q=80&fit=crop&h=340', photo_count: 4 },
-  { id: 's6', ref_number: 'IVST-DZ-098', title: 'Działka budowlana', property_type: 'dzialka', transaction_type: 'sprzedaz', market_type: 'wtorny', price: 165000, price_per_m2: 206, area: 800, rooms_count: null, floor: null, floors_total: null, address_city: 'Kołobrzeg', address_district: 'Podczele', address_street: null, is_exclusive: false, no_rent_fee: false, is_swap: false, has_garden: false, status: 'opublikowana', created_at: '2026-01-06', main_photo: 'https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?w=600&q=80&fit=crop&h=340', photo_count: 3 },
-]
 
 const TABS = [
   { key: 'new',       label: 'Najnowsze' },
@@ -79,8 +70,19 @@ function OfferCard({ offer, tab }: { offer: Offer; tab: string }) {
 export default function OffersSection({ initialOffers }: { initialOffers: PaginatedOffers | null }) {
   const hasRealOffers = (initialOffers?.data?.length ?? 0) > 0
   const [tab, setTab]       = useState<'new' | 'promo' | 'exclusive'>('new')
-  const [offers, setOffers] = useState<Offer[]>(hasRealOffers ? initialOffers!.data : SAMPLE_OFFERS)
+  const [offers, setOffers] = useState<Offer[]>(hasRealOffers ? initialOffers!.data : [])
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (offers.length === 0) {
+      setLoading(true)
+      fetch(`${API}/api/public/offers?limit=6&page=1`)
+        .then(r => r.json())
+        .then(d => { if (d.data?.length > 0) setOffers(d.data) })
+        .catch(() => {})
+        .finally(() => setLoading(false))
+    }
+  }, [])
   const [cur, setCur]       = useState(0)
   const [usingSamples, setUsingSamples] = useState(!hasRealOffers)
 
@@ -98,13 +100,13 @@ export default function OffersSection({ initialOffers }: { initialOffers: Pagina
         setUsingSamples(false)
       } else {
         // Filtruj przykładowe oferty po tabie
-        if (newTab === 'exclusive') setOffers(SAMPLE_OFFERS.filter(o => o.is_exclusive))
-        else if (newTab === 'promo') setOffers(SAMPLE_OFFERS.filter(o => o.no_rent_fee))
-        else setOffers(SAMPLE_OFFERS)
+        if (newTab === 'exclusive') setOffers([])
+        else if (newTab === 'promo') setOffers([])
+        else setOffers([])
         setUsingSamples(true)
       }
     } catch {
-      setOffers(SAMPLE_OFFERS)
+      setOffers([])
       setUsingSamples(true)
     } finally { setLoading(false) }
   }, [API])
