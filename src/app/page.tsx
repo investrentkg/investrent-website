@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { getPublicOffers, getTeam, getOffice, getStats } from '@/lib/api'
 import Nav           from '@/components/Nav'
 import Hero          from '@/components/Hero'
