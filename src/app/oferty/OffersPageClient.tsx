@@ -6,18 +6,6 @@ import Link from 'next/link'
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://investrent-crm-production.up.railway.app'
 
-// ── Przykładowe oferty (fallback gdy CRM pusty) ──
-const SAMPLE: Offer[] = [
-  { id: 's1', ref_number: 'IVST-MS-155', title: 'Mieszkanie na sprzedaż', property_type: 'mieszkanie', transaction_type: 'sprzedaz', market_type: 'wtorny', price: 410000, price_per_m2: 7884, area: 52, rooms_count: 2, floor: 3, floors_total: 5, address_city: 'Kołobrzeg', address_district: 'os. Pomorskie', address_street: null, is_exclusive: true, no_rent_fee: false, is_swap: false, has_garden: false, status: 'opublikowana', created_at: '2026-01-01', main_photo: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80&fit=crop&h=340', photo_count: 5 },
-  { id: 's2', ref_number: 'IVST-AP-089', title: 'Apartament nad morzem', property_type: 'mieszkanie', transaction_type: 'sprzedaz', market_type: 'pierwotny', price: 549000, price_per_m2: 14447, area: 38, rooms_count: 2, floor: 4, floors_total: 6, address_city: 'Dźwirzyno', address_district: 'przy plaży', address_street: null, is_exclusive: false, no_rent_fee: true, is_swap: false, has_garden: false, status: 'opublikowana', created_at: '2026-01-02', main_photo: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&q=80&fit=crop&h=340', photo_count: 8 },
-  { id: 's3', ref_number: 'IVST-DM-012', title: 'Dom wolnostojący', property_type: 'dom', transaction_type: 'sprzedaz', market_type: 'wtorny', price: 1190000, price_per_m2: 8500, area: 140, rooms_count: 5, floor: 0, floors_total: 2, address_city: 'Mielno', address_district: null, address_street: null, is_exclusive: false, no_rent_fee: false, is_swap: false, has_garden: true, status: 'opublikowana', created_at: '2026-01-03', main_photo: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&q=80&fit=crop&h=340', photo_count: 12 },
-  { id: 's4', ref_number: 'IVST-MT-067', title: 'Mieszkanie z tarasem', property_type: 'mieszkanie', transaction_type: 'sprzedaz', market_type: 'wtorny', price: 620000, price_per_m2: 9117, area: 68, rooms_count: 3, floor: 5, floors_total: 7, address_city: 'Kołobrzeg', address_district: 'centrum', address_street: null, is_exclusive: true, no_rent_fee: false, is_swap: false, has_garden: false, status: 'opublikowana', created_at: '2026-01-04', main_photo: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&q=80&fit=crop&h=340', photo_count: 6 },
-  { id: 's5', ref_number: 'IVST-KW-034', title: 'Kawalerka inwestycyjna', property_type: 'mieszkanie', transaction_type: 'sprzedaz', market_type: 'wtorny', price: 189000, price_per_m2: 6750, area: 28, rooms_count: 1, floor: 2, floors_total: 4, address_city: 'Kołobrzeg', address_district: 'os. Lęborska', address_street: null, is_exclusive: false, no_rent_fee: false, is_swap: false, has_garden: false, status: 'opublikowana', created_at: '2026-01-05', main_photo: 'https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?w=600&q=80&fit=crop&h=340', photo_count: 4 },
-  { id: 's6', ref_number: 'IVST-DZ-098', title: 'Działka budowlana', property_type: 'dzialka', transaction_type: 'sprzedaz', market_type: 'wtorny', price: 165000, price_per_m2: 206, area: 800, rooms_count: null, floor: null, floors_total: null, address_city: 'Kołobrzeg', address_district: 'Podczele', address_street: null, is_exclusive: false, no_rent_fee: false, is_swap: false, has_garden: false, status: 'opublikowana', created_at: '2026-01-06', main_photo: 'https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?w=600&q=80&fit=crop&h=340', photo_count: 3 },
-  { id: 's7', ref_number: 'IVST-WY-011', title: 'Mieszkanie do wynajęcia', property_type: 'mieszkanie', transaction_type: 'wynajem', market_type: 'wtorny', price: 3200, price_per_m2: null, area: 55, rooms_count: 2, floor: 2, floors_total: 4, address_city: 'Kołobrzeg', address_district: 'ul. Kościuszki', address_street: null, is_exclusive: false, no_rent_fee: false, is_swap: false, has_garden: false, status: 'opublikowana', created_at: '2026-01-07', main_photo: 'https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?w=600&q=80&fit=crop&h=340', photo_count: 7 },
-  { id: 's8', ref_number: 'IVST-AP-102', title: 'Apartament inwestycyjny', property_type: 'mieszkanie', transaction_type: 'sprzedaz', market_type: 'pierwotny', price: 720000, price_per_m2: 16000, area: 45, rooms_count: 2, floor: 8, floors_total: 10, address_city: 'Kołobrzeg', address_district: 'Uzdrowiskowa', address_street: null, is_exclusive: true, no_rent_fee: false, is_swap: false, has_garden: false, status: 'opublikowana', created_at: '2026-01-08', main_photo: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80&fit=crop&h=340', photo_count: 9 },
-  { id: 's9', ref_number: 'IVST-LK-044', title: 'Lokal użytkowy', property_type: 'lokal', transaction_type: 'wynajem', market_type: 'wtorny', price: 5500, price_per_m2: null, area: 110, rooms_count: null, floor: 0, floors_total: 3, address_city: 'Kołobrzeg', address_district: 'centrum', address_street: null, is_exclusive: false, no_rent_fee: false, is_swap: false, has_garden: false, status: 'opublikowana', created_at: '2026-01-09', main_photo: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80&fit=crop&h=340', photo_count: 5 },
-]
 
 const CITIES = ['Kołobrzeg', 'Mielno', 'Dźwirzyno', 'Rewal', 'Trzebiatów', 'Kołobrzeg - Podczele', 'Kołobrzeg - Centrum']
 const PROP_TYPES = [
@@ -53,23 +41,6 @@ interface Filters {
   area_max: string
 }
 
-function filterSamples(samples: Offer[], f: Filters) {
-  return samples.filter(o => {
-    if (f.transaction_type && o.transaction_type !== f.transaction_type) return false
-    if (f.property_type && o.property_type !== f.property_type) return false
-    if (f.city && !o.address_city.toLowerCase().includes(f.city.toLowerCase())) return false
-    if (f.rooms) {
-      const r = parseInt(f.rooms)
-      if (r === 5) { if ((o.rooms_count ?? 0) < 5) return false }
-      else { if (o.rooms_count !== r) return false }
-    }
-    if (f.price_min && (o.price ?? 0) < parseInt(f.price_min)) return false
-    if (f.price_max && (o.price ?? Infinity) > parseInt(f.price_max)) return false
-    if (f.area_min && (o.area ?? 0) < parseInt(f.area_min)) return false
-    if (f.area_max && (o.area ?? Infinity) > parseInt(f.area_max)) return false
-    return true
-  })
-}
 
 function priceLabel(p: number | null, t: string) {
   if (!p) return 'Cena na zapytanie'
