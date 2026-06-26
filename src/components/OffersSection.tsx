@@ -17,7 +17,7 @@ function priceLabel(p: number | null) {
 }
 
 function getBadge(offer: Offer, tab: string) {
-  if (offer.is_exclusive) return { label: 'NA WYŁĄCZNOŚCI', color: '#1a4fa0' }
+  if (offer.exclusivity) return { label: 'NA WYŁĄCZNOŚCI', color: '#1a4fa0' }
   if (offer.no_rent_fee)  return { label: 'BEZ PROWIZJI',   color: '#10b981' }
   if (tab === 'promo')    return { label: 'W PROMOCJI',      color: '#10b981' }
   return null
