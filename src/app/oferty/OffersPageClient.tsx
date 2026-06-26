@@ -6,6 +6,26 @@ import Link from 'next/link'
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://investrent-crm-production.up.railway.app'
 
+interface Filters {
+  market_type: string
+  transaction_type: string
+  property_type: string
+  city: string
+  rooms: string
+  price_min: string
+  price_max: string
+  area_min: string
+  area_max: string
+}
+
+const EMPTY_FILTERS: Filters = {
+  market_type: '', transaction_type: '', property_type: '',
+  city: '', rooms: '', price_min: '', price_max: '', area_min: '', area_max: ''
+}
+
+
+
+
 
 const CITIES = ['Kołobrzeg', 'Mielno', 'Dźwirzyno', 'Rewal', 'Trzebiatów', 'Kołobrzeg - Podczele', 'Kołobrzeg - Centrum']
 const PROP_TYPES = [
