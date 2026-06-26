@@ -6,6 +6,34 @@ import Link from 'next/link'
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://investrent-crm-production.up.railway.app'
 
+const CITIES = ['Kołobrzeg', 'Mielno', 'Dźwirzyno', 'Rewal', 'Trzebiatów', 'Kołobrzeg - Podczele', 'Kołobrzeg - Centrum']
+const PROP_TYPES = [
+  { value: '', label: 'Typ nieruchomości' },
+  { value: 'mieszkanie', label: 'Mieszkanie' },
+  { value: 'dom', label: 'Dom' },
+  { value: 'dzialka', label: 'Działka' },
+  { value: 'lokal', label: 'Lokal użytkowy' },
+  { value: 'inwestycja', label: 'Inwestycja' },
+]
+const TRANS_TYPES = [
+  { value: '', label: 'Kupno i wynajem' },
+  { value: 'sprzedaz', label: 'Na sprzedaż' },
+  { value: 'wynajem', label: 'Do wynajęcia' },
+]
+const MARKET_TYPES = [
+  { value: '', label: 'Rynek (wszystkie)' },
+  { value: 'pierwotny', label: 'Rynek pierwotny' },
+  { value: 'wtorny', label: 'Rynek wtórny' },
+]
+const ROOMS_OPTS = [
+  { value: '', label: 'Liczba pokoi' },
+  { value: '1', label: '1 pokój' },
+  { value: '2', label: '2 pokoje' },
+  { value: '3', label: '3 pokoje' },
+  { value: '4', label: '4 pokoje' },
+  { value: '5', label: '5+ pokoi' },
+]
+
 interface Filters {
   market_type: string
   transaction_type: string
@@ -23,45 +51,6 @@ const EMPTY_FILTERS: Filters = {
   city: '', rooms: '', price_min: '', price_max: '', area_min: '', area_max: ''
 }
 
-
-
-
-
-const CITIES = ['Kołobrzeg', 'Mielno', 'Dźwirzyno', 'Rewal', 'Trzebiatów', 'Kołobrzeg - Podczele', 'Kołobrzeg - Centrum']
-const PROP_TYPES = [
-  { value: '', label: 'Typ nieruchomości' },
-  { value: 'mieszkanie', label: 'Mieszkanie' },
-  { value: 'dom', label: 'Dom' },
-  { value: 'dzialka', label: 'Działka' },
-  { value: 'lokal', label: 'Lokal użytkowy' },
-  { value: 'inwestycja', label: 'Inwestycja' },
-]
-const TRANS_TYPES = [
-  { value: '', label: 'Kupno i wynajem' },
-  { value: 'sprzedaz', label: 'Na sprzedaż' },
-  { value: 'wynajem', label: 'Do wynajęcia' },
-]
-const ROOMS_OPTS = [
-  { value: '', label: 'Liczba pokoi' },
-  { value: '1', label: '1 pokój' },
-  { value: '2', label: '2 pokoje' },
-  { value: '3', label: '3 pokoje' },
-  { value: '4', label: '4 pokoje' },
-  { value: '5', label: '5+ pokoi' },
-]
-
-interface Filters {
-  transaction_type: string
-  property_type: string
-  city: string
-  rooms: string
-  price_min: string
-  price_max: string
-  area_min: string
-  area_max: string
-}
-
-
 function priceLabel(p: number | null, t: string) {
   if (!p) return 'Cena na zapytanie'
   return p.toLocaleString('pl-PL') + ' zł' + (t === 'wynajem' ? '/mies.' : '')
@@ -69,7 +58,6 @@ function priceLabel(p: number | null, t: string) {
 
 function getBadge(o: Offer) {
   if (o.exclusivity) return { label: 'NA WYŁĄCZNOŚCI', bg: '#1a4fa0' }
-  if (o.no_rent_fee) return { label: 'BEZ PROWIZJI', bg: '#10b981' }
   if (o.status === 'zarezerwowana') return { label: 'ZAREZERWOWANA', bg: '#f59e0b' }
   return null
 }
@@ -115,8 +103,6 @@ const SEL = (props: React.SelectHTMLAttributes<HTMLSelectElement>) => (
 const INP = (props: React.InputHTMLAttributes<HTMLInputElement>) => (
   <input {...props} style={{ padding: '10px 14px', borderRadius: 9, border: '1.5px solid #e5e7eb', fontSize: 13, color: '#374151', background: 'white', outline: 'none', width: '100%', ...props.style }} />
 )
-
-const EMPTY_FILTERS: Filters = { market_type: '', transaction_type: '', property_type: '', city: '', rooms: '', price_min: '', price_max: '', area_min: '', area_max: '' }
 
 export default function OffersPageClient({ initialOffers, initialTotal, defaultType = '', defaultTransaction = '' }: {
   initialOffers: Offer[]; initialTotal: number; defaultType?: string; defaultTransaction?: string
