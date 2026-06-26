@@ -23,6 +23,21 @@ interface Props { members: TeamMember[] }
 export default function Team({ members }: Props) {
   const [cur, setCur] = useState(0)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const perView = 3
+
+  const FALLBACK_MEMBERS: TeamMember[] = [
+    { id: 'f1', full_name: 'Daniel Kamiński', role: 'manager', role_label: 'Manager', avatar_url: null, bio: 'Założyciel i właściciel InvestRent. Wieloletni specjalista rynku nieruchomości nadmorskich — Kołobrzeg i okolice.', specialization: 'Zarządzanie i inwestycje' },
+    { id: 'f2', full_name: 'Marta Semak', role: 'agent', role_label: 'Agent nieruchomości', avatar_url: null, bio: 'Doświadczona agentka specjalizująca się w sprzedaży mieszkań i apartamentów. Znana z zaangażowania i skuteczności.', specialization: 'Sprzedaż mieszkań' },
+    { id: 'f3', full_name: 'Tomasz Rybiński', role: 'agent', role_label: 'Agent nieruchomości', avatar_url: null, bio: 'Specjalista od nieruchomości komercyjnych i inwestycyjnych. Bogate doświadczenie w obsłudze wymagających klientów.', specialization: 'Nieruchomości inwestycyjne' },
+    { id: 'f4', full_name: 'Ernest Podhajski', role: 'agent', role_label: 'Koordynator', avatar_url: null, bio: 'Koordynuje pracę zespołu i dba o sprawną obsługę transakcji od pierwszego kontaktu po finalizację umowy.', specialization: 'Koordynacja transakcji' },
+    { id: 'f5', full_name: 'Dagmara Kotarba', role: 'agent', role_label: 'Agent nieruchomości', avatar_url: null, bio: 'Ekspertka rynku nadmorskiego — specjalizuje się w nieruchomościach premium i apartamentach inwestycyjnych.', specialization: 'Nieruchomości premium' },
+    { id: 'f6', full_name: 'Julia Semak', role: 'agent', role_label: 'Agent nieruchomości', avatar_url: null, bio: 'Zajmuje się obsługą klientów szukających mieszkań i domów. Szybka, komunikatywna i zawsze pomocna.', specialization: 'Mieszkania i domy' },
+    { id: 'f7', full_name: 'Sara Kida', role: 'agent', role_label: 'Agent nieruchomości', avatar_url: null, bio: 'Młody i dynamiczny agent z pasją do rynku nieruchomości. Specjalizuje się w obsłudze klientów indywidualnych.', specialization: 'Obsługa klientów indywidualnych' },
+  ]
+  const displayMembers = members.length > 0 ? members : FALLBACK_MEMBERS
+  const maxSlide = Math.max(0, displayMembers.length - perView)
+
+
 
   // Auto-przewijanie co 3 sekundy
   useEffect(() => {
@@ -39,20 +54,6 @@ export default function Team({ members }: Props) {
       setCur(c => c >= maxSlide ? 0 : c + 1)
     }, 3000)
   }
-  const perView = 3
-
-  const FALLBACK_MEMBERS: TeamMember[] = [
-    { id: 'f1', full_name: 'Daniel Kamiński', role: 'manager', role_label: 'Manager', avatar_url: null, bio: 'Założyciel i właściciel InvestRent. Wieloletni specjalista rynku nieruchomości nadmorskich — Kołobrzeg i okolice.', specialization: 'Zarządzanie i inwestycje' },
-    { id: 'f2', full_name: 'Marta Semak', role: 'agent', role_label: 'Agent nieruchomości', avatar_url: null, bio: 'Doświadczona agentka specjalizująca się w sprzedaży mieszkań i apartamentów. Znana z zaangażowania i skuteczności.', specialization: 'Sprzedaż mieszkań' },
-    { id: 'f3', full_name: 'Tomasz Rybiński', role: 'agent', role_label: 'Agent nieruchomości', avatar_url: null, bio: 'Specjalista od nieruchomości komercyjnych i inwestycyjnych. Bogate doświadczenie w obsłudze wymagających klientów.', specialization: 'Nieruchomości inwestycyjne' },
-    { id: 'f4', full_name: 'Ernest Podhajski', role: 'agent', role_label: 'Koordynator', avatar_url: null, bio: 'Koordynuje pracę zespołu i dba o sprawną obsługę transakcji od pierwszego kontaktu po finalizację umowy.', specialization: 'Koordynacja transakcji' },
-    { id: 'f5', full_name: 'Dagmara Kotarba', role: 'agent', role_label: 'Agent nieruchomości', avatar_url: null, bio: 'Ekspertka rynku nadmorskiego — specjalizuje się w nieruchomościach premium i apartamentach inwestycyjnych.', specialization: 'Nieruchomości premium' },
-    { id: 'f6', full_name: 'Julia Semak', role: 'agent', role_label: 'Agent nieruchomości', avatar_url: null, bio: 'Zajmuje się obsługą klientów szukających mieszkań i domów. Szybka, komunikatywna i zawsze pomocna.', specialization: 'Mieszkania i domy' },
-    { id: 'f7', full_name: 'Sara Kida', role: 'agent', role_label: 'Agent nieruchomości', avatar_url: null, bio: 'Młody i dynamiczny agent z pasją do rynku nieruchomości. Specjalizuje się w obsłudze klientów indywidualnych.', specialization: 'Obsługa klientów indywidualnych' },
-  ]
-  const displayMembers = members.length > 0 ? members : FALLBACK_MEMBERS
-  const maxSlide = Math.max(0, displayMembers.length - perView)
-
   return (
     <section id="zespol" className="section section-alt">
       <div className="container">
