@@ -5,14 +5,29 @@ import { submitLead } from '@/lib/api'
 import Link from 'next/link'
 
 interface OfferDetail {
-  id: string; ref_number: string; title: string | null
-  property_type: string; transaction_type: string; market_type: string
-  price: number | null; price_per_m2: number | null; area: number | null
-  rooms_count: number | null; floor: number | null; floors_total: number | null
-  bathrooms_count: number | null; build_year: number | null; condition: string | null
-  description: string | null; address_city: string; address_district: string | null
-  address_street: string | null; exclusivity: boolean; no_rent_fee?: boolean
-  status: string; created_at: string
+  id: string
+  ref_number: string
+  title: string | null
+  property_type: string
+  transaction_type: string
+  market_type: string
+  price: number | null
+  price_per_m2: number | null
+  area: number | null
+  rooms_count: number | null
+  floor: number | null
+  floors_total: number | null
+  bathrooms_count: number | null
+  build_year: number | null
+  condition: string | null
+  description: string | null
+  address_city: string
+  address_district: string | null
+  address_street: string | null
+  exclusivity: boolean
+  no_rent_fee: boolean | null
+  status: string
+  created_at: string
   offer_photos: Array<{ id: string; url: string; is_main: boolean; sort_order: number }>
   agent: { full_name: string; avatar_url: string | null } | null
 }
