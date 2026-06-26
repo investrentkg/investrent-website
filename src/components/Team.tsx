@@ -22,6 +22,23 @@ interface Props { members: TeamMember[] }
 
 export default function Team({ members }: Props) {
   const [cur, setCur] = useState(0)
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  // Auto-przewijanie co 3 sekundy
+  useEffect(() => {
+    timerRef.current = setInterval(() => {
+      setCur(c => c >= maxSlide ? 0 : c + 1)
+    }, 3000)
+    return () => { if (timerRef.current) clearInterval(timerRef.current) }
+  }, [maxSlide])
+
+  // Zatrzymaj na hover
+  function pauseAuto() { if (timerRef.current) clearInterval(timerRef.current) }
+  function resumeAuto() {
+    timerRef.current = setInterval(() => {
+      setCur(c => c >= maxSlide ? 0 : c + 1)
+    }, 3000)
+  }
   const perView = 3
 
   const FALLBACK_MEMBERS: TeamMember[] = [
