@@ -30,7 +30,7 @@ export default function KalkulatorPage() {
 
   return (
     <>
-      <Nav light={false} />
+      <Nav office={null} />
       <main style={{ background: '#f8fafc', minHeight: '100vh', paddingTop: 80 }}>
         {/* Hero */}
         <div style={{ background: 'linear-gradient(135deg, #0d2a5c 0%, #1a4fa0 100%)', padding: '56px 0 48px' }}>
