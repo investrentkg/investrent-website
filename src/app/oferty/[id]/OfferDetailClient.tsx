@@ -126,7 +126,7 @@ export default function OfferDetailClient({ offer }: { offer: OfferDetail }) {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: 32, alignItems: 'start' }}>
           {/* Left */}
           <div>
-            {offer.is_exclusive && (
+            {offer.exclusivity && (
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#1a4fa0', color: 'white', fontSize: 11, fontWeight: 700, padding: '4px 12px', borderRadius: 6, marginBottom: 12, letterSpacing: '.5px' }}>
                 <Award size={13} /> NA WYŁĄCZNOŚCI
               </div>
