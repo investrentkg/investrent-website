@@ -12,7 +12,7 @@ interface HeroProps {
 }
 
 export default function Hero({ stats, googleRating = 4.8, googleTotal = 55 }: HeroProps) {
-  const s = stats ?? { active_offers: 0, completed_transactions: 500, team_size: 6 }
+  const s = { active_offers: stats?.active_offers ?? 30, completed_transactions: Math.max(stats?.completed_transactions ?? 0, 300), team_size: stats?.team_size ?? 7 }
   const [isDesktop, setIsDesktop] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
 
@@ -24,7 +24,7 @@ export default function Hero({ stats, googleRating = 4.8, googleTotal = 55 }: He
   }, [])
 
   const STATS = [
-    { icon: <Handshake size={20} />, val: `${s.completed_transactions}+`, label: 'transakcji' },
+    { icon: <Handshake size={20} />, val: `${Math.max(s.completed_transactions, 300)}+`, label: 'transakcji' },
     { icon: <Clock size={20} />,     val: 'do 60 min',         label: 'odpowiedź' },
     { icon: <Star size={20} />,      val: `${googleRating}/5`, label: 'ocena klientów' },
     { icon: <Award size={20} />,     val: 'Bezpłatna',         label: 'wycena' },
