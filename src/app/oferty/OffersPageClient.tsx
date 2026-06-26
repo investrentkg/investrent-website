@@ -1,5 +1,5 @@
 "use client"
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { Search, MapPin, LayoutGrid, Ruler, Layers, ChevronLeft, ChevronRight, SlidersHorizontal, X } from 'lucide-react'
 import type { Offer } from '@/types'
 import Link from 'next/link'
@@ -107,6 +107,23 @@ export default function OffersPageClient({ initialOffers, initialTotal, defaultT
   const [offers, setOffers] = useState<Offer[]>(initialOffers)
   const [total, setTotal] = useState(initialTotal)
   const [loading, setLoading] = useState(false)
+
+  // Pobierz oferty przy załadowaniu strony (fallback gdy SSR nie zadziałał)
+  useEffect(() => {
+    if (offers.length === 0) {
+      setLoading(true)
+      fetch(`${API}/api/public/offers?limit=9&page=1`)
+        .then(r => r.json())
+        .then(d => {
+          if (d.data && d.data.length > 0) {
+            setOffers(d.data)
+            setTotal(d.pagination?.total ?? d.data.length)
+          }
+        })
+        .catch(() => {})
+        .finally(() => setLoading(false))
+    }
+  }, [])
   const [page, setPage] = useState(1)
   const [showAdvanced, setShowAdvanced] = useState(false)
   const LIMIT = 9
