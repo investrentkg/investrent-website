@@ -8,6 +8,7 @@ export default function ChatWidget() {
   const [shown, setShown]       = useState(false)
   const [bubble, setBubble]     = useState(false)
   const [name, setName]         = useState('')
+  const [chatError, setChatError] = useState('')
   const [phone, setPhone]       = useState('')
   const [msg, setMsg]           = useState('')
   const [status, setStatus]     = useState<'idle'|'loading'|'ok'|'error'>('idle')
@@ -25,6 +26,11 @@ export default function ChatWidget() {
 
   async function send() {
     if (!phone.trim()) return
+    const cleaned = phone.replace(/[\s\-()]/g, '')
+    if (!/^(\+?[1-9]\d{7,14}|\d{9})$/.test(cleaned)) {
+      setChatError('Podaj prawidłowy numer telefonu (9 cyfr)')
+      return
+    }
     setStatus('loading')
     const r = await submitLead({
       full_name: name || 'Klient chat',
