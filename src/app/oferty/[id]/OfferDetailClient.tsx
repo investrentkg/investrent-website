@@ -31,7 +31,7 @@ interface OfferDetail {
   status: string
   created_at: string
   offer_photos: Array<{ id: string; url: string; is_main: boolean; sort_order: number }>
-  agent: { full_name: string; avatar_url: string | null } | null
+  agent: { full_name: string; avatar_url: string | null; phone: string | null } | null
 }
 
 // ── Lightbox ──────────────────────────────────────────────────
@@ -296,8 +296,9 @@ export default function OfferDetailClient({ offer }: { offer: OfferDetail }) {
                 <div>
                   <div style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>{offer.agent.full_name}</div>
                   <div style={{ fontSize: 12, color: '#6b7280' }}>Agent nieruchomości</div>
-                  <a href="tel:+48731554341" style={{ fontSize: 13, color: '#1a4fa0', fontWeight: 600, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4, marginTop: 4 }}>
-                    <Phone size={13} /> +48 731 554 341
+                  <a href={`tel:${(offer.agent.phone || '+48731554341').replace(/\s/g,'')}`}
+                    style={{ fontSize: 13, color: '#1a4fa0', fontWeight: 600, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4, marginTop: 4 }}>
+                    <Phone size={13} /> {offer.agent.phone || '+48 731 554 341'}
                   </a>
                 </div>
               </div>
