@@ -47,7 +47,7 @@ export default function ChatWidget() {
       {/* Bąbel powitalny */}
       {bubble && !open && (
         <div onClick={openChat} style={{
-          position: 'fixed', bottom: 96, right: 24, zIndex: 9998,
+          position: 'fixed', bottom: 24, right: 24, zIndex: 9998,
           background: 'white', borderRadius: 16, padding: '14px 18px',
           boxShadow: '0 8px 32px rgba(0,0,0,.15)', cursor: 'pointer',
           maxWidth: 260, animation: 'fadeUp .3s ease',
