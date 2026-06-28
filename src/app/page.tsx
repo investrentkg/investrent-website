@@ -75,6 +75,7 @@ export default async function Home() {
       <Reviews />
       <Team          members={teamData?.data ?? []} />
       <Contact       office={office} />
+      <MortgageCalcSection />
       <Footer        office={office} />
       <FloatingWA />
     </>
