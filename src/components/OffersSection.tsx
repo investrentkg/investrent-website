@@ -27,43 +27,43 @@ function OfferCard({ offer, tab }: { offer: Offer; tab: string }) {
   const badge = getBadge(offer, tab)
   return (
     <a href={`/oferty/${offer.id}`} style={{ textDecoration: 'none', display: 'block', flexShrink: 0, width: 'calc(33.333% - 15px)' }}>
-    <div style={{ background: 'white', borderRadius: 14, border: '1px solid #e5e7eb', overflow: 'hidden', cursor: 'pointer', transition: 'transform .2s, box-shadow .2s' }}
-      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform='translateY(-4px)'; (e.currentTarget as HTMLElement).style.boxShadow='0 14px 32px rgba(0,0,0,.1)' }}
-      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform=''; (e.currentTarget as HTMLElement).style.boxShadow='' }}>
-        {offer.main_photo ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={offer.main_photo} alt={offer.title ?? 'Oferta'}
-            style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform .4s' }}
-            onMouseEnter={e => (e.currentTarget.style.transform='scale(1.05)')}
-            onMouseLeave={e => (e.currentTarget.style.transform='')} />
-        ) : (
-          <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f0f4ff', fontSize: 48 }}>🏠</div>
-        )}
-        {badge && (
-          <span style={{ position: 'absolute', top: 11, left: 11, background: badge.color, color: 'white', fontSize: 10, fontWeight: 700, padding: '3px 10px', borderRadius: 5, letterSpacing: '.3px' }}>
-            {badge.label}
+      <div style={{ background: 'white', borderRadius: 14, border: '1px solid #e5e7eb', overflow: 'hidden', cursor: 'pointer', transition: 'transform .2s, box-shadow .2s', height: '100%' }}
+        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform='translateY(-4px)'; (e.currentTarget as HTMLElement).style.boxShadow='0 14px 32px rgba(0,0,0,.1)' }}
+        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform=''; (e.currentTarget as HTMLElement).style.boxShadow='' }}>
+        <div style={{ height: 200, overflow: 'hidden', position: 'relative', background: '#f8fafc' }}>
+          {offer.main_photo ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={offer.main_photo} alt={offer.title ?? 'Oferta'}
+              style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform .4s' }}
+              onMouseEnter={e => (e.currentTarget.style.transform='scale(1.05)')}
+              onMouseLeave={e => (e.currentTarget.style.transform='')} />
+          ) : (
+            <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f0f4ff', fontSize: 48 }}>🏠</div>
+          )}
+          {badge && (
+            <span style={{ position: 'absolute', top: 11, left: 11, background: badge.color, color: 'white', fontSize: 10, fontWeight: 700, padding: '3px 10px', borderRadius: 5, letterSpacing: '.3px' }}>
+              {badge.label}
+            </span>
+          )}
+          <span style={{ position: 'absolute', top: 11, right: 11, background: 'rgba(255,255,255,.9)', color: '#6b7280', fontSize: 10, fontWeight: 600, padding: '3px 8px', borderRadius: 5 }}>
+            {offer.ref_number}
           </span>
-        )}
-        <span style={{ position: 'absolute', top: 11, right: 11, background: 'rgba(255,255,255,.9)', color: '#6b7280', fontSize: 10, fontWeight: 600, padding: '3px 8px', borderRadius: 5 }}>
-          {offer.ref_number}
-        </span>
-      </div>
-      <div style={{ padding: 16 }}>
-        <div style={{ fontSize: 13, fontWeight: 700, color: '#111827', marginBottom: 4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{offer.address_city}{offer.area ? ` · ${offer.area} m²` : ''itle}</div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#6b7280', fontSize: 12, marginBottom: 11 }}>
-          <MapPin size={12} /> {offer.address_city}{offer.address_district ? `, ${offer.address_district}` : ''}
         </div>
-        <div style={{ display: 'flex', gap: 14, marginBottom: 14, flexWrap: 'wrap' }}>
-          {offer.rooms_count && <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#6b7280' }}><LayoutGrid size={12} /> {offer.rooms_count} pok.</span>}
-          {offer.area && <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#6b7280' }}><Ruler size={12} /> {offer.area} m²</span>}
-          {offer.floor !== null && offer.floor !== undefined && <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#6b7280' }}><Layers size={12} /> {offer.floor} p.</span>}
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 2 }}>
-          <span style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 20, color: '#1a4fa0' }}>{priceLabel(offer.price)}</span>
-          {offer.price_per_m2 && <span style={{ fontSize: 11, color: '#9ca3af', whiteSpace: 'nowrap' }}>{offer.price_per_m2.toLocaleString('pl-PL')} zł/m²</span>}
+        <div style={{ padding: 16 }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: '#111827', marginBottom: 4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {offer.address_city}{offer.area ? ` · ${offer.area} m²` : ''}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#6b7280', fontSize: 12, marginBottom: 10 }}>
+            <MapPin size={12} /> {offer.address_city}{offer.address_district ? `, ${offer.address_district}` : ''}
+          </div>
+          <div style={{ display: 'flex', gap: 10, marginBottom: 12, flexWrap: 'wrap' as const }}>
+            {offer.rooms_count && <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#6b7280' }}><LayoutGrid size={12} /> {offer.rooms_count} pok.</span>}
+            {offer.area && <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#6b7280' }}><Ruler size={12} /> {offer.area} m²</span>}
+          </div>
+          <span style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 18, color: '#1a4fa0' }}>{priceLabel(offer.price)}</span>
+          {offer.price_per_m2 && <div style={{ fontSize: 11, color: '#9ca3af', whiteSpace: 'nowrap' }}>{offer.price_per_m2.toLocaleString('pl-PL')} zł/m²</div>}
         </div>
       </div>
-    </div>
     </a>
   )
 }
