@@ -7,8 +7,8 @@ import type { Offer, PaginatedOffers } from '@/types'
 
 const TABS = [
   { key: 'new',       label: 'Najnowsze' },
-  { key: 'promo',     label: 'W promocji' },
-  { key: 'exclusive', label: 'Na wyłączność' },
+  { key: 'promo',     label: 'Promocje' },
+  { key: 'exclusive', label: 'Wyłączności' },
 ] as const
 
 function priceLabel(p: number | null) {
@@ -60,7 +60,7 @@ function OfferCard({ offer, tab }: { offer: Offer; tab: string }) {
         </div>
         <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
           <span style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 20, color: '#1a4fa0' }}>{priceLabel(offer.price)}</span>
-          {offer.price_per_m2 && <span style={{ fontSize: 11, color: '#9ca3af' }}>{offer.price_per_m2.toLocaleString('pl-PL')} zł/m²</span>}
+          {offer.price_per_m2 && <span style={{ fontSize: 11, color: '#9ca3af', whiteSpace: 'nowrap' }}>{offer.price_per_m2.toLocaleString('pl-PL')} zł/m²</span>}
         </div>
       </div>
     </div>
