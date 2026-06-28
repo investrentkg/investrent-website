@@ -170,7 +170,7 @@ export default function OffersSection({ initialOffers }: { initialOffers: Pagina
                 <div style={{ display: 'flex', gap: 7 }}>
                   {Array.from({ length: maxSlide + 1 }).map((_, i) => (
                     <button key={i} onClick={() => setCur(i)}
-                      style={{ width: i === cur ? 22 : 8, height: 8, borderRadius: i === cur ? 4 : '50%', background: i === cur ? '#1a4fa0' : '#e5e7eb', border: 'none', cursor: 'pointer', transition: 'all .25s' }} />
+                      style={{ display: 'inline-block', width: i === cur ? 22 : 8, height: 8, borderRadius: i === cur ? 4 : 50, background: i === cur ? '#1a4fa0' : '#e5e7eb', border: 'none', cursor: 'pointer', transition: 'all .25s' }} />
                   ))}
                 </div>
                 <button onClick={() => setCur(c => Math.min(maxSlide, c + 1))} disabled={cur === maxSlide}
