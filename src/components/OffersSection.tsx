@@ -49,7 +49,7 @@ function OfferCard({ offer, tab }: { offer: Offer; tab: string }) {
         </span>
       </div>
       <div style={{ padding: 16 }}>
-        <div style={{ fontSize: 13, fontWeight: 700, color: '#111827', marginBottom: 4 }}>{offer.title}</div>
+        <div style={{ fontSize: 13, fontWeight: 700, color: '#111827', marginBottom: 4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{offer.address_city}{offer.area ? ` · ${offer.area} m²` : ''itle}</div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#6b7280', fontSize: 12, marginBottom: 11 }}>
           <MapPin size={12} /> {offer.address_city}{offer.address_district ? `, ${offer.address_district}` : ''}
         </div>
@@ -58,7 +58,7 @@ function OfferCard({ offer, tab }: { offer: Offer; tab: string }) {
           {offer.area && <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#6b7280' }}><Ruler size={12} /> {offer.area} m²</span>}
           {offer.floor !== null && offer.floor !== undefined && <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#6b7280' }}><Layers size={12} /> {offer.floor} p.</span>}
         </div>
-        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 2 }}>
           <span style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 20, color: '#1a4fa0' }}>{priceLabel(offer.price)}</span>
           {offer.price_per_m2 && <span style={{ fontSize: 11, color: '#9ca3af', whiteSpace: 'nowrap' }}>{offer.price_per_m2.toLocaleString('pl-PL')} zł/m²</span>}
         </div>
@@ -89,7 +89,7 @@ export default function OffersSection({ initialOffers }: { initialOffers: Pagina
   const [usingSamples, setUsingSamples] = useState(!hasRealOffers)
 
   const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://investrent-crm-production.up.railway.app'
-  const perView = 3
+  const perView = cols
   const maxSlide = Math.max(0, offers.length - perView)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
