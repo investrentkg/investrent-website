@@ -1,6 +1,7 @@
 "use client"
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import type { TeamMember } from '@/types'
 
@@ -78,30 +79,36 @@ export default function Team({ members }: Props) {
               const b = BADGE_STYLE[m.role] ?? BADGE_STYLE.agent
               const grad = AVATAR_GRADIENT[idx % AVATAR_GRADIENT.length]
               return (
-                <div key={m.id}
-                  className="bg-white rounded-2xl border border-slate-200 p-7 text-center hover:-translate-y-0.5 transition-all flex-shrink-0"
-                  style={{ width: `calc(${100 / perView}% - ${(perView - 1) * 20 / perView}px)` }}>
-                  <div className="relative w-20 h-20 mx-auto mb-4">
-                    {m.avatar_url ? (
-                      <Image src={m.avatar_url} alt={m.full_name} fill
-                        className="rounded-full object-cover shadow-md" sizes="80px" />
-                    ) : (
-                      <div className={`w-20 h-20 rounded-full bg-gradient-to-br ${grad} flex items-center justify-center shadow-md`}>
-                        <span className="font-mont font-black text-[26px] text-white">
-                          {m.full_name.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                        </span>
+                <Link key={m.id} href={m.offer_count ? `/oferty?agent_id=${m.id}` : '/oferty'}
+                  style={{ textDecoration: 'none', flexShrink: 0, width: `calc(${100 / perView}% - ${(perView - 1) * 20 / perView}px)` }}>
+                  <div className="bg-white rounded-2xl border border-slate-200 p-7 text-center hover:-translate-y-0.5 hover:shadow-lg transition-all cursor-pointer h-full">
+                    <div className="relative w-20 h-20 mx-auto mb-4">
+                      {m.avatar_url ? (
+                        <Image src={m.avatar_url} alt={m.full_name} fill
+                          className="rounded-full object-cover shadow-md" sizes="80px" />
+                      ) : (
+                        <div className={`w-20 h-20 rounded-full bg-gradient-to-br ${grad} flex items-center justify-center shadow-md`}>
+                          <span className="font-mont font-black text-[26px] text-white">
+                            {m.full_name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="text-[15px] font-bold text-slate-900 mb-1">{m.full_name}</div>
+                    <div className="text-[12px] text-slate-500 mb-2 leading-[1.5]">{m.role_label}</div>
+                    {m.specialization && (
+                      <div className="text-[11px] text-slate-400 mb-3">{m.specialization}</div>
+                    )}
+                    {(m.offer_count ?? 0) > 0 && (
+                      <div className="text-[11px] font-bold text-blue-600 mb-2">
+                        {m.offer_count} {m.offer_count === 1 ? 'oferta' : m.offer_count! < 5 ? 'oferty' : 'ofert'}
                       </div>
                     )}
+                    <span className={`text-[10px] font-bold px-3 py-1 rounded-md ${b.bg} ${b.text}`}>
+                      {b.label}
+                    </span>
                   </div>
-                  <div className="text-[15px] font-bold text-slate-900 mb-1">{m.full_name}</div>
-                  <div className="text-[12px] text-slate-500 mb-3 leading-[1.5]">{m.role_label}</div>
-                  {m.specialization && (
-                    <div className="text-[11px] text-slate-400 mb-3">{m.specialization}</div>
-                  )}
-                  <span className={`text-[10px] font-bold px-3 py-1 rounded-md ${b.bg} ${b.text}`}>
-                    {b.label}
-                  </span>
-                </div>
+                </Link>
               )
             })}
           </div>
