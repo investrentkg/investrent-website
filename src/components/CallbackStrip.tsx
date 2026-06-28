@@ -46,7 +46,7 @@ export default function CallbackStrip() {
                 <button onClick={handleCall} disabled={status === 'loading'}
                   style={{ background: '#0d2a5c', color: 'white', fontSize: 12, fontWeight: 700, padding: '12px 20px', borderRadius: 10, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 7, whiteSpace: 'nowrap' }}>
                   <PhoneForwarded size={14} />
-                  {status === 'loading' ? '…' : 'Zadzwoń do mnie'}
+                  {status === 'loading' ? '…' : 'Zostaw numer, oddzwonimy!'}
                 </button>
                 <a href="https://wa.me/48731554341" target="_blank" rel="noopener noreferrer"
                   style={{ background: '#25D366', color: 'white', fontSize: 12, fontWeight: 700, padding: '12px 16px', borderRadius: 10, display: 'flex', alignItems: 'center', gap: 5, whiteSpace: 'nowrap', textDecoration: 'none' }}>
