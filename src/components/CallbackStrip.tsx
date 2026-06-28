@@ -7,8 +7,17 @@ export default function CallbackStrip() {
   const [phone, setPhone] = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle')
 
+  function isValidPhone(p: string) {
+    const cleaned = p.replace(/[\s\-()]/g, '')
+    return /^(\+?[1-9]\d{7,14}|\d{9})$/.test(cleaned)
+  }
+
   async function handleCall() {
     if (!phone.trim()) return
+    if (!isValidPhone(phone)) {
+      setStatus('error')
+      return
+    }
     setStatus('loading')
     const res = await submitLead({ phone, source: 'callback_strip', client_type: 'buyer' })
     setStatus(res?.ok ? 'ok' : 'error')
