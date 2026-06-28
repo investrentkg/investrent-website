@@ -34,38 +34,60 @@ interface OfferDetail {
 
 function Gallery({ photos }: { photos: OfferDetail['offer_photos'] }) {
   const [active, setActive] = useState(0)
+  const [touchStart, setTouchStart] = useState(0)
+
   if (!photos.length) return (
-    <div style={{ height: 420, background: '#f0f4ff', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 16, fontSize: 64 }}>🏠</div>
+    <div style={{ width: '100%', aspectRatio: '16/9', background: '#f0f4ff', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 16, fontSize: 64 }}>🏠</div>
   )
+
+  function prev() { setActive(a => Math.max(0, a - 1)) }
+  function next() { setActive(a => Math.min(photos.length - 1, a + 1)) }
+
   return (
-    <div>
-      <div style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', marginBottom: 10 }}>
+    <div style={{ width: '100%', maxWidth: '100%', overflow: 'hidden' }}>
+      {/* Główne zdjęcie */}
+      <div style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', marginBottom: 8, background: '#0d2a5c' }}
+        onTouchStart={e => setTouchStart(e.touches[0].clientX)}
+        onTouchEnd={e => {
+          const diff = touchStart - e.changedTouches[0].clientX
+          if (Math.abs(diff) > 50) diff > 0 ? next() : prev()
+        }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={photos[active].url} alt="Zdjęcie oferty"
-          style={{ width: '100%', height: 420, objectFit: 'cover', display: 'block' }} />
+        <img
+          src={photos[active].url}
+          alt="Zdjęcie oferty"
+          style={{
+            width: '100%',
+            height: 'clamp(220px, 56vw, 500px)',
+            objectFit: 'cover',
+            display: 'block',
+            maxWidth: '100%',
+          }}
+        />
         {photos.length > 1 && (
           <>
-            <button onClick={() => setActive(a => Math.max(0, a - 1))}
-              style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,.45)', border: 'none', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'white' }}>
-              <ChevronLeft size={20} />
+            <button onClick={prev} disabled={active === 0}
+              style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,.5)', border: 'none', borderRadius: '50%', width: 38, height: 38, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'white', opacity: active === 0 ? .3 : 1 }}>
+              <ChevronLeft size={18} />
             </button>
-            <button onClick={() => setActive(a => Math.min(photos.length - 1, a + 1))}
-              style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,.45)', border: 'none', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'white' }}>
-              <ChevronRight size={20} />
+            <button onClick={next} disabled={active === photos.length - 1}
+              style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,.5)', border: 'none', borderRadius: '50%', width: 38, height: 38, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'white', opacity: active === photos.length - 1 ? .3 : 1 }}>
+              <ChevronRight size={18} />
             </button>
-            <span style={{ position: 'absolute', bottom: 14, right: 14, background: 'rgba(0,0,0,.55)', color: 'white', fontSize: 12, padding: '4px 10px', borderRadius: 6 }}>
+            <span style={{ position: 'absolute', bottom: 12, right: 12, background: 'rgba(0,0,0,.6)', color: 'white', fontSize: 11, padding: '3px 10px', borderRadius: 6, fontWeight: 600 }}>
               {active + 1} / {photos.length}
             </span>
           </>
         )}
       </div>
+      {/* Miniatury */}
       {photos.length > 1 && (
-        <div style={{ display: 'flex', gap: 8, overflowX: 'auto' as const, paddingBottom: 4 }}>
+        <div style={{ display: 'flex', gap: 6, overflowX: 'auto' as const, paddingBottom: 4, scrollbarWidth: 'none' as const }}>
           {photos.map((p, i) => (
             // eslint-disable-next-line @next/next/no-img-element
-            <img key={p.id} src={p.url} alt=""
+            <img key={p.id || i} src={p.url} alt=""
               onClick={() => setActive(i)}
-              style={{ width: 90, height: 62, objectFit: 'cover', borderRadius: 8, flexShrink: 0, cursor: 'pointer', border: i === active ? '2px solid #1a4fa0' : '2px solid transparent', opacity: i === active ? 1 : .7, transition: 'all .2s' }} />
+              style={{ width: 72, height: 52, objectFit: 'cover', borderRadius: 7, flexShrink: 0, cursor: 'pointer', border: i === active ? '2px solid #1a4fa0' : '2px solid transparent', opacity: i === active ? 1 : .65, transition: 'all .15s' }} />
           ))}
         </div>
       )}
