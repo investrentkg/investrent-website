@@ -278,17 +278,20 @@ body {
   .offer-card:hover { transform: translateY(-4px); box-shadow: 0 14px 32px rgba(0,0,0,.1); }
 
   .carousel-dot {
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 9999px;
+    width: 8px;
+    height: 8px;
+    min-width: 8px;
+    border-radius: 50%;
     background-color: #e5e7eb;
     cursor: pointer;
     transition: all 0.25s;
+    flex-shrink: 0;
   }
   .carousel-dot.active {
     background-color: #1a4fa0;
-    width: 1.25rem;
-    border-radius: 0.25rem;
+    width: 22px;
+    height: 8px;
+    border-radius: 4px;
   }
 }
 
