@@ -45,7 +45,7 @@ export default function Hero({ stats, googleRating = 4.8, googleTotal = 55 }: He
             <div className="tag bg-gold/20 border border-gold/35 text-gold mb-5">
               <Award size={14} /> Kołobrzeg i okolice
             </div>
-            <h1 className="heading text-[50px] text-white leading-[1.08] mb-5">
+            <h1 className="heading text-[32px] md:text-[50px] text-white leading-[1.1] mb-5">
               Twoje wymarzone<br />
               <span className="text-gold">nieruchomości</span><br />
               nad Bałtykiem
