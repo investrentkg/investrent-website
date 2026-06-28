@@ -1,5 +1,5 @@
 "use client"
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { MapPin, LayoutGrid, Ruler, Layers, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { Offer, PaginatedOffers } from '@/types'
@@ -69,6 +69,8 @@ function OfferCard({ offer, tab }: { offer: Offer; tab: string }) {
 
 export default function OffersSection({ initialOffers }: { initialOffers: PaginatedOffers | null }) {
   const hasRealOffers = (initialOffers?.data?.length ?? 0) > 0
+  const [cols, setCols] = useState(3)
+  useEffect(() => { const u = () => setCols(window.innerWidth < 640 ? 1 : window.innerWidth < 1024 ? 2 : 3); u(); window.addEventListener('resize', u); return () => window.removeEventListener('resize', u) }, [])
   const [tab, setTab]       = useState<'new' | 'promo' | 'exclusive'>('new')
   const [offers, setOffers] = useState<Offer[]>(hasRealOffers ? initialOffers!.data : [])
   const [loading, setLoading] = useState(false)
