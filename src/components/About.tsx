@@ -1,3 +1,5 @@
+"use client"
+import { useState, useEffect } from 'react'
 import { MapPin, ShieldCheck, Clock, Trophy } from 'lucide-react'
 
 const POINTS = [
@@ -6,22 +8,34 @@ const POINTS = [
   { icon: Clock,        title: 'Odpowiadamy do 60 minut',  desc: 'Żadnego czekania. Kontaktujemy się z każdym klientem tego samego dnia.' },
 ]
 
-// Jeśli public/about.jpg istnieje – użyj go, w przeciwnym razie Unsplash fallback
-const ABOUT_IMG = '/about.jpg'
-const ABOUT_FALLBACK = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80&fit=crop&h=600'
+const IMG = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80&fit=crop&h=600'
 
 export default function About() {
+  const [isDesktop, setIsDesktop] = useState(false)
+
+  useEffect(() => {
+    const check = () => setIsDesktop(window.innerWidth >= 1024)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
+
   return (
     <section id="o-nas" className="section">
       <div className="container">
-        <div style={{ display: 'grid', gridTemplateColumns: typeof window !== 'undefined' && window.innerWidth < 1024 ? '1fr' : '1fr 1.2fr', gap: '72px', alignItems: 'center' }}
-          className="about-grid" style={{ overflow: 'hidden' }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: isDesktop ? '1fr 1.2fr' : '1fr',
+          gap: isDesktop ? '72px' : '32px',
+          alignItems: 'center',
+        }}>
+
+          {/* Zdjęcie */}
           <div style={{ borderRadius: 18, overflow: 'hidden', position: 'relative' }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-              src={ABOUT_FALLBACK}
+            <img
+              src={IMG}
               alt="Biuro nieruchomości InvestRent w Kołobrzegu"
-              style={{ width: '100%', height: 500, objectFit: 'cover', display: 'block' }}
+              style={{ width: '100%', height: isDesktop ? 500 : 280, objectFit: 'cover', display: 'block' }}
             />
             <div style={{
               position: 'absolute', bottom: 24, left: 24,
@@ -33,15 +47,19 @@ export default function About() {
                 <Trophy size={22} color="white" />
               </div>
               <div>
-                <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 16, color: '#111827' }}>Nr 1</div>
+                <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 16, color: '#0d2a5c' }}>10+ lat</div>
                 <div style={{ fontSize: 12, color: '#6b7280' }}>biuro nad Bałtykiem</div>
               </div>
             </div>
           </div>
+
+          {/* Tekst */}
           <div>
-            <div className="tag" style={{ background: 'rgba(26,79,160,.08)', color: '#1a4fa0', marginBottom: 14 }}>O nas</div>
-            <h2 className="heading" style={{ fontSize: 32, color: '#0d2a5c', lineHeight: 1.15, marginBottom: 18 }}>
-              Nieruchomości nad Bałtykiem — to nasza specjalność
+            <div className="tag" style={{ background: 'rgba(26,79,160,.08)', color: '#1a4fa0', marginBottom: 16 }}>
+              O nas
+            </div>
+            <h2 className="heading" style={{ fontSize: isDesktop ? 32 : 26, color: '#0d2a5c', lineHeight: 1.15, marginBottom: 16 }}>
+              Nieruchomości nad Bałtykiem&nbsp;— to nasza specjalność
             </h2>
             <p style={{ fontSize: 14, color: '#6b7280', lineHeight: 1.8, marginBottom: 16 }}>
               InvestRent to kołobrzeskie biuro nieruchomości z wieloletnim doświadczeniem na rynku nadmorskim. Doskonale znamy lokalne realia — od cen po prawne zawiłości rynku wakacyjnego.
@@ -49,12 +67,12 @@ export default function About() {
             <p style={{ fontSize: 14, color: '#6b7280', lineHeight: 1.8, marginBottom: 24 }}>
               Naszą misją jest przeprowadzenie klientów przez każdą transakcję bezpiecznie i bez stresu. Nie znikamy po podpisaniu umowy — jesteśmy do dyspozycji przez cały proces i długo po nim.
             </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 14 }}>
               {POINTS.map(pt => {
                 const Icon = pt.icon
                 return (
-                  <div key={pt.title} style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
-                    <div style={{ width: 30, height: 30, background: '#eff6ff', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2 }}>
+                  <div key={pt.title} style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+                    <div style={{ width: 36, height: 36, background: 'rgba(26,79,160,.08)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                       <Icon size={15} color="#1a4fa0" />
                     </div>
                     <div>
@@ -66,6 +84,7 @@ export default function About() {
               })}
             </div>
           </div>
+
         </div>
       </div>
     </section>
