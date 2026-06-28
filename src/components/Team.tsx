@@ -23,7 +23,13 @@ interface Props { members: TeamMember[] }
 export default function Team({ members }: Props) {
   const [cur, setCur] = useState(0)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
-  const perView = 3
+  const [perView, setPerView] = useState(3)
+  useEffect(() => {
+    const update = () => setPerView(window.innerWidth < 640 ? 1 : window.innerWidth < 1024 ? 2 : 3)
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [])
 
   const FALLBACK_MEMBERS: TeamMember[] = [
     { id: 'f1', full_name: 'Daniel Kamiński', role: 'manager', role_label: 'Manager', avatar_url: null, bio: 'Założyciel i właściciel InvestRent. Wieloletni specjalista rynku nieruchomości nadmorskich — Kołobrzeg i okolice.', specialization: 'Zarządzanie i inwestycje' },
