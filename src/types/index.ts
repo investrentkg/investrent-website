@@ -32,6 +32,8 @@ export interface TeamMember {
   avatar_url: string | null
   bio: string | null
   specialization: string | null
+  offer_count?: number
+  position_label?: string | null
 }
 
 export interface Office {
