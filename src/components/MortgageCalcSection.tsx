@@ -139,8 +139,8 @@ export default function MortgageCalcSection() {
                 🏦 Potrzebujesz kredytu? Konsultacja gratis.
               </div>
               <p style={{ fontSize: 12, color: '#6b7280', lineHeight: 1.6, marginBottom: 14 }}>
-                Sprawdzamy oferty wielu banków i dopasowujemy najkorzystniejszą na dzień zgłoszenia.
-                Konsultacja jest bezpłatna — za obsługę płaci bank, nie Ty.
+                Sprawdzamy oferty wielu banków i wybieramy najkorzystniejszą na dzień zgłoszenia.
+                Konsultacja oraz cały proces kredytowy są dla naszych klientów w 100% bezpłatne.
               </p>
               {leadStatus === 'ok' ? (
                 <div style={{ background: '#f0fdf4', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#065f46', fontWeight: 600, textAlign: 'center' as const }}>
