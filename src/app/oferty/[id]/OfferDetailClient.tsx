@@ -46,7 +46,7 @@ function Gallery({ photos }: { photos: OfferDetail['offer_photos'] }) {
   return (
     <div style={{ width: '100%', maxWidth: '100%', overflow: 'hidden' }}>
       {/* Główne zdjęcie */}
-      <div style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', marginBottom: 8, background: '#0d2a5c' }}
+      <div style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', marginBottom: 8, background: '#0d2a5c', aspectRatio: '4/3', maxHeight: 560 }}
         onTouchStart={e => setTouchStart(e.touches[0].clientX)}
         onTouchEnd={e => {
           const diff = touchStart - e.changedTouches[0].clientX
@@ -58,10 +58,9 @@ function Gallery({ photos }: { photos: OfferDetail['offer_photos'] }) {
           alt="Zdjęcie oferty"
           style={{
             width: '100%',
-            height: 'clamp(220px, 56vw, 500px)',
+            height: '100%',
             objectFit: 'cover',
             display: 'block',
-            maxWidth: '100%',
           }}
         />
         {photos.length > 1 && (
