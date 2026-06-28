@@ -122,7 +122,7 @@ export default function Team({ members }: Props) {
             </button>
             <div className="flex gap-2">
               {Array.from({ length: maxSlide + 1 }).map((_, i) => (
-                <button key={i} onClick={() => setCur(i)}
+                <div key={i} onClick={() => setCur(i)} role="button"
                   style={{
                     display: 'inline-block',
                     width: i === cur ? 22 : 8,
