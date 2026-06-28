@@ -18,6 +18,7 @@ const FALLBACK_OFFICE = { name: 'InvestRent', logo_url: '/logo.png', address: 'u
 export default async function OffersPage({ searchParams }: { searchParams: { [k: string]: string } }) {
   const transaction_type = searchParams?.transaction_type ?? ''
   const property_type = searchParams?.property_type ?? ''
+  const agent_id = searchParams?.agent_id ?? ''
   const [data, officeData] = await Promise.all([
     getPublicOffers({ limit: 9, ...(property_type && { property_type }), ...(transaction_type && { transaction_type }), ...(agent_id && { agent_id }) } as any),
     getOffice(),
