@@ -32,7 +32,6 @@ export default function Nav({ office }: { office: Office | null }) {
     { label: 'Wynajem',  href: '/wynajem' },
     { label: 'O nas',    href: '/o-nas' },
     { label: 'Trudne sprawy', href: '/trudne-nieruchomosci' },
-    { label: 'Kalkulator', href: '/kalkulator' },
     { label: 'Kontakt',  href: '/kontakt' },
   ]
 
