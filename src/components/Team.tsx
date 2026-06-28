@@ -123,7 +123,17 @@ export default function Team({ members }: Props) {
             <div className="flex gap-2">
               {Array.from({ length: maxSlide + 1 }).map((_, i) => (
                 <button key={i} onClick={() => setCur(i)}
-                  className={`carousel-dot ${i === cur ? 'active' : ''}`} />
+                  style={{
+                    width: i === cur ? 22 : 8,
+                    height: 8,
+                    borderRadius: i === cur ? 4 : '50%',
+                    background: i === cur ? '#1a4fa0' : '#e5e7eb',
+                    cursor: 'pointer',
+                    border: 'none',
+                    padding: 0,
+                    flexShrink: 0,
+                    transition: 'all .25s',
+                  }} />
               ))}
             </div>
             <button onClick={() => setCur(c => Math.min(maxSlide, c + 1))} disabled={cur === maxSlide}
