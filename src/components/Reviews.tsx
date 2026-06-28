@@ -148,8 +148,8 @@ export default function Reviews() {
           {count > 1 && (
             <div style={{ display: 'flex', gap: 6 }}>
               {reviews.map((_, i) => (
-                <button key={i} onClick={() => setActive(i)}
-                  style={{ display: 'inline-block', width: i === active ? 22 : 8, height: 8, borderRadius: i === active ? 4 : 50, background: i === active ? '#1a4fa0' : '#d1d5db', border: 'none', cursor: 'pointer', transition: 'all .3s', padding: 0 }} />
+                <div key={i} onClick={() => setActive(i)}
+                  style={{ display: 'inline-block', width: i === active ? 22 : 8, height: 8, borderRadius: i === active ? 4 : 50, background: i === active ? '#1a4fa0' : '#d1d5db', cursor: 'pointer', transition: 'all .3s' }} />
               ))}
             </div>
           )}
