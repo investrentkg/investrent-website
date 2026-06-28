@@ -54,7 +54,7 @@ export default function MortgageCalcSection() {
     if (!phone.trim()) return
     setLeadStatus('loading')
     const r = await submitLead({
-      phone, source: 'contact_form', client_type: 'buyer',
+      phone, source: 'kredyt', client_type: 'buyer',
       notes: `Zainteresowanie kredytem. Kwota: ${fmt(amount)} zł, okres: ${years} lat, wkład: ${own}%`
     })
     setLeadStatus(r?.ok ? 'ok' : 'error')
@@ -136,11 +136,11 @@ export default function MortgageCalcSection() {
             {/* CTA kredyt */}
             <div style={{ background: 'white', border: '2px solid #e5e7eb', borderRadius: 16, padding: 20 }}>
               <div style={{ fontSize: 14, fontWeight: 700, color: '#0d2a5c', marginBottom: 6 }}>
-                🏦 Pomożemy Ci uzyskać kredyt
+                🏦 Potrzebujesz kredytu? Konsultacja gratis.
               </div>
               <p style={{ fontSize: 12, color: '#6b7280', lineHeight: 1.6, marginBottom: 14 }}>
-                Współpracujemy z niezależnym pośrednikiem finansowym, który sprawdza oferty wszystkich
-                banków i wybiera najlepszą na dany moment — bez dodatkowych kosztów dla Ciebie.
+                Sprawdzamy oferty wielu banków i dopasowujemy najkorzystniejszą na dzień zgłoszenia.
+                Konsultacja jest bezpłatna — za obsługę płaci bank, nie Ty.
               </p>
               {leadStatus === 'ok' ? (
                 <div style={{ background: '#f0fdf4', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#065f46', fontWeight: 600, textAlign: 'center' as const }}>
