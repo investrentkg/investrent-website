@@ -35,7 +35,7 @@ export default function Nav({ office }: { office: Office | null }) {
 
   return (
     <>
-      <nav style={{
+      <nav style={{ overflowX: 'hidden', maxWidth: '100vw', position: 'relative' }} style={{
         backgroundColor: '#0d2a5c', padding: '13px 0',
         position: 'sticky', top: 0, zIndex: 100,
         boxShadow: scrolled ? '0 4px 20px rgba(0,0,0,.3)' : 'none',
