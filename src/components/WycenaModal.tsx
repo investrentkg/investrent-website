@@ -17,8 +17,14 @@ export default function WycenaModal({ isOpen, onClose }: Props) {
     return () => document.removeEventListener('keydown', esc)
   }, [isOpen, onClose])
 
+  function isValidPhone(p: string) {
+    const cleaned = p.replace(/[\s\-()]/g, '')
+    return /^(\+?[1-9]\d{7,14}|\d{9})$/.test(cleaned)
+  }
+
   async function submit() {
     if (!phone.trim()) return
+    if (!isValidPhone(phone)) { setStatus('error'); return }
     setStatus('loading')
     const r = await submitLead({ full_name: name || 'Właściciel', phone: phone.trim(), source: 'wycena_modal', client_type: 'seller', notes: 'Bezpłatna wycena — popup strony głównej' })
     setStatus(r?.ok ? 'ok' : 'error')
@@ -63,7 +69,7 @@ export default function WycenaModal({ isOpen, onClose }: Props) {
                 style={{ padding: '13px 16px', borderRadius: 12, border: `1.5px solid ${status === 'error' ? '#ef4444' : '#e2e8f0'}`, fontSize: 14, outline: 'none', color: '#1e293b', fontFamily: 'inherit' }} />
               <button type="button" onClick={submit} disabled={!phone.trim() || status === 'loading'}
                 style={{ background: phone.trim() ? 'linear-gradient(135deg, #1a4fa0, #0d2a5c)' : '#cbd5e1', color: 'white', border: 'none', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, cursor: phone.trim() ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: 'inherit' }}>
-                <Phone size={16} /> {status === 'loading' ? 'Wysyłanie…' : 'Oddzwoń do mnie — bezpłatnie'}
+                <Phone size={16} /> {status === 'loading' ? 'Wysyłanie…' : 'Zamów rozmowę — bezpłatnie'}
               </button>
               {status === 'error' && <p style={{ color: '#ef4444', fontSize: 13, textAlign: 'center' as const, margin: 0 }}>Coś poszło nie tak — spróbuj ponownie</p>}
               <p style={{ color: '#94a3b8', fontSize: 11, textAlign: 'center' as const, margin: 0 }}>🔒 Dane chronione zgodnie z RODO · Bez zobowiązań</p>
