@@ -7,6 +7,7 @@ const LINKS = [
   { label: 'RODO',                href: '/rodo' },
   { label: 'Mapa strony',         href: '/sitemap.xml' },
   { label: 'Kontakt',             href: '/kontakt' },
+  { label: 'Kalkulator kredytowy', href: '/#kalkulator' },
 ]
 
 export default function Footer({ office }: { office: Office | null }) {
