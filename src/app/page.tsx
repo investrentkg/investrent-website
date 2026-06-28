@@ -12,6 +12,7 @@ import Reviews       from '@/components/Reviews'
 import Team          from '@/components/Team'
 import Contact       from '@/components/Contact'
 import Footer        from '@/components/Footer'
+import MortgageCalcSection from '@/components/MortgageCalcSection'
 import FloatingWA    from '@/components/FloatingWA'
 import type { Office } from '@/types'
 
