@@ -16,7 +16,7 @@ const PROP_TYPES = [
   { value: 'inwestycja', label: 'Inwestycja' },
 ]
 const TRANS_TYPES = [
-  { value: '', label: 'Kupno i wynajem' },
+  { value: '', label: 'Wszystkie' },
   { value: 'sprzedaz', label: 'Na sprzedaż' },
   { value: 'wynajem', label: 'Do wynajęcia' },
 ]
@@ -78,7 +78,7 @@ function OfferCard({ offer }: { offer: Offer }) {
           <span style={{ position: 'absolute', top: 12, right: 12, background: 'rgba(255,255,255,.9)', color: '#6b7280', fontSize: 10, fontWeight: 600, padding: '3px 8px', borderRadius: 5 }}>{offer.ref_number}</span>
         </div>
         <div style={{ padding: '16px 18px' }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: '#111827', marginBottom: 5 }}>{offer.title}</div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: '#111827', marginBottom: 5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{offer.address_city}{offer.area ? ` · ${offer.area} m²` : ''}</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#6b7280', fontSize: 12, marginBottom: 12 }}>
             <MapPin size={13} /> {offer.address_city}{offer.address_district ? `, ${offer.address_district}` : ''}
           </div>
@@ -89,7 +89,7 @@ function OfferCard({ offer }: { offer: Offer }) {
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
             <span style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 20, color: '#1a4fa0' }}>{priceLabel(offer.price, offer.transaction_type)}</span>
-            {offer.price_per_m2 && <span style={{ fontSize: 11, color: '#9ca3af' }}>{offer.price_per_m2.toLocaleString('pl-PL')} zł/m²</span>}
+            {offer.price_per_m2 && <span style={{ fontSize: 11, color: '#9ca3af', whiteSpace: 'nowrap' }}>{offer.price_per_m2.toLocaleString('pl-PL')} zł/m²</span>}
           </div>
         </div>
       </div>
