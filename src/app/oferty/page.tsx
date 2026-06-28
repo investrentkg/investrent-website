@@ -19,7 +19,7 @@ export default async function OffersPage({ searchParams }: { searchParams: { [k:
   const transaction_type = searchParams?.transaction_type ?? ''
   const property_type = searchParams?.property_type ?? ''
   const [data, officeData] = await Promise.all([
-    getPublicOffers({ limit: 9, ...(property_type && { property_type }), ...(transaction_type && { transaction_type }) }),
+    getPublicOffers({ limit: 9, ...(property_type && { property_type }), ...(transaction_type && { transaction_type }), ...(agent_id && { agent_id }) } as any),
     getOffice(),
   ])
   const office = officeData ?? FALLBACK_OFFICE
@@ -36,7 +36,7 @@ export default async function OffersPage({ searchParams }: { searchParams: { [k:
             <p style={{ color: 'rgba(255,255,255,.7)', fontSize: 15 }}>Kołobrzeg, Mielno, Dźwirzyno i okolice Bałtyku</p>
           </div>
         </div>
-        <OffersPageClient initialOffers={data?.data ?? []} initialTotal={data?.pagination?.total ?? 0} defaultType={property_type} defaultTransaction={transaction_type} />
+        <OffersPageClient initialOffers={data?.data ?? []} initialTotal={data?.pagination?.total ?? 0} defaultType={property_type} defaultTransaction={transaction_type} agentId={agent_id} />
       </main>
       <Footer office={office} />
       <FloatingWA />
