@@ -124,15 +124,17 @@ export default function Team({ members }: Props) {
               {Array.from({ length: maxSlide + 1 }).map((_, i) => (
                 <button key={i} onClick={() => setCur(i)}
                   style={{
+                    display: 'inline-block',
                     width: i === cur ? 22 : 8,
                     height: 8,
-                    borderRadius: i === cur ? 4 : '50%',
-                    background: i === cur ? '#1a4fa0' : '#e5e7eb',
+                    borderRadius: i === cur ? 4 : 50,
+                    background: i === cur ? '#1a4fa0' : '#d1d5db',
                     cursor: 'pointer',
                     border: 'none',
                     padding: 0,
+                    margin: 0,
                     flexShrink: 0,
-                    transition: 'all .25s',
+                    transition: 'width .25s, background .25s',
                   }} />
               ))}
             </div>
