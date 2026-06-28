@@ -20,7 +20,7 @@ const FALLBACK: Review[] = [
   { author: 'Lech Bugaj',          avatar: null, rating: 5, text: 'Jestem pod wrażeniem rzetelnego podejścia Pani Dagmary do obsługi transakcji — od pierwszego kontaktu aż do załatwienia wszelkich spraw po zakupie nieruchomości 👍', time: 'miesiąc temu' },
 ]
 
-function Stars({ n }: { n: number }) {
+function Stars({ n, center = false }: { n: number; center?: boolean }) {
   return (
     <div style={{ display: 'flex', gap: 2, marginBottom: 12 }}>
       {[1,2,3,4,5].map(i => (
@@ -121,7 +121,7 @@ export default function Reviews() {
         >
           {cards.map((r, i) => (
             <div key={`${active}-${i}`} style={{ background: '#f8fafc', borderRadius: 16, padding: '26px', border: '1px solid #e5e7eb', display: 'flex', flexDirection: 'column' as const, gap: 0 }}>
-              <Stars n={r.rating} />
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 6 }}><Stars n={r.rating} /></div>
               <p style={{ fontSize: 14, color: '#374151', lineHeight: 1.8, marginBottom: 20, flex: 1 }}>
                 &ldquo;{r.text.length > 240 ? r.text.slice(0, 240) + '…' : r.text}&rdquo;
               </p>
@@ -155,7 +155,7 @@ export default function Reviews() {
           )}
           <div style={{ textAlign: 'center' as const }}>
             <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 900, fontSize: 44, color: '#0d2a5c', lineHeight: 1 }}>{rating}</div>
-            <Stars n={5} />
+            <div style={{ display: 'flex', justifyContent: 'center' }}><Stars n={5} /></div>
             <a href={GOOGLE_URL} target="_blank" rel="noopener noreferrer"
               style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: '#1a4fa0', fontWeight: 600, fontSize: 13, textDecoration: 'none', marginTop: 4 }}>
               Na podstawie {total} opinii w Google <ExternalLink size={13} />
