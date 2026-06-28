@@ -15,7 +15,7 @@ export default function About() {
     <section id="o-nas" className="section">
       <div className="container">
         <div style={{ display: 'grid', gridTemplateColumns: typeof window !== 'undefined' && window.innerWidth < 1024 ? '1fr' : '1fr 1.2fr', gap: '72px', alignItems: 'center' }}
-          className="about-grid">
+          className="about-grid" style={{ overflow: 'hidden' }}>
           <div style={{ borderRadius: 18, overflow: 'hidden', position: 'relative' }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
