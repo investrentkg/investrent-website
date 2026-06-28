@@ -16,18 +16,13 @@ export default function MortgageCalcSection() {
 
   // Pobierz stopę referencyjną NBP
   useEffect(() => {
-    fetch('https://api.nbp.pl/api/stopy/2/', { headers: { Accept: 'application/json' } })
+    fetch(`${process.env.NEXT_PUBLIC_API_URL ?? 'https://investrent-crm-production.up.railway.app'}/api/public/nbp-rate`)
       .then(r => r.json())
       .then(data => {
-        // NBP zwraca tablicę stóp — szukamy stopy referencyjnej
-        const ref = Array.isArray(data) ? data.find((s: any) =>
-          s.nazwa?.toLowerCase().includes('referencyjna') ||
-          s.name?.toLowerCase().includes('reference')
-        ) : null
-        const val = ref?.oprocentowanie ?? ref?.rate ?? null
+        const val = data?.rate ?? null
         if (val && typeof val === 'number') {
           setBaseRate(val)
-          setRate(parseFloat((val + 2.3).toFixed(2)))  // + typowa marża bankowa
+          setRate(parseFloat((val + 2.3).toFixed(2)))
           setRateSource(`NBP ${val.toFixed(2)}% + marża 2,3%`)
         }
       })
