@@ -132,3 +132,29 @@ html, body {
     padding-right: 16px !important;
   }
 }
+
+@media (max-width: 640px) {
+  /* Hero */
+  .heading { font-size: clamp(24px, 8vw, 50px) !important; }
+  
+  /* Sekcje — padding na mobile */
+  section { padding-left: 16px !important; padding-right: 16px !important; }
+  
+  /* Kontenery */
+  .container { padding-left: 16px !important; padding-right: 16px !important; }
+  
+  /* Karty ofert — 1 kolumna */
+  [style*="repeat(3"] { grid-template-columns: 1fr !important; }
+  
+  /* Stats w hero */
+  [class*="flex gap-7"] { gap: 16px !important; flex-wrap: wrap !important; }
+  
+  /* Przyciski CTA — full width */
+  .btn-gold { width: 100% !important; justify-content: center !important; }
+}
+
+@media (max-width: 768px) {
+  /* Team — 1 per view */  
+  [style*="repeat(3, 1fr)"] { grid-template-columns: 1fr !important; }
+  [style*="repeat(2, 1fr)"] { grid-template-columns: 1fr !important; }
+}
