@@ -26,10 +26,10 @@ function getBadge(offer: Offer, tab: string) {
 function OfferCard({ offer, tab }: { offer: Offer; tab: string }) {
   const badge = getBadge(offer, tab)
   return (
-    <div style={{ background: 'white', borderRadius: 14, border: '1px solid #e5e7eb', overflow: 'hidden', flexShrink: 0, width: 'calc(33.333% - 15px)', cursor: 'pointer', transition: 'transform .2s, box-shadow .2s' }}
+    <a href={`/oferty/${offer.id}`} style={{ textDecoration: 'none', display: 'block', flexShrink: 0, width: 'calc(33.333% - 15px)' }}>
+    <div style={{ background: 'white', borderRadius: 14, border: '1px solid #e5e7eb', overflow: 'hidden', cursor: 'pointer', transition: 'transform .2s, box-shadow .2s' }}
       onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform='translateY(-4px)'; (e.currentTarget as HTMLElement).style.boxShadow='0 14px 32px rgba(0,0,0,.1)' }}
       onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform=''; (e.currentTarget as HTMLElement).style.boxShadow='' }}>
-      <div style={{ height: 220, overflow: 'hidden', position: 'relative', background: '#f8fafc' }}>
         {offer.main_photo ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={offer.main_photo} alt={offer.title ?? 'Oferta'}
@@ -64,6 +64,7 @@ function OfferCard({ offer, tab }: { offer: Offer; tab: string }) {
         </div>
       </div>
     </div>
+    </a>
   )
 }
 
