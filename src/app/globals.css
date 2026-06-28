@@ -55,8 +55,8 @@ img, video, iframe, embed, object {
   max-width: 100%;
 }
 
-/* ── Przyciski — min touch target 44px ── */
-button, a[role="button"], .btn {
+/* ── Przyciski CTA — min touch target 44px (nie dotyczy kropek karuzeli) ── */
+.btn-cta, a[role="button"] {
   min-height: 44px;
 }
 
