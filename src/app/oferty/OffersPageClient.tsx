@@ -104,8 +104,8 @@ const INP = (props: React.InputHTMLAttributes<HTMLInputElement>) => (
   <input {...props} style={{ padding: '10px 14px', borderRadius: 9, border: '1.5px solid #e5e7eb', fontSize: 13, color: '#374151', background: 'white', outline: 'none', width: '100%', ...props.style }} />
 )
 
-export default function OffersPageClient({ initialOffers, initialTotal, defaultType = '', defaultTransaction = '' }: {
-  initialOffers: Offer[]; initialTotal: number; defaultType?: string; defaultTransaction?: string
+export default function OffersPageClient({ initialOffers, initialTotal, defaultType = '', defaultTransaction = '', agentId = '' }: {
+  initialOffers: Offer[]; initialTotal: number; defaultType?: string; defaultTransaction?: string; agentId?: string
 }) {
   const initF: Filters = { ...EMPTY_FILTERS, property_type: defaultType, transaction_type: defaultTransaction }
   const hasReal = true // zawsze używaj danych z CRM
