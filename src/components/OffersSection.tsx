@@ -91,6 +91,15 @@ export default function OffersSection({ initialOffers }: { initialOffers: Pagina
   const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://investrent-crm-production.up.railway.app'
   const perView = 3
   const maxSlide = Math.max(0, offers.length - perView)
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  useEffect(() => {
+    if (maxSlide === 0) return
+    timerRef.current = setInterval(() => {
+      setCur(c => c >= maxSlide ? 0 : c + 1)
+    }, 4000)
+    return () => { if (timerRef.current) clearInterval(timerRef.current) }
+  }, [maxSlide])
 
   const fetchOffers = useCallback(async (newTab: typeof tab) => {
     setLoading(true); setCur(0)
