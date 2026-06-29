@@ -73,3 +73,4 @@ lib/
 types/
   index.ts        — TypeScript interfaces
 ```
+<!-- build: 2026-06-29T09:56 -->
