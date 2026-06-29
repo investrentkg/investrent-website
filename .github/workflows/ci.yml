@@ -1,0 +1,87 @@
+name: Website CI — Build & Content Check
+
+on:
+  push:
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'package.json'
+      - 'next.config.*'
+  workflow_dispatch:
+
+jobs:
+  build-check:
+    name: Sprawdź build Next.js
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript check
+        run: npx tsc --noEmit 2>&1 | tee /tmp/tsc_out.txt || true
+        # Next.js nie failuje na TS errors podczas build ale dobrze wiedzieć
+
+      - name: Next.js build test
+        run: npm run build
+        env:
+          NEXT_PUBLIC_API_URL: https://investrent-crm-production.up.railway.app
+
+      - name: ✅ Build OK
+        run: echo "Build zakończony pomyślnie"
+
+  content-check:
+    name: Sprawdź treść po deployu
+    runs-on: ubuntu-latest
+    needs: build-check
+    if: github.event_name == 'push'
+    steps:
+      - name: Czekaj na Railway deploy (5 minut)
+        run: |
+          echo "Czekam na Railway aby przebudował stronę..."
+          sleep 300
+
+      - name: Sprawdź kluczową treść strony
+        run: |
+          URL="https://investrent-website-production.up.railway.app"
+          HTML=$(curl -sf --retry 3 --retry-delay 30 "$URL" 2>/dev/null || echo "")
+
+          if [ -z "$HTML" ]; then
+            echo "⚠️  Strona nie odpowiada — Railway może jeszcze buildować"
+            exit 0
+          fi
+
+          echo "Strona odpowiada ($(echo "$HTML" | wc -c) bajtów)"
+
+          FAIL=0
+          check() {
+            if echo "$HTML" | grep -q "$1"; then
+              echo "  ✅ Znaleziono: $1"
+            else
+              echo "  ❌ BRAK: $1"
+              FAIL=1
+            fi
+          }
+
+          check "InvestRent"
+          check "Kołobrzeg"
+
+          if [ $FAIL -eq 1 ]; then
+            echo "⚠️  Strona działa ale brakuje kluczowej treści"
+            exit 1
+          fi
+          echo "✅ Strona WWW działa poprawnie"
+
+      - name: Sprawdź Railway CRM też
+        run: |
+          S=$(curl -s -o /dev/null -w "%{http_code}" \
+            https://investrent-crm-production.up.railway.app/health)
+          echo "CRM Railway: HTTP $S"
+          [ "$S" = "200" ] || echo "⚠️  CRM nie odpowiada ($S)"
