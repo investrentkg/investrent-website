@@ -70,7 +70,7 @@ export default async function SprzedazPage() {
           <div className="container">
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 0 }}>
               {[
-                { val: '500+',   label: 'Sprzedanych nieruchomości', sub: 'w Kołobrzegu i okolicach' },
+                { val: '150+',   label: 'Zrealizowanych transakcji', sub: 'w Kołobrzegu i okolicach' },
                 { val: '45 dni', label: 'Średni czas sprzedaży',     sub: 'przy rynku: 90+ dni' },
                 { val: '4.9/5',  label: 'Ocena klientów',            sub: '127 opinii Google' },
                 { val: '0 zł',   label: 'Wycena nieruchomości',      sub: 'bezpłatnie, bez zobowiązań' },
@@ -95,10 +95,10 @@ export default async function SprzedazPage() {
                 </h2>
                 <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 11 }}>
                   {[
-                    '500+ zrealizowanych transakcji w Kołobrzegu i okolicach',
+                    '150+ transakcji w Kołobrzegu i okolicach',
                     'Cena transakcyjna wyższa o średnio 8% od ceny wywoławczej',
                     'Pełna obsługa prawna i notarialna w cenie usługi',
-                    'Ekspozycja na wszystkich głównych portalach jednocześnie',
+                    'Ekspozycja na głównych portalach i nie tylko',
                     'Fotografik, wirtualny spacer 360°, home staging',
                     'Obsługa po-sprzedażowa — dokumentacja, przepisanie',
                   ].map(w => (
@@ -111,7 +111,7 @@ export default async function SprzedazPage() {
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                 {[
-                  { val: '500+',   label: 'Transakcji' },
+                  { val: '150+',   label: 'Transakcji' },
                   { val: '45 dni', label: 'Średni czas' },
                   { val: '4.9/5',  label: 'Ocena' },
                   { val: '0 zł',   label: 'Wycena' },
