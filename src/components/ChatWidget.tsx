@@ -127,7 +127,7 @@ export default function ChatWidget() {
               <>
                 <div style={{ background: '#f8fafc', borderRadius: 12, padding: '12px 14px', marginBottom: 14,
                   fontSize: 13, color: '#374151', lineHeight: 1.6 }}>
-                  Cześć! W czym mogę pomóc? Zostaw numer — oddzwonimy! 😊
+                  Cześć! W czym możemy pomóc? Zostaw numer — oddzwonimy! 😊
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 10 }}>
                   <input type="text" placeholder="Imię (opcjonalnie)"

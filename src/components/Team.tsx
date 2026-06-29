@@ -81,7 +81,8 @@ export default function Team({ members }: Props) {
               return (
                 <Link key={m.id} href={m.offer_count ? `/oferty?agent_id=${m.id}` : '/oferty'}
                   style={{ textDecoration: 'none', flexShrink: 0, width: `calc(${100 / perView}% - ${(perView - 1) * 20 / perView}px)` }}>
-                  <div className="bg-white rounded-2xl border border-slate-200 p-7 text-center hover:-translate-y-0.5 hover:shadow-lg transition-all cursor-pointer h-full">
+                  <a href={`/oferty?agent_id=${m.id}`} style={{ textDecoration:"none", display:"block" }}
+              className="bg-white rounded-2xl border border-slate-200 p-7 text-center hover:-translate-y-0.5 hover:shadow-lg transition-all cursor-pointer h-full">
                     <div className="relative w-20 h-20 mx-auto mb-4">
                       {m.avatar_url ? (
                         <Image src={m.avatar_url} alt={m.full_name} fill

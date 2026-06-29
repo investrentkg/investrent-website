@@ -25,7 +25,7 @@ const VALUES = [
 export default async function ONasPage() {
   const [teamData, statsData, officeData] = await Promise.all([getTeam(), getStats(), getOffice()])
   const office = officeData ?? FALLBACK_OFFICE
-  const trans = statsData?.completed_transactions ?? 500
+  const trans = statsData?.completed_transactions ?? 150
   const teamSize = statsData?.team_size ?? 6
 
   return (
@@ -73,7 +73,7 @@ export default async function ONasPage() {
                   InvestRent Nieruchomości powstało z pasji do lokalnego rynku nadmorskiego i przekonania, że klienci zasługują na więcej niż standardową obsługę agencyjną. Specjalizujemy się w Kołobrzegu i całym Wybrzeżu Bałtyckim.
                 </p>
                 <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 12 }}>
-                  {['500+ transakcji w Kołobrzegu i okolicach','Średni czas sprzedaży: 45 dni (rynek: 90+ dni)','Pełna obsługa prawna i notarialna w cenie','Ekspozycja na wszystkich głównych portalach','Ocena klientów: 4.9/5 na podstawie 127 opinii'].map(w => (
+                  {['150+ transakcji w Kołobrzegu i okolicach','Średni czas sprzedaży: 45 dni (rynek: 90+ dni)','Pełna obsługa prawna i notarialna w cenie','Ekspozycja na głównych portalach i nie tylko','Ocena klientów: 4.9/5 na podstawie 127 opinii'].map(w => (
                     <div key={w} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
                       <CheckCircle size={16} color="#10b981" style={{ flexShrink: 0, marginTop: 2 }} />
                       <span style={{ fontSize: 14, color: '#374151' }}>{w}</span>

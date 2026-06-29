@@ -43,7 +43,7 @@ export default function Services() {
             const Icon = s.icon
             const LinkIcon = s.linkIcon
             return (
-              <div key={s.title}
+              <a key={s.title} href={s.href} style={{ textDecoration: 'none', display: 'block', cursor: 'pointer' }}
                 className={`${s.bg} border-[1.5px] ${s.border} rounded-2xl p-7 hover:-translate-y-0.5 hover:shadow-lg transition-all cursor-pointer`}>
                 <div className={`w-12 h-12 ${s.iconBg} rounded-[13px] flex items-center justify-center mb-4`}>
                   <Icon size={24} className="text-white" />
@@ -53,7 +53,7 @@ export default function Services() {
                 <a href={s.href} className={`text-[13px] font-bold ${s.color} flex items-center gap-1.5`}>
                   <LinkIcon size={14} /> {s.link}
                 </a>
-              </div>
+              </a>
             )
           })}
         </div>

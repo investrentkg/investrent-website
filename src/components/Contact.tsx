@@ -67,7 +67,7 @@ export default function Contact({ office }: { office: Office | null }) {
               {[
                 { icon: Phone,   label: 'Telefon',       val: phone,   href: `tel:${phone.replace(/\s/g,'')}` },
                 { icon: Mail,    label: 'Email',         val: email,   href: `mailto:${email}` },
-                { icon: Clock,   label: 'Godziny pracy', val: 'Pon–Pt 8:00–18:00 · Sob 9:00–14:00', href: null },
+                { icon: Clock,   label: 'Godziny pracy', val: 'Pon–Pt 8:00–16:00 · Sob 9:00–14:00', href: null },
                 { icon: MapPin,  label: 'Adres biura',   val: address, href: null },
               ].map(item => {
                 const Icon = item.icon

@@ -131,7 +131,7 @@ export default async function TrudneNieruchomosciPage() {
                 {[
                   { val: '100%', label: 'Poufność',     sub: 'Gwarancja dyskrecji' },
                   { val: '0 zł', label: 'Konsultacja',  sub: 'Pierwsza rozmowa gratis' },
-                  { val: '500+', label: 'Transakcji',   sub: 'W tym trudne przypadki' },
+                  { val: '150+', label: 'Transakcji',   sub: 'W tym trudne przypadki' },
                   { val: '24h',  label: 'Odpowiedź',    sub: 'Na każde zapytanie' },
                 ].map(s => (
                   <div key={s.label} style={{ background: '#f8fafc', borderRadius: 14, padding: '24px', textAlign: 'center' as const, border: '1px solid #e5e7eb' }}>

@@ -95,7 +95,7 @@ export default function Reviews() {
               ⭐ Opinie klientów
             </div>
             <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 30, color: '#0d2a5c', letterSpacing: '-.5px', marginBottom: 6 }}>
-              Co mówią o nas klienci?
+              Co sądzą o nas klienci?
             </h2>
             <p style={{ color: '#6b7280', fontSize: 14 }}>
               {isReal ? `Prawdziwe opinie z Google · ${total} ocen · aktualizowane na bieżąco` : `Ponad ${total} opinii na Google · Zweryfikowane`}
