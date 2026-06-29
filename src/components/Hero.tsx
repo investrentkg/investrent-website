@@ -24,7 +24,7 @@ export default function Hero({ stats, googleRating = 4.8, googleTotal = 55 }: He
   }, [])
 
   const STATS = [
-    { icon: <Handshake size={20} />, val: `${Math.max(s.completed_transactions, 300)}+`, label: 'transakcji' },
+    { icon: <Handshake size={20} />, val: `${Math.max(s.completed_transactions, 150)}+`, label: 'transakcji' },
     { icon: <Clock size={20} />,     val: 'do 60 min',         label: 'odpowiedź' },
     { icon: <Star size={20} />,      val: `${googleRating}/5`, label: 'ocena klientów' },
     { icon: <Award size={20} />,     val: 'Bezpłatna',         label: 'wycena' },
