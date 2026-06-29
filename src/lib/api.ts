@@ -27,14 +27,14 @@ export async function getPublicOffers(params: {
 
   return apiFetch<import('@/types').PaginatedOffers>(
     `/api/public/offers?${q}`,
-    { next: { revalidate: 300 } }   // ISR 5 min
+    { next: { revalidate: 60 } }    // ISR 1 min
   )
 }
 
 export async function getPublicOffer(id: string) {
   return apiFetch<import('@/types').Offer>(
     `/api/public/offers/${id}`,
-    { next: { revalidate: 300 } }
+    { next: { revalidate: 60 } }
   )
 }
 
@@ -42,7 +42,7 @@ export async function getPublicOffer(id: string) {
 export async function getTeam() {
   return apiFetch<{ data: import('@/types').TeamMember[] }>(
     '/api/public/team',
-    { next: { revalidate: 600 } }   // ISR 10 min
+    { next: { revalidate: 60 } }    // ISR 1 min
   )
 }
 
