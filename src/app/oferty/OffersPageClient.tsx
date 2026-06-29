@@ -158,7 +158,7 @@ export default function OffersPageClient({ initialOffers, initialTotal, defaultT
         if (fil.area_min)  results = results.filter(o => (o.area ?? 0) >= parseInt(fil.area_min))
         if (fil.area_max)  results = results.filter(o => (o.area ?? Infinity) <= parseInt(fil.area_max))
         setOffers(results)
-        setTotal(results.length)
+        setTotal(data.pagination?.total ?? initialTotal)
       } else {
         setOffers([])
         setTotal(0)
@@ -275,21 +275,21 @@ export default function OffersPageClient({ initialOffers, initialTotal, defaultT
         ) : (
           <>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 22, marginBottom: 36 }}>
-              {offers.slice((page - 1) * LIMIT, page * LIMIT).map(o => <OfferCard key={o.id} offer={o} />)}
+              {offers.map(o => <OfferCard key={o.id} offer={o} />)}
             </div>
             {totalPages > 1 && (
               <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8 }}>
-                <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
+                <button onClick={() => { const np = Math.max(1, page - 1); setPage(np); doSearch(filters, np) }} disabled={page === 1}
                   style={{ width: 38, height: 38, borderRadius: '50%', border: '1.5px solid #e5e7eb', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: page === 1 ? .4 : 1 }}>
                   <ChevronLeft size={16} />
                 </button>
                 {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => i + 1).map(p => (
-                  <button key={p} onClick={() => setPage(p)}
+                  <button key={p} onClick={() => { setPage(p); doSearch(filters, p) }}
                     style={{ width: 38, height: 38, borderRadius: '50%', border: '1.5px solid', borderColor: p === page ? '#1a4fa0' : '#e5e7eb', background: p === page ? '#1a4fa0' : 'white', color: p === page ? 'white' : '#374151', fontWeight: p === page ? 700 : 400, cursor: 'pointer', fontSize: 14 }}>
                     {p}
                   </button>
                 ))}
-                <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}
+                <button onClick={() => { const np = Math.min(totalPages, page + 1); setPage(np); doSearch(filters, np) }} disabled={page === totalPages}
                   style={{ width: 38, height: 38, borderRadius: '50%', border: '1.5px solid #e5e7eb', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: page === totalPages ? .4 : 1 }}>
                   <ChevronRight size={16} />
                 </button>
