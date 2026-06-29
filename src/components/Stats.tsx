@@ -1,7 +1,7 @@
 export default function Stats() {
   const stats = [
-    { value: '500+', label: 'Sprzedanych nieruchomości', icon: '🏠' },
-    { value: '15', label: 'Lat doświadczenia', icon: '⭐' },
+    { value: '150+', label: 'Zrealizowanych transakcji', icon: '🏠' },
+    { value: '5+', label: 'Lat na rynku', icon: '⭐' },
     { value: '98%', label: 'Zadowolonych klientów', icon: '😊' },
     { value: '24h', label: 'Czas reakcji na zapytanie', icon: '⚡' },
   ]
