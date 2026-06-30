@@ -97,10 +97,10 @@ export default function Contact({ office }: { office: Office | null }) {
             </a>
 
             {/* Map placeholder */}
-            <div className="mt-7 rounded-2xl overflow-hidden border border-slate-200">
+            <div className="mt-7 rounded-2xl overflow-hidden border border-slate-200 aspect-square">
               <iframe
                 src="https://maps.google.com/maps?q=Ratuszowa+12%2F1+lok.+3+Ko%C5%82obrzeg&output=embed&hl=pl&z=18"
-                width="100%" height="420" style={{border:0,display:'block'}}
+                width="100%" height="100%" style={{border:0,display:'block'}}
                 allowFullScreen loading="lazy"
                 title="InvestRent — lokalizacja biura"
               />
