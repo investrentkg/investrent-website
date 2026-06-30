@@ -1,0 +1,18 @@
+=== /oferty (lista) ===
+HTTP status: 200
+Body size: 67589 bytes
+href="/oferty/d888bae6-7833-446d-b57a-af665ebdabbc"
+href="/oferty/72ef2bfe-e1f3-49a1-af69-f98eedb2fe39"
+href="/oferty/8acfe52e-ec4c-4b06-8b97-5d2fb8ed6713"
+
+Pierwsze ID znalezione: d888bae6-7833-446d-b57a-af665ebdabbc
+
+=== /oferty/d888bae6-7833-446d-b57a-af665ebdabbc (szczegoly) ===
+HTTP status: 404
+Body size: 8395 bytes
+First 500 chars of body:
+<!DOCTYPE html><html id="__next_error__"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/webpack-e6556160a6dd8ec3.js"/><script src="/_next/static/chunks/fd9d1056-9583fa19bc194043.js" async=""></script><script src="/_next/static/chunks/117-0b4737bb51921f10.js" async=""></script><script src="/_next/static/chunks/main-app-6fca1515cee9a03c.js" async=""></script><meta name=
+
+=== Backend API direct check ===
+HTTP status: 404
+{"error":"Oferta nie znaleziona"}
