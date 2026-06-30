@@ -1,6 +1,10 @@
+"use client"
+import { useState } from 'react'
 import { Award, Clock, ShieldCheck } from 'lucide-react'
+import WycenaModal from '@/components/WycenaModal'
 
 export default function ValuationCTA() {
+  const [modalOpen, setModalOpen] = useState(false)
   return (
     <section className="relative overflow-hidden py-14" style={{ background: 'linear-gradient(135deg, #0d2a5c, #1a4fa0)' }}>
       <div className="absolute top-[-80px] right-[-80px] w-80 h-80 rounded-full border border-white/5" />
@@ -35,15 +39,17 @@ export default function ValuationCTA() {
             </div>
           </div>
           <div className="flex flex-col items-center gap-3">
-            <a href="#kontakt" className="btn-gold text-[16px] font-extrabold px-11 py-4">
+            <button type="button" onClick={() => setModalOpen(true)}
+              className="btn-gold text-[16px] font-extrabold px-11 py-4" style={{ cursor: 'pointer' }}>
               <Award size={18} /> Chcę bezpłatną wycenę
-            </a>
+            </button>
             <span className="text-white/40 text-[12px] text-center">
               Odpowiadamy do 60 minut · +48 731 554 341
             </span>
           </div>
         </div>
       </div>
+      <WycenaModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
     </section>
   )
 }
