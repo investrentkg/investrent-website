@@ -1,0 +1,47 @@
+name: Check oferty pages
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - run: |
+          mkdir -p diagnostics
+          BASE="https://investrent-website-production.up.railway.app"
+
+          echo "=== /oferty (lista) ===" > diagnostics/oferty-check.txt
+          S1=$(curl -s -o /tmp/list.html -w "%{http_code}" --max-time 20 "$BASE/oferty")
+          echo "HTTP status: $S1" >> diagnostics/oferty-check.txt
+          echo "Body size: $(wc -c < /tmp/list.html) bytes" >> diagnostics/oferty-check.txt
+          grep -o 'href="/oferty/[^"]*"' /tmp/list.html | head -3 >> diagnostics/oferty-check.txt
+
+          FIRST_ID=$(grep -o 'href="/oferty/[^"]*"' /tmp/list.html | head -1 | sed 's/href="\/oferty\///;s/"//')
+          echo "" >> diagnostics/oferty-check.txt
+          echo "Pierwsze ID znalezione: $FIRST_ID" >> diagnostics/oferty-check.txt
+
+          echo "" >> diagnostics/oferty-check.txt
+          echo "=== /oferty/$FIRST_ID (szczegoly) ===" >> diagnostics/oferty-check.txt
+          S2=$(curl -s -o /tmp/detail.html -w "%{http_code}" --max-time 20 "$BASE/oferty/$FIRST_ID")
+          echo "HTTP status: $S2" >> diagnostics/oferty-check.txt
+          echo "Body size: $(wc -c < /tmp/detail.html) bytes" >> diagnostics/oferty-check.txt
+          echo "First 500 chars of body:" >> diagnostics/oferty-check.txt
+          head -c 500 /tmp/detail.html >> diagnostics/oferty-check.txt
+
+          echo "" >> diagnostics/oferty-check.txt
+          echo "" >> diagnostics/oferty-check.txt
+          echo "=== Backend API direct check ===" >> diagnostics/oferty-check.txt
+          S3=$(curl -s -o /tmp/api.json -w "%{http_code}" --max-time 20 "https://investrent-crm-production.up.railway.app/api/public/offers/$FIRST_ID")
+          echo "HTTP status: $S3" >> diagnostics/oferty-check.txt
+          cat /tmp/api.json | head -c 500 >> diagnostics/oferty-check.txt
+
+          cat diagnostics/oferty-check.txt
+          git config user.name "investrentkg"
+          git config user.email "zarzad@investrent.com.pl"
+          git add diagnostics/oferty-check.txt
+          git diff --cached --quiet || git commit -m "test: check oferty pages"
+          git push
