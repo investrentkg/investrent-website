@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { submitLead } from '@/lib/api'
 import LiveNumber from '@/components/LiveNumber'
 import ScrollReveal from '@/components/ScrollReveal'
+import SuccessBadge from '@/components/SuccessBadge'
 
 const DEFAULT_RATE = 7.5  // fallback gdy API niedostępne
 
@@ -141,9 +142,7 @@ export default function MortgageCalcSection() {
                 Konsultacja oraz cały proces kredytowy są dla naszych klientów w 100% bezpłatne.
               </p>
               {leadStatus === 'ok' ? (
-                <div style={{ background: '#f0fdf4', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#065f46', fontWeight: 600, textAlign: 'center' as const }}>
-                  ✓ Oddzwonimy wkrótce!
-                </div>
+                <SuccessBadge text="Oddzwonimy wkrótce!" style={{ background: '#f0fdf4', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#065f46', fontWeight: 600, justifyContent: 'center' }} />
               ) : (
                 <div style={{ display: 'flex', gap: 8 }}>
                   <input type="tel" placeholder="Twój numer telefonu"
@@ -152,6 +151,7 @@ export default function MortgageCalcSection() {
                     style={{ flex: 1, padding: '10px 12px', borderRadius: 10, border: '1.5px solid #e5e7eb',
                       fontSize: 13, outline: 'none', minWidth: 0 }} />
                   <button onClick={submitCreditLead} disabled={!phone.trim() || leadStatus === 'loading'}
+                    className="cta-pulse"
                     style={{ background: '#f5a623', color: 'white', border: 'none', borderRadius: 10,
                       padding: '10px 16px', fontSize: 13, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' as const }}>
                     Zamów rozmowę

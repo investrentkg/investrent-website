@@ -44,7 +44,7 @@ export default function WycenaModal({ isOpen, onClose }: Props) {
 
         {status === 'ok' ? (
           <div style={{ textAlign: 'center' as const, padding: '16px 0' }}>
-            <div style={{ width: 72, height: 72, background: '#f0fdf4', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+            <div className="success-badge" style={{ width: 72, height: 72, background: '#f0fdf4', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
               <CheckCircle size={36} color="#16a34a" />
             </div>
             <h3 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 22, color: '#0d2a5c', marginBottom: 8 }}>Dziękujemy!</h3>

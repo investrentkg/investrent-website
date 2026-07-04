@@ -40,7 +40,7 @@ export default function ValuationCTA() {
           </div>
           <div className="flex flex-col items-center gap-3">
             <button type="button" onClick={() => setModalOpen(true)}
-              className="btn-gold text-[16px] font-extrabold px-11 py-4" style={{ cursor: 'pointer' }}>
+              className="btn-gold cta-pulse text-[16px] font-extrabold px-11 py-4" style={{ cursor: 'pointer' }}>
               <Award size={18} /> Chcę bezpłatną wycenę
             </button>
             <span className="text-white/40 text-[12px] text-center">

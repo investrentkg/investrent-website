@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { PhoneForwarded } from 'lucide-react'
 import { submitLead } from '@/lib/api'
+import SuccessBadge from '@/components/SuccessBadge'
 
 export default function CallbackStrip() {
   const [phone, setPhone] = useState('')
@@ -42,9 +43,7 @@ export default function CallbackStrip() {
           </div>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
             {status === 'ok' ? (
-              <div style={{ background: 'rgba(255,255,255,.2)', color: 'white', fontWeight: 700, padding: '12px 24px', borderRadius: 12, fontSize: 13 }}>
-                ✓ Oddzwonimy wkrótce!
-              </div>
+              <SuccessBadge text="Oddzwonimy wkrótce!" style={{ background: 'rgba(255,255,255,.2)', color: 'white', fontWeight: 700, padding: '12px 24px', borderRadius: 12, fontSize: 13 }} />
             ) : (
               <>
                 <input
@@ -53,6 +52,7 @@ export default function CallbackStrip() {
                   style={{ background: 'rgba(255,255,255,.95)', borderRadius: 10, padding: '11px 16px', fontSize: 13, color: '#374151', width: 210, border: 'none', outline: 'none' }}
                 />
                 <button onClick={handleCall} disabled={status === 'loading'}
+                  className="cta-pulse-navy"
                   style={{ background: '#0d2a5c', color: 'white', fontSize: 12, fontWeight: 700, padding: '12px 20px', borderRadius: 10, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 7, whiteSpace: 'nowrap' }}>
                   <PhoneForwarded size={14} />
                   {status === 'loading' ? '…' : 'Zostaw numer, oddzwonimy!'}
