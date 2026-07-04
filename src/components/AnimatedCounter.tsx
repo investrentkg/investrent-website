@@ -39,9 +39,9 @@ export default function AnimatedCounter({ value, duration = 1400 }: AnimatedCoun
 
           const tick = (now: number) => {
             const elapsed = now - start
-            const progress = Math.min(elapsed / duration, 1)
+            const progress = Math.min(Math.max(elapsed / duration, 0), 1)
             // ease-out-expo - szybki start, delikatne wyhamowanie na końcu
-            const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress)
+            const eased = progress === 1 ? 1 : Math.max(0, 1 - Math.pow(2, -10 * progress))
             const current = number * eased
             setDisplayValue(`${prefix}${current.toFixed(decimals)}${suffix}`)
             if (progress < 1) requestAnimationFrame(tick)
