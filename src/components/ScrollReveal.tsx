@@ -26,7 +26,7 @@ export default function ScrollReveal({ children, delay = 0, className = '', styl
           observer.disconnect() // odsłania raz, nie chowa z powrotem przy wyscrollowaniu
         }
       },
-      { threshold: 0.15, rootMargin: '0px 0px -40px 0px' }
+      { threshold: 0.15, rootMargin: '0px 0px -110px 0px' }
     )
     observer.observe(el)
     return () => observer.disconnect()

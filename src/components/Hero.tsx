@@ -126,7 +126,7 @@ export default function Hero({ stats, googleRating = 4.8, googleTotal = 55 }: He
                 <span key={lineIdx} className="block" style={{ overflow: 'visible' }}>
                   {line.words.map((word) => {
                     wordIndex++
-                    const delay = 220 + wordIndex * 130
+                    const delay = 280 + wordIndex * 190
                     return (
                       <span
                         key={word}
@@ -141,11 +141,11 @@ export default function Hero({ stats, googleRating = 4.8, googleTotal = 55 }: He
               ))}
             </h1>
 
-            <p className={`text-white/70 text-[15px] leading-[1.8] max-w-[480px] mb-8 hero-reveal ${mounted ? 'hero-reveal-in' : ''}`} style={{ transitionDelay: '720ms' }}>
+            <p className={`text-white/70 text-[15px] leading-[1.8] max-w-[480px] mb-8 hero-reveal ${mounted ? 'hero-reveal-in' : ''}`} style={{ transitionDelay: '1200ms' }}>
               Pomagamy kupować, sprzedawać i wynajmować nieruchomości w Kołobrzegu i okolicach.
               Bezpiecznie, skutecznie i bez stresu — od pierwszego kontaktu po klucze.
             </p>
-            <div className={`flex gap-3 mb-8 flex-wrap hero-reveal ${mounted ? 'hero-reveal-in' : ''}`} style={{ transitionDelay: '840ms' }}>
+            <div className={`flex gap-3 mb-8 flex-wrap hero-reveal ${mounted ? 'hero-reveal-in' : ''}`} style={{ transitionDelay: '1380ms' }}>
               <a href="/oferty" className="btn-gold text-[14px] font-bold">
                 <Search size={17} /> Szukam nieruchomości
               </a>
@@ -157,7 +157,7 @@ export default function Hero({ stats, googleRating = 4.8, googleTotal = 55 }: He
             </div>
             <div className="flex gap-7 pt-5 border-t border-white/15 flex-wrap">
               {STATS.map((st, i) => {
-                const revealDelay = 900 + i * 200
+                const revealDelay = 1600 + i * 300
                 return (
                   <div
                     key={st.label}

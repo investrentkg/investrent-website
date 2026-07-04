@@ -20,7 +20,7 @@ function parseValue(value: string): { prefix: string; number: number; decimals: 
   return { prefix, number: parseFloat(normalized), decimals, suffix }
 }
 
-export default function AnimatedCounter({ value, duration = 1400, startDelay = 0 }: AnimatedCounterProps) {
+export default function AnimatedCounter({ value, duration = 1900, startDelay = 0 }: AnimatedCounterProps) {
   const ref = useRef<HTMLSpanElement>(null)
   const [displayValue, setDisplayValue] = useState<string>(() => {
     const parsed = parseValue(value)

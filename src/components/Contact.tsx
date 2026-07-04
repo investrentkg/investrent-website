@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { Phone, Mail, Clock, MapPin, Send, MessageSquare } from 'lucide-react'
 import { submitLead } from '@/lib/api'
+import SuccessBadge from '@/components/SuccessBadge'
 import type { Office } from '@/types'
 
 const TOPICS = [
@@ -104,7 +105,11 @@ export default function Contact({ office }: { office: Office | null }) {
             </h3>
             {status === 'ok' ? (
               <div className="py-12 text-center">
-                <div className="text-4xl mb-3">✓</div>
+                <SuccessBadge
+                  text=""
+                  size={48}
+                  style={{ flexDirection: 'column' as const, justifyContent: 'center', gap: 10, color: '#10b981', marginBottom: 8 }}
+                />
                 <div className="font-bold text-navy text-lg mb-2">Wysłano!</div>
                 <div className="text-slate-500 text-sm">Skontaktujemy się z Tobą do 60 minut.</div>
               </div>

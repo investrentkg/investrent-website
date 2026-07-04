@@ -1,6 +1,7 @@
 "use client"
 import { useState, useEffect } from 'react'
-import { MessageCircle, X, Send, CheckCircle, ChevronDown } from 'lucide-react'
+import { MessageCircle, X, Send, ChevronDown } from 'lucide-react'
+import SuccessBadge from '@/components/SuccessBadge'
 import { submitLead } from '@/lib/api'
 
 export default function ChatWidget() {

@@ -1,6 +1,7 @@
 "use client"
 import { useState } from 'react'
-import { Search, Phone, CheckCircle } from 'lucide-react'
+import { Search, Phone } from 'lucide-react'
+import SuccessBadge from '@/components/SuccessBadge'
 import { submitLead } from '@/lib/api'
 
 export default function HeroWidget() {
@@ -86,8 +87,12 @@ export default function HeroWidget() {
         <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 10 }}>
           {status === 'ok' ? (
             <div style={{ textAlign: 'center' as const, padding: '28px 0' }}>
-              <CheckCircle size={48} color="#10b981" style={{ margin: '0 auto 12px' }}/>
-              <div style={{ color: 'white', fontWeight: 700, fontSize: 17, marginBottom: 6 }}>Wysłano!</div>
+              <SuccessBadge
+                text=""
+                size={48}
+                style={{ flexDirection: 'column' as const, justifyContent: 'center', gap: 10, color: '#10b981' }}
+              />
+              <div style={{ color: 'white', fontWeight: 700, fontSize: 17, marginTop: 8, marginBottom: 6 }}>Wysłano!</div>
               <div style={{ color: 'rgba(255,255,255,.6)', fontSize: 13 }}>Oddzwonimy do 60 minut</div>
             </div>
           ) : (
