@@ -1,6 +1,7 @@
 "use client"
 import { useState, useEffect } from 'react'
 import { MapPin, ShieldCheck, Clock, Trophy } from 'lucide-react'
+import ScrollReveal from '@/components/ScrollReveal'
 
 const POINTS = [
   { icon: MapPin,       title: 'Lokalny ekspert',          desc: 'Znamy każdą ulicę Kołobrzegu i okolic. Wiemy które lokalizacje zyskają na wartości.' },
@@ -31,14 +32,15 @@ export default function About() {
         }}>
 
           {/* Zdjęcie */}
+          <ScrollReveal>
           <div style={{ borderRadius: 18, overflow: 'hidden', position: 'relative' }}>
             <img
               src={IMG}
               alt="Biuro nieruchomości InvestRent w Kołobrzegu"
               style={{ width: '100%', height: isDesktop ? 500 : 280, objectFit: 'cover', display: 'block' }}
             />
+            <ScrollReveal delay={280} style={{ position: 'absolute', bottom: 24, left: 24 }}>
             <div style={{
-              position: 'absolute', bottom: 24, left: 24,
               background: 'white', borderRadius: 12, padding: '16px 20px',
               boxShadow: '0 8px 24px rgba(0,0,0,.12)',
               display: 'flex', alignItems: 'center', gap: 14,
@@ -51,7 +53,9 @@ export default function About() {
                 <div style={{ fontSize: 12, color: '#6b7280' }}>biuro nad Bałtykiem</div>
               </div>
             </div>
+            </ScrollReveal>
           </div>
+          </ScrollReveal>
 
           {/* Tekst */}
           <div>
@@ -68,10 +72,11 @@ export default function About() {
               Naszą misją jest przeprowadzenie klientów przez każdą transakcję bezpiecznie i bez stresu. Nie znikamy po podpisaniu umowy — jesteśmy do dyspozycji przez cały proces i długo po nim.
             </p>
             <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 14 }}>
-              {POINTS.map(pt => {
+              {POINTS.map((pt, i) => {
                 const Icon = pt.icon
                 return (
-                  <div key={pt.title} style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+                  <ScrollReveal key={pt.title} delay={i * 120}>
+                  <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
                     <div style={{ width: 36, height: 36, background: 'rgba(26,79,160,.08)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                       <Icon size={15} color="#1a4fa0" />
                     </div>
@@ -80,6 +85,7 @@ export default function About() {
                       <span style={{ fontSize: 12, color: '#6b7280', lineHeight: 1.6 }}>{pt.desc}</span>
                     </div>
                   </div>
+                  </ScrollReveal>
                 )
               })}
             </div>

@@ -155,18 +155,25 @@ export default function Hero({ stats, googleRating = 4.8, googleTotal = 55 }: He
                 <Home size={17} /> Chcę sprzedać
               </button>
             </div>
-            <div className={`flex gap-7 pt-5 border-t border-white/15 flex-wrap hero-reveal ${mounted ? 'hero-reveal-in' : ''}`} style={{ transitionDelay: '960ms' }}>
-              {STATS.map(st => (
-                <div key={st.label} className="flex items-center gap-2.5">
-                  <span className="text-gold">{st.icon}</span>
-                  <div>
-                    <div className="font-mont font-black text-white text-[15px]">
-                      <AnimatedCounter value={st.val} />
+            <div className="flex gap-7 pt-5 border-t border-white/15 flex-wrap">
+              {STATS.map((st, i) => {
+                const revealDelay = 900 + i * 200
+                return (
+                  <div
+                    key={st.label}
+                    className={`flex items-center gap-2.5 hero-reveal ${mounted ? 'hero-reveal-in' : ''}`}
+                    style={{ transitionDelay: `${revealDelay}ms` }}
+                  >
+                    <span className="text-gold">{st.icon}</span>
+                    <div>
+                      <div className="font-mont font-black text-white text-[15px]">
+                        <AnimatedCounter value={st.val} startDelay={revealDelay + 250} />
+                      </div>
+                      <div className="text-white/45 text-[10px] uppercase tracking-[.8px]">{st.label}</div>
                     </div>
-                    <div className="text-white/45 text-[10px] uppercase tracking-[.8px]">{st.label}</div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
 

@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import type { TeamMember } from '@/types'
+import ScrollReveal from '@/components/ScrollReveal'
 
 const BADGE_STYLE: Record<string, { bg: string; text: string; label: string }> = {
   manager:    { bg: 'bg-amber-100',   text: 'text-amber-800',   label: 'Management' },
@@ -79,8 +80,9 @@ export default function Team({ members }: Props) {
               const b = BADGE_STYLE[m.role] ?? BADGE_STYLE.agent
               const grad = AVATAR_GRADIENT[idx % AVATAR_GRADIENT.length]
               return (
-                <Link key={m.id} href={m.offer_count ? `/oferty?agent_id=${m.id}` : '/oferty'}
-                  style={{ textDecoration: 'none', flexShrink: 0, width: `calc(${100 / perView}% - ${(perView - 1) * 20 / perView}px)` }}>
+                <ScrollReveal key={m.id} delay={(idx % perView) * 110} style={{ flexShrink: 0, width: `calc(${100 / perView}% - ${(perView - 1) * 20 / perView}px)` }}>
+                <Link href={m.offer_count ? `/oferty?agent_id=${m.id}` : '/oferty'}
+                  style={{ textDecoration: 'none', display: 'block' }}>
               <div className="bg-white rounded-2xl border border-slate-200 p-7 text-center hover:-translate-y-0.5 hover:shadow-lg transition-all cursor-pointer h-full">
                     <div className="relative w-32 h-32 mx-auto mb-4">
                       {m.avatar_url ? (
@@ -109,6 +111,7 @@ export default function Team({ members }: Props) {
                     </span>
                   </div>
                 </Link>
+                </ScrollReveal>
               )
             })}
           </div>
