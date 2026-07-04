@@ -355,6 +355,38 @@ html, body {
   opacity: 1;
   transform: translateY(0);
 }
+
+/* ── Hero: odsłanianie nagłówka słowo po słowie (rozmycie -> ostrość + lekkie wjechanie) ── */
+.word-reveal {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(14px);
+  transform: translateY(18px) scale(1.04);
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), filter 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, filter, transform;
+}
+.word-reveal-in {
+  opacity: 1;
+  filter: blur(0);
+  transform: translateY(0) scale(1);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-reveal { opacity: 1; transform: none; transition: none; }
+  .word-reveal { opacity: 1; filter: none; transform: none; transition: none; }
+}
+
+/* ── Kaskadowe odsłanianie treści przy scrollowaniu (karty ofert, sekcje) ── */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.scroll-reveal-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reveal { opacity: 1; transform: none; transition: none; }
 }

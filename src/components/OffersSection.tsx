@@ -3,6 +3,7 @@ import { useState, useCallback, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { MapPin, LayoutGrid, Ruler, Layers, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { Offer, PaginatedOffers } from '@/types'
+import ScrollReveal from '@/components/ScrollReveal'
 
 
 const TABS = [
@@ -26,7 +27,7 @@ function getBadge(offer: Offer, tab: string) {
 function OfferCard({ offer, tab }: { offer: Offer; tab: string }) {
   const badge = getBadge(offer, tab)
   return (
-    <a href={`/oferty/${offer.id}`} style={{ textDecoration: 'none', display: 'block', flexShrink: 0, width: 'calc(33.333% - 15px)' }}>
+    <a href={`/oferty/${offer.id}`} style={{ textDecoration: 'none', display: 'block', height: '100%' }}>
       <div style={{ background: 'white', borderRadius: 14, border: '1px solid #e5e7eb', overflow: 'hidden', cursor: 'pointer', transition: 'transform .2s, box-shadow .2s', height: '100%' }}
         onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform='translateY(-4px)'; (e.currentTarget as HTMLElement).style.boxShadow='0 14px 32px rgba(0,0,0,.1)' }}
         onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform=''; (e.currentTarget as HTMLElement).style.boxShadow='' }}>
@@ -158,7 +159,11 @@ export default function OffersSection({ initialOffers }: { initialOffers: Pagina
           <>
             <div style={{ overflow: 'hidden' }}>
               <div style={{ display: 'flex', gap: 22, transition: 'transform .5s cubic-bezier(.4,0,.2,1)', transform: `translateX(-${cur * (100 / perView + 2)}%)` }}>
-                {offers.map(o => <OfferCard key={o.id} offer={o} tab={tab} />)}
+                {offers.map((o, i) => (
+                  <ScrollReveal key={o.id} delay={(i % 3) * 110} style={{ flexShrink: 0, width: 'calc(33.333% - 15px)' }}>
+                    <OfferCard offer={o} tab={tab} />
+                  </ScrollReveal>
+                ))}
               </div>
             </div>
             {offers.length > perView && (
