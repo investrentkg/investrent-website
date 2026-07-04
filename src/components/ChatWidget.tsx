@@ -67,6 +67,7 @@ export default function ChatWidget() {
 
       {/* Przycisk chat */}
       <button onClick={() => open ? setOpen(false) : openChat()}
+        className={!open ? 'cta-pulse-limited' : ''}
         style={{
           position: 'fixed', bottom: 24, right: 24, zIndex: 9998,
           width: 56, height: 56, borderRadius: '50%', border: 'none',

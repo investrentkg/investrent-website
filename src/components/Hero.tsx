@@ -150,7 +150,7 @@ export default function Hero({ stats, googleRating = 4.8, googleTotal = 55 }: He
                 <Search size={17} /> Szukam nieruchomości
               </a>
               <button type="button" onClick={() => setModalOpen(true)}
-                className="inline-flex items-center gap-2 bg-white/12 text-white font-semibold text-[14px] px-7 py-3.5 rounded-xl border border-white/28 hover:bg-white/18 transition-all"
+                className="cta-pulse inline-flex items-center gap-2 bg-white/12 text-white font-semibold text-[14px] px-7 py-3.5 rounded-xl border border-white/28 hover:bg-white/18 transition-all"
                 style={{ cursor: 'pointer' }}>
                 <Home size={17} /> Chcę sprzedać
               </button>

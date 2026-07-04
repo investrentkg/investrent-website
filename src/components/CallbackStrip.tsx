@@ -29,7 +29,7 @@ export default function CallbackStrip() {
       <div className="container">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <div style={{ width: 48, height: 48, background: 'rgba(255,255,255,.22)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <div style={{ width: 48, height: 48, background: 'rgba(255,255,255,.22)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }} className="cta-pulse-navy">
               <PhoneForwarded size={22} color="white" />
             </div>
             <div>

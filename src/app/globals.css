@@ -411,15 +411,23 @@ html, body {
 .cta-pulse {
   animation: ctaGlowPulse 2.2s ease-in-out infinite;
 }
+/* Wariant navy - trochę słabszy (mniejsze przyciski, ten sam zasięg poświaty wyglądał
+   proporcjonalnie za mocno niż na dużym złotym przycisku) */
 .cta-pulse-navy {
   animation: ctaGlowPulseNavy 2.2s ease-in-out infinite;
 }
 @keyframes ctaGlowPulseNavy {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(13, 42, 92, 0.6); transform: scale(1); }
-  50%      { box-shadow: 0 0 0 14px rgba(13, 42, 92, 0); transform: scale(1.025); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(13, 42, 92, 0.52); transform: scale(1); }
+  50%      { box-shadow: 0 0 0 12px rgba(13, 42, 92, 0); transform: scale(1.02); }
+}
+/* Wariant ograniczony - dla elementów widocznych NA STAŁE (pływający czat, WhatsApp) -
+   pulsuje kilka razy zaraz po wejściu na stronę, potem się zatrzymuje. Ciągłe pulsowanie
+   przez całą wizytę zaczęłoby drażnić, zamiast kusić do kliknięcia. */
+.cta-pulse-limited {
+  animation: ctaGlowPulse 2.2s ease-in-out 3;
 }
 @media (prefers-reduced-motion: reduce) {
-  .cta-pulse, .cta-pulse-navy { animation: none; }
+  .cta-pulse, .cta-pulse-navy, .cta-pulse-limited { animation: none; }
 }
 
 /* ── Moment sukcesu po wysłaniu formularza - znaczek "rysuje się" + delikatne wjechanie ── */
