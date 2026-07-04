@@ -1,6 +1,8 @@
 "use client"
 import { useState, useEffect, useCallback } from 'react'
 import { ChevronLeft, ChevronRight, Star, ExternalLink } from 'lucide-react'
+import AnimatedCounter from '@/components/AnimatedCounter'
+import ScrollReveal from '@/components/ScrollReveal'
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://investrent-crm-production.up.railway.app'
 const GOOGLE_URL = 'https://www.google.com/maps/place/Invest+Rent+Nieruchomo%C5%9Bci/@54.1770073,15.5744432,17z/#reviews'
@@ -114,13 +116,14 @@ export default function Reviews() {
         </div>
 
         {/* Karuzela */}
+        <ScrollReveal>
         <div
           style={{ display: 'grid', gridTemplateColumns: `repeat(${visible}, 1fr)`, gap: 20, marginBottom: 40 }}
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
         >
           {cards.map((r, i) => (
-            <div key={`${active}-${i}`} style={{ background: '#f8fafc', borderRadius: 16, padding: '26px', border: '1px solid #e5e7eb', display: 'flex', flexDirection: 'column' as const, gap: 0 }}>
+            <div key={`${active}-${i}`} className="review-card-in" style={{ background: '#f8fafc', borderRadius: 16, padding: '26px', border: '1px solid #e5e7eb', display: 'flex', flexDirection: 'column' as const, gap: 0, transitionDelay: `${i * 80}ms` }}>
               <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 6 }}><Stars n={r.rating} /></div>
               <p style={{ fontSize: 14, color: '#374151', lineHeight: 1.8, marginBottom: 20, flex: 1 }}>
                 &ldquo;{r.text.length > 240 ? r.text.slice(0, 240) + '…' : r.text}&rdquo;
@@ -142,8 +145,10 @@ export default function Reviews() {
             </div>
           ))}
         </div>
+        </ScrollReveal>
 
         {/* Wskaźniki + łączna ocena */}
+        <ScrollReveal delay={150}>
         <div style={{ display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: 16 }}>
           {count > 1 && (
             <div style={{ display: 'flex', gap: 6 }}>
@@ -154,14 +159,17 @@ export default function Reviews() {
             </div>
           )}
           <div style={{ textAlign: 'center' as const }}>
-            <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 900, fontSize: 44, color: '#0d2a5c', lineHeight: 1 }}>{rating}</div>
+            <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 900, fontSize: 44, color: '#0d2a5c', lineHeight: 1 }}>
+              <AnimatedCounter value={String(rating)} duration={1200} />
+            </div>
             <div style={{ display: 'flex', justifyContent: 'center' }}><Stars n={5} /></div>
             <a href={GOOGLE_URL} target="_blank" rel="noopener noreferrer"
               style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: '#1a4fa0', fontWeight: 600, fontSize: 13, textDecoration: 'none', marginTop: 4 }}>
-              Na podstawie {total} opinii w Google <ExternalLink size={13} />
+              Na podstawie <AnimatedCounter value={String(total)} duration={1200} /> opinii w Google <ExternalLink size={13} />
             </a>
           </div>
         </div>
+        </ScrollReveal>
       </div>
     </section>
   )

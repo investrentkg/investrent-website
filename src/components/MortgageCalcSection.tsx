@@ -1,6 +1,8 @@
 "use client"
 import { useState, useEffect, useCallback } from 'react'
 import { submitLead } from '@/lib/api'
+import LiveNumber from '@/components/LiveNumber'
+import ScrollReveal from '@/components/ScrollReveal'
 
 const DEFAULT_RATE = 7.5  // fallback gdy API niedostępne
 
@@ -58,6 +60,7 @@ export default function MortgageCalcSection() {
   return (
     <section id="kalkulator" style={{ padding: '64px 0', background: 'white' }}>
       <div className="container">
+        <ScrollReveal>
         {/* Nagłówek */}
         <div style={{ textAlign: 'center', marginBottom: 40 }}>
           <div className="tag" style={{ background: 'rgba(26,79,160,.08)', color: '#1a4fa0', marginBottom: 12 }}>
@@ -109,21 +112,21 @@ export default function MortgageCalcSection() {
             <div style={{ background: 'linear-gradient(135deg, #1a4fa0, #0d2a5c)', borderRadius: 20, padding: 28, color: 'white', marginBottom: 16, textAlign: 'center' }}>
               <div style={{ fontSize: 13, opacity: .8, marginBottom: 6 }}>Szacowana miesięczna rata</div>
               <div style={{ fontSize: 'clamp(32px,6vw,48px)', fontWeight: 900, letterSpacing: -1, marginBottom: 4 }}>
-                {fmt(monthly)} <span style={{ fontSize: 22, fontWeight: 400 }}>zł</span>
+                <LiveNumber value={monthly} /> <span style={{ fontSize: 22, fontWeight: 400 }}>zł</span>
               </div>
               <div style={{ fontSize: 12, opacity: .7 }}>anuitet · {rate.toFixed(1)}% rocznie</div>
             </div>
 
             <div style={{ background: '#f8fafc', borderRadius: 16, padding: 20, marginBottom: 16 }}>
               {[
-                { label: 'Kwota kredytu', val: `${fmt(loanAmount)} zł` },
-                { label: 'Łączne odsetki', val: `${fmt(totalInterest)} zł` },
-                { label: 'Całkowity koszt', val: `${fmt(totalCost)} zł` },
+                { label: 'Kwota kredytu', v: loanAmount },
+                { label: 'Łączne odsetki', v: totalInterest },
+                { label: 'Całkowity koszt', v: totalCost },
               ].map(r => (
                 <div key={r.label} style={{ display: 'flex', justifyContent: 'space-between', padding: '9px 0',
                   borderBottom: '1px solid #e5e7eb', fontSize: 13 }}>
                   <span style={{ color: '#6b7280' }}>{r.label}</span>
-                  <span style={{ fontWeight: 700, color: '#0d2a5c' }}>{r.val}</span>
+                  <span style={{ fontWeight: 700, color: '#0d2a5c' }}><LiveNumber value={r.v} /> zł</span>
                 </div>
               ))}
             </div>
@@ -164,6 +167,7 @@ export default function MortgageCalcSection() {
             </p>
           </div>
         </div>
+        </ScrollReveal>
       </div>
     </section>
   )

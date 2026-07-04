@@ -1,4 +1,5 @@
 import { Search, DollarSign, KeyRound, Gavel, ArrowRight, Award, Phone } from 'lucide-react'
+import ScrollReveal from '@/components/ScrollReveal'
 
 const SERVICES = [
   {
@@ -39,21 +40,23 @@ export default function Services() {
           </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {SERVICES.map(s => {
+          {SERVICES.map((s, i) => {
             const Icon = s.icon
             const LinkIcon = s.linkIcon
             return (
-              <a key={s.title} href={s.href} style={{ textDecoration: 'none', display: 'block', cursor: 'pointer' }}
-                className={`${s.bg} border-[1.5px] ${s.border} rounded-2xl p-7 hover:-translate-y-0.5 hover:shadow-lg transition-all cursor-pointer`}>
-                <div className={`w-12 h-12 ${s.iconBg} rounded-[13px] flex items-center justify-center mb-4`}>
-                  <Icon size={24} className="text-white" />
-                </div>
-                <h3 className="font-mont font-extrabold text-[18px] text-navy mb-2.5 tracking-tight">{s.title}</h3>
-                <p className="text-[13px] text-slate-500 leading-[1.75] mb-3.5">{s.desc}</p>
-                <a href={s.href} className={`text-[13px] font-bold ${s.color} flex items-center gap-1.5`}>
-                  <LinkIcon size={14} /> {s.link}
+              <ScrollReveal key={s.title} delay={i * 110}>
+                <a href={s.href} style={{ textDecoration: 'none', display: 'block', cursor: 'pointer' }}
+                  className={`service-card group ${s.bg} border-[1.5px] ${s.border} rounded-2xl p-7 hover:-translate-y-1 hover:shadow-xl transition-all duration-300 cursor-pointer`}>
+                  <div className={`w-12 h-12 ${s.iconBg} rounded-[13px] flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6`}>
+                    <Icon size={24} className="text-white" />
+                  </div>
+                  <h3 className="font-mont font-extrabold text-[18px] text-navy mb-2.5 tracking-tight">{s.title}</h3>
+                  <p className="text-[13px] text-slate-500 leading-[1.75] mb-3.5">{s.desc}</p>
+                  <a href={s.href} className={`text-[13px] font-bold ${s.color} flex items-center gap-1.5 transition-transform duration-300 group-hover:translate-x-1`}>
+                    <LinkIcon size={14} /> {s.link}
+                  </a>
                 </a>
-              </a>
+              </ScrollReveal>
             )
           })}
         </div>
