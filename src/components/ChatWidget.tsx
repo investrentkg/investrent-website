@@ -1,7 +1,6 @@
 "use client"
 import { useState, useEffect } from 'react'
 import { MessageCircle, X, Send, ChevronDown } from 'lucide-react'
-import SuccessBadge from '@/components/SuccessBadge'
 import { submitLead } from '@/lib/api'
 
 export default function ChatWidget() {
@@ -116,7 +115,12 @@ export default function ChatWidget() {
           <div style={{ padding: 20 }}>
             {status === 'ok' ? (
               <div style={{ textAlign: 'center' as const, padding: '16px 0' }}>
-                <CheckCircle size={44} color="#10b981" style={{ margin: '0 auto 12px' }} />
+                <div className="success-badge" style={{ width: 44, height: 44, margin: '0 auto 12px', color: '#10b981' }}>
+                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="11" fill="currentColor" opacity="0.15" />
+                    <path d="M7 12.5l3 3 7-7" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
                 <div style={{ fontWeight: 700, color: '#0d2a5c', fontSize: 16, marginBottom: 6 }}>
                   Wiadomość wysłana!
                 </div>
