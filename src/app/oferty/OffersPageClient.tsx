@@ -273,9 +273,9 @@ export default function OffersPageClient({ initialOffers, initialTotal, defaultT
             {defaultTransaction === 'wynajem' && activeFilterCount === 0 ? (
               <>
                 <div style={{ fontSize: 56, marginBottom: 16 }}>🔑</div>
-                <div style={{ fontSize: 18, fontWeight: 700, color: '#111827', marginBottom: 8 }}>Wszystkie nasze nieruchomości na wynajem są obecnie zajęte</div>
+                <div style={{ fontSize: 18, fontWeight: 700, color: '#111827', marginBottom: 8 }}>Baza online to tylko część naszej oferty</div>
                 <p style={{ color: '#6b7280', fontSize: 14, marginBottom: 24, maxWidth: 420, margin: '0 auto 24px' }}>
-                  Rotacja najemców jest u nas częsta — nowe oferty pojawiają się regularnie. Zostaw kontakt, a odezwiemy się jak tylko coś się zwolni.
+                  Skontaktuj się z nami — wiele mieszkań na wynajem nigdy nie trafia na stronę.
                 </p>
                 <a href="/kontakt" style={{ display: 'inline-flex', alignItems: 'center', background: '#059669', color: 'white', fontWeight: 700, padding: '11px 24px', borderRadius: 10, textDecoration: 'none', fontSize: 14 }}>Skontaktuj się</a>
               </>
