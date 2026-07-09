@@ -114,11 +114,17 @@ export default function OffersPageClient({ initialOffers, initialTotal, defaultT
   const [total, setTotal] = useState(initialTotal)
   const [loading, setLoading] = useState(false)
 
-  // Pobierz oferty przy załadowaniu strony (fallback gdy SSR nie zadziałał)
+  // Pobierz oferty przy załadowaniu strony (fallback gdy SSR nie zadziałał) —
+  // MUSI zachować te same filtry co initialOffers, inaczej pusty wynik
+  // (np. brak ofert wynajmu) zamienia się w niefiltrowaną listę wszystkiego.
   useEffect(() => {
     if (offers.length === 0) {
       setLoading(true)
-      fetch(`${API}/api/public/offers?limit=9&page=1`)
+      const q = new URLSearchParams({ limit: '9', page: '1' })
+      if (defaultTransaction) q.set('transaction_type', defaultTransaction)
+      if (defaultType)        q.set('property_type', defaultType)
+      if (agentId)            q.set('agent_id', agentId)
+      fetch(`${API}/api/public/offers?${q}`)
         .then(r => r.json())
         .then(d => {
           if (d.data && d.data.length > 0) {
@@ -264,13 +270,26 @@ export default function OffersPageClient({ initialOffers, initialTotal, defaultT
           <div style={{ textAlign: 'center', padding: '80px 0', color: '#9ca3af', fontSize: 16 }}>Szukanie ofert…</div>
         ) : offers.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '80px 0' }}>
-            <div style={{ fontSize: 56, marginBottom: 16 }}>🔍</div>
-            <div style={{ fontSize: 18, fontWeight: 700, color: '#111827', marginBottom: 8 }}>Brak ofert spełniających kryteria</div>
-            <p style={{ color: '#6b7280', fontSize: 14, marginBottom: 24 }}>Zmień filtry lub skontaktuj się z nami — pomożemy znaleźć coś dla Ciebie</p>
-            <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
-              <button onClick={reset} style={{ background: 'white', color: '#1a4fa0', border: '1.5px solid #1a4fa0', borderRadius: 10, padding: '11px 24px', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>Wyczyść filtry</button>
-              <a href="/kontakt" style={{ display: 'inline-flex', alignItems: 'center', background: '#1a4fa0', color: 'white', fontWeight: 700, padding: '11px 24px', borderRadius: 10, textDecoration: 'none', fontSize: 14 }}>Skontaktuj się</a>
-            </div>
+            {defaultTransaction === 'wynajem' && activeFilterCount === 0 ? (
+              <>
+                <div style={{ fontSize: 56, marginBottom: 16 }}>🔑</div>
+                <div style={{ fontSize: 18, fontWeight: 700, color: '#111827', marginBottom: 8 }}>Wszystkie nasze nieruchomości na wynajem są obecnie zajęte</div>
+                <p style={{ color: '#6b7280', fontSize: 14, marginBottom: 24, maxWidth: 420, margin: '0 auto 24px' }}>
+                  Rotacja najemców jest u nas częsta — nowe oferty pojawiają się regularnie. Zostaw kontakt, a odezwiemy się jak tylko coś się zwolni.
+                </p>
+                <a href="/kontakt" style={{ display: 'inline-flex', alignItems: 'center', background: '#059669', color: 'white', fontWeight: 700, padding: '11px 24px', borderRadius: 10, textDecoration: 'none', fontSize: 14 }}>Skontaktuj się</a>
+              </>
+            ) : (
+              <>
+                <div style={{ fontSize: 56, marginBottom: 16 }}>🔍</div>
+                <div style={{ fontSize: 18, fontWeight: 700, color: '#111827', marginBottom: 8 }}>Brak ofert spełniających kryteria</div>
+                <p style={{ color: '#6b7280', fontSize: 14, marginBottom: 24 }}>Zmień filtry lub skontaktuj się z nami — pomożemy znaleźć coś dla Ciebie</p>
+                <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
+                  <button onClick={reset} style={{ background: 'white', color: '#1a4fa0', border: '1.5px solid #1a4fa0', borderRadius: 10, padding: '11px 24px', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>Wyczyść filtry</button>
+                  <a href="/kontakt" style={{ display: 'inline-flex', alignItems: 'center', background: '#1a4fa0', color: 'white', fontWeight: 700, padding: '11px 24px', borderRadius: 10, textDecoration: 'none', fontSize: 14 }}>Skontaktuj się</a>
+                </div>
+              </>
+            )}
           </div>
         ) : (
           <>
