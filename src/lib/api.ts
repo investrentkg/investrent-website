@@ -17,6 +17,7 @@ export async function getPublicOffers(params: {
   tab?: 'new' | 'promo' | 'exclusive'
   property_type?: string
   transaction_type?: string
+  agent_id?: string
 } = {}) {
   const q = new URLSearchParams()
   if (params.page)             q.set('page',             String(params.page))
@@ -24,6 +25,7 @@ export async function getPublicOffers(params: {
   if (params.tab)              q.set('tab',              params.tab)
   if (params.property_type)   q.set('property_type',   params.property_type)
   if (params.transaction_type) q.set('transaction_type', params.transaction_type)
+  if (params.agent_id)         q.set('agent_id',         params.agent_id)
 
   return apiFetch<import('@/types').PaginatedOffers>(
     `/api/public/offers?${q}`,
