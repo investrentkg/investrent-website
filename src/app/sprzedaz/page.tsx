@@ -17,10 +17,10 @@ const FALLBACK_OFFICE = { name: 'InvestRent', logo_url: '/logo.png', address: 'u
 const SERVICES = [
   { icon: DollarSign, title: 'Bezpłatna wycena',            desc: 'Dokładna analiza rynku i wycena Twojej nieruchomości bez zobowiązań. W ciągu 24h.' },
   { icon: Camera,     title: 'Profesjonalne zdjęcia',        desc: 'Sesja zdjęciowa przez profesjonalnego fotografa. Opcjonalnie wirtualny spacer 360°.' },
-  { icon: Globe,      title: 'Ekspozycja na portalach',      desc: 'Otodom, OLX, Gratka, Morizon. Twoja oferta dotrze do tysięcy kupujących jednocześnie.' },
+  { icon: Globe,      title: 'Widoczność oferty',            desc: 'Twoja nieruchomość zostanie zaprezentowana w wielu kanałach, aby dotrzeć do jak największej liczby potencjalnych kupujących.' },
   { icon: FileCheck,  title: 'Weryfikacja dokumentów',       desc: 'Sprawdzamy stan prawny, pomagamy skompletować wszystkie dokumenty potrzebne do sprzedaży.' },
   { icon: DollarSign, title: 'Negocjacje i akt notarialny',  desc: 'Reprezentujemy Twoje interesy podczas negocjacji. Towarzyszymy u notariusza do ostatniego podpisu.' },
-  { icon: Key,        title: 'Stały kontakt i raportowanie', desc: 'Cotygodniowe raporty o postępach. Zawsze wiesz ile osób oglądało ofertę i jakie były opinie.' },
+  { icon: Key,        title: 'Stały kontakt i raportowanie', desc: 'Okresowe raporty o postępach — z aktualną wyceną na tle rynku i naszymi rekomendacjami dalszych działań.' },
 ]
 
 const POST_SALE = [
@@ -31,8 +31,13 @@ const POST_SALE = [
 ]
 
 export default async function SprzedazPage() {
-  const officeData = await getOffice()
+  const [officeData, reviewsData] = await Promise.all([
+    getOffice(),
+    fetch('https://investrent-crm-production.up.railway.app/api/public/google-reviews')
+      .then(r => r.json()).catch(() => null),
+  ])
   const office = officeData ?? FALLBACK_OFFICE
+  const googleTotal: number = reviewsData?.total ?? 55
 
   return (
     <>
@@ -72,7 +77,7 @@ export default async function SprzedazPage() {
               {[
                 { val: '150+',   label: 'Zrealizowanych transakcji', sub: 'w Kołobrzegu i okolicach' },
                 { val: '45 dni', label: 'Średni czas sprzedaży',     sub: 'przy rynku: 90+ dni' },
-                { val: '4.9/5',  label: 'Ocena klientów',            sub: '127 opinii Google' },
+                { val: '4.9/5',  label: 'Ocena klientów',            sub: `${googleTotal} opinii Google` },
                 { val: '0 zł',   label: 'Wycena nieruchomości',      sub: 'bezpłatnie, bez zobowiązań' },
               ].map((s, i) => (
                 <div key={s.label} style={{ textAlign: 'center' as const, padding: '20px 16px', borderRight: i < 3 ? '1px solid #e5e7eb' : 'none' }}>
