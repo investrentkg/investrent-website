@@ -46,7 +46,7 @@ export default function Contact({ office }: { office: Office | null }) {
 
   const phone   = office?.phone   ?? '+48 731 554 341'
   const email   = office?.email   ?? 'biuro@investrent.com.pl'
-  const address = office?.address ?? 'ul. Twoja Ulica 1, 78-100 Kołobrzeg'
+  const address = office?.address ?? 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg'
 
   return (
     <section id="kontakt" className="section">
