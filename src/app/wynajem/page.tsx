@@ -34,7 +34,7 @@ export default async function WynajemPage() {
               Mieszkania, apartamenty i lokale do wynajęcia w Kołobrzegu i okolicach. Długoterminowy wynajem dla osób szukających stałego miejsca.
             </p>
             <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' as const }}>
-              {[{ icon: Shield, text: 'Zweryfikowane oferty' }, { icon: Clock, text: 'Szybki kontakt' }, { icon: Star, text: 'Bez ukrytych opłat' }].map(b => {
+              {[{ icon: Shield, text: 'Zweryfikowane oferty' }, { icon: Clock, text: 'Szybki kontakt' }, { icon: Star, text: 'Transparentne koszty' }].map(b => {
                 const Icon = b.icon; return (
                   <div key={b.text} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <Icon size={16} color="rgba(255,255,255,.9)" />
