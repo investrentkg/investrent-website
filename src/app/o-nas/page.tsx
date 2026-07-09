@@ -10,7 +10,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'O nas | InvestRent Nieruchomości Kołobrzeg',
-  description: 'Poznaj zespół InvestRent — biura nieruchomości z Kołobrzegu specjalizującego się w rynku nadmorskim. 500+ transakcji, ocena 4.9/5.',
+  description: 'Poznaj zespół InvestRent — biura nieruchomości z Kołobrzegu specjalizującego się w rynku nadmorskim. 150+ transakcji, ocena 4.9/5.',
 }
 
 const FALLBACK_OFFICE = { name: 'InvestRent Nieruchomości', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
@@ -23,10 +23,15 @@ const VALUES = [
 ]
 
 export default async function ONasPage() {
-  const [teamData, statsData, officeData] = await Promise.all([getTeam(), getStats(), getOffice()])
+  const [teamData, statsData, officeData, reviewsData] = await Promise.all([
+    getTeam(), getStats(), getOffice(),
+    fetch('https://investrent-crm-production.up.railway.app/api/public/google-reviews')
+      .then(r => r.json()).catch(() => null),
+  ])
   const office = officeData ?? FALLBACK_OFFICE
   const trans = statsData?.completed_transactions ?? 150
   const teamSize = statsData?.team_size ?? 6
+  const googleTotal: number = reviewsData?.total ?? 55
 
   return (
     <>
@@ -73,7 +78,7 @@ export default async function ONasPage() {
                   InvestRent Nieruchomości powstało z pasji do lokalnego rynku nadmorskiego i przekonania, że klienci zasługują na więcej niż standardową obsługę agencyjną. Specjalizujemy się w Kołobrzegu i całym Wybrzeżu Bałtyckim.
                 </p>
                 <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 12 }}>
-                  {['150+ transakcji w Kołobrzegu i okolicach','Średni czas sprzedaży: 45 dni (rynek: 90+ dni)','Pełna obsługa prawna i notarialna w cenie','Ekspozycja na głównych portalach i nie tylko','Ocena klientów: 4.9/5 na podstawie 127 opinii'].map(w => (
+                  {['150+ transakcji w Kołobrzegu i okolicach','Średni czas sprzedaży: 45 dni (rynek: 90+ dni)','Pełna obsługa prawna i notarialna w cenie','Ekspozycja na głównych portalach i nie tylko',`Ocena klientów: 4.9/5 na podstawie ${googleTotal} opinii`].map(w => (
                     <div key={w} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
                       <CheckCircle size={16} color="#10b981" style={{ flexShrink: 0, marginTop: 2 }} />
                       <span style={{ fontSize: 14, color: '#374151' }}>{w}</span>
