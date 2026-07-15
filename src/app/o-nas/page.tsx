@@ -29,7 +29,7 @@ export default async function ONasPage() {
       .then(r => r.json()).catch(() => null),
   ])
   const office = officeData ?? FALLBACK_OFFICE
-  const trans = statsData?.completed_transactions ?? 150
+  const trans = Math.max(statsData?.completed_transactions ?? 0, 150)
   const teamSize = statsData?.team_size ?? 6
   const googleTotal: number = reviewsData?.total ?? 55
 

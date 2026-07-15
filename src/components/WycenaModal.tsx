@@ -75,7 +75,7 @@ export default function WycenaModal({ isOpen, onClose }: Props) {
               <p style={{ color: '#94a3b8', fontSize: 11, textAlign: 'center' as const, margin: 0 }}>🔒 Dane chronione zgodnie z RODO · Bez zobowiązań</p>
             </div>
             <div style={{ display: 'flex', gap: 16, marginTop: 20, paddingTop: 16, borderTop: '1px solid #f1f5f9' }}>
-              {[{ val: '0 zł', label: 'Wycena' }, { val: '60 min', label: 'Odpowiedź' }, { val: '500+', label: 'Transakcji' }].map(s => (
+              {[{ val: '0 zł', label: 'Wycena' }, { val: '60 min', label: 'Odpowiedź' }, { val: '150+', label: 'Transakcji' }].map(s => (
                 <div key={s.label} style={{ flex: 1, textAlign: 'center' as const }}>
                   <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 18, color: '#0d2a5c' }}>{s.val}</div>
                   <div style={{ fontSize: 11, color: '#94a3b8' }}>{s.label}</div>

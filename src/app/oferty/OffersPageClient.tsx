@@ -151,6 +151,7 @@ export default function OffersPageClient({ initialOffers, initialTotal, defaultT
       const q = new URLSearchParams({ limit: String(LIMIT), page: String(p) })
       if (fil.transaction_type) q.set('transaction_type', fil.transaction_type)
       if (fil.property_type)   q.set('property_type',   fil.property_type)
+      if (agentId)              q.set('agent_id',        agentId)
       const res = await fetch(`${API}/api/public/offers?${q}`)
       const data = await res.json()
       if ((data.data?.length ?? 0) > 0) {
@@ -173,7 +174,7 @@ export default function OffersPageClient({ initialOffers, initialTotal, defaultT
       setOffers([])
       setTotal(0)
     } finally { setLoading(false) }
-  }, [])
+  }, [agentId])
 
   function search() { setPage(1); doSearch(filters, 1) }
 
