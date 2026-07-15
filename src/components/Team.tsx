@@ -95,16 +95,17 @@ export default function Team({ members }: Props) {
                           </span>
                         </div>
                       )}
+                      {(m.offer_count ?? 0) > 0 && (
+                        <div className="absolute -bottom-1 -right-1 w-12 h-12 rounded-full bg-orange-500 border-4 border-white shadow-md flex flex-col items-center justify-center leading-none">
+                          <span className="text-white font-black text-[15px]">{m.offer_count}</span>
+                          <span className="text-white font-bold text-[7px] tracking-wide">OFERT</span>
+                        </div>
+                      )}
                     </div>
                     <div className="text-[15px] font-bold text-slate-900 mb-1">{m.full_name}</div>
                     <div className="text-[12px] text-slate-500 mb-2 leading-[1.5]">{m.role_label}</div>
                     {m.specialization && (
                       <div className="text-[11px] text-slate-400 mb-3">{m.specialization}</div>
-                    )}
-                    {(m.offer_count ?? 0) > 0 && (
-                      <div className="text-[11px] font-bold text-blue-600 mb-2">
-                        {m.offer_count} {m.offer_count === 1 ? 'oferta' : m.offer_count! < 5 ? 'oferty' : 'ofert'}
-                      </div>
                     )}
                     <span className={`text-[10px] font-bold px-3 py-1 rounded-md ${b.bg} ${b.text}`}>
                       {b.label}
