@@ -1,8 +1,18 @@
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://investrent-crm-production.up.railway.app'
 
+// Zapytania z tej strony do CRM idą z serwera Next.js (SSR), nie z przeglądarki -
+// nigdy nie niosą nagłówka Origin, więc dotychczasowy mechanizm rozpoznawania
+// tenanta (Origin + publiczny klucz) zawsze je odrzucał jako "nieznane źródło"
+// (znalezisko 15.07.2026 - Zespół pokazywał inicjały zamiast zdjęć, bo /api/public/team
+// zwracał 400 i strona cicho przełączała się na dane zapasowe). Ten nagłówek to
+// prawdziwie tajny klucz serwer-serwer, nigdy nieujawniany przeglądarce.
+const INTERNAL_HEADERS: Record<string, string> = process.env.INTERNAL_SERVICE_API_KEY
+  ? { 'x-internal-service-key': process.env.INTERNAL_SERVICE_API_KEY, 'x-tenant-slug': 'investrent' }
+  : {}
+
 async function apiFetch<T>(path: string, options?: RequestInit): Promise<T | null> {
   try {
-    const res = await fetch(`${API}${path}`, options)
+    const res = await fetch(`${API}${path}`, { ...options, headers: { ...INTERNAL_HEADERS, ...(options?.headers || {}) } })
     if (!res.ok) return null
     return res.json() as Promise<T>
   } catch {
