@@ -1,6 +1,7 @@
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import FloatingWA from '@/components/FloatingWA'
+import SocialSidebar from '@/components/SocialSidebar'
 import Team from '@/components/Team'
 import Reviews from '@/components/Reviews'
 import Breadcrumb from '@/components/Breadcrumb'
@@ -145,6 +146,8 @@ export default async function ONasPage() {
       </main>
       <Footer office={office} />
       <FloatingWA />
+
+      <SocialSidebar office={office} />
     </>
   )
 }

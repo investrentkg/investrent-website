@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import FloatingWA from '@/components/FloatingWA'
+import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
 import OffersPageClient from './OffersPageClient'
 import { getPublicOffers, getOffice } from '@/lib/api'
@@ -41,6 +42,8 @@ export default async function OffersPage({ searchParams }: { searchParams: { [k:
       </main>
       <Footer office={office} />
       <FloatingWA />
+
+      <SocialSidebar office={office} />
     </>
   )
 }

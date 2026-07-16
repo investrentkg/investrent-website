@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import FloatingWA from '@/components/FloatingWA'
+import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
 import OfferDetailClient from './OfferDetailClient'
 import { getPublicOffer, getOffice } from '@/lib/api'
@@ -40,6 +41,8 @@ export default async function OfferPage({ params }: { params: { id: string } }) 
       </main>
       <Footer office={office} />
       <FloatingWA />
+
+      <SocialSidebar office={office} />
     </>
   )
 }

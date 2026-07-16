@@ -1,6 +1,7 @@
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import FloatingWA from '@/components/FloatingWA'
+import SocialSidebar from '@/components/SocialSidebar'
 import Contact from '@/components/Contact'
 import Breadcrumb from '@/components/Breadcrumb'
 import { getOffice } from '@/lib/api'
@@ -165,6 +166,8 @@ export default async function TrudneNieruchomosciPage() {
       </main>
       <Footer office={office} />
       <FloatingWA />
+
+      <SocialSidebar office={office} />
     </>
   )
 }

@@ -14,6 +14,7 @@ import Contact       from '@/components/Contact'
 import Footer        from '@/components/Footer'
 import MortgageCalcSection from '@/components/MortgageCalcSection'
 import FloatingWA    from '@/components/FloatingWA'
+import SocialSidebar from '@/components/SocialSidebar'
 import type { Office } from '@/types'
 
 function JsonLd({ office }: { office: Office | null }) {
@@ -78,6 +79,8 @@ export default async function Home() {
       <MortgageCalcSection />
       <Footer        office={office} />
       <FloatingWA />
+
+      <SocialSidebar office={office} />
     </>
   )
 }
