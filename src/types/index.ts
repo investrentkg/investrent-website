@@ -51,6 +51,8 @@ export interface Office {
   email: string | null
   website: string | null
   working_hours: Record<string, string> | null
+  facebook_url?: string | null
+  instagram_url?: string | null
 }
 
 export interface PublicStats {
