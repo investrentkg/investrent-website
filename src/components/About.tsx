@@ -49,8 +49,8 @@ export default function About() {
                 <Trophy size={22} color="white" />
               </div>
               <div>
-                <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 16, color: '#0d2a5c' }}>Top 1 biuro</div>
-                <div style={{ fontSize: 12, color: '#6b7280' }}>biuro nad Bałtykiem</div>
+                <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 16, color: '#0d2a5c' }}>4.9/5</div>
+                <div style={{ fontSize: 12, color: '#6b7280' }}>ocena klientów (Google)</div>
               </div>
             </div>
             </ScrollReveal>
