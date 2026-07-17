@@ -33,7 +33,7 @@ function JsonLd({ office }: { office: Office | null }) {
       "addressRegion": "Zachodniopomorskie",
       "addressCountry": "PL"
     },
-    "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.8", "reviewCount": "55" }
+    "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "55" }
   }
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
 }
@@ -58,8 +58,13 @@ export default async function Home() {
     fetch('https://investrent-crm-production.up.railway.app/api/public/google-reviews')
       .then(r => r.json()).catch(() => null),
   ])
-  const googleRating: number = reviewsData?.rating ?? 4.8
-  const googleTotal: number  = reviewsData?.total  ?? 55
+  // NAPRAWA 17.07.2026: `reviewsData?.rating ?? 4.8` wyglądało bezpiecznie, ale
+  // `??` zastępuje TYLKO null/undefined - jeśli API zwróciło poprawną
+  // odpowiedź (ok:true) z rating:0/total:0 (np. Google chwilowo nie zwrócił
+  // danych oceny), literalne 0 przechodziło przez `??` bez zmian i strona
+  // pokazywała "0/5" / "0 opinii" - gorsze niż jakikolwiek fallback.
+  const googleRating: number = reviewsData?.rating ? reviewsData.rating : 4.9
+  const googleTotal: number  = reviewsData?.total  ? reviewsData.total  : 55
 
   const office = officeData ?? FALLBACK_OFFICE
 

@@ -53,7 +53,7 @@ function Avatar({ author, avatar }: { author: string; avatar: string | null }) {
 
 export default function Reviews() {
   const [reviews, setReviews] = useState<Review[]>(FALLBACK)
-  const [rating, setRating]   = useState(4.8)
+  const [rating, setRating]   = useState(4.9)
   const [total, setTotal]     = useState(55)
   const [active, setActive]   = useState(0)
   const [paused, setPaused]   = useState(false)

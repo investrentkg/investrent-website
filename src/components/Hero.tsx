@@ -20,7 +20,7 @@ const HEADLINE_LINES: { words: string[]; gold?: boolean }[] = [
   { words: ['nad', 'Bałtykiem'] },
 ]
 
-export default function Hero({ stats, googleRating = 4.8, googleTotal = 55 }: HeroProps) {
+export default function Hero({ stats, googleRating = 4.9, googleTotal = 55 }: HeroProps) {
   const s = { active_offers: stats?.active_offers ?? 30, completed_transactions: Math.max(stats?.completed_transactions ?? 0, 150), team_size: stats?.team_size ?? 7 }
   const [isDesktop, setIsDesktop] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
