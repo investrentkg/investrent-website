@@ -451,3 +451,11 @@ html, body {
   .success-badge { animation: none; }
   .success-badge svg path { animation: none; stroke-dashoffset: 0; }
 }
+
+/* Ikonki social media w stopce (Footer.tsx) - czysty CSS hover zamiast JS,
+   bo Footer to Server Component i nie może przyjmować onMouseEnter/onMouseLeave
+   jako propsów (naprawa 17.07.2026 - patrz komentarz w Footer.tsx). */
+.social-icon:hover {
+  background: rgba(255, 255, 255, .18) !important;
+}
+
