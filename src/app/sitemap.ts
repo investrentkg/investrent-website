@@ -20,7 +20,8 @@ const STATIC_PAGES = [
   { path: '/trudne-nieruchomosci', priority: 0.6, changeFrequency: 'monthly' as const },
   { path: '/o-nas', priority: 0.7, changeFrequency: 'monthly' as const },
   { path: '/kontakt', priority: 0.7, changeFrequency: 'monthly' as const },
-  { path: '/rodo', priority: 0.3, changeFrequency: 'yearly' as const },
+  // /rodo CELOWO pominiete - oznaczone noindex (patrz rodo/page.tsx), obecnosc
+  // w sitemapie razem z noindex to sprzeczny sygnal dla Google.
 ]
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

@@ -15,7 +15,13 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Polityka prywatności (RODO)',
   description: 'Informacja o przetwarzaniu danych osobowych zgodnie z RODO przez Investrent sp. z o.o.',
-  robots: { index: true, follow: true },
+  // NAPRAWA (audyt SEO, Daniel 30.07.2026): strony czysto prawne (polityka
+  // prywatnosci, regulamin) standardowo NIE sa indeksowane w wynikach
+  // wyszukiwania - nie wnosza wartosci dla uzytkownika szukajacego "biuro
+  // nieruchomosci Kolobrzeg" i moga rozmywac ocene jakosci tresci calej
+  // domeny przez Google. follow:true zeby linki WYCHODZACE z tej strony
+  // (np. do strony glownej) nadal przekazywaly wartosc.
+  robots: { index: false, follow: true },
 }
 
 const FALLBACK_OFFICE = {
@@ -70,6 +76,20 @@ export default async function RodoPage() {
                 <li style={{ marginBottom: 8 }}>Podmiotom przetwarzającym dane osobowe na zlecenie Administratora, np. dostawcom usług IT, kancelariom prawnym, firmom księgowym, przy czym takie podmioty przetwarzają dane na podstawie umowy z Administratorem i wyłącznie zgodnie z jego poleceniami.</li>
                 <li>Organom uprawnionym do otrzymania danych na podstawie przepisów prawa.</li>
               </ul>
+
+              {/* NAPRAWA (audyt prawny, Daniel 30.07.2026): brakujacy element wymagany
+                  przez art. 13 ust. 2 lit. e RODO - czy podanie danych jest wymogiem
+                  umownym/ustawowym i jakie sa konsekwencje niepodania. Byla to realna
+                  luka w tresci skopiowanej ze starej strony. */}
+              <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 19, color: '#0d2a5c', marginTop: 32, marginBottom: 10 }}>Dobrowolność podania danych</h2>
+              <p style={{ marginBottom: 20 }}>
+                Podanie danych osobowych jest dobrowolne, jednak niezbędne do skontaktowania się z Państwem, przygotowania oferty lub zawarcia i realizacji umowy pośrednictwa w obrocie nieruchomościami. Niepodanie danych może uniemożliwić realizację tych celów.
+              </p>
+
+              <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 19, color: '#0d2a5c', marginTop: 32, marginBottom: 10 }}>Zautomatyzowane podejmowanie decyzji</h2>
+              <p style={{ marginBottom: 20 }}>
+                Administrator nie podejmuje wobec Państwa decyzji w sposób zautomatyzowany, w tym nie stosuje profilowania w rozumieniu RODO.
+              </p>
 
               <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 19, color: '#0d2a5c', marginTop: 32, marginBottom: 10 }}>Prawa osób, których dane dotyczą</h2>
               <p style={{ marginBottom: 10 }}>Zgodnie z RODO przysługuje Państwu:</p>

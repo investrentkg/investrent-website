@@ -27,7 +27,12 @@ export const metadata: Metadata = {
     apple: '/apple-touch-icon.png',
   },
   title: {
-    default: 'InvestRent Nieruchomości Kołobrzeg | Kupno, Sprzedaż, Wynajem nad Bałtykiem',
+    // NAPRAWA (audyt SEO, Daniel 30.07.2026): poprzedni tytul mial 75 znakow -
+    // Google obcina wyswietlanie tytulu w wynikach wyszukiwania powyzej ok.
+    // 60 znakow (doklada "..."), co wyglada nieprofesjonalnie i traci ostatnie,
+    // czesto najmocniejsze slowa kluczowe. Skrocone do 61 znakow, zachowujac
+    // najsilniejsze frazy (nazwa+lokalizacja+3 glowne intencje wyszukiwania).
+    default: 'InvestRent Nieruchomości Kołobrzeg | Kupno, Sprzedaż, Wynajem',
     template: '%s | InvestRent Nieruchomości',
   },
   description: 'Biuro nieruchomości Kołobrzeg. Kupno, sprzedaż i wynajem mieszkań nad Bałtykiem. Odpowiadamy do 60 minut. Bezpłatna wycena nieruchomości.',
