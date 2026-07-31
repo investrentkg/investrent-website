@@ -1,0 +1,101 @@
+"use client"
+import { useState } from 'react'
+import { Calculator, Phone, CheckCircle2 } from 'lucide-react'
+import { submitLead } from '@/lib/api'
+
+// NAPRAWA/NOWA FUNKCJA (Daniel 30.07.2026): mini kalkulator raty kredytu
+// bezpośrednio na karcie oferty, prekonfigurowany ceną TEJ nieruchomości -
+// pomysł Daniela, żeby zwiększyć liczbę leadów kredytowych ze strony.
+// Ta sama matematyka (wzór annuitetowy) co pełny kalkulator na /kalkulator -
+// świadomie uproszczone założenia (20% wkładu własnego, 7,5% oprocentowania)
+// zamiast pełnego zestawu suwaków, żeby mieścić się w karcie bocznej oferty
+// bez przytłaczania - kto chce dokładniej policzyć, ma link do pełnego
+// kalkulatora.
+
+function formatPLN(n: number) {
+  return new Intl.NumberFormat('pl-PL', { style: 'currency', currency: 'PLN', maximumFractionDigits: 0 }).format(n)
+}
+
+const OWN_CONTRIBUTION_PCT = 20
+const INTEREST_RATE_PCT = 7.5
+
+export default function MortgageMiniCalculator({ price, refNumber, offerId }: { price: number; refNumber?: string; offerId: string }) {
+  const [years, setYears] = useState(25)
+  const [phone, setPhone] = useState('')
+  const [sending, setSending] = useState(false)
+  const [sent, setSent] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const loan = price * (1 - OWN_CONTRIBUTION_PCT / 100)
+  const r = INTEREST_RATE_PCT / 100 / 12
+  const n = years * 12
+  const monthly = r > 0 ? loan * r / (1 - Math.pow(1 + r, -n)) : loan / n
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!phone.trim()) return
+    setSending(true)
+    setError(null)
+    try {
+      const res = await submitLead({
+        phone: phone.trim(),
+        source: 'kalkulator_oferta',
+        notes: `Kalkulator raty przy ofercie ${refNumber || offerId}: cena ${formatPLN(price)}, okres ${years} lat, orientacyjna rata ${formatPLN(monthly)}/mies. (zał. ${OWN_CONTRIBUTION_PCT}% wkładu własnego, ${INTEREST_RATE_PCT}% oprocentowania). Klient prosi o kontakt ws. kredytu.`,
+      })
+      if (res?.error) { setError(res.error); return }
+      setSent(true)
+    } catch {
+      setError('Nie udało się wysłać — spróbuj zadzwonić bezpośrednio.')
+    } finally {
+      setSending(false)
+    }
+  }
+
+  if (sent) {
+    return (
+      <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 14, padding: 20, marginTop: 14, textAlign: 'center' as const }}>
+        <CheckCircle2 size={26} color="#16a34a" style={{ marginBottom: 6 }} />
+        <div style={{ fontSize: 13.5, fontWeight: 700, color: '#166534' }}>Dziękujemy! Oddzwonimy w sprawie kredytu.</div>
+      </div>
+    )
+  }
+
+  return (
+    <div style={{ background: '#f8fafc', border: '1px solid #e5e7eb', borderRadius: 14, padding: 18, marginTop: 14 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+        <Calculator size={17} color="#1a4fa0" />
+        <span style={{ fontSize: 13.5, fontWeight: 800, color: '#0d2a5c' }}>Sprawdź ratę dla tej nieruchomości</span>
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
+        <span style={{ fontSize: 11.5, color: '#6b7280' }}>Okres kredytu: <strong style={{ color: '#374151' }}>{years} lat</strong></span>
+      </div>
+      <input type="range" min={10} max={35} step={1} value={years}
+        onChange={e => setYears(Number(e.target.value))}
+        style={{ width: '100%', marginBottom: 14, accentColor: '#1a4fa0' }} />
+
+      <div style={{ background: 'white', borderRadius: 10, padding: '14px 16px', textAlign: 'center' as const, marginBottom: 4 }}>
+        <div style={{ fontSize: 11, color: '#9ca3af', marginBottom: 2 }}>Orientacyjna rata miesięczna</div>
+        <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 900, fontSize: 26, color: '#0d2a5c' }}>{formatPLN(monthly)}</div>
+      </div>
+      <div style={{ fontSize: 10.5, color: '#9ca3af', textAlign: 'center' as const, marginBottom: 14 }}>
+        Przy {OWN_CONTRIBUTION_PCT}% wkładu własnego i oprocentowaniu {INTEREST_RATE_PCT}% — orientacyjnie, nie stanowi oferty kredytowej
+      </div>
+
+      <form onSubmit={handleSubmit} style={{ display: 'flex', gap: 6 }}>
+        <input type="tel" required placeholder="Twój numer telefonu" value={phone}
+          onChange={e => setPhone(e.target.value)}
+          style={{ flex: 1, padding: '10px 12px', borderRadius: 8, border: '1px solid #d1d5db', fontSize: 13 }} />
+        <button type="submit" disabled={sending}
+          style={{ display: 'flex', alignItems: 'center', gap: 5, background: '#1a4fa0', color: 'white', border: 'none', borderRadius: 8, padding: '10px 14px', fontSize: 12.5, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' as const, opacity: sending ? 0.6 : 1 }}>
+          <Phone size={13} /> Oddzwonimy
+        </button>
+      </form>
+      {error && <div style={{ fontSize: 11, color: '#dc2626', marginTop: 6 }}>{error}</div>}
+
+      <a href="/kalkulator" style={{ display: 'block', textAlign: 'center' as const, fontSize: 11, color: '#1a4fa0', marginTop: 10, textDecoration: 'none' }}>
+        Chcesz policzyć dokładniej? Otwórz pełny kalkulator →
+      </a>
+    </div>
+  )
+}

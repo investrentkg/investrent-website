@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { MapPin, LayoutGrid, Ruler, Layers, Phone, ChevronLeft, ChevronRight, Award, Shield, Clock, ArrowLeft, X, Expand } from 'lucide-react'
 import { submitLead } from '@/lib/api'
+import MortgageMiniCalculator from '@/components/MortgageMiniCalculator'
 import Link from 'next/link'
 
 interface OfferDetail {
@@ -305,6 +306,13 @@ export default function OfferDetailClient({ offer }: { offer: OfferDetail }) {
             )}
 
             <ContactForm refNumber={offer.ref_number} />
+
+            {/* NOWA FUNKCJA (Daniel 30.07.2026): mini kalkulator raty, tylko
+                dla ofert sprzedaży (kredyt hipoteczny nie dotyczy najmu) i
+                tylko gdy oferta ma cenę. */}
+            {offer.transaction_type === 'sprzedaz' && offer.price && (
+              <MortgageMiniCalculator price={offer.price} refNumber={offer.ref_number} offerId={offer.id} />
+            )}
 
             <div style={{ marginTop: 14, display: 'flex', flexDirection: 'column' as const, gap: 8 }}>
               {[
