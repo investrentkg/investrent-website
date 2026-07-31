@@ -30,6 +30,9 @@ export default function Nav({ office }: { office: Office | null }) {
     { label: 'Kupno',    href: '/kupno' },
     { label: 'Sprzedaż', href: '/sprzedaz' },
     { label: 'Wynajem',  href: '/wynajem' },
+    // NAPRAWA (audyt tresci, Daniel 30.07.2026): bylo w glownym menu starej
+    // strony, brakowalo calkowicie w nowym - realna usluga firmy.
+    { label: 'Zarządzanie najmem', href: '/zarzadzanie-najmem' },
     { label: 'O nas',    href: '/o-nas' },
     { label: 'Trudne sprawy', href: '/trudne-nieruchomosci' },
     { label: 'Kontakt',  href: '/kontakt' },
