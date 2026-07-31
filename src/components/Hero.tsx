@@ -14,10 +14,16 @@ interface HeroProps {
 
 // Każdy wiersz nagłówka jako lista słów, żeby móc odsłaniać je pojedynczo
 // (rozmycie -> ostrość, z narastającym opóźnieniem) zamiast wjeżdżania całego bloku naraz.
+// NAPRAWA (audyt webmasterski, Daniel 30.07.2026): H1 to najsilniejszy
+// pojedynczy sygnal SEO na calej stronie - poprzednia wersja konczyla sie
+// na "nad Baltykiem" (caly region, mniej precyzyjne), bez dokladnej nazwy
+// miasta w samym naglowku (byla tylko w malej plakietce nad nim). Przy celu
+// "zdominowac wyszukiwania lokalne dla Kolobrzegu" to realna, warta poprawy
+// okazja - "w Kolobrzegu" zamiast "nad Baltykiem" jako ostatnia linia.
 const HEADLINE_LINES: { words: string[]; gold?: boolean }[] = [
   { words: ['Twoje', 'wymarzone'] },
   { words: ['nieruchomości'], gold: true },
-  { words: ['nad', 'Bałtykiem'] },
+  { words: ['w', 'Kołobrzegu'] },
 ]
 
 export default function Hero({ stats, googleRating = 4.9, googleTotal = 55 }: HeroProps) {

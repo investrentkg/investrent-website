@@ -60,37 +60,18 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 }
 
-// NAPRAWA: dane strukturalne JSON-LD (schema.org RealEstateAgent) - brakowalo
-// calkowicie. To co pozwala Google pokazac biuro jako firme lokalna w wynikach
-// (adres/telefon/godziny wprost w wyszukiwarce), istotne dla SEO lokalnego
-// biura nieruchomosci.
-const structuredData = {
-  '@context': 'https://schema.org',
-  '@type': 'RealEstateAgent',
-  name: 'InvestRent Nieruchomości',
-  image: 'https://www.investrent.com.pl/logo.png',
-  url: 'https://www.investrent.com.pl',
-  telephone: '+48731554341',
-  email: 'biuro@investrent.com.pl',
-  address: {
-    '@type': 'PostalAddress',
-    streetAddress: 'ul. Ratuszowa 12/1 lok. 3',
-    addressLocality: 'Kołobrzeg',
-    postalCode: '78-100',
-    addressCountry: 'PL',
-  },
-  areaServed: { '@type': 'City', name: 'Kołobrzeg' },
-}
+// NAPRAWA (audyt webmasterski, Daniel 30.07.2026): usunieto stad drugi,
+// KONKURUJACY zestaw danych strukturalnych JSON-LD (RealEstateAgent), ktory
+// sam dodalem wczesniej NIE sprawdzajac, ze strona glowna (page.tsx, komponent
+// JsonLd) juz ma wlasny, LEPSZY zestaw - dynamiczny, z prawdziwym zywym
+// ratingiem Google (aggregateRating) zamiast statycznych danych. Dwa
+// sprzeczne skrypty JSON-LD RealEstateAgent na tej samej stronie to realny
+// blad SEO (Google nie wie ktoremu ufac). Zostaje TYLKO wersja z page.tsx -
+// patrz tez poprawka bledengo URL (Railway zamiast prawdziwej domeny) tam.
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pl" className={`${montserrat.variable} ${inter.variable}`}>
-      <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-        />
-      </head>
       <body>
         <div className="page-wrap">
           {children}

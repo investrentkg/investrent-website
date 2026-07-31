@@ -23,7 +23,7 @@ function JsonLd({ office }: { office: Office | null }) {
     "@type": "RealEstateAgent",
     "name": office?.name ?? "InvestRent Nieruchomości",
     "description": "Biuro nieruchomości w Kołobrzegu. Kupno, sprzedaż i wynajem nieruchomości nad Bałtykiem.",
-    "url": "https://investrent-website-production.up.railway.app",
+    "url": "https://www.investrent.com.pl",
     "telephone": office?.phone ?? "+48731554341",
     "email": office?.email ?? "biuro@investrent.com.pl",
     "address": {

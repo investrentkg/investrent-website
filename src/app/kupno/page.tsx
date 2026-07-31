@@ -84,20 +84,22 @@ export default async function KupnoPage() {
           </div>
         </div>
                 {/* Banner informacyjny */}
-        <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 12,
-          padding: '20px 24px', margin: '24px 0', display: 'flex', gap: 14 }}>
-          <span style={{ fontSize: 22, flexShrink: 0, marginTop: 2 }}>🏠</span>
-          <div>
-            <p style={{ fontSize: 15, fontWeight: 700, color: '#92400e', margin: '0 0 6px' }}>
-              Nie wszystkie nieruchomości trafiają od razu na stronę.
-            </p>
-            <p style={{ fontSize: 13, color: '#78350f', margin: 0, lineHeight: 1.7 }}>
-              Poniżej znajdziesz wybrane aktualne oferty sprzedaży, ale to nie musi być cała nasza dostępna baza.
-              Część nieruchomości obsługujemy poza publiczną publikacją lub udostępniamy dopiero po bezpośrednim
-              kontakcie z klientem. Jeśli szukasz mieszkania, domu, działki albo nieruchomości inwestycyjnej —
-              skontaktuj się z nami. Sprawdzimy dostępne możliwości i zaproponujemy rozwiązanie dopasowane do
-              Twoich potrzeb.
-            </p>
+        <div className="container" style={{ padding: '0 16px' }}>
+          <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 12,
+            padding: '20px 24px', margin: '24px 0', display: 'flex', gap: 14 }}>
+            <span style={{ fontSize: 22, flexShrink: 0, marginTop: 2 }}>🏠</span>
+            <div>
+              <p style={{ fontSize: 15, fontWeight: 700, color: '#92400e', margin: '0 0 6px' }}>
+                Nie wszystkie nieruchomości trafiają od razu na stronę.
+              </p>
+              <p style={{ fontSize: 13, color: '#78350f', margin: 0, lineHeight: 1.7 }}>
+                Poniżej znajdziesz wybrane aktualne oferty sprzedaży, ale to nie musi być cała nasza dostępna baza.
+                Część nieruchomości obsługujemy poza publiczną publikacją lub udostępniamy dopiero po bezpośrednim
+                kontakcie z klientem. Jeśli szukasz mieszkania, domu, działki albo nieruchomości inwestycyjnej —
+                skontaktuj się z nami. Sprawdzimy dostępne możliwości i zaproponujemy rozwiązanie dopasowane do
+                Twoich potrzeb.
+              </p>
+            </div>
           </div>
         </div>
         <OffersPageClient initialOffers={data?.data ?? []} initialTotal={data?.pagination?.total ?? 0} defaultTransaction="sprzedaz" />

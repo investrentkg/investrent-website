@@ -56,14 +56,16 @@ export default async function WynajemPage() {
             </div>
           </div>
         </div>
-                {/* Banner informacyjny */}
-        <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 10,
-          padding: '14px 20px', margin: '0 0 20px', display: 'flex', alignItems: 'flex-start', gap: 12 }}>
-          <span style={{ fontSize: 18, flexShrink: 0 }}>ℹ️</span>
-          <p style={{ fontSize: 14, color: '#1e40af', margin: 0, lineHeight: 1.6 }}>
-            <strong>Nie wszystkie nieruchomości trafiają od razu na stronę.</strong>{' '}
-            Skontaktuj się z nami aby poznać naszą pełną ofertę.
-          </p>
+        {/* Banner informacyjny */}
+        <div className="container" style={{ padding: '0 16px' }}>
+          <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 10,
+            padding: '14px 20px', margin: '0 0 20px', display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+            <span style={{ fontSize: 18, flexShrink: 0 }}>ℹ️</span>
+            <p style={{ fontSize: 14, color: '#1e40af', margin: 0, lineHeight: 1.6 }}>
+              <strong>Nie wszystkie nieruchomości trafiają od razu na stronę.</strong>{' '}
+              Skontaktuj się z nami aby poznać naszą pełną ofertę.
+            </p>
+          </div>
         </div>
         <OffersPageClient initialOffers={data?.data ?? []} initialTotal={data?.pagination?.total ?? 0} defaultTransaction="wynajem" />
       </main>

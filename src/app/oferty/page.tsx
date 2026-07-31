@@ -11,7 +11,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Oferty nieruchomości Kołobrzeg | InvestRent',
-  description: 'Przeglądaj oferty mieszkan, domow i działek na sprzedaz i wynajem w Kolob rzegu i okolicach.',
+  description: 'Przeglądaj aktualne oferty mieszkań, domów i działek na sprzedaż i wynajem w Kołobrzegu i okolicach nadmorskich.',
 }
 
 const FALLBACK_OFFICE = { name: 'InvestRent', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
