@@ -17,7 +17,7 @@ interface Review {
 
 const FALLBACK: Review[] = [
   { author: 'Aneta Radomska',    avatar: null, rating: 5, text: 'Nic dodać nic ująć 🤗 pełna profeska pod każdym względem… miła obsługa, pomocna, komunikacja na najwyższym poziomie….', time: 'w ostatnim tygodniu' },
-  { author: 'Wioletta Wisniewska', avatar: null, rating: 5, text: 'Jesteśmy wdzięczni Pani Marcie za pomoc w sprzedaży mieszkania w Kołobrzegu. To bardzo cudowny człowiek któremu można zaufać — zawsze będę polecać Panią Martę.', time: 'w ostatnim tygodniu' },
+  { author: 'Wioletta Wiśniewska', avatar: null, rating: 5, text: 'Jesteśmy wdzięczni Pani Marcie za pomoc w sprzedaży mieszkania w Kołobrzegu. To bardzo cudowny człowiek któremu można zaufać — zawsze będę polecać Panią Martę.', time: 'w ostatnim tygodniu' },
   { author: 'Paweł Kruk',         avatar: null, rating: 5, text: 'Z całego serca polecamy biuro nieruchomości Invest Rent, panią Martę Semak. Dzięki jej profesjonalizmowi i ogromnej życzliwości wykonaliśmy ważny krok — z Dolnego Śląska do Kołobrzegu. Cała transakcja przebiegła sprawnie i bez zbędnego stresu.', time: 'tydzień temu' },
   { author: 'Lech Bugaj',          avatar: null, rating: 5, text: 'Jestem pod wrażeniem rzetelnego podejścia Pani Dagmary do obsługi transakcji — od pierwszego kontaktu aż do załatwienia wszelkich spraw po zakupie nieruchomości 👍', time: 'miesiąc temu' },
 ]

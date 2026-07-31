@@ -1,33 +1,47 @@
 "use client"
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Calculator, Phone, CheckCircle2 } from 'lucide-react'
 import { submitLead } from '@/lib/api'
 
-// NAPRAWA/NOWA FUNKCJA (Daniel 30.07.2026): mini kalkulator raty kredytu
-// bezpośrednio na karcie oferty, prekonfigurowany ceną TEJ nieruchomości -
-// pomysł Daniela, żeby zwiększyć liczbę leadów kredytowych ze strony.
-// Ta sama matematyka (wzór annuitetowy) co pełny kalkulator na /kalkulator -
-// świadomie uproszczone założenia (20% wkładu własnego, 7,5% oprocentowania)
-// zamiast pełnego zestawu suwaków, żeby mieścić się w karcie bocznej oferty
-// bez przytłaczania - kto chce dokładniej policzyć, ma link do pełnego
-// kalkulatora.
+// NAPRAWA (audyt webmasterski, Daniel 30.07.2026): ten mini-kalkulator mial
+// wczesniej sztywne oprocentowanie 7.5% i wlasny, inny tag zrodla leada
+// ('kalkulator_oferta') - odkryte przy przegladzie MortgageCalcSection.tsx
+// (pelny kalkulator na stronie glownej), ktory JUZ pobiera zywa stope
+// referencyjna NBP i JUZ uzywa tagu 'kredyt'. Ujednolicone pod ten sam,
+// lepszy standard - wszystkie leady kredytowe ze strony maja teraz spojny
+// tag zrodla (source='kredyt'), niezaleznie czy pochodza z glownego
+// kalkulatora czy z tego mini-widgetu na karcie oferty.
 
 function formatPLN(n: number) {
   return new Intl.NumberFormat('pl-PL', { style: 'currency', currency: 'PLN', maximumFractionDigits: 0 }).format(n)
 }
 
 const OWN_CONTRIBUTION_PCT = 20
-const INTEREST_RATE_PCT = 7.5
+const FALLBACK_RATE_PCT = 7.5
 
 export default function MortgageMiniCalculator({ price, refNumber, offerId }: { price: number; refNumber?: string; offerId: string }) {
   const [years, setYears] = useState(25)
+  const [rate, setRate] = useState(FALLBACK_RATE_PCT)
+  const [rateIsLive, setRateIsLive] = useState(false)
   const [phone, setPhone] = useState('')
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL ?? 'https://investrent-crm-production.up.railway.app'}/api/public/nbp-rate`)
+      .then(r => r.json())
+      .then(data => {
+        if (data?.rate && typeof data.rate === 'number') {
+          setRate(parseFloat((data.rate + 2.3).toFixed(2)))
+          setRateIsLive(true)
+        }
+      })
+      .catch(() => {})
+  }, [])
+
   const loan = price * (1 - OWN_CONTRIBUTION_PCT / 100)
-  const r = INTEREST_RATE_PCT / 100 / 12
+  const r = rate / 100 / 12
   const n = years * 12
   const monthly = r > 0 ? loan * r / (1 - Math.pow(1 + r, -n)) : loan / n
 
@@ -39,8 +53,9 @@ export default function MortgageMiniCalculator({ price, refNumber, offerId }: { 
     try {
       const res = await submitLead({
         phone: phone.trim(),
-        source: 'kalkulator_oferta',
-        notes: `Kalkulator raty przy ofercie ${refNumber || offerId}: cena ${formatPLN(price)}, okres ${years} lat, orientacyjna rata ${formatPLN(monthly)}/mies. (zał. ${OWN_CONTRIBUTION_PCT}% wkładu własnego, ${INTEREST_RATE_PCT}% oprocentowania). Klient prosi o kontakt ws. kredytu.`,
+        source: 'kredyt',
+        client_type: 'buyer',
+        notes: `Kalkulator raty przy ofercie ${refNumber || offerId}: cena ${formatPLN(price)}, okres ${years} lat, orientacyjna rata ${formatPLN(monthly)}/mies. (zał. ${OWN_CONTRIBUTION_PCT}% wkładu własnego, ${rate.toFixed(1)}% oprocentowania${rateIsLive ? ' — stopa NBP+marża' : ' — wartość orientacyjna'}). Klient prosi o kontakt ws. kredytu.`,
       })
       if (res?.error) { setError(res.error); return }
       setSent(true)
@@ -79,7 +94,7 @@ export default function MortgageMiniCalculator({ price, refNumber, offerId }: { 
         <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 900, fontSize: 26, color: '#0d2a5c' }}>{formatPLN(monthly)}</div>
       </div>
       <div style={{ fontSize: 10.5, color: '#9ca3af', textAlign: 'center' as const, marginBottom: 14 }}>
-        Przy {OWN_CONTRIBUTION_PCT}% wkładu własnego i oprocentowaniu {INTEREST_RATE_PCT}% — orientacyjnie, nie stanowi oferty kredytowej
+        Przy {OWN_CONTRIBUTION_PCT}% wkładu własnego i oprocentowaniu {rate.toFixed(1)}% ({rateIsLive ? 'stopa NBP + marża' : 'wartość orientacyjna'}) — nie stanowi oferty kredytowej
       </div>
 
       <form onSubmit={handleSubmit} style={{ display: 'flex', gap: 6 }}>

@@ -81,24 +81,36 @@ export default function Hero({ stats, googleRating = 4.9, googleTotal = 55 }: He
     <section ref={sectionRef} className="relative flex items-center" style={{ minHeight: '620px', padding: '90px 0 96px', overflow: 'hidden' }}>
 
       <div className="absolute inset-0" style={{ overflow: 'hidden' }}>
-        <video
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{
-            objectPosition: 'center 35%',
-            opacity: videoReady ? 1 : 0,
-            transform: `scale(${1 + scrollProgress * 0.09})`,
-            filter: `brightness(${1 - scrollProgress * 0.35})`,
-            transition: 'opacity 1.2s ease',
-          }}
-          autoPlay
-          muted
-          loop
-          playsInline
-          poster="/hero.jpg"
-          onCanPlay={() => setVideoReady(true)}
-        >
-          <source src="/hero-video.mp4" type="video/mp4" />
-        </video>
+        {/* NAPRAWA (audyt webmasterski, Daniel 30.07.2026): wideo w tle
+            wczesniej ladowalo sie ZAWSZE, rowniez na telefonach - realny
+            koszt danych/baterii na mobile za niewielka korzysc wizualna
+            (male ekrany, czesto tryb oszczedzania danych). Na desktopie
+            (isDesktop, próg 1024px - ten sam co reszta strony) wideo dziala
+            jak wczesniej; na mobile pokazuje sie TYLKO statyczny hero.jpg
+            (ktory i tak byl posterem/tlem tego wideo, wiec brak wizualnej
+            "dziury"). Plik wideo tez skompresowany osobno: 2.6MB -> 546KB
+            (skalowanie 1920x1080->1280x720, wyzsze CRF, bez audio ktore
+            i tak bylo wyciszone). */}
+        {isDesktop && (
+          <video
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{
+              objectPosition: 'center 35%',
+              opacity: videoReady ? 1 : 0,
+              transform: `scale(${1 + scrollProgress * 0.09})`,
+              filter: `brightness(${1 - scrollProgress * 0.35})`,
+              transition: 'opacity 1.2s ease',
+            }}
+            autoPlay
+            muted
+            loop
+            playsInline
+            poster="/hero.jpg"
+            onCanPlay={() => setVideoReady(true)}
+          >
+            <source src="/hero-video.mp4" type="video/mp4" />
+          </video>
+        )}
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{

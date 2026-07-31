@@ -52,9 +52,9 @@ export default function Services() {
                   </div>
                   <h3 className="font-mont font-extrabold text-[18px] text-navy mb-2.5 tracking-tight">{s.title}</h3>
                   <p className="text-[13px] text-slate-500 leading-[1.75] mb-3.5">{s.desc}</p>
-                  <a href={s.href} className={`text-[13px] font-bold ${s.color} flex items-center gap-1.5 transition-transform duration-300 group-hover:translate-x-1`}>
+                  <span className={`text-[13px] font-bold ${s.color} flex items-center gap-1.5 transition-transform duration-300 group-hover:translate-x-1`}>
                     <LinkIcon size={14} /> {s.link}
-                  </a>
+                  </span>
                 </a>
               </ScrollReveal>
             )
