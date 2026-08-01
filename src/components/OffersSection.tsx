@@ -136,8 +136,8 @@ export default function OffersSection({ initialOffers }: { initialOffers: Pagina
             </div>
             <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 26, color: '#0d2a5c', letterSpacing: '-.4px' }}>Nasze oferty</h2>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ display: 'flex', gap: 6 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' as const }}>
+            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' as const }}>
               {TABS.map(t => (
                 <button key={t.key} onClick={() => switchTab(t.key)}
                   style={{ padding: '7px 18px', borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: '1.5px solid', transition: 'all .2s', background: tab === t.key ? '#1a4fa0' : 'transparent', color: tab === t.key ? 'white' : '#6b7280', borderColor: tab === t.key ? '#1a4fa0' : '#e5e7eb' }}>
@@ -158,9 +158,9 @@ export default function OffersSection({ initialOffers }: { initialOffers: Pagina
         ) : (
           <>
             <div style={{ overflow: 'hidden' }}>
-              <div style={{ display: 'flex', gap: 22, transition: 'transform .5s cubic-bezier(.4,0,.2,1)', transform: `translateX(-${cur * (100 / perView + 2)}%)` }}>
+              <div style={{ display: 'flex', gap: 22, transition: 'transform .5s cubic-bezier(.4,0,.2,1)', transform: `translateX(calc(-${cur} * (100% + 22px) / ${perView}))` }}>
                 {offers.map((o, i) => (
-                  <ScrollReveal key={o.id} delay={(i % 3) * 110} style={{ flexShrink: 0, width: 'calc(33.333% - 15px)' }}>
+                  <ScrollReveal key={o.id} delay={(i % 3) * 110} style={{ flexShrink: 0, width: `calc(${100 / perView}% - ${22 * (perView - 1) / perView}px)` }}>
                     <OfferCard offer={o} tab={tab} />
                   </ScrollReveal>
                 ))}
