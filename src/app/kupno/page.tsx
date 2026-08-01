@@ -11,6 +11,8 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Kupno nieruchomości Kołobrzeg | InvestRent',
   description: 'Szukasz mieszkania lub domu w Kołobrzegu? Znajdziemy Ci idealną nieruchomość. Bezpłatna pomoc, odpowiedź do 60 minut.',
+  // NAPRAWA (audyt SEO 31.07.2026, punkt 3): brak kanonicznego URL na calej stronie.
+  alternates: { canonical: 'https://www.investrent.com.pl/kupno' },
 }
 
 const FALLBACK_OFFICE = { name: 'InvestRent', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }

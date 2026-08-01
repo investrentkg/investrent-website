@@ -11,6 +11,8 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Sprzedaż nieruchomości Kołobrzeg | InvestRent',
   description: 'Sprzedaj nieruchomość w Kołobrzegu szybko i za dobrą cenę. Bezpłatna wycena, pełna obsługa po-sprzedażowa.',
+  // NAPRAWA (audyt SEO 31.07.2026, punkt 3): brak kanonicznego URL na calej stronie.
+  alternates: { canonical: 'https://www.investrent.com.pl/sprzedaz' },
 }
 
 const FALLBACK_OFFICE = { name: 'InvestRent', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }

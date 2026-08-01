@@ -15,8 +15,10 @@ import type { Metadata } from 'next'
 // na starej stronie, przelozona na styl wizualny nowego projektu.
 
 export const metadata: Metadata = {
-  title: 'Zarządzanie najmem Kołobrzeg',
+  title: 'Zarządzanie najmem Kołobrzeg | InvestRent',
   description: 'Zarządzanie najmem nieruchomości w Kołobrzegu i okolicach nadmorskich — od znalezienia najemcy po bieżącą obsługę i rozliczenia. Stabilny dochód, zero formalności po Twojej stronie.',
+  // NAPRAWA (audyt SEO 31.07.2026, punkt 3): brak kanonicznego URL na calej stronie.
+  alternates: { canonical: 'https://www.investrent.com.pl/zarzadzanie-najmem' },
 }
 
 const FALLBACK_OFFICE = {

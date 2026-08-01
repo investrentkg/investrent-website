@@ -1,5 +1,13 @@
-export const dynamic = 'force-dynamic'
+// NAPRAWA (audyt SEO 31.07.2026, punkt 4): "force-dynamic" renderowal strone
+// od nowa przy KAZDYM wejsciu (pelne zapytanie do API za kazdym razem) -
+// wplywa na szybkosc ladowania (Core Web Vitals to realny czynnik
+// pozycjonowania Google). Dane na stronie glownej (lista ofert, opinie) nie
+// musza byc aktualizowane co sekunde - odswiezanie co 5 minut (ISR) to
+// zero realnej straty dla uzytkownika, a zauwazalny zysk w czasie ladowania
+// (wiekszosc wejsc dostaje strone z cache, nie czeka na API).
+export const revalidate = 300
 
+import type { Metadata } from 'next'
 import { getPublicOffers, getTeam, getOffice, getStats } from '@/lib/api'
 import Nav           from '@/components/Nav'
 import Hero          from '@/components/Hero'
@@ -16,6 +24,15 @@ import MortgageCalcSection from '@/components/MortgageCalcSection'
 import FloatingWA    from '@/components/FloatingWA'
 import SocialSidebar from '@/components/SocialSidebar'
 import type { Office } from '@/types'
+
+// NAPRAWA (audyt SEO 31.07.2026, punkt 3): strona glowna nie mial WLASNEGO
+// eksportu metadata w ogole - dziedziczyla wszystko z layout.tsx, w tym
+// brak kanonicznego URL. Reszta (title/description) zostaje z layout.tsx
+// przez dziedziczenie (Next.js merguje), tutaj dodajemy tylko brakujacy
+// canonical.
+export const metadata: Metadata = {
+  alternates: { canonical: 'https://www.investrent.com.pl' },
+}
 
 function JsonLd({ office }: { office: Office | null }) {
   const schema = {

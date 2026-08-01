@@ -22,6 +22,7 @@ export const metadata: Metadata = {
   // domeny przez Google. follow:true zeby linki WYCHODZACE z tej strony
   // (np. do strony glownej) nadal przekazywaly wartosc.
   robots: { index: false, follow: true },
+  alternates: { canonical: 'https://www.investrent.com.pl/rodo' },
 }
 
 const FALLBACK_OFFICE = {

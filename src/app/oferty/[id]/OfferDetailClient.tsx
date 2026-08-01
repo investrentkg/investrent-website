@@ -36,7 +36,7 @@ interface OfferDetail {
 }
 
 // ── Lightbox ──────────────────────────────────────────────────
-function Lightbox({ photos, start, onClose }: { photos: OfferDetail['offer_photos'], start: number, onClose: () => void }) {
+function Lightbox({ photos, start, onClose, label }: { photos: OfferDetail['offer_photos'], start: number, onClose: () => void, label: string }) {
   const [cur, setCur] = useState(start)
 
   useEffect(() => {
@@ -62,7 +62,7 @@ function Lightbox({ photos, start, onClose }: { photos: OfferDetail['offer_photo
       {/* Główne zdjęcie */}
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden', padding: '0 60px' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={photos[cur].url} alt="" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+        <img src={photos[cur].url} alt={`${label} — zdjęcie ${cur + 1} z ${photos.length}`} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
         {photos.length > 1 && (
           <>
             <button onClick={() => setCur(c => Math.max(0, c - 1))} disabled={cur === 0}
@@ -80,7 +80,7 @@ function Lightbox({ photos, start, onClose }: { photos: OfferDetail['offer_photo
       <div style={{ display: 'flex', gap: 6, padding: '12px 16px', overflowX: 'auto' as const, flexShrink: 0 }}>
         {photos.map((p, i) => (
           // eslint-disable-next-line @next/next/no-img-element
-          <img key={i} src={p.url} alt="" onClick={() => setCur(i)}
+          <img key={i} src={p.url} alt={`${label} — miniatura ${i + 1}`} onClick={() => setCur(i)}
             style={{ width: 64, height: 46, objectFit: 'cover', borderRadius: 6, flexShrink: 0, cursor: 'pointer', opacity: i === cur ? 1 : .5, border: i === cur ? '2px solid white' : '2px solid transparent', transition: 'all .15s' }} />
         ))}
       </div>
@@ -89,7 +89,7 @@ function Lightbox({ photos, start, onClose }: { photos: OfferDetail['offer_photo
 }
 
 // ── Galeria ───────────────────────────────────────────────────
-function Gallery({ photos }: { photos: OfferDetail['offer_photos'] }) {
+function Gallery({ photos, label }: { photos: OfferDetail['offer_photos'], label: string }) {
   const [active, setActive] = useState(0)
   const [lightbox, setLightbox] = useState(false)
   const [touchStart, setTouchStart] = useState(0)
@@ -100,14 +100,14 @@ function Gallery({ photos }: { photos: OfferDetail['offer_photos'] }) {
 
   return (
     <>
-      {lightbox && <Lightbox photos={photos} start={active} onClose={() => setLightbox(false)} />}
+      {lightbox && <Lightbox photos={photos} start={active} onClose={() => setLightbox(false)} label={label} />}
       <div style={{ width: '100%', maxWidth: '100%' }}>
         {/* Główne zdjęcie */}
         <div style={{ position: 'relative', borderRadius: 14, overflow: 'hidden', marginBottom: 8, background: '#111', cursor: 'pointer' }}
           onTouchStart={e => setTouchStart(e.touches[0].clientX)}
           onTouchEnd={e => { const d = touchStart - e.changedTouches[0].clientX; if (Math.abs(d) > 50) d > 0 ? setActive(a => Math.min(photos.length-1, a+1)) : setActive(a => Math.max(0, a-1)) }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={photos[active].url} alt="Zdjęcie oferty" onClick={() => setLightbox(true)}
+          <img src={photos[active].url} alt={`${label} — zdjęcie ${active + 1} z ${photos.length}`} onClick={() => setLightbox(true)}
             style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', display: 'block', maxWidth: '100%' }} />
           {/* Overlay przycisk fullscreen */}
           <button onClick={() => setLightbox(true)}
@@ -135,7 +135,7 @@ function Gallery({ photos }: { photos: OfferDetail['offer_photos'] }) {
           <div style={{ display: 'flex', gap: 6, overflowX: 'auto' as const, paddingBottom: 6, WebkitOverflowScrolling: 'touch' as any }}>
             {photos.map((p, i) => (
               // eslint-disable-next-line @next/next/no-img-element
-              <img key={i} src={p.url} alt="" onClick={() => setActive(i)}
+              <img key={i} src={p.url} alt={`${label} — miniatura ${i + 1}`} onClick={() => setActive(i)}
                 style={{ width: 76, height: 56, objectFit: 'cover', borderRadius: 7, flexShrink: 0, cursor: 'pointer', border: i === active ? '2.5px solid #1a4fa0' : '2.5px solid transparent', opacity: i === active ? 1 : .6, transition: 'all .15s' }} />
             ))}
           </div>
@@ -198,6 +198,13 @@ export default function OfferDetailClient({ offer }: { offer: OfferDetail }) {
     return () => window.removeEventListener('resize', check)
   }, [])
 
+  // NAPRAWA (audyt SEO 31.07.2026, punkt 2): zdjecia mialy puste alt="" -
+  // zero szansy na ruch z wyszukiwania obrazow Google, i zero kontekstowego
+  // sygnalu o czym jest strona. Budujemy opisowa etykiete raz, na podstawie
+  // prawdziwych danych oferty (nie wymyslonej tresci).
+  const photoLabel = offer.title
+    ?? `${offer.property_type === 'mieszkanie' ? 'Mieszkanie' : offer.property_type === 'dom' ? 'Dom' : 'Nieruchomość'} ${offer.transaction_type === 'wynajem' ? 'na wynajem' : 'na sprzedaż'}, ${offer.address_city}`
+
   const details = [
     offer.area        && { label: 'Powierzchnia',   val: `${offer.area} m²` },
     offer.rooms_count && { label: 'Liczba pokoi',   val: `${offer.rooms_count}` },
@@ -245,7 +252,7 @@ export default function OfferDetailClient({ offer }: { offer: OfferDetail }) {
               {offer.price_per_m2 && <span style={{ fontSize: 14, fontWeight: 400, color: '#9ca3af', marginLeft: 10 }}>{offer.price_per_m2.toLocaleString('pl-PL')} zł/m²</span>}
             </div>
 
-            <Gallery photos={offer.offer_photos ?? []} />
+            <Gallery photos={offer.offer_photos ?? []} label={photoLabel} />
 
             {/* Szczegóły */}
             <div style={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: 14, padding: '20px', marginTop: 20 }}>

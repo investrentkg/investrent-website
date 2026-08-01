@@ -11,6 +11,8 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Trudne nieruchomości i doradztwo | InvestRent Kołobrzeg',
   description: 'Sprawy spadkowe, hipoteki, współwłasność, licytacje komornicze. Pomagamy rozwiązać skomplikowane sprawy nieruchomości w Kołobrzegu.',
+  // NAPRAWA (audyt SEO 31.07.2026, punkt 3): brak kanonicznego URL na calej stronie.
+  alternates: { canonical: 'https://www.investrent.com.pl/trudne-nieruchomosci' },
 }
 
 const FALLBACK_OFFICE = {
