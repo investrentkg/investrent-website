@@ -97,6 +97,15 @@ input, textarea, select {
   [style*="display: flex"] {
     flex-wrap: wrap;
   }
+  /* NAPRAWA (Daniel 31.07): powyższa reguła jest celowo szeroka (łapie
+     wszystkie inline flex na mobile), ale przez to łapała też karuzelę
+     "Nasze oferty" (.offers-scroller) - zawijała 100%-szerokości karty
+     na nowe linie zamiast pozwolić im przewijać się w bok, dając
+     pionowy stos ofert i pozornie "zablokowany" pasek karuzeli.
+     Wyłączona wyraźnie dla tego jednego, świadomie poziomego elementu. */
+  .offers-scroller {
+    flex-wrap: nowrap !important;
+  }
 }
 
 /* ── Telefon duży / phablet (480–767px) ── */

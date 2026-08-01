@@ -23,6 +23,11 @@ const AVATAR_GRADIENT: string[] = [
 interface Props { members: TeamMember[] }
 
 export default function Team({ members }: Props) {
+  // NAPRAWA (Daniel 31.07, prewencyjnie po tym samym błędzie w karuzeli
+  // ofert): ten sam mechanizm co tam - natywne przewijanie (scroll-snap)
+  // zamiast recznie liczonego w JS transform: translateX. Eliminuje cala
+  // klase bledow (puste kolumny, "zablokowany" pasek) u zrodla.
+  const scrollerRef = useRef<HTMLDivElement>(null)
   const [cur, setCur] = useState(0)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const [perView, setPerView] = useState(3)
@@ -47,25 +52,53 @@ export default function Team({ members }: Props) {
   const displayMembers = members.length > 0 ? members : FALLBACK_MEMBERS
   const maxSlide = Math.max(0, displayMembers.length - perView)
 
+  function scrollToIndex(i: number) {
+    const el = scrollerRef.current
+    if (!el) return
+    const clamped = Math.max(0, Math.min(maxSlide, i))
+    const card = el.children[0] as HTMLElement | undefined
+    if (!card) return
+    const cardWidth = card.getBoundingClientRect().width + 20 // + gap (gap-5 = 20px)
+    el.scrollTo({ left: clamped * cardWidth, behavior: 'smooth' })
+  }
 
+  function handleScroll() {
+    const el = scrollerRef.current
+    if (!el || !el.children[0]) return
+    const cardWidth = (el.children[0] as HTMLElement).getBoundingClientRect().width + 20
+    if (cardWidth <= 0) return
+    setCur(Math.round(el.scrollLeft / cardWidth))
+  }
 
   // Auto-przewijanie co 3 sekundy
   useEffect(() => {
     timerRef.current = setInterval(() => {
-      setCur(c => c >= maxSlide ? 0 : c + 1)
+      setCur(c => {
+        const next = c >= maxSlide ? 0 : c + 1
+        scrollToIndex(next)
+        return next
+      })
     }, 3000)
     return () => { if (timerRef.current) clearInterval(timerRef.current) }
-  }, [maxSlide])
+  }, [maxSlide, displayMembers.length, perView])
 
   // Zatrzymaj na hover
   function pauseAuto() { if (timerRef.current) clearInterval(timerRef.current) }
   function resumeAuto() {
     timerRef.current = setInterval(() => {
-      setCur(c => c >= maxSlide ? 0 : c + 1)
+      setCur(c => {
+        const next = c >= maxSlide ? 0 : c + 1
+        scrollToIndex(next)
+        return next
+      })
     }, 3000)
   }
   return (
     <section id="zespol" className="section section-alt">
+      <style jsx>{`
+        .team-scroller::-webkit-scrollbar { display: none; }
+        .team-scroller { scrollbar-width: none; -ms-overflow-style: none; }
+      `}</style>
       <div className="container">
         <div className="text-center mb-10">
           <div className="tag bg-blue/8 text-blue mb-3">Nasz zespół</div>
@@ -75,14 +108,14 @@ export default function Team({ members }: Props) {
           </p>
         </div>
 
-        <div className="overflow-hidden">
-          <div className="flex gap-5 transition-transform duration-500"
-            style={{ transform: `translateX(-${cur * (100 / perView + 20 / displayMembers.length)}%)` }}>
+        <div ref={scrollerRef} onScroll={handleScroll} onMouseEnter={pauseAuto} onMouseLeave={resumeAuto}
+          className="team-scroller flex gap-5"
+          style={{ overflowX: 'auto', scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch', paddingBottom: 4 }}>
             {displayMembers.map((m, idx) => {
               const b = BADGE_STYLE[m.role] ?? BADGE_STYLE.agent
               const grad = AVATAR_GRADIENT[idx % AVATAR_GRADIENT.length]
               return (
-                <ScrollReveal key={m.id} delay={(idx % perView) * 110} style={{ flexShrink: 0, width: `calc(${100 / perView}% - ${(perView - 1) * 20 / perView}px)` }}>
+                <ScrollReveal key={m.id} delay={(idx % perView) * 110} style={{ flexShrink: 0, scrollSnapAlign: 'start' as const, width: `calc(${100 / perView}% - ${(perView - 1) * 20 / perView}px)` }}>
                 <Link href={m.offer_count ? `/oferty?agent_id=${m.id}` : '/oferty'}
                   style={{ textDecoration: 'none', display: 'block' }}>
               <div className="bg-white rounded-2xl border border-slate-200 p-7 text-center hover:-translate-y-0.5 hover:shadow-lg transition-all cursor-pointer h-full">
@@ -117,18 +150,17 @@ export default function Team({ members }: Props) {
                 </ScrollReveal>
               )
             })}
-          </div>
         </div>
 
         {displayMembers.length > perView && (
           <div className="flex items-center justify-center gap-4 mt-6">
-            <button onClick={() => setCur(c => Math.max(0, c - 1))} disabled={cur === 0}
+            <button onClick={() => scrollToIndex(cur - 1)} disabled={cur === 0}
               className="w-9 h-9 rounded-full border-[1.5px] border-slate-200 flex items-center justify-center hover:border-blue hover:text-blue transition-all disabled:opacity-30">
               <ChevronLeft size={16} />
             </button>
             <div className="flex gap-2">
               {Array.from({ length: maxSlide + 1 }).map((_, i) => (
-                <div key={i} onClick={() => setCur(i)} role="button"
+                <div key={i} onClick={() => scrollToIndex(i)} role="button"
                   style={{
                     display: 'inline-block',
                     width: i === cur ? 22 : 8,
@@ -144,7 +176,7 @@ export default function Team({ members }: Props) {
                   }} />
               ))}
             </div>
-            <button onClick={() => setCur(c => Math.min(maxSlide, c + 1))} disabled={cur === maxSlide}
+            <button onClick={() => scrollToIndex(cur + 1)} disabled={cur === maxSlide}
               className="w-9 h-9 rounded-full border-[1.5px] border-slate-200 flex items-center justify-center hover:border-blue hover:text-blue transition-all disabled:opacity-30">
               <ChevronRight size={16} />
             </button>
