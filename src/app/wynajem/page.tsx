@@ -9,7 +9,7 @@ import { KeyRound, Shield, Clock, Star, ArrowRight } from 'lucide-react'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Wynajem nieruchomości Kołobrzeg | InvestRent',
+  title: 'Wynajem nieruchomości Kołobrzeg',
   description: 'Mieszkania i lokale do wynajęcia w Kołobrzegu. Sprawdź nasze oferty najmu.',
   // NAPRAWA (audyt SEO 31.07.2026, punkt 3): brak kanonicznego URL na calej stronie.
   alternates: { canonical: 'https://www.investrent.com.pl/wynajem' },

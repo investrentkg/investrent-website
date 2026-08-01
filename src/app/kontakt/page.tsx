@@ -8,7 +8,7 @@ import { getOffice } from '@/lib/api'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Kontakt | InvestRent Nieruchomości Kołobrzeg',
+  title: 'Kontakt',
   description: 'Skontaktuj się z biurem nieruchomości InvestRent w Kołobrzegu. Odpowiadamy do 60 minut. Tel: +48 731 554 341',
   // NAPRAWA (audyt SEO 31.07.2026, punkt 3): brak kanonicznego URL na calej stronie.
   alternates: { canonical: 'https://www.investrent.com.pl/kontakt' },

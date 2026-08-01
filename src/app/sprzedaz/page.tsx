@@ -9,7 +9,7 @@ import { DollarSign, Camera, Globe, FileCheck, Key, CheckCircle, ArrowRight, Fil
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Sprzedaż nieruchomości Kołobrzeg | InvestRent',
+  title: 'Sprzedaż nieruchomości Kołobrzeg',
   description: 'Sprzedaj nieruchomość w Kołobrzegu szybko i za dobrą cenę. Bezpłatna wycena, pełna obsługa po-sprzedażowa.',
   // NAPRAWA (audyt SEO 31.07.2026, punkt 3): brak kanonicznego URL na calej stronie.
   alternates: { canonical: 'https://www.investrent.com.pl/sprzedaz' },

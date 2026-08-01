@@ -9,7 +9,7 @@ import { Search, ShieldCheck, Clock, Award, ArrowRight } from 'lucide-react'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Kupno nieruchomości Kołobrzeg | InvestRent',
+  title: 'Kupno nieruchomości Kołobrzeg',
   description: 'Szukasz mieszkania lub domu w Kołobrzegu? Znajdziemy Ci idealną nieruchomość. Bezpłatna pomoc, odpowiedź do 60 minut.',
   // NAPRAWA (audyt SEO 31.07.2026, punkt 3): brak kanonicznego URL na calej stronie.
   alternates: { canonical: 'https://www.investrent.com.pl/kupno' },

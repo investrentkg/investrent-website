@@ -10,7 +10,7 @@ import { MapPin, Phone, Mail, Shield, Heart, TrendingUp, Users, CheckCircle } fr
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'O nas | InvestRent Nieruchomości Kołobrzeg',
+  title: 'O nas',
   description: 'Poznaj zespół InvestRent — biura nieruchomości z Kołobrzegu specjalizującego się w rynku nadmorskim. 150+ transakcji, ocena 4.9/5.',
   // NAPRAWA (audyt SEO 31.07.2026, punkt 3): brak kanonicznego URL na calej stronie.
   alternates: { canonical: 'https://www.investrent.com.pl/o-nas' },

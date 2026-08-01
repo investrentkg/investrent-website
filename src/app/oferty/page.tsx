@@ -10,7 +10,7 @@ import { getPublicOffers, getOffice } from '@/lib/api'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Oferty nieruchomości Kołobrzeg | InvestRent',
+  title: 'Oferty nieruchomości Kołobrzeg',
   description: 'Przeglądaj aktualne oferty mieszkań, domów i działek na sprzedaż i wynajem w Kołobrzegu i okolicach nadmorskich.',
   // NAPRAWA (audyt SEO 31.07.2026, punkt 3): brak kanonicznego URL na calej stronie.
   alternates: { canonical: 'https://www.investrent.com.pl/oferty' },
