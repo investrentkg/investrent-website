@@ -85,6 +85,35 @@ const nextConfig = {
       { source: '/:slug/:id(\\d+)', destination: '/oferty', permanent: true },
     ]
   },
+  // NAPRAWA BEZPIECZENSTWA (audyt koncowy 01.08) - strona nie miala ZADNYCH
+  // jawnie skonfigurowanych naglowkow bezpieczenstwa. Celowo NIE dodaje tu
+  // pelnego Content-Security-Policy - zle skonfigurowany CSP moglby zablokowac
+  // Google Analytics/mapy/inne skrypty bez dokladnego przetestowania kazdego
+  // z osobna, co byloby gorsze niz jego brak. Ponizsze sa bezpieczne,
+  // standardowe i nie wymagaja dodatkowego strojenia.
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          // Ochrona przed clickjackingiem - strona z formularzem kontaktowym
+          // (lead gen) nie powinna dac sie osadzic w ukrytej ramce na cudzej
+          // stronie w celu oszukania odwiedzajacego.
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          // Zapobiega "zgadywaniu" typu pliku przez przegladarke wbrew
+          // deklarowanemu Content-Type - typowa ochrona przed niektorymi
+          // atakami przez zle rozpoznane pliki.
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          // Ogranicza ile informacji o poprzedniej stronie (URL) wysylane jest
+          // przy przechodzeniu na inna domene - rozsadny, prywatnosciowy domyslny.
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          // Jawnie wylacza dostep do kamery/mikrofonu/lokalizacji dla tej
+          // strony - nie sa nigdzie uzywane, wiec nie ma powodu ich udostepniac.
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+        ],
+      },
+    ]
+  },
 }
 
 module.exports = nextConfig
