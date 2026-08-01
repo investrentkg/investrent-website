@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Montserrat, Inter } from 'next/font/google'
+import Script from 'next/script'
 import './globals.css'
 
 const montserrat = Montserrat({
@@ -70,12 +71,33 @@ export const metadata: Metadata = {
 // patrz tez poprawka bledengo URL (Railway zamiast prawdziwej domeny) tam.
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  // NOWE (31.07.2026, przygotowanie pod Google Search Console/Analytics,
+  // Daniel: "chce sie polaczyc z narzedziami Google"): skrypt Google
+  // Analytics (GA4) jest tu juz w pelni przygotowany, ale CELOWO nieaktywny
+  // dopoki nie zostanie dodana prawdziwa zmienna srodowiskowa w Vercel
+  // (NEXT_PUBLIC_GA_MEASUREMENT_ID) - to znaczy ze po zalozeniu wlasciwosci
+  // GA4 przez Daniela, wystarczy wkleic numer pomiaru w panelu Vercel,
+  // BEZ zadnej kolejnej zmiany w kodzie i bez ponownego wdrazania przez nas.
+  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
   return (
     <html lang="pl" className={`${montserrat.variable} ${inter.variable}`}>
       <body>
         <div className="page-wrap">
           {children}
         </div>
+        {gaId && (
+          <>
+            <Script src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} strategy="afterInteractive" />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${gaId}');
+              `}
+            </Script>
+          </>
+        )}
       </body>
     </html>
   )

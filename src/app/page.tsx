@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://www.investrent.com.pl' },
 }
 
-function JsonLd({ office }: { office: Office | null }) {
+function JsonLd({ office, googleRating, googleTotal }: { office: Office | null; googleRating: number; googleTotal: number }) {
   const schema = {
     "@context": "https://schema.org",
     "@type": "RealEstateAgent",
@@ -50,7 +50,13 @@ function JsonLd({ office }: { office: Office | null }) {
       "addressRegion": "Zachodniopomorskie",
       "addressCountry": "PL"
     },
-    "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "55" }
+    // NAPRAWA (audyt SEO 31.07.2026, doprecyzowanie): to byly sztywne liczby
+    // "4.9"/"55" NIEZALEZNE od faktycznej, zywej oceny pobieranej z Google
+    // (widocznej na stronie w komponencie Hero) - jesli prawdziwa ocena
+    // kiedykolwiek sie zmieni, dane strukturalne pokazywalyby Google
+    // nieaktualna/niezgodna wartosc wzgledem tego co widzi realny
+    // uzytkownik na stronie. Teraz oba miejsca czerpia z tego samego zrodla.
+    "aggregateRating": { "@type": "AggregateRating", "ratingValue": String(googleRating), "reviewCount": String(googleTotal) }
   }
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
 }
@@ -87,7 +93,7 @@ export default async function Home() {
 
   return (
     <>
-      <JsonLd office={office} />
+      <JsonLd office={office} googleRating={googleRating} googleTotal={googleTotal} />
       <Nav           office={office} />
       <Hero          stats={statsData} googleRating={googleRating} googleTotal={googleTotal} />
       <CallbackStrip />
