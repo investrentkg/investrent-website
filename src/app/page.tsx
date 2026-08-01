@@ -58,7 +58,7 @@ function JsonLd({ office, googleRating, googleTotal }: { office: Office | null; 
     // uzytkownik na stronie. Teraz oba miejsca czerpia z tego samego zrodla.
     "aggregateRating": { "@type": "AggregateRating", "ratingValue": String(googleRating), "reviewCount": String(googleTotal) }
   }
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }} />
 }
 
 // Fallback office gdy API niedostępne

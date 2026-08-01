@@ -118,7 +118,7 @@ function OfferJsonLd({ offer }: { offer: any }) {
         : 'http://purl.org/goodrelations/v1#Sell',
     },
   }
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }} />
 }
 
 // NAPRAWA (audyt SEO, punkt 8) - okruszki (Breadcrumb) byly juz widoczne
@@ -135,7 +135,7 @@ function BreadcrumbJsonLd({ offer }: { offer: any }) {
       { '@type': 'ListItem', position: 3, name: offer.title ?? offer.ref_number, item: `${BASE_URL}/oferty/${offer.id}` },
     ],
   }
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }} />
 }
 
 export default async function OfferPage({ params }: { params: { id: string } }) {
