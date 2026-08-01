@@ -41,9 +41,23 @@ const nextConfig = {
       { source: '/oferty/dzialki',    destination: '/oferty?property_type=dzialka',    permanent: true },
       { source: '/oferty/lokale',     destination: '/oferty?property_type=lokal',      permanent: true },
       { source: '/oferty/hale',       destination: '/oferty?property_type=magazyn',    permanent: true },
+      // NAPRAWA (31.07, Daniel: "zmiana nie moze byc szokiem dla wyszukiwarek"):
+      // powyzsze reguly obejmowaly TYLKO gole, dwuczlonowe adresy. Sprawdzone
+      // bezposrednio w indeksie Google (site:investrent.com.pl) - stara strona
+      // mial TEZ trzeci segment (miasto/dzielnica) po typie nieruchomosci, np.
+      // "/oferty/mieszkania/kolobrzeg" - realnie zaindeksowany adres, ktory
+      // BEZ tej reguly zwracalby 404 zamiast przekierowania. Wildcard lapie
+      // kazdy taki wariant (dowolne miasto/filtr), niezaleznie od tego czy go
+      // znalazlem w wyszukiwarce czy nie.
+      { source: '/oferty/mieszkania/:path*', destination: '/oferty?property_type=mieszkanie', permanent: true },
+      { source: '/oferty/domy/:path*',       destination: '/oferty?property_type=dom',        permanent: true },
+      { source: '/oferty/dzialki/:path*',    destination: '/oferty?property_type=dzialka',    permanent: true },
+      { source: '/oferty/lokale/:path*',     destination: '/oferty?property_type=lokal',      permanent: true },
+      { source: '/oferty/hale/:path*',       destination: '/oferty?property_type=magazyn',    permanent: true },
       // "Obiekty" nie ma odpowiednika w nowym systemie typow nieruchomosci -
       // przekierowanie do ogolnej listy zamiast 404
       { source: '/oferty/obiekty',    destination: '/oferty', permanent: true },
+      { source: '/oferty/obiekty/:path*', destination: '/oferty', permanent: true },
 
       // Strony per-agent (stare ID Virgo typu "ag-25731" nie maja odpowiednika
       // w nowych ID uzytkownikow CRM - nie da sie 1:1 zmapowac) -> ogolna lista
