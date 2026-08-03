@@ -35,6 +35,14 @@ const SERVICES = [
   { icon: Wrench,    title: 'Utrzymanie nieruchomości', desc: 'Regularne przeglądy techniczne, szybka organizacja napraw i konserwacji, zgłaszanie usterek przez Panel Najemcy i Właściciela.' },
 ]
 
+const FAQ = [
+  { q: 'Ile kosztuje zarządzanie najmem?', a: 'Koszt zależy od zakresu usługi i konkretnej nieruchomości — ustalamy go indywidualnie podczas bezpłatnej konsultacji, biorąc pod uwagę lokalizację, typ najmu i to, jak dużo formalności chcesz nam przekazać.' },
+  { q: 'Jak weryfikujecie potencjalnych najemców?', a: 'Sprawdzamy m.in. rejestry dłużników, potwierdzamy źródło i wysokość dochodu oraz referencje od poprzednich wynajmujących, zanim zarekomendujemy kandydata do podpisania umowy.' },
+  { q: 'Co to jest najem okazjonalny i czy go oferujecie?', a: 'Najem okazjonalny to forma umowy dająca właścicielowi dodatkowe zabezpieczenie prawne (m.in. łatwiejszą możliwość eksmisji w razie problemów) — wymaga wskazania przez najemcę adresu, pod który się wyprowadzi. Oferujemy tę formę, w tym możliwość skorzystania z naszego adresu zabezpieczającego.' },
+  { q: 'Co się dzieje, gdy najemca się spóźnia z płatnością?', a: 'Monitorujemy terminy płatności na bieżąco i podejmujemy działania windykacyjne od razu po przekroczeniu terminu — informujemy Cię o sytuacji przez Panel Właściciela, zanim zaległość urośnie.' },
+  { q: 'Czy będę miał bieżący wgląd w to, co dzieje się z moją nieruchomością?', a: 'Tak, przez Panel Właściciela masz stały dostęp do informacji finansowych, statusu umowy i ewentualnych zgłoszeń technicznych — bez potrzeby dzwonienia i pytania o status.' },
+]
+
 const BENEFITS = [
   'Kompleksowa obsługa wynajmu — od znalezienia najemcy po bieżące zarządzanie',
   'Przejrzyste umowy sporządzone przez specjalistów prawa nieruchomości',
@@ -119,6 +127,26 @@ export default async function ZarzadzanieNajmemPage() {
             </div>
           </div>
         </div>
+
+        {/* FAQ (Daniel 03.08, sugestia SEO) */}
+        <div style={{ padding: '56px 0', background: '#f8fafc' }}>
+          <div className="container" style={{ maxWidth: 760 }}>
+            <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 28, color: '#0d2a5c', textAlign: 'center' as const, marginBottom: 40 }}>Najczęściej zadawane pytania</h2>
+            <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 14 }}>
+              {FAQ.map(f => (
+                <div key={f.q} style={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: 14, padding: '20px 24px' }}>
+                  <h3 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 700, fontSize: 15, color: '#0d2a5c', marginBottom: 8 }}>{f.q}</h3>
+                  <p style={{ fontSize: 13.5, color: '#6b7280', lineHeight: 1.75 }}>{f.a}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: FAQ.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+        }).replace(/</g, '\\u003c') }} />
 
         <div id="kontakt-najem"><Contact office={office} /></div>
       </main>

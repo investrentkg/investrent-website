@@ -17,6 +17,14 @@ export const metadata: Metadata = {
 
 const FALLBACK_OFFICE = { name: 'InvestRent', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
 
+const FAQ = [
+  { q: 'Czy pomoc w znalezieniu mieszkania na wynajem jest płatna?', a: 'Warunki zależą od konkretnej oferty — część mieszkań oznaczona jest jako "bez prowizji" dla najemcy. Zawsze jasno komunikujemy koszty przed umówieniem prezentacji, żeby nie było niespodzianek.' },
+  { q: 'Jakie dokumenty są potrzebne do podpisania umowy najmu?', a: 'Standardowo dowód osobisty i informacja o źródle dochodu (np. zaświadczenie o zatrudnieniu). Dokładną listę podajemy indywidualnie przy konkretnej ofercie, w zależności od wymagań właściciela.' },
+  { q: 'Czy oferty na stronie są zweryfikowane i aktualne?', a: 'Tak, każda oferta przechodzi przez nasz zespół przed publikacją — sprawdzamy zgodność danych i regularnie aktualizujemy status dostępności, żeby nie tracić Twojego czasu na nieaktualne ogłoszenia.' },
+  { q: 'Czy pomagacie też przy wynajmie krótkoterminowym / wakacyjnym?', a: 'Nasza oferta na tej stronie koncentruje się na wynajmie długoterminowym. Jeśli szukasz czegoś krótkoterminowego, skontaktuj się z nami bezpośrednio — sprawdzimy dostępne możliwości.' },
+  { q: 'Ile wynosi kaucja i kiedy jest zwracana?', a: 'Wysokość kaucji ustala właściciel indywidualnie dla każdej oferty (zwykle równowartość 1 miesięcznego czynszu). Kaucja jest zwrotna po zakończeniu najmu, o ile mieszkanie zostaje przekazane bez uszkodzeń wykraczających poza normalne zużycie.' },
+]
+
 export default async function WynajemPage() {
   const [data, officeData] = await Promise.all([
     getPublicOffers({ limit: 9, transaction_type: 'wynajem' } as any),
@@ -70,6 +78,26 @@ export default async function WynajemPage() {
           </div>
         </div>
         <OffersPageClient initialOffers={data?.data ?? []} initialTotal={data?.pagination?.total ?? 0} defaultTransaction="wynajem" />
+
+        {/* FAQ (Daniel 03.08, sugestia SEO) */}
+        <div style={{ padding: '56px 0', background: '#f8fafc' }}>
+          <div className="container" style={{ maxWidth: 760 }}>
+            <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 28, color: '#0d2a5c', textAlign: 'center' as const, marginBottom: 40 }}>Najczęściej zadawane pytania</h2>
+            <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 14 }}>
+              {FAQ.map(f => (
+                <div key={f.q} style={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: 14, padding: '20px 24px' }}>
+                  <h3 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 700, fontSize: 15, color: '#0d2a5c', marginBottom: 8 }}>{f.q}</h3>
+                  <p style={{ fontSize: 13.5, color: '#6b7280', lineHeight: 1.75 }}>{f.a}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: FAQ.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+        }).replace(/</g, '\\u003c') }} />
       </main>
       <Footer office={office} />
       <FloatingWA />

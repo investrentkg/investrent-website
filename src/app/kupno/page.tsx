@@ -24,6 +24,14 @@ const STEPS = [
   { n: '04', title: 'Bezpieczna finalizacja', desc: 'Sprawdzamy stan prawny, towarzyszymy u notariusza. Klucze w Twoich rękach.' },
 ]
 
+const FAQ = [
+  { q: 'Czy pomoc w znalezieniu nieruchomości jest płatna dla kupującego?', a: 'Nie, dla osoby kupującej nasza pomoc w poszukiwaniu i negocjacjach jest bezpłatna — nasze wynagrodzenie pochodzi z prowizji rozliczanej w ramach transakcji, zgodnie ze standardową praktyką rynkową.' },
+  { q: 'Czy pokazujecie tylko oferty z Waszej bazy, czy też innych agencji?', a: 'Znamy sytuację na całym lokalnym rynku — zarówno oferty innych agencji, jak i te sprzedawane bezpośrednio przez właścicieli. Pomagamy znaleźć nieruchomość, która realnie pasuje do Twoich potrzeb, niezależnie skąd pochodzi.' },
+  { q: 'Jak szybko dostanę propozycje ofert po zgłoszeniu?', a: 'Standardowo odpowiadamy w ciągu 60 minut, a pierwsze dopasowane propozycje przygotowujemy zwykle w ciągu 24 godzin od rozmowy o Twoich wymaganiach.' },
+  { q: 'Czy sprawdzacie stan prawny nieruchomości przed zakupem?', a: 'Tak, to standardowy element naszej obsługi — weryfikujemy księgę wieczystą, ewentualne obciążenia i zgodność stanu prawnego, zanim dojdzie do finalizacji transakcji u notariusza.' },
+  { q: 'Czy pomagacie też przy zakupie na kredyt?', a: 'Tak, współpracujemy z doradcami kredytowymi i pomagamy dobrać ofertę kredytową dopasowaną do Twojej sytuacji — również jeśli masz nietypową historię kredytową.' },
+]
+
 export default async function KupnoPage() {
   const [data, officeData] = await Promise.all([
     getPublicOffers({ limit: 9, transaction_type: 'sprzedaz' }),
@@ -105,6 +113,26 @@ export default async function KupnoPage() {
           </div>
         </div>
         <OffersPageClient initialOffers={data?.data ?? []} initialTotal={data?.pagination?.total ?? 0} defaultTransaction="sprzedaz" />
+
+        {/* FAQ (Daniel 03.08, sugestia SEO) */}
+        <div style={{ padding: '56px 0', background: '#f8fafc' }}>
+          <div className="container" style={{ maxWidth: 760 }}>
+            <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 28, color: '#0d2a5c', textAlign: 'center' as const, marginBottom: 40 }}>Najczęściej zadawane pytania</h2>
+            <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 14 }}>
+              {FAQ.map(f => (
+                <div key={f.q} style={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: 14, padding: '20px 24px' }}>
+                  <h3 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 700, fontSize: 15, color: '#0d2a5c', marginBottom: 8 }}>{f.q}</h3>
+                  <p style={{ fontSize: 13.5, color: '#6b7280', lineHeight: 1.75 }}>{f.a}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: FAQ.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+        }).replace(/</g, '\\u003c') }} />
       </main>
       <Footer office={office} />
       <FloatingWA />
