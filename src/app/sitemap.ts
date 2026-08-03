@@ -35,12 +35,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Wszystkie aktywne oferty - paginowane po stronie API, wiec pobieramy
   // strona po stronie az do konca (limit 100/req, zabezpieczenie 20 stron =
   // max 2000 ofert, z zapasem ponad realna skale biura).
+  //
+  // NAPRAWA (01.08.2026, Google Search Console: "Nie udalo sie pobrac" przy
+  // proble mapy strony): backend na Railway usypia przy bezczynnosci -
+  // pierwsze zapytanie po przerwie bywa wolne (znany, wczesniejszy problem
+  // w tym projekcie). fetch() w apiFetch() nie mial ZADNEGO limitu czasu -
+  // przy wolnym "wybudzeniu" backendu, generowanie calej mapy strony moglo
+  // sie nie zdazyc na czas, i Google dostawal blad zamiast tresci zamiast
+  // przynajmniej statycznych podstron. Dodany jawny, krotki timeout (8s) -
+  // w najgorszym razie mapa strony wraca z samymi statycznymi podstronami
+  // zamiast wisiec/zawiesic sie calkowicie.
   let offerEntries: MetadataRoute.Sitemap = []
   try {
     let page = 1
     let pages = 1
     do {
-      const res = await getPublicOffers({ page, limit: 100 })
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 8000)
+      let res
+      try {
+        res = await getPublicOffers({ page, limit: 100 }, controller.signal)
+      } finally {
+        clearTimeout(timeoutId)
+      }
       if (!res) break
       offerEntries = offerEntries.concat(
         res.data.map(o => ({

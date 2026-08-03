@@ -10,9 +10,9 @@ const INTERNAL_HEADERS: Record<string, string> = process.env.INTERNAL_SERVICE_AP
   ? { 'x-internal-service-key': process.env.INTERNAL_SERVICE_API_KEY, 'x-tenant-slug': 'investrent' }
   : {}
 
-async function apiFetch<T>(path: string, options?: RequestInit): Promise<T | null> {
+async function apiFetch<T>(path: string, options?: RequestInit, signal?: AbortSignal): Promise<T | null> {
   try {
-    const res = await fetch(`${API}${path}`, { ...options, headers: { ...INTERNAL_HEADERS, ...(options?.headers || {}) } })
+    const res = await fetch(`${API}${path}`, { ...options, signal, headers: { ...INTERNAL_HEADERS, ...(options?.headers || {}) } })
     if (!res.ok) return null
     return res.json() as Promise<T>
   } catch {
@@ -28,7 +28,7 @@ export async function getPublicOffers(params: {
   property_type?: string
   transaction_type?: string
   agent_id?: string
-} = {}) {
+} = {}, signal?: AbortSignal) {
   const q = new URLSearchParams()
   if (params.page)             q.set('page',             String(params.page))
   if (params.limit)            q.set('limit',            String(params.limit))
@@ -39,7 +39,8 @@ export async function getPublicOffers(params: {
 
   return apiFetch<import('@/types').PaginatedOffers>(
     `/api/public/offers?${q}`,
-    { next: { revalidate: 60 } }    // ISR 1 min
+    { next: { revalidate: 60 } },    // ISR 1 min
+    signal
   )
 }
 
