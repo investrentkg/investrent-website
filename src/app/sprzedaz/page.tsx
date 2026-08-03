@@ -4,6 +4,7 @@ import FloatingWA from '@/components/FloatingWA'
 import SocialSidebar from '@/components/SocialSidebar'
 import Contact from '@/components/Contact'
 import Breadcrumb from '@/components/Breadcrumb'
+import Link from 'next/link'
 import { getOffice } from '@/lib/api'
 import { DollarSign, Camera, Globe, FileCheck, Key, CheckCircle, ArrowRight, FileText, Building, Users, Shield } from 'lucide-react'
 import type { Metadata } from 'next'
@@ -37,7 +38,7 @@ const FAQ = [
   { q: 'Ile kosztuje wycena nieruchomości?', a: 'Bezpłatna wycena nie kosztuje nic i nie zobowiązuje do niczego. Analizujemy realne, aktualne transakcje z Twojej okolicy, nie tylko ceny ofertowe konkurencji, żeby dać Ci wycenę opartą na faktach rynkowych.' },
   { q: 'Ile trwa sprzedaż nieruchomości?', a: 'To zależy od lokalizacji, ceny i stanu nieruchomości, ale nasz średni czas sprzedaży to około 45 dni — znacznie krócej niż średnia rynkowa w Kołobrzegu (90+ dni). Wynika to głównie z realistycznej wyceny na starcie i szerokiej widoczności oferty.' },
   { q: 'Ile kosztuje prowizja za sprzedaż?', a: 'Pracujemy w modelu 3% prowizji netto, płatnej po skutecznej sprzedaży — nie pobieramy żadnych opłat z góry ani za samą wycenę czy sesję zdjęciową.' },
-  { q: 'Co jeśli moja nieruchomość ma jakieś prawne komplikacje (hipoteka, brak księgi wieczystej, sprawa spadkowa)?', a: 'To akurat nasza specjalność — zobacz stronę "Trudne nieruchomości". Weryfikujemy stan prawny na starcie i pomagamy uporządkować formalności, zanim zaczniemy szukać kupującego.' },
+  { q: 'Co jeśli moja nieruchomość ma jakieś prawne komplikacje (hipoteka, brak księgi wieczystej, sprawa spadkowa)?', a: 'To akurat nasza specjalność — zobacz stronę Trudne nieruchomości. Weryfikujemy stan prawny na starcie i pomagamy uporządkować formalności, zanim zaczniemy szukać kupującego.', linkLabel: 'Trudne nieruchomości', linkHref: '/trudne-nieruchomosci' },
   { q: 'Czy muszę być obecny przy prezentacjach nieruchomości?', a: 'Nie musisz — możemy prowadzić prezentacje samodzielnie, informując Cię na bieżąco o zainteresowaniu i feedbacku od oglądających. Wielu naszych klientów sprzedaje nieruchomość, mieszkając w innym mieście.' },
 ]
 
@@ -203,7 +204,15 @@ export default async function SprzedazPage() {
               {FAQ.map(f => (
                 <div key={f.q} style={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: 14, padding: '20px 24px' }}>
                   <h3 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 700, fontSize: 15, color: '#0d2a5c', marginBottom: 8 }}>{f.q}</h3>
-                  <p style={{ fontSize: 13.5, color: '#6b7280', lineHeight: 1.75 }}>{f.a}</p>
+                  <p style={{ fontSize: 13.5, color: '#6b7280', lineHeight: 1.75 }}>
+                    {(f as any).linkHref ? (
+                      <>
+                        {f.a.split((f as any).linkLabel)[0]}
+                        <Link href={(f as any).linkHref} style={{ color: '#92400e', fontWeight: 700, textDecoration: 'underline' }}>{(f as any).linkLabel}</Link>
+                        {f.a.split((f as any).linkLabel)[1]}
+                      </>
+                    ) : f.a}
+                  </p>
                 </div>
               ))}
             </div>
