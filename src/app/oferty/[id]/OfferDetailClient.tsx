@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { MapPin, LayoutGrid, Ruler, Layers, Phone, ChevronLeft, ChevronRight, Award, Shield, Clock, ArrowLeft, X, Expand } from 'lucide-react'
 import { submitLead } from '@/lib/api'
+import { formatPhoneDisplay } from '@/lib/phone'
 import MortgageMiniCalculator from '@/components/MortgageMiniCalculator'
 import Link from 'next/link'
 
@@ -205,13 +206,20 @@ export default function OfferDetailClient({ offer }: { offer: OfferDetail }) {
   const photoLabel = offer.title
     ?? `${offer.property_type === 'mieszkanie' ? 'Mieszkanie' : offer.property_type === 'dom' ? 'Dom' : 'Nieruchomość'} ${offer.transaction_type === 'wynajem' ? 'na wynajem' : 'na sprzedaż'}, ${offer.address_city}`
 
+  // NAPRAWA TRESCI (Weronika, feedback 01.08, ze zrzutem ekranu): dzialka
+  // (IVST-GS-54) pokazywala "Lazienki: 1" i "Stan: do_zamieszkania" - pola
+  // ktore dla samego gruntu nie maja zadnego sensu. Przyczyna: warunki
+  // ponizej sprawdzaly WYLACZNIE czy wartosc istnieje w bazie, bez
+  // sprawdzania czy dany typ nieruchomosci w ogole POWINIEN miec to pole
+  // (np. jesli w bazie zostala domyslna/pozostawiona wartosc z szablonu).
+  const isLand = offer.property_type === 'dzialka'
   const details = [
     offer.area        && { label: 'Powierzchnia',   val: `${offer.area} m²` },
-    offer.rooms_count && { label: 'Liczba pokoi',   val: `${offer.rooms_count}` },
-    offer.floor !== null && offer.floor !== undefined && { label: 'Piętro', val: `${offer.floor}${offer.floors_total ? ' / ' + offer.floors_total : ''}` },
-    offer.bathrooms_count && { label: 'Łazienki',   val: `${offer.bathrooms_count}` },
-    offer.build_year  && { label: 'Rok budowy',     val: `${offer.build_year}` },
-    offer.condition   && { label: 'Stan',           val: offer.condition },
+    !isLand && offer.rooms_count && { label: 'Liczba pokoi',   val: `${offer.rooms_count}` },
+    !isLand && offer.floor !== null && offer.floor !== undefined && { label: 'Piętro', val: `${offer.floor}${offer.floors_total ? ' / ' + offer.floors_total : ''}` },
+    !isLand && offer.bathrooms_count && { label: 'Łazienki',   val: `${offer.bathrooms_count}` },
+    !isLand && offer.build_year  && { label: 'Rok budowy',     val: `${offer.build_year}` },
+    !isLand && offer.condition   && { label: 'Stan',           val: offer.condition },
     offer.market_type && { label: 'Rynek',          val: offer.market_type === 'pierwotny' ? 'Pierwotny' : 'Wtórny' },
     { label: 'Nr oferty', val: offer.ref_number },
   ].filter(Boolean) as Array<{ label: string; val: string }>
@@ -306,7 +314,7 @@ export default function OfferDetailClient({ offer }: { offer: OfferDetail }) {
                   <div style={{ fontSize: 12, color: '#6b7280' }}>Agent nieruchomości</div>
                   <a href={`tel:${(offer.agent.phone || '+48731554341').replace(/\s/g,'')}`}
                     style={{ fontSize: 13, color: '#1a4fa0', fontWeight: 600, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4, marginTop: 4 }}>
-                    <Phone size={13} /> {offer.agent.phone || '+48 731 554 341'}
+                    <Phone size={13} /> {formatPhoneDisplay(offer.agent.phone) || '+48 731 554 341'}
                   </a>
                 </div>
               </div>

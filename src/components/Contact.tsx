@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { Phone, Mail, Clock, MapPin, Send, MessageSquare } from 'lucide-react'
 import { submitLead } from '@/lib/api'
+import { formatPhoneDisplay } from '@/lib/phone'
 import SuccessBadge from '@/components/SuccessBadge'
 import type { Office } from '@/types'
 
@@ -44,7 +45,7 @@ export default function Contact({ office }: { office: Office | null }) {
     setStatus(res?.ok ? 'ok' : 'error')
   }
 
-  const phone   = office?.phone   ?? '+48 731 554 341'
+  const phone   = formatPhoneDisplay(office?.phone) || '+48 731 554 341'
   const email   = office?.email   ?? 'biuro@investrent.com.pl'
   const address = office?.address ?? 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg'
 

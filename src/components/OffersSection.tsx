@@ -1,6 +1,7 @@
 "use client"
 import { useState, useCallback, useEffect, useRef } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { MapPin, LayoutGrid, Ruler, Layers, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { Offer, PaginatedOffers } from '@/types'
 import ScrollReveal from '@/components/ScrollReveal'
@@ -186,9 +187,9 @@ export default function OffersSection({ initialOffers }: { initialOffers: Pagina
                 </button>
               ))}
             </div>
-            <a href="#kontakt" style={{ fontSize: 13, fontWeight: 700, color: '#1a4fa0', border: '1.5px solid #1a4fa0', padding: '8px 18px', borderRadius: 9, display: 'flex', alignItems: 'center', gap: 5, textDecoration: 'none' }}>
+            <Link href="/oferty" style={{ fontSize: 13, fontWeight: 700, color: '#1a4fa0', border: '1.5px solid #1a4fa0', padding: '8px 18px', borderRadius: 9, display: 'flex', alignItems: 'center', gap: 5, textDecoration: 'none' }}>
               Wszystkie <ArrowRight size={14} />
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -228,6 +229,17 @@ export default function OffersSection({ initialOffers }: { initialOffers: Pagina
             )}
           </>
         )}
+        {/* NAPRAWA TRESCI (Weronika, feedback 01.08): brakowalo tego
+            komunikatu - czesc ofert (np. na wylacznosc bez zgody klienta na
+            publikacje, lub inne powody biznesowe) celowo nie trafia na
+            strone, wiec warto to wprost zakomunikowac zamiast zostawiac
+            odwiedzajacego z wrazeniem "to widocznie caly nasz katalog". */}
+        <p style={{ textAlign: 'center', fontSize: 13, color: '#9ca3af', marginTop: 28 }}>
+          Nie wszystkie nieruchomości trafiają od razu na stronę.{' '}
+          <a href="#kontakt" style={{ color: '#1a4fa0', fontWeight: 600, textDecoration: 'none' }}>
+            Skontaktuj się z nami aby poznać naszą pełną ofertę.
+          </a>
+        </p>
       </div>
     </section>
   )

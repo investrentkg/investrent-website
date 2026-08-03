@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { Phone, Menu, X } from 'lucide-react'
 import type { Office } from '@/types'
+import { formatPhoneDisplay } from '@/lib/phone'
 import ChatWidget from '@/components/ChatWidget'
 import FloatingWA from '@/components/FloatingWA'
 
@@ -24,7 +25,7 @@ export default function Nav({ office }: { office: Office | null }) {
     }
   }, [])
 
-  const phone = office?.phone ?? '+48 731 554 341'
+  const phone = formatPhoneDisplay(office?.phone) || '+48 731 554 341'
   const links = [
     { label: 'Oferty',   href: '/oferty' },
     { label: 'Kupno',    href: '/kupno' },
