@@ -38,6 +38,15 @@ const PROCESS = [
   { n: '04', title: 'Rozwiązanie',              desc: 'Doprowadzamy sprawę do końca — sprzedaż, podział lub inne rozwiązanie. Pełna obsługa do ostatniego podpisu.' },
 ]
 
+const FAQ = [
+  { q: 'Czy mogę sprzedać nieruchomość obciążoną hipoteką?', a: 'Tak, sprzedaż nieruchomości z niespłaconym kredytem hipotecznym jest jak najbardziej możliwa. Wymaga to skoordynowania spłaty z bankiem w dniu transakcji i uzyskania zgody na wykreślenie hipoteki z księgi wieczystej — zajmujemy się tym razem z notariuszem, żeby wszystkie strony (Ty, kupujący i bank) byli prawnie zabezpieczeni.' },
+  { q: 'Jestem współwłaścicielem nieruchomości i nie mogę dogadać się z pozostałymi — co teraz?', a: 'Masz kilka dróg: sprzedaż swojego udziału, wykupienie udziałów pozostałych współwłaścicieli, albo sądowe zniesienie współwłasności, jeśli porozumienie nie jest możliwe. Pomagamy ocenić, która droga ma sens w Twojej konkretnej sytuacji, i prowadzimy negocjacje w Twoim imieniu.' },
+  { q: 'Ile trwa sprzedaż odziedziczonej nieruchomości?', a: 'To zależy głównie od tego, czy postępowanie spadkowe jest już zakończone (akt poświadczenia dziedziczenia lub postanowienie sądu). Jeśli tak — sama sprzedaż może przebiec równie szybko jak standardowa transakcja. Jeśli formalności spadkowe dopiero się zaczynają, pomagamy też skoordynować ten etap z notariuszem, zanim ruszymy ze sprzedażą.' },
+  { q: 'Czy pierwsza konsultacja naprawdę jest bezpłatna?', a: 'Tak, bez żadnych ukrytych kosztów czy zobowiązań. Rozmawiamy o Twojej sytuacji, mówimy szczerze czy i jak możemy pomóc — dopiero jeśli zdecydujesz się na współpracę, ustalamy dalsze warunki.' },
+  { q: 'Czy da się sprzedać nieruchomość przed licytacją komorniczą?', a: 'Często tak — i zwykle jest to korzystniejsze niż czekać na licytację, zarówno dla dłużnika, jak i wierzyciela. Wymaga to szybkiego działania i koordynacji z komornikiem oraz wierzycielem, ale mamy w tym doświadczenie.' },
+  { q: 'Czy zachowujecie dyskrecję przy sprawach rodzinnych i rozwodowych?', a: 'Tak, to dla nas standard przy tego typu sprawach — ograniczona liczba osób ma wgląd w szczegóły, a komunikacja z każdą ze stron prowadzona jest z wyczuciem sytuacji. Rozumiemy, że to często trudny emocjonalnie moment, nie tylko formalność do załatwienia.' },
+]
+
 export default async function TrudneNieruchomosciPage() {
   const officeData = await getOffice()
   const office = officeData ?? FALLBACK_OFFICE
@@ -163,6 +172,36 @@ export default async function TrudneNieruchomosciPage() {
             </div>
           </div>
         </div>
+
+        {/* NAPRAWA/UZUPELNIENIE (Daniel 03.08, sugestia SEO): prawdziwa
+            tresc FAQ - nie tylko dane strukturalne "na sucho", bo to
+            wygladaloby myląco dla Google (dane strukturalne musza
+            odpowiadac widocznej tresci). Pytania dobrane pod tematy juz
+            obecne wyzej na stronie (spadki, wspolwlasnosc, hipoteka,
+            licytacje, rozwod) - realne, czesto zadawane pytania, nie
+            wypelniacz pod pozycjonowanie. */}
+        <div style={{ padding: '56px 0' }}>
+          <div className="container" style={{ maxWidth: 760 }}>
+            <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 28, color: '#0d2a5c', textAlign: 'center' as const, marginBottom: 40 }}>Najczęściej zadawane pytania</h2>
+            <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 14 }}>
+              {FAQ.map(f => (
+                <div key={f.q} style={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: 14, padding: '20px 24px' }}>
+                  <h3 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 700, fontSize: 15, color: '#0d2a5c', marginBottom: 8 }}>{f.q}</h3>
+                  <p style={{ fontSize: 13.5, color: '#6b7280', lineHeight: 1.75 }}>{f.a}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: FAQ.map(f => ({
+            '@type': 'Question',
+            name: f.q,
+            acceptedAnswer: { '@type': 'Answer', text: f.a },
+          })),
+        }).replace(/</g, '\\u003c') }} />
 
         <div id="kontakt-trudne"><Contact office={office} /></div>
       </main>
