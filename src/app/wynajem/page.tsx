@@ -26,11 +26,14 @@ const FAQ = [
 ]
 
 export default async function WynajemPage() {
-  const [data, officeData] = await Promise.all([
+  const [data, officeData, contentData] = await Promise.all([
     getPublicOffers({ limit: 9, transaction_type: 'wynajem' } as any),
     getOffice(),
+    fetch('https://investrent-crm-production.up.railway.app/api/public/content/wynajem')
+      .then(r => r.json()).catch(() => null),
   ])
   const office = officeData ?? FALLBACK_OFFICE
+  const cms: Record<string, string> = contentData?.blocks || {}
   return (
     <>
       <Nav office={office} />
@@ -39,10 +42,10 @@ export default async function WynajemPage() {
           <div className="container">
             <Breadcrumb light={true} crumbs={[{ label: 'Strona główna', href: '/' }, { label: 'Wynajem' }]} />
             <h1 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 42, color: 'white', letterSpacing: '-1px', lineHeight: 1.1, marginBottom: 16 }}>
-              Znajdź mieszkanie<br />do wynajęcia nad morzem
+              {cms.intro_heading ? cms.intro_heading : <>Znajdź mieszkanie<br />do wynajęcia nad morzem</>}
             </h1>
             <p style={{ color: 'rgba(255,255,255,.85)', fontSize: 16, maxWidth: 520, lineHeight: 1.8, marginBottom: 28 }}>
-              Mieszkania, apartamenty i lokale do wynajęcia w Kołobrzegu i okolicach. Długoterminowy wynajem dla osób szukających stałego miejsca.
+              {cms.intro_paragraph || 'Mieszkania, apartamenty i lokale do wynajęcia w Kołobrzegu i okolicach. Długoterminowy wynajem dla osób szukających stałego miejsca.'}
             </p>
             <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' as const }}>
               {[{ icon: Shield, text: 'Zweryfikowane oferty' }, { icon: Clock, text: 'Szybki kontakt' }, { icon: Star, text: 'Transparentne koszty' }].map(b => {

@@ -33,11 +33,14 @@ const FAQ = [
 ]
 
 export default async function KupnoPage() {
-  const [data, officeData] = await Promise.all([
+  const [data, officeData, contentData] = await Promise.all([
     getPublicOffers({ limit: 9, transaction_type: 'sprzedaz' }),
     getOffice(),
+    fetch('https://investrent-crm-production.up.railway.app/api/public/content/kupno')
+      .then(r => r.json()).catch(() => null),
   ])
   const office = officeData ?? FALLBACK_OFFICE
+  const cms: Record<string, string> = contentData?.blocks || {}
   return (
     <>
       <Nav office={office} />
@@ -46,10 +49,10 @@ export default async function KupnoPage() {
           <div className="container">
             <Breadcrumb light={true} crumbs={[{ label: 'Strona główna', href: '/' }, { label: 'Kupno' }]} />
             <h1 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 42, color: 'white', letterSpacing: '-1px', lineHeight: 1.1, marginBottom: 16 }}>
-              Znajdź wymarzoną<br />nieruchomość nad Bałtykiem
+              {cms.intro_heading ? cms.intro_heading : <>Znajdź wymarzoną<br />nieruchomość nad Bałtykiem</>}
             </h1>
             <p style={{ color: 'rgba(255,255,255,.75)', fontSize: 16, maxWidth: 560, lineHeight: 1.8, marginBottom: 28 }}>
-              Pomagamy kupić mieszkanie, dom lub działkę w Kołobrzegu i okolicach. Znamy każdą ofertę na rynku — zarówno z agencji, jak i bezpośrednio od właścicieli.
+              {cms.intro_paragraph || 'Pomagamy kupić mieszkanie, dom lub działkę w Kołobrzegu i okolicach. Znamy każdą ofertę na rynku — zarówno z agencji, jak i bezpośrednio od właścicieli.'}
             </p>
             <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' as const }}>
               {[

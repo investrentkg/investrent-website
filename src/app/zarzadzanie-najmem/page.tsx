@@ -53,8 +53,13 @@ const BENEFITS = [
 ]
 
 export default async function ZarzadzanieNajmemPage() {
-  const officeData = await getOffice()
+  const [officeData, contentData] = await Promise.all([
+    getOffice(),
+    fetch('https://investrent-crm-production.up.railway.app/api/public/content/zarzadzanie-najmem')
+      .then(r => r.json()).catch(() => null),
+  ])
   const office = officeData ?? FALLBACK_OFFICE
+  const cms: Record<string, string> = contentData?.blocks || {}
 
   return (
     <>
@@ -69,10 +74,10 @@ export default async function ZarzadzanieNajmemPage() {
               <Key size={12} /> Kołobrzeg i wybrzeże — spokój i maksymalizacja dochodów
             </div>
             <h1 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 44, color: 'white', letterSpacing: '-1.5px', lineHeight: 1.08, marginBottom: 18 }}>
-              Zarządzanie najmem<br />w Kołobrzegu
+              {cms.intro_heading ? cms.intro_heading : <>Zarządzanie najmem<br />w Kołobrzegu</>}
             </h1>
             <p style={{ color: 'rgba(255,255,255,.85)', fontSize: 16, maxWidth: 580, lineHeight: 1.8, marginBottom: 32 }}>
-              Kompleksowa usługa dla właścicieli mieszkań i apartamentów wakacyjnych w Kołobrzegu i okolicach nadmorskich. Cieszysz się stabilnym dochodem z najmu, minimalizując ryzyko i oszczędzając czas — my na miejscu przejmujemy wszystkie obowiązki związane z wynajmem.
+              {cms.intro_paragraph || 'Kompleksowa usługa dla właścicieli mieszkań i apartamentów wakacyjnych w Kołobrzegu i okolicach nadmorskich. Cieszysz się stabilnym dochodem z najmu, minimalizując ryzyko i oszczędzając czas — my na miejscu przejmujemy wszystkie obowiązki związane z wynajmem.'}
             </p>
             <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' as const }}>
               <a href="#kontakt-najem" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'white', color: '#0d2a5c', fontWeight: 800, fontSize: 15, padding: '14px 28px', borderRadius: 12, textDecoration: 'none' }}>

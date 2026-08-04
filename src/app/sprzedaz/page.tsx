@@ -43,13 +43,16 @@ const FAQ = [
 ]
 
 export default async function SprzedazPage() {
-  const [officeData, reviewsData] = await Promise.all([
+  const [officeData, reviewsData, contentData] = await Promise.all([
     getOffice(),
     fetch('https://investrent-crm-production.up.railway.app/api/public/google-reviews')
+      .then(r => r.json()).catch(() => null),
+    fetch('https://investrent-crm-production.up.railway.app/api/public/content/sprzedaz')
       .then(r => r.json()).catch(() => null),
   ])
   const office = officeData ?? FALLBACK_OFFICE
   const googleTotal: number = reviewsData?.total ?? 55
+  const cms: Record<string, string> = contentData?.blocks || {}
 
   return (
     <>
@@ -66,10 +69,10 @@ export default async function SprzedazPage() {
           <div className="container" style={{ position: 'relative', zIndex: 1 }}>
             <Breadcrumb light={true} crumbs={[{ label: 'Strona główna', href: '/' }, { label: 'Sprzedaż' }]} />
             <h1 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 44, color: 'white', letterSpacing: '-1.5px', lineHeight: 1.08, marginBottom: 18 }}>
-              Sprzedaj swoją nieruchomość<br />szybko i za dobrą cenę
+              {cms.intro_heading ? cms.intro_heading : <>Sprzedaj swoją nieruchomość<br />szybko i za dobrą cenę</>}
             </h1>
             <p style={{ color: 'rgba(255,255,255,.9)', fontSize: 16, maxWidth: 540, lineHeight: 1.8, marginBottom: 32 }}>
-              Zajmujemy się wszystkim — od bezpłatnej wyceny, przez profesjonalne zdjęcia i ekspozycję na portalach, aż po dokumentację po-sprzedażową.
+              {cms.intro_paragraph || 'Zajmujemy się wszystkim — od bezpłatnej wyceny, przez profesjonalne zdjęcia i ekspozycję na portalach, aż po dokumentację po-sprzedażową.'}
             </p>
             <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' as const }}>
               <a href="#kontakt-sprzedaz" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'white', color: '#92400e', fontWeight: 800, fontSize: 15, padding: '14px 32px', borderRadius: 12, textDecoration: 'none' }}>
