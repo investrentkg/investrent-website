@@ -26,15 +26,21 @@ const VALUES = [
 ]
 
 export default async function ONasPage() {
-  const [teamData, statsData, officeData, reviewsData] = await Promise.all([
+  const [teamData, statsData, officeData, reviewsData, contentData] = await Promise.all([
     getTeam(), getStats(), getOffice(),
     fetch('https://investrent-crm-production.up.railway.app/api/public/google-reviews')
+      .then(r => r.json()).catch(() => null),
+    // NOWE (Daniel 03.08): edytowalna tresc z CRM - bezpieczny fallback do
+    // dotychczasowego, zaszytego tekstu ponizej, jesli nikt nic nie
+    // dostosowal. Patrz backend/src/routes/websiteContent.ts.
+    fetch('https://investrent-crm-production.up.railway.app/api/public/content/o-nas')
       .then(r => r.json()).catch(() => null),
   ])
   const office = officeData ?? FALLBACK_OFFICE
   const trans = Math.max(statsData?.completed_transactions ?? 0, 150)
   const teamSize = statsData?.team_size ?? 6
   const googleTotal: number = reviewsData?.total ?? 55
+  const cms: Record<string, string> = contentData?.blocks || {}
 
   return (
     <>
@@ -44,10 +50,10 @@ export default async function ONasPage() {
           <div className="container">
             <Breadcrumb light={true} crumbs={[{ label: 'Strona główna', href: '/' }, { label: 'O nas' }]} />
             <h1 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 42, color: 'white', letterSpacing: '-1px', lineHeight: 1.1, marginBottom: 16 }}>
-              Jesteśmy stąd.<br />Kołobrzeg to nasza specjalność.
+              {cms.intro_heading ? cms.intro_heading : <>Jesteśmy stąd.<br />Kołobrzeg to nasza specjalność.</>}
             </h1>
             <p style={{ color: 'rgba(255,255,255,.75)', fontSize: 16, maxWidth: 560, lineHeight: 1.8 }}>
-              InvestRent to biuro nieruchomości z Kołobrzegu z wieloletnim doświadczeniem na rynku nadmorskim. Łączymy lokalną wiedzę z profesjonalną obsługą.
+              {cms.intro_paragraph || 'InvestRent to biuro nieruchomości z Kołobrzegu z wieloletnim doświadczeniem na rynku nadmorskim. Łączymy lokalną wiedzę z profesjonalną obsługą.'}
             </p>
           </div>
         </div>
@@ -78,7 +84,7 @@ export default async function ONasPage() {
                   Zbudowani na zaufaniu i lokalnej wiedzy
                 </h2>
                 <p style={{ fontSize: 14, color: '#6b7280', lineHeight: 1.8, marginBottom: 20 }}>
-                  InvestRent Nieruchomości powstało z pasji do lokalnego rynku nadmorskiego i przekonania, że klienci zasługują na więcej niż standardową obsługę agencyjną. Specjalizujemy się w Kołobrzegu i całym Wybrzeżu Bałtyckim.
+                  {cms.mission_text || 'InvestRent Nieruchomości powstało z pasji do lokalnego rynku nadmorskiego i przekonania, że klienci zasługują na więcej niż standardową obsługę agencyjną. Specjalizujemy się w Kołobrzegu i całym Wybrzeżu Bałtyckim.'}
                 </p>
                 <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 12 }}>
                   {['150+ transakcji w Kołobrzegu i okolicach','Średni czas sprzedaży: 45 dni (rynek: 90+ dni)','Pełna obsługa prawna i notarialna w cenie','Ekspozycja na głównych portalach i nie tylko',`Ocena klientów: 4.9/5 na podstawie ${googleTotal} opinii`].map(w => (
