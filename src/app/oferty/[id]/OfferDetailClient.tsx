@@ -30,6 +30,7 @@ interface OfferDetail {
   address_lng: number | null
   exclusivity: boolean
   no_rent_fee?: boolean
+  admin_fee?: number | null
   status: string
   created_at: string
   offer_photos: Array<{ id: string; url: string; is_main: boolean; sort_order: number }>
@@ -221,6 +222,13 @@ export default function OfferDetailClient({ offer }: { offer: OfferDetail }) {
     !isLand && offer.build_year  && { label: 'Rok budowy',     val: `${offer.build_year}` },
     !isLand && offer.condition   && { label: 'Stan',           val: offer.condition },
     offer.market_type && { label: 'Rynek',          val: offer.market_type === 'pierwotny' ? 'Pierwotny' : 'Wtórny' },
+    // NAPRAWA (05.08, Daniel: "czynsz ma się wyeksportować wszędzie gdzie
+    // trzeba, ma być widoczne w ofertach na stronie") - admin_fee bylo w
+    // bazie i w CRM od dawna, ale nigdy nie trafialo tutaj. no_rent_fee
+    // bylo zadeklarowane w interfejsie OfferDetail ale nigdzie faktycznie
+    // nie uzyte (martwe pole) - teraz oba pokazane, wzajemnie sie wykluczajace.
+    offer.no_rent_fee && { label: 'Czynsz', val: 'Bezczynszowe' },
+    !offer.no_rent_fee && offer.admin_fee && { label: 'Czynsz administracyjny', val: `${offer.admin_fee.toLocaleString('pl-PL')} zł` },
     { label: 'Nr oferty', val: offer.ref_number },
   ].filter(Boolean) as Array<{ label: string; val: string }>
 
