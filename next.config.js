@@ -33,6 +33,11 @@ const nextConfig = {
       { source: '/kup',      destination: '/kupno',    permanent: true },
       { source: '/sprzedaj', destination: '/sprzedaz', permanent: true },
       { source: '/wynajmij', destination: '/wynajem',  permanent: true },
+      // NAPRAWA (06.08, weryfikacja marki Google Ads API): ten adres zostal
+      // juz podany Google jako link do polityki prywatnosci we wniosku o
+      // Basic Access, ale strona nigdy nie istniala pod tym adresem -
+      // prawdziwy jest /rodo. Przekierowanie zeby link nie 404-owal.
+      { source: '/polityka-prywatnosci', destination: '/rodo', permanent: true },
 
       // Kategorie ofert - stara strona mialy osobne adresy per typ, nowa
       // filtruje przez query string na wspolnej stronie /oferty
