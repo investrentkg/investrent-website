@@ -74,10 +74,12 @@ const nextConfig = {
       { source: '/oferuje-nieruchomosc', destination: '/sprzedaz', permanent: true },
       { source: '/szukam-nieruchomosci', destination: '/kupno',    permanent: true },
 
-      // Blog - nowa strona go jeszcze nie ma. Przekierowanie do strony glownej
-      // zamiast 404, do czasu ewentualnego zbudowania odpowiednika.
-      { source: '/blog',       destination: '/', permanent: true },
-      { source: '/blog/:path*', destination: '/', permanent: true },
+      // NOWE (14.08, Daniel: "jezeli uznasz ze blog bedzie przydatny w
+      // pozycjonowaniu, mozemy zrobic taka podstrone") - blog TERAZ
+      // FAKTYCZNIE ISTNIEJE (src/app/blog/), wiec przekierowanie ktore
+      // wczesniej tu bylo ("/blog -> strona glowna, do czasu ewentualnego
+      // zbudowania odpowiednika") stalo sie sprzeczne - blokowaloby
+      // dostep do nowej, prawdziwej strony. Usuniete.
 
       // KATCH-ALL: pojedyncze strony ofert na starej stronie mialy adresy typu
       // "/hale-na-sprzedaz-1390000zl-4000m2-gryfice/7150775" (slug + numeryczne

@@ -5,7 +5,7 @@
 // Konwencja Next.js App Router - automatycznie dostepne pod /sitemap.xml.
 
 import { MetadataRoute } from 'next'
-import { getPublicOffers } from '@/lib/api'
+import { getPublicOffers, getPublicBlogPosts } from '@/lib/api'
 
 const BASE_URL = 'https://www.investrent.com.pl'
 
@@ -18,6 +18,7 @@ const STATIC_PAGES = [
   { path: '/zarzadzanie-najmem', priority: 0.7, changeFrequency: 'monthly' as const },
   { path: '/kalkulator', priority: 0.6, changeFrequency: 'monthly' as const },
   { path: '/trudne-nieruchomosci', priority: 0.6, changeFrequency: 'monthly' as const },
+  { path: '/blog', priority: 0.7, changeFrequency: 'weekly' as const },
   { path: '/o-nas', priority: 0.7, changeFrequency: 'monthly' as const },
   { path: '/kontakt', priority: 0.7, changeFrequency: 'monthly' as const },
   // /rodo CELOWO pominiete - oznaczone noindex (patrz rodo/page.tsx), obecnosc
@@ -75,5 +76,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // same strony statyczne niz wywalic caly build.
   }
 
-  return [...staticEntries, ...offerEntries]
+  // NOWE (14.08) - wpisy bloga, ten sam wzorzec ochronny co oferty wyzej
+  // (jesli API akurat niedostepne, zwracamy sitemape bez tej czesci
+  // zamiast wywalic caly build).
+  let blogEntries: MetadataRoute.Sitemap = []
+  try {
+    const posts = await getPublicBlogPosts()
+    blogEntries = (posts || []).map(p => ({
+      url: `${BASE_URL}/blog/${p.slug}`,
+      lastModified: new Date(p.published_at),
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    }))
+  } catch {
+    // jw.
+  }
+
+  return [...staticEntries, ...offerEntries, ...blogEntries]
 }

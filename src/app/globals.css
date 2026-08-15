@@ -468,3 +468,36 @@ html, body {
   background: rgba(255, 255, 255, .18) !important;
 }
 
+/* NOWE (14.08) - tresc wpisow bloga renderowana z markdown (react-markdown)
+   nie ma zadnych stylow domyslnie - nagle, surowe <h2>/<ul>/<blockquote>
+   bez odstepow czytalyby sie zle. Podstawowe, spojne z reszta strony. */
+.blog-content h2 {
+  font-family: var(--font-montserrat);
+  font-weight: 700;
+  font-size: 24px;
+  color: #111827;
+  margin: 36px 0 14px;
+  letter-spacing: -.3px;
+}
+.blog-content h3 {
+  font-family: var(--font-montserrat);
+  font-weight: 700;
+  font-size: 19px;
+  color: #111827;
+  margin: 28px 0 10px;
+}
+.blog-content p { margin: 0 0 18px; }
+.blog-content ul, .blog-content ol { margin: 0 0 18px; padding-left: 22px; }
+.blog-content li { margin-bottom: 6px; }
+.blog-content strong { color: #111827; font-weight: 700; }
+.blog-content a { color: #1a4fa0; text-decoration: underline; }
+.blog-content blockquote {
+  border-left: 3px solid #1a4fa0;
+  padding-left: 16px;
+  margin: 0 0 18px;
+  color: #6b7280;
+  font-style: italic;
+}
+.blog-content img { border-radius: 10px; max-width: 100%; margin: 20px 0; }
+
+

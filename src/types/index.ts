@@ -70,3 +70,20 @@ export interface PaginatedOffers {
     pages: number
   }
 }
+
+// NOWE (14.08, blog - patrz backend/src/routes/blog.ts w investrent-crm)
+export interface BlogPostSummary {
+  id: string
+  title: string
+  slug: string
+  excerpt: string | null
+  cover_image_url: string | null
+  published_at: string
+  users: { full_name: string } | null
+}
+
+export interface BlogPost extends BlogPostSummary {
+  content: string
+  meta_title: string | null
+  meta_description: string | null
+}

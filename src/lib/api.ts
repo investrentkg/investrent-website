@@ -92,3 +92,18 @@ export async function submitLead(payload: {
   })
   return res.json()
 }
+
+// ── Blog (14.08, patrz backend/src/routes/blog.ts w investrent-crm) ──
+export async function getPublicBlogPosts() {
+  return apiFetch<import('@/types').BlogPostSummary[]>(
+    '/api/public/blog',
+    { next: { revalidate: 300 } } // ISR 5 min - artykuly zmieniaja sie rzadko
+  )
+}
+
+export async function getPublicBlogPost(slug: string) {
+  return apiFetch<import('@/types').BlogPost>(
+    `/api/public/blog/${slug}`,
+    { next: { revalidate: 300 } }
+  )
+}

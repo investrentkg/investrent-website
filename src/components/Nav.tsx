@@ -36,6 +36,11 @@ export default function Nav({ office }: { office: Office | null }) {
     { label: 'Zarządzanie najmem', href: '/zarzadzanie-najmem' },
     { label: 'O nas',    href: '/o-nas' },
     { label: 'Trudne sprawy', href: '/trudne-nieruchomosci' },
+    // NOWE (14.08, Daniel: "jezeli uznasz ze blog bedzie przydatny w
+    // pozycjonowaniu, mozemy zrobic taka podstrone") - bez linku w
+    // nawigacji odwiedzajacy nie majacy bezposredniego linku do artykulu
+    // (np. z wyszukiwarki) nigdy by nie odkryli ze blog w ogole istnieje.
+    { label: 'Blog', href: '/blog' },
     { label: 'Kontakt',  href: '/kontakt' },
   ]
 
