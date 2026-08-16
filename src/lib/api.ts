@@ -67,6 +67,20 @@ export async function getOffice() {
   )
 }
 
+// NOWE (16.08, Daniel: "chce miec mozliwosc APLIKACJI sugestii SEO z
+// poziomu CRM"). Pobiera nadpisania tresci (w tym meta title/description)
+// dla danej strony z website_content_blocks - uzywane w generateMetadata()
+// stron ktore maja edytowalne SEO. Zwraca mape pusta ({}) jesli nikt
+// jeszcze nic nie nadpisal (bezpieczny fallback do domyslnej tresci w
+// kodzie strony samej). Revalidate 1h - zgodnosc z getOffice powyzej,
+// zmiana meta tagow nie musi byc natychmiastowa co do sekundy.
+export async function getPageContent(page: string) {
+  return apiFetch<{ blocks: Record<string, string> }>(
+    `/api/public/content/${page}`,
+    { next: { revalidate: 3600 } }
+  )
+}
+
 // ── Statystyki ──
 export async function getStats() {
   return apiFetch<import('@/types').PublicStats>(

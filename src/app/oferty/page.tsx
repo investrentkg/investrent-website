@@ -6,14 +6,24 @@ import FloatingWA from '@/components/FloatingWA'
 import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
 import OffersPageClient from './OffersPageClient'
-import { getPublicOffers, getOffice } from '@/lib/api'
+import { getPublicOffers, getOffice, getPageContent } from '@/lib/api'
 import type { Metadata } from 'next'
 
-export const metadata: Metadata = {
-  title: 'Oferty nieruchomości Kołobrzeg',
-  description: 'Przeglądaj aktualne oferty mieszkań, domów i działek na sprzedaż i wynajem w Kołobrzegu i okolicach nadmorskich.',
-  // NAPRAWA (audyt SEO 31.07.2026, punkt 3): brak kanonicznego URL na calej stronie.
-  alternates: { canonical: 'https://www.investrent.com.pl/oferty' },
+// ZMIANA (16.08, Daniel: "chce miec mozliwosc APLIKACJI sugestii SEO z
+// poziomu CRM - inni administratorzy tez musza to moc zrobic samodzielnie").
+// Zamienione z statycznego eksportu na generateMetadata() - fallback do
+// TYCH SAMYCH wartosci co dotychczas, zero zmiany zachowania dopoki nikt
+// nic nie edytuje w CRM.
+const DEFAULT_TITLE = 'Oferty nieruchomości Kołobrzeg'
+const DEFAULT_DESCRIPTION = 'Przeglądaj aktualne oferty mieszkań, domów i działek na sprzedaż i wynajem w Kołobrzegu i okolicach nadmorskich.'
+export async function generateMetadata(): Promise<Metadata> {
+  const content = await getPageContent('oferty')
+  return {
+    title: content?.blocks?.meta_title || DEFAULT_TITLE,
+    description: content?.blocks?.meta_description || DEFAULT_DESCRIPTION,
+    // NAPRAWA (audyt SEO 31.07.2026, punkt 3): brak kanonicznego URL na calej stronie.
+    alternates: { canonical: 'https://www.investrent.com.pl/oferty' },
+  }
 }
 
 const FALLBACK_OFFICE = { name: 'InvestRent', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
