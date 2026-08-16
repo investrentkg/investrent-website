@@ -72,8 +72,21 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           </div>
 
           {post.cover_image_url && (
-            <div style={{ borderRadius: 14, overflow: 'hidden', marginBottom: 32 }}>
-              <img src={post.cover_image_url} alt={post.title} style={{ width: '100%', display: 'block' }} />
+            <div style={{ marginBottom: 32 }}>
+              <div style={{ borderRadius: 14, overflow: 'hidden' }}>
+                <img src={post.cover_image_url} alt={post.title} style={{ width: '100%', display: 'block' }} />
+              </div>
+              {/* NOWE (16.08) - wymog licencyjny Unsplash API Guidelines:
+                  kazde uzyte zdjecie musi byc widocznie podpisane autorem
+                  z linkiem do jego profilu i do Unsplash. Dyskretne, ale
+                  obecne - male, szare, pod obrazkiem. */}
+              {post.cover_image_credit?.photographer_name && (
+                <div style={{ fontSize: 11, color: '#9ca3af', marginTop: 6, textAlign: 'right' }}>
+                  Zdjęcie: {post.cover_image_credit.photographer_url ? (
+                    <a href={post.cover_image_credit.photographer_url} target="_blank" rel="noopener noreferrer" style={{ color: '#9ca3af' }}>{post.cover_image_credit.photographer_name}</a>
+                  ) : post.cover_image_credit.photographer_name} / <a href={post.cover_image_credit.photo_url || 'https://unsplash.com'} target="_blank" rel="noopener noreferrer" style={{ color: '#9ca3af' }}>Unsplash</a>
+                </div>
+              )}
             </div>
           )}
 

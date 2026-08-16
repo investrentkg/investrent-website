@@ -72,12 +72,22 @@ export interface PaginatedOffers {
 }
 
 // NOWE (14.08, blog - patrz backend/src/routes/blog.ts w investrent-crm)
+export interface BlogImageCredit {
+  photographer_name: string | null
+  photographer_url: string | null
+  photo_url: string | null
+}
+
 export interface BlogPostSummary {
   id: string
   title: string
   slug: string
   excerpt: string | null
   cover_image_url: string | null
+  // NOWE (16.08) - wymog licencyjny Unsplash API Guidelines: kazde uzyte
+  // zdjecie musi byc widocznie podpisane autorem z linkiem do jego profilu
+  // i do Unsplash.
+  cover_image_credit: BlogImageCredit | null
   published_at: string
   users: { full_name: string } | null
 }
