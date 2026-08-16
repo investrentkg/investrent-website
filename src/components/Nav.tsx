@@ -36,11 +36,12 @@ export default function Nav({ office }: { office: Office | null }) {
     { label: 'Zarządzanie najmem', href: '/zarzadzanie-najmem' },
     { label: 'O nas',    href: '/o-nas' },
     { label: 'Trudne sprawy', href: '/trudne-nieruchomosci' },
-    // NOWE (14.08, Daniel: "jezeli uznasz ze blog bedzie przydatny w
-    // pozycjonowaniu, mozemy zrobic taka podstrone") - bez linku w
-    // nawigacji odwiedzajacy nie majacy bezposredniego linku do artykulu
-    // (np. z wyszukiwarki) nigdy by nie odkryli ze blog w ogole istnieje.
-    { label: 'Blog', href: '/blog' },
+    // ZMIANA (16.08, Daniel: "w gornym menu zrobilo sie za ciasno po
+    // dodaniu Bloga, to opcjonalna zakladka, nie wnosi tyle na topie -
+    // powinna byc na dole strony przy mapie strony/kontakcie zamiast tutaj").
+    // Link przeniesiony do Footer.tsx (patrz tam) - wciaz dostepny dla
+    // odwiedzajacych bez bezposredniego linku, tylko nie zajmuje miejsca
+    // w gornym, ciasnym pasku nawigacji.
     { label: 'Kontakt',  href: '/kontakt' },
   ]
 

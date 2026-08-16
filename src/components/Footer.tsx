@@ -13,6 +13,12 @@ const LINKS = [
   { label: 'Mapa strony',         href: '/sitemap.xml' },
   { label: 'Kontakt',             href: '/kontakt' },
   { label: 'Kalkulator kredytowy', href: '/#kalkulator' },
+  // NOWE (16.08, Daniel: "gorne menu zrobilo sie za ciasne, blog jako
+  // opcjonalna zakladka nie wnosi tyle na topie zeby tam zajmowac
+  // miejsce - powinien byc tutaj obok mapy strony/kontaktu"). Przeniesione
+  // z Nav.tsx (patrz komentarz tam) - link wciaz istnieje, tylko nie
+  // zabiera juz miejsca w ciasnym, gornym pasku nawigacji.
+  { label: 'Blog',                href: '/blog' },
 ]
 
 export default function Footer({ office }: { office: Office | null }) {
