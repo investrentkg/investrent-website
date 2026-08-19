@@ -44,6 +44,34 @@ export async function getPublicOffers(params: {
   )
 }
 
+// NAPRAWA (19.08, Google Search Console: 40 stron z bledem 404). Backend
+// (GET /api/public/offers/:id) teraz rozroznia dwie sytuacje: oferta o
+// nieistniejacym ID (404) vs oferta ktora ISTNIEJE ale zmienila status -
+// sprzedana/wycofana (410 Gone + minimalny kontekst: typ, transakcja,
+// miasto). Generyczny apiFetch() traktuje kazdy nie-OK status identycznie
+// jako null, wiec ta funkcja robi wlasny fetch, zeby strona mogla pokazac
+// "ta nieruchomosc zostala juz sprzedana, zobacz podobne" zamiast golego
+// 404 - lepszy UX i mocniejszy sygnal SEO (410 zamiast 404 - Google usuwa
+// z indeksu szybciej, nie czeka az "moze wroci").
+export type PublicOfferResult =
+  | { status: 'ok'; data: import('@/types').Offer }
+  | { status: 'gone'; context: { property_type: string | null; transaction_type: string | null; address_city: string | null } }
+  | { status: 'not_found' }
+
+export async function getPublicOfferResult(id: string): Promise<PublicOfferResult> {
+  try {
+    const res = await fetch(`${API}/api/public/offers/${id}`, { headers: INTERNAL_HEADERS, next: { revalidate: 60 } })
+    if (res.status === 410) {
+      const body = await res.json().catch(() => null)
+      return { status: 'gone', context: body?.offer_context || { property_type: null, transaction_type: null, address_city: null } }
+    }
+    if (!res.ok) return { status: 'not_found' }
+    return { status: 'ok', data: await res.json() }
+  } catch {
+    return { status: 'not_found' }
+  }
+}
+
 export async function getPublicOffer(id: string) {
   return apiFetch<import('@/types').Offer>(
     `/api/public/offers/${id}`,

@@ -10,7 +10,8 @@ import FloatingWA from '@/components/FloatingWA'
 import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
 import OfferDetailClient from './OfferDetailClient'
-import { getPublicOffer, getOffice } from '@/lib/api'
+import { OfferCard } from '@/components/OffersSection'
+import { getPublicOfferResult, getOffice, getPublicOffers } from '@/lib/api'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 
@@ -42,8 +43,18 @@ function transactionLabel(t: string): string {
 }
 
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  const offer = await getPublicOffer(params.id) as any
-  if (!offer) return { title: 'Oferta | InvestRent' }
+  const result = await getPublicOfferResult(params.id)
+  if (result.status === 'not_found') return { title: 'Oferta | InvestRent' }
+  // NAPRAWA (19.08, Google Search Console: 40 stron z bledem 404). Oferta
+  // ISTNIEJE ale zostala sprzedana/wycofana - Next.js 14 App Router nie
+  // wspiera customowego kodu HTTP (410) dla server components bez wiekszej
+  // przebudowy na route handler, wiec noindex jest NAJSILNIEJSZYM dostepnym
+  // sygnalem zeby Google nie indeksowal/usunal ta strone z indeksu, mimo ze
+  // sama strona zwraca 200 (API backendu i tak juz zwraca prawdziwe 410).
+  if (result.status === 'gone') {
+    return { title: 'Ta oferta nie jest już dostępna | InvestRent Kołobrzeg', robots: { index: false, follow: true } }
+  }
+  const offer = result.data as any
   // NAPRAWA (audyt SEO, punkt 5): opis byl bardzo ubogi ("{typ} w {miasto}.
   // {cena} zl") - brak ulicy/dzielnicy, metrazu, pokoi. Teraz wykorzystuje
   // kazda dostepna, konkretna dana - wiecej fraz kluczowych ktorymi ludzie
@@ -139,12 +150,60 @@ function BreadcrumbJsonLd({ offer }: { offer: any }) {
 }
 
 export default async function OfferPage({ params }: { params: { id: string } }) {
-  const [offer, officeData] = await Promise.all([
-    getPublicOffer(params.id),
+  const [result, officeData] = await Promise.all([
+    getPublicOfferResult(params.id),
     getOffice(),
-  ]) as any[]
-  if (!offer) notFound()
+  ])
   const office = officeData ?? FALLBACK_OFFICE
+  if (result.status === 'not_found') notFound()
+
+  // NAPRAWA (19.08, Google Search Console: 40 stron z bledem 404). Oferta
+  // ISTNIEJE ale zostala sprzedana/wycofana - zamiast golego 404 (ktory
+  // zatrzymuje caly ruch z Google/starych linkow bez zadnej propozycji),
+  // pokazujemy jasny komunikat + podobne, wciaz aktywne oferty tego samego
+  // typu/miasta - zatrzymuje wartosc odwiedzin zamiast je marnowac.
+  if (result.status === 'gone') {
+    const { property_type, transaction_type, address_city } = result.context
+    const similar = await getPublicOffers({
+      property_type: property_type || undefined,
+      transaction_type: transaction_type || undefined,
+      limit: 6,
+    })
+    return (
+      <>
+        <Nav office={office} />
+        <main>
+          <div style={{ background: 'linear-gradient(135deg, #0d2a5c, #1a4fa0)', padding: '24px 0 20px' }}>
+            <div className="container">
+              <Breadcrumb crumbs={[{ label: 'Strona główna', href: '/' }, { label: 'Oferty', href: '/oferty' }, { label: 'Oferta niedostępna' }]} />
+            </div>
+          </div>
+          <div className="container" style={{ padding: '48px 0', textAlign: 'center' }}>
+            <h1 style={{ fontSize: 28, marginBottom: 12 }}>Ta oferta nie jest już dostępna</h1>
+            <p style={{ color: '#64748b', marginBottom: 32, fontSize: 16 }}>
+              {address_city
+                ? `Nieruchomość w ${address_city} została już sprzedana lub wynajęta. Zobacz podobne, aktualne oferty poniżej.`
+                : 'Ta nieruchomość została już sprzedana lub wynajęta. Zobacz podobne, aktualne oferty poniżej.'}
+            </p>
+            {similar && similar.data.length > 0 ? (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 20, textAlign: 'left', maxWidth: 1100, margin: '0 auto' }}>
+                {similar.data.map(o => <OfferCard key={o.id} offer={o} tab="new" />)}
+              </div>
+            ) : (
+              <a href="/oferty" style={{ display: 'inline-block', padding: '12px 28px', background: '#0d2a5c', color: 'white', borderRadius: 8, textDecoration: 'none', fontWeight: 600 }}>
+                Zobacz wszystkie oferty
+              </a>
+            )}
+          </div>
+        </main>
+        <Footer office={office} />
+        <FloatingWA />
+        <SocialSidebar office={office} />
+      </>
+    )
+  }
+
+  const offer = result.data as any
   return (
     <>
       <OfferJsonLd offer={offer} />

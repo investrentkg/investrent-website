@@ -25,7 +25,7 @@ function getBadge(offer: Offer, tab: string) {
   return null
 }
 
-function OfferCard({ offer, tab }: { offer: Offer; tab: string }) {
+export function OfferCard({ offer, tab }: { offer: Offer; tab: string }) {
   const badge = getBadge(offer, tab)
   return (
     <a href={`/oferty/${offer.id}`} style={{ textDecoration: 'none', display: 'block', height: '100%' }}>
