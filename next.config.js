@@ -29,6 +29,24 @@ const nextConfig = {
   // ═══════════════════════════════════════════════════════════════════
   async redirects() {
     return [
+      // NAPRAWA (19.08, Google Search Console: "Duplikat, uzytkownik nie
+      // oznaczyl strony kanonicznej" - alert). Kazda podstrona ma poprawnie
+      // ustawiony <link rel="canonical"> zawsze wskazujacy na wersje z
+      // "www" (patrz BASE_URL w oferty/page.tsx, oferty/[id]/page.tsx i
+      // innych), ale bez fizycznego przekierowania serwera Google mogl
+      // niezaleznie zaindeksowac obie wersje hosta. TA regula, nie osobny
+      // middleware.ts - next.config redirects() wykonuja sie PRZED
+      // middleware w kolejnosci Next.js, wiec umieszczenie tego tutaj
+      // (zamiast w middleware) unika podwojnego przekierowania dla
+      // wszystkich pozostalych regul ponizej (stary adres bez www ->
+      // nowy adres bez www -> dopiero potem www, gdyby to bylo w middleware).
+      // Jeden skok zamiast dwoch, dla kazdego zaindeksowanego adresu.
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'investrent.com.pl' }],
+        destination: 'https://www.investrent.com.pl/:path*',
+        permanent: true,
+      },
       // Proste zmiany nazw (czasowniki -> rzeczowniki)
       { source: '/kup',      destination: '/kupno',    permanent: true },
       { source: '/sprzedaj', destination: '/sprzedaz', permanent: true },
