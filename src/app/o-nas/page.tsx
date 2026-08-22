@@ -68,7 +68,7 @@ export default async function ONasPage() {
                 { val: 'Kołobrzeg', label: 'Siedziba biura' },
               ].map((st, i) => (
                 <div key={i} style={{ textAlign: 'center', padding: '20px', minWidth: 0 }}>
-                  <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 900, fontSize: 36, color: '#0d2a5c', marginBottom: 4, overflowWrap: 'break-word' as const }}>{st.val}</div>
+                  <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 900, fontSize: 'clamp(20px, 6vw, 36px)', color: '#0d2a5c', marginBottom: 4, whiteSpace: 'nowrap' as const }}>{st.val}</div>
                   <div style={{ fontSize: 13, color: '#6b7280' }}>{st.label}</div>
                 </div>
               ))}
