@@ -58,6 +58,10 @@ function JsonLd({ office, googleRating, googleTotal }: { office: Office | null; 
     "url": "https://www.investrent.com.pl",
     "telephone": office?.phone ?? "+48731554341",
     "email": office?.email ?? "biuro@investrent.com.pl",
+    // NOWE (22.08, audyt SEO - brief "dane strukturalne"): brakowalo image/logo
+    // (Google czesto pokazuje logo firmy przy wynikach typu LocalBusiness/
+    // RealEstateAgent w wynikach wyszukiwania i Google Maps, jesli jest podane).
+    "image": "https://www.investrent.com.pl/logo.png",
     "address": {
       "@type": "PostalAddress",
       "addressLocality": "Kołobrzeg",
@@ -65,6 +69,21 @@ function JsonLd({ office, googleRating, googleTotal }: { office: Office | null; 
       "addressRegion": "Zachodniopomorskie",
       "addressCountry": "PL"
     },
+    // NOWE (22.08): wspolrzedne siedziby - pomaga Google jednoznacznie
+    // umiejscowic firme geograficznie (istotne dla wynikow "w poblizu mnie" /
+    // Google Maps), nie tylko po samym adresie tekstowym.
+    "geo": { "@type": "GeoCoordinates", "latitude": 54.1764, "longitude": 15.5830 },
+    // NOWE (22.08): brakujacy obszar dzialania - bez tego Google nie wie,
+    // ze biuro obsluguje TEZ okoliczne miejscowosci, nie tylko sam Kolobrzeg.
+    // Lista zgodna z regionami juz uzywanymi gdzie indziej w systemie
+    // (kampanie marketingowe, KNOWN_REGIONS w CRM) - nie wymyslona na nowo.
+    "areaServed": [
+      { "@type": "City", "name": "Kołobrzeg" },
+      { "@type": "City", "name": "Ustronie Morskie" },
+      { "@type": "City", "name": "Dźwirzyno" },
+      { "@type": "City", "name": "Gąski" },
+      { "@type": "City", "name": "Trzebiatów" },
+    ],
     // NAPRAWA (audyt SEO 31.07.2026, doprecyzowanie): to byly sztywne liczby
     // "4.9"/"55" NIEZALEZNE od faktycznej, zywej oceny pobieranej z Google
     // (widocznej na stronie w komponencie Hero) - jesli prawdziwa ocena
