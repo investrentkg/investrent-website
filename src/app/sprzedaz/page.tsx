@@ -95,7 +95,7 @@ export default async function SprzedazPage() {
                 { val: '4.9/5',  label: 'Ocena klientów',            sub: `${googleTotal} opinii Google` },
                 { val: '0 zł',   label: 'Wycena nieruchomości',      sub: 'bezpłatnie, bez zobowiązań' },
               ].map((s, i) => (
-                <div key={s.label} style={{ textAlign: 'center' as const, padding: '20px 16px' }}>
+                <div key={s.label} style={{ textAlign: 'center' as const, padding: '20px 16px', minWidth: 0 }}>
                   <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 900, fontSize: 34, color: '#0d2a5c', marginBottom: 4 }}>{s.val}</div>
                   <div style={{ fontSize: 13, fontWeight: 700, color: '#374151', marginBottom: 2 }}>{s.label}</div>
                   <div style={{ fontSize: 11, color: '#9ca3af' }}>{s.sub}</div>
@@ -108,7 +108,7 @@ export default async function SprzedazPage() {
         {/* Dlaczego my */}
         <div style={{ background: '#f8fafc', padding: '56px 0' }}>
           <div className="container">
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 56, alignItems: 'center' }}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-14 items-center">
               <div>
                 <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 30, color: '#0d2a5c', marginBottom: 20, lineHeight: 1.2 }}>
                   Wiemy jak sprzedać nieruchomość nad Bałtykiem
@@ -129,7 +129,7 @@ export default async function SprzedazPage() {
                   ))}
                 </div>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+              <div className="grid grid-cols-2 gap-4">
                 {[
                   { val: '150+',   label: 'Transakcji' },
                   { val: '45 dni', label: 'Średni czas' },

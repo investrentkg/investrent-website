@@ -52,7 +52,7 @@ export default function KalkulatorClient() {
       </div>
 
       <div className="container" style={{ padding: '40px 0 80px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 28, maxWidth: 1000, margin: '0 auto' }}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-7" style={{ maxWidth: 1000, margin: '0 auto' }}>
           <div style={{ background: 'white', borderRadius: 20, padding: 32, boxShadow: '0 2px 16px rgba(0,0,0,.06)' }}>
             <h2 style={{ fontSize: 17, fontWeight: 800, color: '#0d2a5c', marginBottom: 28, fontFamily: 'var(--font-montserrat)' }}>
               Parametry kredytu

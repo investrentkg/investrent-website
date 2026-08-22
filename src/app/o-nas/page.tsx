@@ -67,8 +67,8 @@ export default async function ONasPage() {
                 { val: `${teamSize}`, label: 'Ekspertów w zespole' },
                 { val: 'Kołobrzeg', label: 'Siedziba biura' },
               ].map((st, i) => (
-                <div key={i} style={{ textAlign: 'center', padding: '20px' }}>
-                  <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 900, fontSize: 36, color: '#0d2a5c', marginBottom: 4 }}>{st.val}</div>
+                <div key={i} style={{ textAlign: 'center', padding: '20px', minWidth: 0 }}>
+                  <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 900, fontSize: 36, color: '#0d2a5c', marginBottom: 4, overflowWrap: 'break-word' as const }}>{st.val}</div>
                   <div style={{ fontSize: 13, color: '#6b7280' }}>{st.label}</div>
                 </div>
               ))}
@@ -78,7 +78,7 @@ export default async function ONasPage() {
 
         <div style={{ padding: '56px 0', background: '#f8fafc' }}>
           <div className="container">
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'center' }}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
               <div>
                 <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 32, color: '#0d2a5c', letterSpacing: '-.5px', marginBottom: 18, lineHeight: 1.2 }}>
                   Zbudowani na zaufaniu i lokalnej wiedzy
@@ -95,7 +95,7 @@ export default async function ONasPage() {
                   ))}
                 </div>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {VALUES.map(v => {
                   const Icon = v.icon
                   return (
@@ -118,7 +118,7 @@ export default async function ONasPage() {
 
         <div style={{ background: 'white', padding: '48px 0' }}>
           <div className="container">
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'center' }}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
               <div>
                 <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 28, color: '#0d2a5c', marginBottom: 20 }}>Odwiedź nasze biuro</h2>
                 {[

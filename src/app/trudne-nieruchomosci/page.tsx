@@ -118,7 +118,7 @@ export default async function TrudneNieruchomosciPage() {
         {/* Dlaczego my */}
         <div style={{ background: 'white', padding: '56px 0' }}>
           <div className="container">
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'center' }}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
               <div>
                 <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 30, color: '#0d2a5c', marginBottom: 16 }}>Dlaczego warto nam zaufać?</h2>
                 <p style={{ fontSize: 14, color: '#6b7280', lineHeight: 1.8, marginBottom: 20 }}>
@@ -139,7 +139,7 @@ export default async function TrudneNieruchomosciPage() {
                   ))}
                 </div>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+              <div className="grid grid-cols-2 gap-4">
                 {[
                   { val: '100%', label: 'Poufność',     sub: 'Gwarancja dyskrecji' },
                   { val: '0 zł', label: 'Konsultacja',  sub: 'Pierwsza rozmowa gratis' },
