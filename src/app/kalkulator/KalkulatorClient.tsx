@@ -63,7 +63,7 @@ export default function KalkulatorClient() {
                   <span style={{ fontSize: 13, color: '#64748b', fontWeight: 500 }}>{sl.label}</span>
                   <span style={{ fontSize: 15, fontWeight: 800, color: '#0d2a5c' }}>{sl.fmt(sl.value)}</span>
                 </div>
-                <input type="range" min={sl.min} max={sl.max} step={sl.step} value={sl.value}
+                <input type="range" min={sl.min} max={sl.max} step={sl.step} value={sl.value} aria-label={sl.label}
                   onChange={e => sl.set(Number(e.target.value))}
                   style={{ width: '100%', accentColor: '#1a4fa0', cursor: 'pointer' }} />
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>

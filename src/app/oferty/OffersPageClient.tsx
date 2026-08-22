@@ -302,7 +302,7 @@ export default function OffersPageClient({ initialOffers, initialTotal, defaultT
             </div>
             {totalPages > 1 && (
               <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8 }}>
-                <button onClick={() => { const np = Math.max(1, page - 1); setPage(np); doSearch(filters, np) }} disabled={page === 1}
+                <button onClick={() => { const np = Math.max(1, page - 1); setPage(np); doSearch(filters, np) }} disabled={page === 1} aria-label="Poprzednia strona"
                   style={{ width: 38, height: 38, borderRadius: '50%', border: '1.5px solid #e5e7eb', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: page === 1 ? .4 : 1 }}>
                   <ChevronLeft size={16} />
                 </button>
@@ -312,7 +312,7 @@ export default function OffersPageClient({ initialOffers, initialTotal, defaultT
                     {p}
                   </button>
                 ))}
-                <button onClick={() => { const np = Math.min(totalPages, page + 1); setPage(np); doSearch(filters, np) }} disabled={page === totalPages}
+                <button onClick={() => { const np = Math.min(totalPages, page + 1); setPage(np); doSearch(filters, np) }} disabled={page === totalPages} aria-label="Następna strona"
                   style={{ width: 38, height: 38, borderRadius: '50%', border: '1.5px solid #e5e7eb', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: page === totalPages ? .4 : 1 }}>
                   <ChevronRight size={16} />
                 </button>

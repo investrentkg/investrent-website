@@ -37,7 +37,7 @@ export default function WycenaModal({ isOpen, onClose }: Props) {
       style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(9,20,50,.75)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
       <div style={{ background: 'white', borderRadius: 20, padding: 36, width: '100%', maxWidth: 440, boxShadow: '0 32px 80px rgba(0,0,0,.25)', position: 'relative' }}>
 
-        <button onClick={onClose}
+        <button onClick={onClose} aria-label="Zamknij"
           style={{ position: 'absolute', top: 16, right: 16, background: '#f1f5f9', border: 'none', borderRadius: '50%', width: 32, height: 32, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b' }}>
           <X size={16} />
         </button>
@@ -63,9 +63,9 @@ export default function WycenaModal({ isOpen, onClose }: Props) {
               Zostaw numer — ekspert oddzwoni w ciągu 60 minut i bezpłatnie wyceni Twoją nieruchomość. Bez zobowiązań.
             </p>
             <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 12 }}>
-              <input type="text" placeholder="Imię i nazwisko (opcjonalnie)" value={name} onChange={e => setName(e.target.value)}
+              <input type="text" placeholder="Imię i nazwisko (opcjonalnie)" aria-label="Imię i nazwisko (opcjonalnie)" value={name} onChange={e => setName(e.target.value)}
                 style={{ padding: '13px 16px', borderRadius: 12, border: '1.5px solid #e2e8f0', fontSize: 14, outline: 'none', color: '#1e293b', fontFamily: 'inherit' }} />
-              <input type="tel" placeholder="+48 numer telefonu *" value={phone} onChange={e => setPhone(e.target.value)} onKeyDown={e => e.key === 'Enter' && submit()}
+              <input type="tel" placeholder="+48 numer telefonu *" aria-label="Numer telefonu (wymagane)" value={phone} onChange={e => setPhone(e.target.value)} onKeyDown={e => e.key === 'Enter' && submit()}
                 style={{ padding: '13px 16px', borderRadius: 12, border: `1.5px solid ${status === 'error' ? '#ef4444' : '#e2e8f0'}`, fontSize: 14, outline: 'none', color: '#1e293b', fontFamily: 'inherit' }} />
               <button type="button" onClick={submit} disabled={!phone.trim() || status === 'loading'}
                 style={{ background: phone.trim() ? 'linear-gradient(135deg, #1a4fa0, #0d2a5c)' : '#cbd5e1', color: 'white', border: 'none', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, cursor: phone.trim() ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: 'inherit' }}>

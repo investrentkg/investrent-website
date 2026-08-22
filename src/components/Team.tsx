@@ -154,7 +154,7 @@ export default function Team({ members }: Props) {
 
         {displayMembers.length > perView && (
           <div className="flex items-center justify-center gap-4 mt-6">
-            <button onClick={() => scrollToIndex(cur - 1)} disabled={cur === 0}
+            <button onClick={() => scrollToIndex(cur - 1)} disabled={cur === 0} aria-label="Poprzedni"
               className="w-9 h-9 rounded-full border-[1.5px] border-slate-200 flex items-center justify-center hover:border-blue hover:text-blue transition-all disabled:opacity-30">
               <ChevronLeft size={16} />
             </button>
@@ -176,7 +176,7 @@ export default function Team({ members }: Props) {
                   }} />
               ))}
             </div>
-            <button onClick={() => scrollToIndex(cur + 1)} disabled={cur === maxSlide}
+            <button onClick={() => scrollToIndex(cur + 1)} disabled={cur === maxSlide} aria-label="Następny"
               className="w-9 h-9 rounded-full border-[1.5px] border-slate-200 flex items-center justify-center hover:border-blue hover:text-blue transition-all disabled:opacity-30">
               <ChevronRight size={16} />
             </button>

@@ -58,7 +58,7 @@ function Lightbox({ photos, start, onClose, label }: { photos: OfferDetail['offe
       {/* Pasek górny */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 20px', flexShrink: 0 }}>
         <span style={{ color: 'rgba(255,255,255,.7)', fontSize: 13 }}>{cur + 1} / {photos.length}</span>
-        <button onClick={onClose} style={{ background: 'rgba(255,255,255,.15)', border: 'none', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'white' }}>
+        <button onClick={onClose} aria-label="Zamknij podgląd" style={{ background: 'rgba(255,255,255,.15)', border: 'none', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'white' }}>
           <X size={20} />
         </button>
       </div>
@@ -68,11 +68,11 @@ function Lightbox({ photos, start, onClose, label }: { photos: OfferDetail['offe
           fill sizes="100vw" style={{ objectFit: 'contain' }} />
         {photos.length > 1 && (
           <>
-            <button onClick={() => setCur(c => Math.max(0, c - 1))} disabled={cur === 0}
+            <button onClick={() => setCur(c => Math.max(0, c - 1))} disabled={cur === 0} aria-label="Poprzednie zdjęcie"
               style={{ position: 'absolute', left: 10, background: 'rgba(255,255,255,.15)', border: 'none', borderRadius: '50%', width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: cur === 0 ? 'default' : 'pointer', color: 'white', opacity: cur === 0 ? .3 : 1 }}>
               <ChevronLeft size={22} />
             </button>
-            <button onClick={() => setCur(c => Math.min(photos.length - 1, c + 1))} disabled={cur === photos.length - 1}
+            <button onClick={() => setCur(c => Math.min(photos.length - 1, c + 1))} disabled={cur === photos.length - 1} aria-label="Następne zdjęcie"
               style={{ position: 'absolute', right: 10, background: 'rgba(255,255,255,.15)', border: 'none', borderRadius: '50%', width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: cur === photos.length - 1 ? 'default' : 'pointer', color: 'white', opacity: cur === photos.length - 1 ? .3 : 1 }}>
               <ChevronRight size={22} />
             </button>
@@ -119,11 +119,11 @@ function Gallery({ photos, label }: { photos: OfferDetail['offer_photos'], label
           </button>
           {photos.length > 1 && (
             <>
-              <button onClick={e => { e.stopPropagation(); setActive(a => Math.max(0, a-1)) }} disabled={active === 0}
+              <button onClick={e => { e.stopPropagation(); setActive(a => Math.max(0, a-1)) }} disabled={active === 0} aria-label="Poprzednie zdjęcie"
                 style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,.5)', border: 'none', borderRadius: '50%', width: 38, height: 38, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: active === 0 ? 'default' : 'pointer', color: 'white', opacity: active === 0 ? .3 : 1 }}>
                 <ChevronLeft size={18} />
               </button>
-              <button onClick={e => { e.stopPropagation(); setActive(a => Math.min(photos.length-1, a+1)) }} disabled={active === photos.length-1}
+              <button onClick={e => { e.stopPropagation(); setActive(a => Math.min(photos.length-1, a+1)) }} disabled={active === photos.length-1} aria-label="Następne zdjęcie"
                 style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,.5)', border: 'none', borderRadius: '50%', width: 38, height: 38, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: active === photos.length-1 ? 'default' : 'pointer', color: 'white', opacity: active === photos.length-1 ? .3 : 1 }}>
                 <ChevronRight size={18} />
               </button>

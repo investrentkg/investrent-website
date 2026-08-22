@@ -218,7 +218,7 @@ export default function OffersSection({ initialOffers }: { initialOffers: Pagina
             </div>
             {offers.length > perView && (
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, marginTop: 24 }}>
-                <button onClick={() => scrollToIndex(cur - 1)} disabled={cur === 0}
+                <button onClick={() => scrollToIndex(cur - 1)} disabled={cur === 0} aria-label="Poprzedni"
                   style={{ width: 36, height: 36, borderRadius: '50%', border: '1.5px solid #e5e7eb', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: cur === 0 ? .3 : 1 }}>
                   <ChevronLeft size={16} />
                 </button>
@@ -228,7 +228,7 @@ export default function OffersSection({ initialOffers }: { initialOffers: Pagina
                       style={{ display: 'inline-block', width: i === cur ? 22 : 8, height: 8, borderRadius: i === cur ? 4 : 50, background: i === cur ? '#1a4fa0' : '#e5e7eb', cursor: 'pointer', transition: 'all .25s' }} />
                   ))}
                 </div>
-                <button onClick={() => scrollToIndex(cur + 1)} disabled={cur === maxSlide}
+                <button onClick={() => scrollToIndex(cur + 1)} disabled={cur === maxSlide} aria-label="Następny"
                   style={{ width: 36, height: 36, borderRadius: '50%', border: '1.5px solid #e5e7eb', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: cur === maxSlide ? .3 : 1 }}>
                   <ChevronRight size={16} />
                 </button>

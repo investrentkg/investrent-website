@@ -85,7 +85,7 @@ export default function MortgageMiniCalculator({ price, refNumber, offerId }: { 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
         <span style={{ fontSize: 11.5, color: '#6b7280' }}>Okres kredytu: <strong style={{ color: '#374151' }}>{years} lat</strong></span>
       </div>
-      <input type="range" min={10} max={35} step={1} value={years}
+      <input type="range" min={10} max={35} step={1} value={years} aria-label="Okres kredytu w latach"
         onChange={e => setYears(Number(e.target.value))}
         style={{ width: '100%', marginBottom: 14, accentColor: '#1a4fa0' }} />
 
@@ -98,7 +98,7 @@ export default function MortgageMiniCalculator({ price, refNumber, offerId }: { 
       </div>
 
       <form onSubmit={handleSubmit} style={{ display: 'flex', gap: 6 }}>
-        <input type="tel" required placeholder="Twój numer telefonu" value={phone}
+        <input type="tel" required placeholder="Twój numer telefonu" aria-label="Numer telefonu" value={phone}
           onChange={e => setPhone(e.target.value)}
           style={{ flex: 1, padding: '10px 12px', borderRadius: 8, border: '1px solid #d1d5db', fontSize: 13 }} />
         <button type="submit" disabled={sending}

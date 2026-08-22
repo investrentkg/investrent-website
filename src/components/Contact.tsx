@@ -116,20 +116,20 @@ export default function Contact({ office }: { office: Office | null }) {
               </div>
             ) : (
               <div className="flex flex-col gap-2.5">
-                <select value={form.topic} onChange={set('topic')}
+                <select value={form.topic} onChange={set('topic')} aria-label="Czego dotyczy zapytanie?"
                   className="bg-white border border-slate-200 rounded-xl px-4 py-3 text-[13px] text-slate-700 outline-none focus:border-blue w-full">
                   <option value="">Czego dotyczy zapytanie?</option>
                   {TOPICS.map(t => <option key={t} value={t}>{t}</option>)}
                 </select>
                 <div className="grid grid-cols-2 gap-2.5">
-                  <input type="text" placeholder="Imię i nazwisko" value={form.name} onChange={set('name')}
+                  <input type="text" placeholder="Imię i nazwisko" aria-label="Imię i nazwisko" value={form.name} onChange={set('name')}
                     className="bg-white border border-slate-200 rounded-xl px-4 py-3 text-[13px] outline-none focus:border-blue" />
-                  <input type="tel" placeholder="+48 telefon" value={form.phone} onChange={set('phone')}
+                  <input type="tel" placeholder="+48 telefon" aria-label="Numer telefonu" value={form.phone} onChange={set('phone')}
                     className="bg-white border border-slate-200 rounded-xl px-4 py-3 text-[13px] outline-none focus:border-blue" />
                 </div>
-                <input type="email" placeholder="Email (opcjonalnie)" value={form.email} onChange={set('email')}
+                <input type="email" placeholder="Email (opcjonalnie)" aria-label="Adres e-mail (opcjonalnie)" value={form.email} onChange={set('email')}
                   className="bg-white border border-slate-200 rounded-xl px-4 py-3 text-[13px] outline-none focus:border-blue" />
-                <textarea placeholder="Opisz czego szukasz lub co chcesz sprzedać…"
+                <textarea placeholder="Opisz czego szukasz lub co chcesz sprzedać…" aria-label="Opisz czego szukasz lub co chcesz sprzedać"
                   value={form.notes} onChange={set('notes')} rows={3}
                   className="bg-white border border-slate-200 rounded-xl px-4 py-3 text-[13px] outline-none focus:border-blue resize-none" />
                 <button onClick={handleSubmit} disabled={status === 'loading'}

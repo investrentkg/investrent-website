@@ -86,7 +86,7 @@ export default function Nav({ office }: { office: Office | null }) {
                   style={{ background: '#f5a623', color: 'white', fontSize: 12, fontWeight: 700, padding: '8px 12px', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 6, textDecoration: 'none' }}>
                   <Phone size={12} /> {phone}
                 </a>
-                <button onClick={() => setOpen(true)} style={{ color: 'rgba(255,255,255,.7)', background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
+                <button onClick={() => setOpen(true)} aria-label="Otwórz menu" style={{ color: 'rgba(255,255,255,.7)', background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
                   <Menu size={22} />
                 </button>
               </div>
@@ -97,7 +97,7 @@ export default function Nav({ office }: { office: Office | null }) {
 
       {open && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 200, background: 'rgba(9,30,64,.97)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 28 }}>
-          <button onClick={() => setOpen(false)} style={{ position: 'absolute', top: 20, right: 24, color: 'rgba(255,255,255,.6)', background: 'none', border: 'none', cursor: 'pointer' }}>
+          <button onClick={() => setOpen(false)} aria-label="Zamknij menu" style={{ position: 'absolute', top: 20, right: 24, color: 'rgba(255,255,255,.6)', background: 'none', border: 'none', cursor: 'pointer' }}>
             <X size={28} />
           </button>
           {links.map(l => (

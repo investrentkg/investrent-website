@@ -105,10 +105,10 @@ export default function Reviews() {
           </div>
           {count > 1 && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <button onClick={prev} style={{ width: 40, height: 40, borderRadius: '50%', border: '1.5px solid #e5e7eb', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <button onClick={prev} aria-label="Poprzednia opinia" style={{ width: 40, height: 40, borderRadius: '50%', border: '1.5px solid #e5e7eb', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <ChevronLeft size={18} color="#374151" />
               </button>
-              <button onClick={next} style={{ width: 40, height: 40, borderRadius: '50%', border: '1.5px solid #e5e7eb', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <button onClick={next} aria-label="Następna opinia" style={{ width: 40, height: 40, borderRadius: '50%', border: '1.5px solid #e5e7eb', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <ChevronRight size={18} color="#374151" />
               </button>
             </div>

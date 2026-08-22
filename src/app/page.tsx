@@ -129,16 +129,18 @@ export default async function Home() {
     <>
       <JsonLd office={office} googleRating={googleRating} googleTotal={googleTotal} />
       <Nav           office={office} />
-      <Hero          stats={statsData} googleRating={googleRating} googleTotal={googleTotal} />
-      <CallbackStrip />
-      <OffersSection initialOffers={offersData} />
-      <About />
-      <Services />
-      <ValuationCTA />
-      <Reviews />
-      <Team          members={teamData?.data ?? []} />
-      <Contact       office={office} />
-      <MortgageCalcSection />
+      <main>
+        <Hero          stats={statsData} googleRating={googleRating} googleTotal={googleTotal} />
+        <CallbackStrip />
+        <OffersSection initialOffers={offersData} />
+        <About />
+        <Services />
+        <ValuationCTA />
+        <Reviews />
+        <Team          members={teamData?.data ?? []} />
+        <Contact       office={office} />
+        <MortgageCalcSection />
+      </main>
       <Footer        office={office} />
       <FloatingWA />
 
