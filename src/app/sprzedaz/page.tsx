@@ -88,14 +88,14 @@ export default async function SprzedazPage() {
         {/* Stats */}
         <div style={{ background: 'white', padding: '32px 0', borderBottom: '1px solid #e5e7eb' }}>
           <div className="container">
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 0 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12 }}>
               {[
                 { val: '150+',   label: 'Zrealizowanych transakcji', sub: 'w Kołobrzegu i okolicach' },
                 { val: '45 dni', label: 'Średni czas sprzedaży',     sub: 'przy rynku: 90+ dni' },
                 { val: '4.9/5',  label: 'Ocena klientów',            sub: `${googleTotal} opinii Google` },
                 { val: '0 zł',   label: 'Wycena nieruchomości',      sub: 'bezpłatnie, bez zobowiązań' },
               ].map((s, i) => (
-                <div key={s.label} style={{ textAlign: 'center' as const, padding: '20px 16px', borderRight: i < 3 ? '1px solid #e5e7eb' : 'none' }}>
+                <div key={s.label} style={{ textAlign: 'center' as const, padding: '20px 16px' }}>
                   <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 900, fontSize: 34, color: '#0d2a5c', marginBottom: 4 }}>{s.val}</div>
                   <div style={{ fontSize: 13, fontWeight: 700, color: '#374151', marginBottom: 2 }}>{s.label}</div>
                   <div style={{ fontSize: 11, color: '#9ca3af' }}>{s.sub}</div>
@@ -151,7 +151,7 @@ export default async function SprzedazPage() {
           <div className="container">
             <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 28, color: '#0d2a5c', marginBottom: 10, textAlign: 'center' as const }}>Co robimy za Ciebie</h2>
             <p style={{ color: '#6b7280', fontSize: 14, textAlign: 'center' as const, marginBottom: 36 }}>Od pierwszego kontaktu po klucze — i jeszcze długo po zamknięciu transakcji</p>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20 }}>
               {SERVICES.map(s => {
                 const Icon = s.icon
                 return (
@@ -182,7 +182,7 @@ export default async function SprzedazPage() {
                 Nie kończymy pracy po podpisaniu aktu notarialnego. Pomagamy w całej dokumentacji i formalnościach po transakcji.
               </p>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 18 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 18 }}>
               {POST_SALE.map(p => {
                 const Icon = p.icon
                 return (

@@ -60,14 +60,14 @@ export default async function ONasPage() {
 
         <div style={{ background: 'white', padding: '40px 0', borderBottom: '1px solid #e5e7eb' }}>
           <div className="container">
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 0 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 12 }}>
               {[
                 { val: `${trans}+`, label: 'Zrealizowanych transakcji' },
                 { val: '4.9/5',     label: 'Ocena klientów' },
                 { val: `${teamSize}`, label: 'Ekspertów w zespole' },
                 { val: 'Kołobrzeg', label: 'Siedziba biura' },
               ].map((st, i) => (
-                <div key={i} style={{ textAlign: 'center', padding: '20px', borderRight: i < 3 ? '1px solid #e5e7eb' : 'none' }}>
+                <div key={i} style={{ textAlign: 'center', padding: '20px' }}>
                   <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 900, fontSize: 36, color: '#0d2a5c', marginBottom: 4 }}>{st.val}</div>
                   <div style={{ fontSize: 13, color: '#6b7280' }}>{st.label}</div>
                 </div>

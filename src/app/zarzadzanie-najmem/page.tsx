@@ -98,7 +98,7 @@ export default async function ZarzadzanieNajmemPage() {
               <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 32, color: '#0d2a5c', letterSpacing: '-.5px', marginBottom: 10 }}>Przejmujemy wszystkie obowiązki</h2>
               <p style={{ color: '#6b7280', fontSize: 15, maxWidth: 540, margin: '0 auto', lineHeight: 1.75 }}>Ty zbierasz dochód z najmu, my zajmujemy się resztą.</p>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 20 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: 20 }}>
               {SERVICES.map(s => {
                 const Icon = s.icon
                 return (

@@ -297,7 +297,7 @@ export default function OffersPageClient({ initialOffers, initialTotal, defaultT
           </div>
         ) : (
           <>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 22, marginBottom: 36 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 22, marginBottom: 36 }}>
               {offers.map(o => <OfferCard key={o.id} offer={o} />)}
             </div>
             {totalPages > 1 && (

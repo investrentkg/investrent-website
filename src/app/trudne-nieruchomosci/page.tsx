@@ -93,7 +93,7 @@ export default async function TrudneNieruchomosciPage() {
               <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 32, color: '#0d2a5c', letterSpacing: '-.5px', marginBottom: 10 }}>Rozwiązujemy najtrudniejsze sprawy</h2>
               <p style={{ color: '#6b7280', fontSize: 15, maxWidth: 540, margin: '0 auto', lineHeight: 1.75 }}>Każda sytuacja jest inna. Nie ma sprawy zbyt skomplikowanej.</p>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 22 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 22 }}>
               {CASES.map(c => {
                 const Icon = c.icon
                 return (
@@ -161,7 +161,7 @@ export default async function TrudneNieruchomosciPage() {
         <div style={{ background: '#f8fafc', padding: '56px 0' }}>
           <div className="container">
             <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 28, color: '#0d2a5c', textAlign: 'center' as const, marginBottom: 40 }}>Jak działamy</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 24 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 24 }}>
               {PROCESS.map(p => (
                 <div key={p.n} style={{ textAlign: 'center' as const }}>
                   <div style={{ width: 56, height: 56, background: 'linear-gradient(135deg, #4338ca, #1e1b4b)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px', color: 'white', fontFamily: 'var(--font-montserrat)', fontWeight: 900, fontSize: 18 }}>{p.n}</div>

@@ -74,7 +74,7 @@ export default async function KupnoPage() {
             <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 28, color: '#0d2a5c', textAlign: 'center' as const, marginBottom: 40 }}>
               Proces zakupu krok po kroku
             </h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 24 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 24 }}>
               {STEPS.map(s => (
                 <div key={s.n}>
                   <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 900, fontSize: 40, color: 'rgba(26,79,160,.12)', marginBottom: 8 }}>{s.n}</div>
