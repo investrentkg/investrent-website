@@ -15,6 +15,7 @@ import Footer from '@/components/Footer'
 import FloatingWA from '@/components/FloatingWA'
 import { getPublicOffers, getOffice } from '@/lib/api'
 import Link from 'next/link'
+import Image from 'next/image'
 import { MapPin, LayoutGrid, Ruler } from 'lucide-react'
 
 const FALLBACK_OFFICE = { name: 'InvestRent', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
@@ -58,9 +59,10 @@ export default async function NotFound() {
                 {offers.map((offer: any) => (
                   <Link key={offer.id} href={`/oferty/${offer.id}`} style={{ textDecoration: 'none', display: 'block' }}>
                     <div style={{ background: 'white', borderRadius: 14, border: '1px solid #e5e7eb', overflow: 'hidden' }}>
-                      <div style={{ height: 180, overflow: 'hidden', background: '#f0f4ff' }}>
+                      <div style={{ height: 180, overflow: 'hidden', background: '#f0f4ff', position: 'relative' }}>
                         {offer.main_photo
-                          ? <img src={offer.main_photo} alt={offer.title ?? 'Oferta'} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                          ? <Image src={offer.main_photo} alt={offer.title ?? 'Oferta'} fill
+                              sizes="(max-width: 768px) 100vw, 300px" loading="lazy" style={{ objectFit: 'cover' }} />
                           : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 40 }}>🏠</div>}
                       </div>
                       <div style={{ padding: '14px 16px' }}>

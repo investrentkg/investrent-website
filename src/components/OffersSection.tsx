@@ -34,14 +34,16 @@ export function OfferCard({ offer, tab }: { offer: Offer; tab: string }) {
         onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform=''; (e.currentTarget as HTMLElement).style.boxShadow='' }}>
         <div style={{ height: 200, overflow: 'hidden', position: 'relative', background: '#f8fafc' }}>
           {offer.main_photo ? (
-            // NAPRAWA (22.08, audyt PageSpeed): brakowalo width/height - Google
-            // to flaguje jako ryzyko przesuniecia ukladu (CLS) przy wolnym
-            // laczu, i "loading=lazy" zeby zdjecia POZA ekranem (dalsze karty
-            // ofert) nie ladowaly sie od razu przy wejsciu na strone.
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={offer.main_photo} alt={offer.title ?? 'Oferta'}
-              width={400} height={200} loading="lazy"
-              style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform .4s' }}
+            // NAPRAWA (22.08, audyt PageSpeed): zwykly <img> omijal calkowicie
+            // wbudowana optymalizacje Next.js/Vercel (kompresja, WebP,
+            // responsywne rozmiary) niezaleznie od ustawien next.config.js -
+            // to byla GLOWNA przyczyna 7+ MB ciezaru strony i LCP 9,2s na
+            // telefonie. next/image z "fill" dopasowuje sie do rodzica
+            // (position: relative, wysokosc 200px ustawiona wyzej).
+            <Image src={offer.main_photo} alt={offer.title ?? 'Oferta'}
+              fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
+              loading="lazy"
+              style={{ objectFit: 'cover', transition: 'transform .4s' }}
               onMouseEnter={e => (e.currentTarget.style.transform='scale(1.05)')}
               onMouseLeave={e => (e.currentTarget.style.transform='')} />
           ) : (

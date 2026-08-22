@@ -11,6 +11,7 @@ import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
 import { getPublicBlogPosts, getOffice } from '@/lib/api'
 import Link from 'next/link'
+import Image from 'next/image'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -51,9 +52,10 @@ export default async function BlogPage() {
               {posts.map(post => (
                 <Link key={post.id} href={`/blog/${post.slug}`} style={{ textDecoration: 'none', display: 'block' }}>
                   <article style={{ background: 'white', borderRadius: 14, border: '1px solid #e5e7eb', overflow: 'hidden', height: '100%' }}>
-                    <div style={{ height: 190, overflow: 'hidden', background: '#f0f4ff' }}>
+                    <div style={{ height: 190, overflow: 'hidden', background: '#f0f4ff', position: 'relative' }}>
                       {post.cover_image_url
-                        ? <img src={post.cover_image_url} alt={post.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        ? <Image src={post.cover_image_url} alt={post.title} fill
+                            sizes="(max-width: 768px) 100vw, 400px" loading="lazy" style={{ objectFit: 'cover' }} />
                         : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 40 }}>📝</div>}
                     </div>
                     <div style={{ padding: '18px 20px' }}>

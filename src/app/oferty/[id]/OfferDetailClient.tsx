@@ -1,5 +1,6 @@
 "use client"
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { MapPin, LayoutGrid, Ruler, Layers, Phone, ChevronLeft, ChevronRight, Award, Shield, Clock, ArrowLeft, X, Expand } from 'lucide-react'
 import { submitLead } from '@/lib/api'
 import { formatPhoneDisplay } from '@/lib/phone'
@@ -63,8 +64,8 @@ function Lightbox({ photos, start, onClose, label }: { photos: OfferDetail['offe
       </div>
       {/* Główne zdjęcie */}
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden', padding: '0 60px' }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={photos[cur].url} alt={`${label} — zdjęcie ${cur + 1} z ${photos.length}`} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+        <Image src={photos[cur].url} alt={`${label} — zdjęcie ${cur + 1} z ${photos.length}`}
+          fill sizes="100vw" style={{ objectFit: 'contain' }} />
         {photos.length > 1 && (
           <>
             <button onClick={() => setCur(c => Math.max(0, c - 1))} disabled={cur === 0}
@@ -81,8 +82,8 @@ function Lightbox({ photos, start, onClose, label }: { photos: OfferDetail['offe
       {/* Miniatury */}
       <div style={{ display: 'flex', gap: 6, padding: '12px 16px', overflowX: 'auto' as const, flexShrink: 0 }}>
         {photos.map((p, i) => (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img key={i} src={p.url} alt={`${label} — miniatura ${i + 1}`} onClick={() => setCur(i)}
+          <Image key={i} src={p.url} alt={`${label} — miniatura ${i + 1}`} onClick={() => setCur(i)}
+            width={64} height={46}
             style={{ width: 64, height: 46, objectFit: 'cover', borderRadius: 6, flexShrink: 0, cursor: 'pointer', opacity: i === cur ? 1 : .5, border: i === cur ? '2px solid white' : '2px solid transparent', transition: 'all .15s' }} />
         ))}
       </div>
@@ -105,12 +106,12 @@ function Gallery({ photos, label }: { photos: OfferDetail['offer_photos'], label
       {lightbox && <Lightbox photos={photos} start={active} onClose={() => setLightbox(false)} label={label} />}
       <div style={{ width: '100%', maxWidth: '100%' }}>
         {/* Główne zdjęcie */}
-        <div style={{ position: 'relative', borderRadius: 14, overflow: 'hidden', marginBottom: 8, background: '#111', cursor: 'pointer' }}
+        <div style={{ position: 'relative', aspectRatio: '4/3', borderRadius: 14, overflow: 'hidden', marginBottom: 8, background: '#111', cursor: 'pointer' }}
           onTouchStart={e => setTouchStart(e.touches[0].clientX)}
           onTouchEnd={e => { const d = touchStart - e.changedTouches[0].clientX; if (Math.abs(d) > 50) d > 0 ? setActive(a => Math.min(photos.length-1, a+1)) : setActive(a => Math.max(0, a-1)) }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={photos[active].url} alt={`${label} — zdjęcie ${active + 1} z ${photos.length}`} onClick={() => setLightbox(true)}
-            style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', display: 'block', maxWidth: '100%' }} />
+          <Image src={photos[active].url} alt={`${label} — zdjęcie ${active + 1} z ${photos.length}`} onClick={() => setLightbox(true)}
+            fill sizes="(max-width: 768px) 100vw, 600px" priority
+            style={{ objectFit: 'cover', cursor: 'pointer' }} />
           {/* Overlay przycisk fullscreen */}
           <button onClick={() => setLightbox(true)}
             style={{ position: 'absolute', top: 12, right: 12, background: 'rgba(0,0,0,.5)', border: 'none', borderRadius: 8, padding: '6px 10px', display: 'flex', alignItems: 'center', gap: 5, color: 'white', cursor: 'pointer', fontSize: 11, fontWeight: 600 }}>
@@ -136,8 +137,8 @@ function Gallery({ photos, label }: { photos: OfferDetail['offer_photos'], label
         {photos.length > 1 && (
           <div style={{ display: 'flex', gap: 6, overflowX: 'auto' as const, paddingBottom: 6, WebkitOverflowScrolling: 'touch' as any }}>
             {photos.map((p, i) => (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img key={i} src={p.url} alt={`${label} — miniatura ${i + 1}`} onClick={() => setActive(i)}
+              <Image key={i} src={p.url} alt={`${label} — miniatura ${i + 1}`} onClick={() => setActive(i)}
+                width={76} height={56}
                 style={{ width: 76, height: 56, objectFit: 'cover', borderRadius: 7, flexShrink: 0, cursor: 'pointer', border: i === active ? '2.5px solid #1a4fa0' : '2.5px solid transparent', opacity: i === active ? 1 : .6, transition: 'all .15s' }} />
             ))}
           </div>
@@ -313,8 +314,7 @@ export default function OfferDetailClient({ offer }: { offer: OfferDetail }) {
               <div style={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: 14, padding: '18px', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 14 }}>
                 <div style={{ width: 50, height: 50, borderRadius: '50%', background: 'linear-gradient(135deg,#1a4fa0,#0d2a5c)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: 'white', fontWeight: 800, fontSize: 18, overflow: 'hidden' }}>
                   {offer.agent.avatar_url
-                    // eslint-disable-next-line @next/next/no-img-element
-                    ? <img src={offer.agent.avatar_url} alt={offer.agent.full_name} style={{ width: 50, height: 50, objectFit: 'cover' }} />
+                    ? <Image src={offer.agent.avatar_url} alt={offer.agent.full_name} width={50} height={50} style={{ width: 50, height: 50, objectFit: 'cover' }} />
                     : offer.agent.full_name[0]}
                 </div>
                 <div>

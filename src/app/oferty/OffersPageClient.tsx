@@ -1,5 +1,6 @@
 "use client"
 import { useState, useCallback, useEffect } from 'react'
+import Image from 'next/image'
 import { Search, MapPin, LayoutGrid, Ruler, Layers, ChevronLeft, ChevronRight, SlidersHorizontal, X } from 'lucide-react'
 import type { Offer } from '@/types'
 import Link from 'next/link'
@@ -71,7 +72,9 @@ function OfferCard({ offer }: { offer: Offer }) {
         onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.transform = ''; el.style.boxShadow = '' }}>
         <div style={{ height: 200, overflow: 'hidden', position: 'relative', background: '#f0f4ff' }}>
           {offer.main_photo
-            ? <img src={offer.main_photo} alt={offer.title ?? 'Oferta'} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ? <Image src={offer.main_photo} alt={offer.title ?? 'Oferta'} fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
+                loading="lazy" style={{ objectFit: 'cover' }} />
             : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 48 }}>🏠</div>
           }
           {badge && <span style={{ position: 'absolute', top: 12, left: 12, background: badge.bg, color: 'white', fontSize: 10, fontWeight: 700, padding: '4px 10px', borderRadius: 6 }}>{badge.label}</span>}

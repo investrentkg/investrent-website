@@ -1,7 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    unoptimized: true,
+    // NAPRAWA (22.08, audyt PageSpeed - zgoda Daniela po sprawdzeniu cennika
+    // Vercel): "unoptimized: true" bylo TU wczesniej, wylaczajac calkowicie
+    // wbudowana kompresje/skalowanie/konwersje do WebP dla calej strony -
+    // glowna przyczyna 7+ MB niepotrzebnie ciezkich zdjec ofert (LCP 9,2s na
+    // telefonie). Plan Vercel liczy koszt per UNIKALNE zrodlowe zdjecie
+    // przetworzone (nie per odslona - raz zoptymalizowane jest cache'owane),
+    // przy skali InvestRent (~30-40 aktywnych ofert) realistyczny koszt to
+    // praktycznie zero w darmowym limicie 5000/miesiac.
     remotePatterns: [
       { protocol: 'https', hostname: 'sqpepaiqwxginqnglspl.supabase.co' },
       { protocol: 'https', hostname: 'images.unsplash.com' },
