@@ -82,6 +82,15 @@ export default async function RodoPage() {
                   przez art. 13 ust. 2 lit. e RODO - czy podanie danych jest wymogiem
                   umownym/ustawowym i jakie sa konsekwencje niepodania. Byla to realna
                   luka w tresci skopiowanej ze starej strony. */}
+              {/* NOWE (22.08.2026, przygotowanie do Meta App Review dla uprawnienia
+                  leads_retrieval - recenzenci Meta konkretnie sprawdzaja czy polityka
+                  prywatnosci jawnie opisuje obsluge danych z formularzy kontaktowych
+                  Facebook/Instagram (Instant Forms), tego wczesniej brakowalo). */}
+              <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 19, color: '#0d2a5c', marginTop: 32, marginBottom: 10 }}>Dane z formularzy kontaktowych Facebook i Instagram</h2>
+              <p style={{ marginBottom: 20 }}>
+                W ramach kampanii reklamowych prowadzonych na Facebooku i Instagramie korzystamy z formularzy kontaktowych (Instant Forms) udostępnianych przez Meta. Gdy wypełnią Państwo taki formularz, przekazane dane (imię i nazwisko, numer telefonu, adres e-mail oraz ewentualne odpowiedzi na pytania kwalifikujące) są automatycznie pobierane z systemów Meta do naszego wewnętrznego systemu CRM za pomocą oficjalnego interfejsu API Meta (Graph API), wyłącznie w celu skontaktowania się z Państwem w sprawie oferty nieruchomości, którą byli Państwo zainteresowani. Dostęp do tych danych w naszym systemie CRM mają wyłącznie upoważnieni pracownicy i współpracownicy Investrent sp. z o.o. Dane te podlegają tym samym zasadom przechowywania, ochrony i prawom osób, których dane dotyczą, opisanym w pozostałych częściach niniejszej polityki.
+              </p>
+
               <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 19, color: '#0d2a5c', marginTop: 32, marginBottom: 10 }}>Dobrowolność podania danych</h2>
               <p style={{ marginBottom: 20 }}>
                 Podanie danych osobowych jest dobrowolne, jednak niezbędne do skontaktowania się z Państwem, przygotowania oferty lub zawarcia i realizacji umowy pośrednictwa w obrocie nieruchomościami. Niepodanie danych może uniemożliwić realizację tych celów.
