@@ -9,6 +9,22 @@ const nextConfig = {
     // przetworzone (nie per odslona - raz zoptymalizowane jest cache'owane),
     // przy skali InvestRent (~30-40 aktywnych ofert) realistyczny koszt to
     // praktycznie zero w darmowym limicie 5000/miesiac.
+    //
+    // NAPRAWA (25.08, Daniel: limit 5000/miesiac wyczerpany w 3 dni od
+    // powyzszej zmiany - realne zuzycie okazalo sie wyzsze niz zaklada
+    // powyzszy komentarz). Zbadane: prawie wszystkie komponenty <Image> juz
+    // mialy poprawnie ustawiony "sizes" (ograniczajacy liczbe generowanych
+    // wariantow szerokosci) - to NIE byla glowna przyczyna, tylko 3 drobne,
+    // stale-wymiarowe miniaturki/awatary go nie mialy (dopisane przy okazji).
+    // Prawdopodobniejsza przyczyna: brak jawnego minimumCacheTTL - bez tego
+    // Next.js uzywa krotkiego domyslnego czasu cache na krawedzi sieci, wiec
+    // TO SAMO zdjecie w TYM SAMYM rozmiarze mogло byc liczone jako nowa
+    // transformacja przy kazdej wizycie po wygasnieciu cache (np. boty
+    // indeksujace, powracajacy odwiedzajacy). Zdjecia ofert nieruchomosci
+    // nie zmieniaja sie czesto - dlugi czas cache (31 dni) jest bezpieczny i
+    // powinien znaczaco ograniczyc tempo zuzywania limitu w kolejnym
+    // miesiacu rozliczeniowym.
+    minimumCacheTTL: 2678400, // 31 dni w sekundach
     remotePatterns: [
       { protocol: 'https', hostname: 'sqpepaiqwxginqnglspl.supabase.co' },
       { protocol: 'https', hostname: 'images.unsplash.com' },

@@ -83,7 +83,7 @@ function Lightbox({ photos, start, onClose, label }: { photos: OfferDetail['offe
       <div style={{ display: 'flex', gap: 6, padding: '12px 16px', overflowX: 'auto' as const, flexShrink: 0 }}>
         {photos.map((p, i) => (
           <Image key={i} src={p.url} alt={`${label} — miniatura ${i + 1}`} onClick={() => setCur(i)}
-            width={64} height={46}
+            width={64} height={46} sizes="64px"
             style={{ width: 64, height: 46, objectFit: 'cover', borderRadius: 6, flexShrink: 0, cursor: 'pointer', opacity: i === cur ? 1 : .5, border: i === cur ? '2px solid white' : '2px solid transparent', transition: 'all .15s' }} />
         ))}
       </div>
@@ -138,7 +138,7 @@ function Gallery({ photos, label }: { photos: OfferDetail['offer_photos'], label
           <div style={{ display: 'flex', gap: 6, overflowX: 'auto' as const, paddingBottom: 6, WebkitOverflowScrolling: 'touch' as any }}>
             {photos.map((p, i) => (
               <Image key={i} src={p.url} alt={`${label} — miniatura ${i + 1}`} onClick={() => setActive(i)}
-                width={76} height={56}
+                width={76} height={56} sizes="76px"
                 style={{ width: 76, height: 56, objectFit: 'cover', borderRadius: 7, flexShrink: 0, cursor: 'pointer', border: i === active ? '2.5px solid #1a4fa0' : '2.5px solid transparent', opacity: i === active ? 1 : .6, transition: 'all .15s' }} />
             ))}
           </div>
@@ -314,7 +314,7 @@ export default function OfferDetailClient({ offer }: { offer: OfferDetail }) {
               <div style={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: 14, padding: '18px', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 14 }}>
                 <div style={{ width: 50, height: 50, borderRadius: '50%', background: 'linear-gradient(135deg,#1a4fa0,#0d2a5c)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: 'white', fontWeight: 800, fontSize: 18, overflow: 'hidden' }}>
                   {offer.agent.avatar_url
-                    ? <Image src={offer.agent.avatar_url} alt={offer.agent.full_name} width={50} height={50} style={{ width: 50, height: 50, objectFit: 'cover' }} />
+                    ? <Image src={offer.agent.avatar_url} alt={offer.agent.full_name} width={50} height={50} sizes="50px" style={{ width: 50, height: 50, objectFit: 'cover' }} />
                     : offer.agent.full_name[0]}
                 </div>
                 <div>
