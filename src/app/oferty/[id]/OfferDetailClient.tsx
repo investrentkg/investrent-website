@@ -64,7 +64,7 @@ function Lightbox({ photos, start, onClose, label }: { photos: OfferDetail['offe
       </div>
       {/* Główne zdjęcie */}
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden', padding: '0 60px' }}>
-        <Image src={photos[cur].url} alt={`${label} — zdjęcie ${cur + 1} z ${photos.length}`}
+        <Image src={photos[cur].url} alt={`${label} — zdjęcie ${cur + 1} z ${photos.length}`} unoptimized
           fill sizes="100vw" style={{ objectFit: 'contain' }} />
         {photos.length > 1 && (
           <>
@@ -82,7 +82,7 @@ function Lightbox({ photos, start, onClose, label }: { photos: OfferDetail['offe
       {/* Miniatury */}
       <div style={{ display: 'flex', gap: 6, padding: '12px 16px', overflowX: 'auto' as const, flexShrink: 0 }}>
         {photos.map((p, i) => (
-          <Image key={i} src={p.url} alt={`${label} — miniatura ${i + 1}`} onClick={() => setCur(i)}
+          <Image key={i} src={p.url} alt={`${label} — miniatura ${i + 1}`} onClick={() => setCur(i)} unoptimized
             width={64} height={46} sizes="64px"
             style={{ width: 64, height: 46, objectFit: 'cover', borderRadius: 6, flexShrink: 0, cursor: 'pointer', opacity: i === cur ? 1 : .5, border: i === cur ? '2px solid white' : '2px solid transparent', transition: 'all .15s' }} />
         ))}
@@ -109,7 +109,7 @@ function Gallery({ photos, label }: { photos: OfferDetail['offer_photos'], label
         <div style={{ position: 'relative', aspectRatio: '4/3', borderRadius: 14, overflow: 'hidden', marginBottom: 8, background: '#111', cursor: 'pointer' }}
           onTouchStart={e => setTouchStart(e.touches[0].clientX)}
           onTouchEnd={e => { const d = touchStart - e.changedTouches[0].clientX; if (Math.abs(d) > 50) d > 0 ? setActive(a => Math.min(photos.length-1, a+1)) : setActive(a => Math.max(0, a-1)) }}>
-          <Image src={photos[active].url} alt={`${label} — zdjęcie ${active + 1} z ${photos.length}`} onClick={() => setLightbox(true)}
+          <Image src={photos[active].url} alt={`${label} — zdjęcie ${active + 1} z ${photos.length}`} onClick={() => setLightbox(true)} unoptimized
             fill sizes="(max-width: 768px) 100vw, 600px" priority
             style={{ objectFit: 'cover', cursor: 'pointer' }} />
           {/* Overlay przycisk fullscreen */}
@@ -137,7 +137,7 @@ function Gallery({ photos, label }: { photos: OfferDetail['offer_photos'], label
         {photos.length > 1 && (
           <div style={{ display: 'flex', gap: 6, overflowX: 'auto' as const, paddingBottom: 6, WebkitOverflowScrolling: 'touch' as any }}>
             {photos.map((p, i) => (
-              <Image key={i} src={p.url} alt={`${label} — miniatura ${i + 1}`} onClick={() => setActive(i)}
+              <Image key={i} src={p.url} alt={`${label} — miniatura ${i + 1}`} onClick={() => setActive(i)} unoptimized
                 width={76} height={56} sizes="76px"
                 style={{ width: 76, height: 56, objectFit: 'cover', borderRadius: 7, flexShrink: 0, cursor: 'pointer', border: i === active ? '2.5px solid #1a4fa0' : '2.5px solid transparent', opacity: i === active ? 1 : .6, transition: 'all .15s' }} />
             ))}

@@ -72,7 +72,7 @@ function OfferCard({ offer }: { offer: Offer }) {
         onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.transform = ''; el.style.boxShadow = '' }}>
         <div style={{ height: 200, overflow: 'hidden', position: 'relative', background: '#f0f4ff' }}>
           {offer.main_photo
-            ? <Image src={offer.main_photo} alt={offer.title ?? 'Oferta'} fill
+            ? <Image src={offer.main_photo} alt={offer.title ?? 'Oferta'} fill unoptimized
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
                 loading="lazy" style={{ objectFit: 'cover' }} />
             : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 48 }}>🏠</div>

@@ -42,7 +42,7 @@ export function OfferCard({ offer, tab }: { offer: Offer; tab: string }) {
             // (position: relative, wysokosc 200px ustawiona wyzej).
             <Image src={offer.main_photo} alt={offer.title ?? 'Oferta'}
               fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
-              loading="lazy"
+              loading="lazy" unoptimized
               style={{ objectFit: 'cover', transition: 'transform .4s' }}
               onMouseEnter={e => (e.currentTarget.style.transform='scale(1.05)')}
               onMouseLeave={e => (e.currentTarget.style.transform='')} />

@@ -61,7 +61,7 @@ export default async function NotFound() {
                     <div style={{ background: 'white', borderRadius: 14, border: '1px solid #e5e7eb', overflow: 'hidden' }}>
                       <div style={{ height: 180, overflow: 'hidden', background: '#f0f4ff', position: 'relative' }}>
                         {offer.main_photo
-                          ? <Image src={offer.main_photo} alt={offer.title ?? 'Oferta'} fill
+                          ? <Image src={offer.main_photo} alt={offer.title ?? 'Oferta'} fill unoptimized
                               sizes="(max-width: 768px) 100vw, 300px" loading="lazy" style={{ objectFit: 'cover' }} />
                           : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 40 }}>🏠</div>}
                       </div>
