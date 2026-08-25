@@ -314,7 +314,7 @@ export default function OfferDetailClient({ offer }: { offer: OfferDetail }) {
               <div style={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: 14, padding: '18px', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 14 }}>
                 <div style={{ width: 50, height: 50, borderRadius: '50%', background: 'linear-gradient(135deg,#1a4fa0,#0d2a5c)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: 'white', fontWeight: 800, fontSize: 18, overflow: 'hidden' }}>
                   {offer.agent.avatar_url
-                    ? <Image src={offer.agent.avatar_url} alt={offer.agent.full_name} width={50} height={50} sizes="50px" style={{ width: 50, height: 50, objectFit: 'cover' }} />
+                    ? <Image src={offer.agent.avatar_url} alt={offer.agent.full_name} width={50} height={50} unoptimized sizes="50px" style={{ width: 50, height: 50, objectFit: 'cover' }} />
                     : offer.agent.full_name[0]}
                 </div>
                 <div>

@@ -54,7 +54,7 @@ export default async function BlogPage() {
                   <article style={{ background: 'white', borderRadius: 14, border: '1px solid #e5e7eb', overflow: 'hidden', height: '100%' }}>
                     <div style={{ height: 190, overflow: 'hidden', background: '#f0f4ff', position: 'relative' }}>
                       {post.cover_image_url
-                        ? <Image src={post.cover_image_url} alt={post.title} fill
+                        ? <Image src={post.cover_image_url} alt={post.title} fill unoptimized
                             sizes="(max-width: 768px) 100vw, 400px" loading="lazy" style={{ objectFit: 'cover' }} />
                         : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 40 }}>📝</div>}
                     </div>

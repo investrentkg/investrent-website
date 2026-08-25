@@ -121,7 +121,7 @@ export default function Team({ members }: Props) {
               <div className="bg-white rounded-2xl border border-slate-200 p-7 text-center hover:-translate-y-0.5 hover:shadow-lg transition-all cursor-pointer h-full">
                     <div className="relative w-32 h-32 mx-auto mb-4">
                       {m.avatar_url ? (
-                        <Image src={m.avatar_url} alt={m.full_name} fill
+                        <Image src={m.avatar_url} alt={m.full_name} fill unoptimized
                           className="rounded-full object-cover shadow-md" sizes="128px" />
                       ) : (
                         <div className={`w-32 h-32 rounded-full bg-gradient-to-br ${grad} flex items-center justify-center shadow-md`}>
