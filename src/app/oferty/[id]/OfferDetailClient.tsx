@@ -34,7 +34,7 @@ interface OfferDetail {
   admin_fee?: number | null
   status: string
   created_at: string
-  offer_photos: Array<{ id: string; url: string; is_main: boolean; sort_order: number }>
+  offer_photos: Array<{ id: string; url: string; thumb_url?: string; is_main: boolean; sort_order: number }>
   agent: { full_name: string; avatar_url: string | null; phone: string | null } | null
 }
 
@@ -82,7 +82,7 @@ function Lightbox({ photos, start, onClose, label }: { photos: OfferDetail['offe
       {/* Miniatury */}
       <div style={{ display: 'flex', gap: 6, padding: '12px 16px', overflowX: 'auto' as const, flexShrink: 0 }}>
         {photos.map((p, i) => (
-          <Image key={i} src={p.url} alt={`${label} — miniatura ${i + 1}`} onClick={() => setCur(i)} unoptimized
+          <Image key={i} src={p.thumb_url || p.url} alt={`${label} — miniatura ${i + 1}`} onClick={() => setCur(i)} unoptimized
             width={64} height={46} sizes="64px"
             style={{ width: 64, height: 46, objectFit: 'cover', borderRadius: 6, flexShrink: 0, cursor: 'pointer', opacity: i === cur ? 1 : .5, border: i === cur ? '2px solid white' : '2px solid transparent', transition: 'all .15s' }} />
         ))}
@@ -137,7 +137,7 @@ function Gallery({ photos, label }: { photos: OfferDetail['offer_photos'], label
         {photos.length > 1 && (
           <div style={{ display: 'flex', gap: 6, overflowX: 'auto' as const, paddingBottom: 6, WebkitOverflowScrolling: 'touch' as any }}>
             {photos.map((p, i) => (
-              <Image key={i} src={p.url} alt={`${label} — miniatura ${i + 1}`} onClick={() => setActive(i)} unoptimized
+              <Image key={i} src={p.thumb_url || p.url} alt={`${label} — miniatura ${i + 1}`} onClick={() => setActive(i)} unoptimized
                 width={76} height={56} sizes="76px"
                 style={{ width: 76, height: 56, objectFit: 'cover', borderRadius: 7, flexShrink: 0, cursor: 'pointer', border: i === active ? '2.5px solid #1a4fa0' : '2.5px solid transparent', opacity: i === active ? 1 : .6, transition: 'all .15s' }} />
             ))}

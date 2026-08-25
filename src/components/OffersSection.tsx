@@ -40,7 +40,14 @@ export function OfferCard({ offer, tab }: { offer: Offer; tab: string }) {
             // to byla GLOWNA przyczyna 7+ MB ciezaru strony i LCP 9,2s na
             // telefonie. next/image z "fill" dopasowuje sie do rodzica
             // (position: relative, wysokosc 200px ustawiona wyzej).
-            <Image src={offer.main_photo} alt={offer.title ?? 'Oferta'}
+            // NAPRAWA cz.2 (25.08, Daniel: "zeby telefony nie wypadaly z
+            // ogladania strony bo cos sie za dlugo laduje") - uzywamy
+            // main_photo_thumb (480px) zamiast main_photo (1600px). Ta
+            // karta ma ~300-400px szerokosci - pelen 1600px byl ok. 16x
+            // wiecej pikseli niz potrzeba, bez korzysci automatycznego
+            // dopasowania przez Vercel (celowo wylaczone przez unoptimized
+            // powyzej, ze wzgledu na limit).
+            <Image src={offer.main_photo_thumb || offer.main_photo} alt={offer.title ?? 'Oferta'}
               fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
               loading="lazy" unoptimized
               style={{ objectFit: 'cover', transition: 'transform .4s' }}

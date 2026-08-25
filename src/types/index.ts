@@ -21,8 +21,9 @@ export interface Offer {
   status: 'opublikowana' | 'zarezerwowana'
   created_at: string
   main_photo: string | null
+  main_photo_thumb: string | null
   photo_count: number
-  offer_photos?: Array<{ id: string; url: string; is_main: boolean; sort_order: number }>
+  offer_photos?: Array<{ id: string; url: string; thumb_url?: string; is_main: boolean; sort_order: number }>
   agent?: {
     full_name: string
     avatar_url: string | null
