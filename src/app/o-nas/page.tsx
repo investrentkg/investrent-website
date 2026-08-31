@@ -1,3 +1,13 @@
+// NAPRAWA (31.08, ta sama logika co juz istniejaca w page.tsx): ta
+// strona byla w pelni statyczna, BEZ zadnego automatycznego odswiezania -
+// jesli zapytanie serwera o opinie/statystyki w trakcie budowania akurat
+// zawiedzie (przejsciowy problem sieciowy), strona zostaje "zamrozona"
+// ze starymi/zapasowymi danymi AZ DO NASTEPNEGO WDROZENIA, bez
+// mozliwosci samoczynnego naprawienia sie. ISR co 5 minut pozwala
+// stronie sprobowac ponownie przy pierwszym realnym wejsciu po uplywie
+// tego czasu, zamiast czekac na reczny redeploy.
+export const revalidate = 300
+
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import FloatingWA from '@/components/FloatingWA'
