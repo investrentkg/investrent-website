@@ -4,6 +4,7 @@ import FloatingWA from '@/components/FloatingWA'
 import SocialSidebar from '@/components/SocialSidebar'
 import Team from '@/components/Team'
 import Reviews from '@/components/Reviews'
+import { JsonLd } from '@/components/JsonLd'
 import Breadcrumb from '@/components/Breadcrumb'
 import { getTeam, getStats, getOffice } from '@/lib/api'
 import { MapPin, Phone, Mail, Shield, Heart, TrendingUp, Users, CheckCircle } from 'lucide-react'
@@ -39,11 +40,20 @@ export default async function ONasPage() {
   const office = officeData ?? FALLBACK_OFFICE
   const trans = Math.max(statsData?.completed_transactions ?? 0, 150)
   const teamSize = statsData?.team_size ?? 6
-  const googleTotal: number = reviewsData?.total ?? 55
+  // NAPRAWA (31.08, ta sama poprawka co juz zastosowana w page.tsx
+  // 17.07.2026): `reviewsData?.total ?? 55` zastepuje TYLKO null/undefined -
+  // gdyby API zwrocilo poprawna odpowiedz z total:0 (Google chwilowo bez
+  // danych), literalne 0 przechodziloby bez zmian. Ten sam bezpieczny
+  // wzorzec ternary co juz dzialajacy gdzie indziej. Dodane tez
+  // googleRating (wczesniej w ogole nie wyciagane na tej stronie), zeby
+  // JsonLd ponizej mial prawdziwa, zywa ocene zamiast domyslnej.
+  const googleRating: number = reviewsData?.rating ? reviewsData.rating : 4.9
+  const googleTotal: number = reviewsData?.total ? reviewsData.total : 55
   const cms: Record<string, string> = contentData?.blocks || {}
 
   return (
     <>
+      <JsonLd office={office} googleRating={googleRating} googleTotal={googleTotal} />
       <Nav office={office} />
       <main>
         <div style={{ background: 'linear-gradient(135deg, #0d2a5c, #1a4fa0)', padding: '56px 0 48px' }}>

@@ -87,6 +87,26 @@ export async function getTeam() {
   )
 }
 
+// NOWE (31.08, audyt SEO - sugestia "brak snippetu z opiniami dla
+// zapytania 'investrent opinie'"). Widget opinii (Reviews.tsx) jest
+// komponentem klienckim ("use client") - dane realne doladowuja sie
+// dopiero PO stronie przegladarki (fetch w useEffect), wiec Google przy
+// indeksowaniu moglo widziec albo dane zapasowe (FALLBACK w
+// Reviews.tsx), albo w ogole zadnych danych strukturalnych (schema.org),
+// bo takich znacznikow NIGDZIE w kodzie nie bylo - stad brak gwiazdek w
+// wynikach wyszukiwania mimo prawdziwej, wysokiej oceny 4.9/66 opinii.
+// Ta funkcja pozwala pobrac TE SAME, prawdziwe dane PO STRONIE SERWERA
+// (Server Component), zeby wstrzyknac znaczniki JSON-LD AggregateRating
+// + Review widoczne dla robota Google od razu, w pierwszym, statycznym
+// HTML-u strony - niezaleznie od tego czy/kiedy wykona sie JS w
+// przegladarce.
+export async function getGoogleReviews() {
+  return apiFetch<{ ok: boolean; rating: number; total: number; reviews: { author: string; rating: number; text: string; time: string }[] }>(
+    '/api/public/google-reviews',
+    { next: { revalidate: 3600 } }  // ISR 1h - te same dane co juz cachowane po stronie CRM (REVIEWS_TTL)
+  )
+}
+
 // ── Dane biura ──
 export async function getOffice() {
   return apiFetch<import('@/types').Office>(

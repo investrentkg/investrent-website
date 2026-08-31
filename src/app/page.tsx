@@ -17,6 +17,7 @@ import About         from '@/components/About'
 import Services      from '@/components/Services'
 import ValuationCTA  from '@/components/ValuationCTA'
 import Reviews       from '@/components/Reviews'
+import { JsonLd }    from '@/components/JsonLd'
 import Team          from '@/components/Team'
 import Contact       from '@/components/Contact'
 import Footer        from '@/components/Footer'
@@ -47,52 +48,6 @@ export async function generateMetadata(): Promise<Metadata> {
     description: content?.blocks?.meta_description || DEFAULT_DESCRIPTION,
     alternates: { canonical: 'https://www.investrent.com.pl' },
   }
-}
-
-function JsonLd({ office, googleRating, googleTotal }: { office: Office | null; googleRating: number; googleTotal: number }) {
-  const schema = {
-    "@context": "https://schema.org",
-    "@type": "RealEstateAgent",
-    "name": office?.name ?? "InvestRent Nieruchomości",
-    "description": "Biuro nieruchomości w Kołobrzegu. Kupno, sprzedaż i wynajem nieruchomości nad Bałtykiem.",
-    "url": "https://www.investrent.com.pl",
-    "telephone": office?.phone ?? "+48731554341",
-    "email": office?.email ?? "biuro@investrent.com.pl",
-    // NOWE (22.08, audyt SEO - brief "dane strukturalne"): brakowalo image/logo
-    // (Google czesto pokazuje logo firmy przy wynikach typu LocalBusiness/
-    // RealEstateAgent w wynikach wyszukiwania i Google Maps, jesli jest podane).
-    "image": "https://www.investrent.com.pl/logo.png",
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "Kołobrzeg",
-      "postalCode": "78-100",
-      "addressRegion": "Zachodniopomorskie",
-      "addressCountry": "PL"
-    },
-    // NOWE (22.08): wspolrzedne siedziby - pomaga Google jednoznacznie
-    // umiejscowic firme geograficznie (istotne dla wynikow "w poblizu mnie" /
-    // Google Maps), nie tylko po samym adresie tekstowym.
-    "geo": { "@type": "GeoCoordinates", "latitude": 54.1764, "longitude": 15.5830 },
-    // NOWE (22.08): brakujacy obszar dzialania - bez tego Google nie wie,
-    // ze biuro obsluguje TEZ okoliczne miejscowosci, nie tylko sam Kolobrzeg.
-    // Lista zgodna z regionami juz uzywanymi gdzie indziej w systemie
-    // (kampanie marketingowe, KNOWN_REGIONS w CRM) - nie wymyslona na nowo.
-    "areaServed": [
-      { "@type": "City", "name": "Kołobrzeg" },
-      { "@type": "City", "name": "Ustronie Morskie" },
-      { "@type": "City", "name": "Dźwirzyno" },
-      { "@type": "City", "name": "Gąski" },
-      { "@type": "City", "name": "Trzebiatów" },
-    ],
-    // NAPRAWA (audyt SEO 31.07.2026, doprecyzowanie): to byly sztywne liczby
-    // "4.9"/"55" NIEZALEZNE od faktycznej, zywej oceny pobieranej z Google
-    // (widocznej na stronie w komponencie Hero) - jesli prawdziwa ocena
-    // kiedykolwiek sie zmieni, dane strukturalne pokazywalyby Google
-    // nieaktualna/niezgodna wartosc wzgledem tego co widzi realny
-    // uzytkownik na stronie. Teraz oba miejsca czerpia z tego samego zrodla.
-    "aggregateRating": { "@type": "AggregateRating", "ratingValue": String(googleRating), "reviewCount": String(googleTotal) }
-  }
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }} />
 }
 
 // Fallback office gdy API niedostępne
