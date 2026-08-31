@@ -91,7 +91,7 @@ export default async function Home() {
         <About />
         <Services />
         <ValuationCTA />
-        <Reviews />
+        <Reviews initial={reviewsData?.ok ? { rating: googleRating, total: googleTotal, reviews: reviewsData.reviews } : null} />
         <Team          members={teamData?.data ?? []} />
         <Contact       office={office} />
         <MortgageCalcSection />

@@ -124,7 +124,7 @@ export default async function ONasPage() {
         </div>
 
         <Team members={teamData?.data ?? []} />
-        <Reviews />
+        <Reviews initial={reviewsData?.ok ? { rating: googleRating, total: googleTotal, reviews: reviewsData.reviews } : null} />
 
         <div style={{ background: 'white', padding: '48px 0' }}>
           <div className="container">

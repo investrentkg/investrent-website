@@ -22,15 +22,28 @@ function parseValue(value: string): { prefix: string; number: number; decimals: 
 
 export default function AnimatedCounter({ value, duration = 1900, startDelay = 0 }: AnimatedCounterProps) {
   const ref = useRef<HTMLSpanElement>(null)
-  const [displayValue, setDisplayValue] = useState<string>(() => {
-    const parsed = parseValue(value)
-    return parsed ? `${parsed.prefix}0${parsed.suffix}` : value
-  })
+  // NAPRAWA (31.08, potwierdzone na zywo na /o-nas: fetch strony bez
+  // wykonania JS pokazuje doslownie "0" zamiast prawdziwej liczby -
+  // dotyczy KAZDEGO uzycia tego komponentu na calej stronie, nie tylko
+  // licznika opinii). Poprzednio stan poczatkowy byl ZAWSZE wymuszony na
+  // "0" (parsed.prefix + '0' + suffix), niezaleznie od przekazanej
+  // wartosci - SSR/crawler/wylaczony JS widzial fikcyjne zero zamiast
+  // prawdziwej tresci strony. Teraz stan poczatkowy to PRAWDZIWA,
+  // docelowa wartosc (dokladnie to co przyszlo w propsie `value`) - dla
+  // SSR/braku JS to jest ostateczny, poprawny tekst. Dopiero PO
+  // hydratacji (w useEffect, a wiec tylko w przegladarce z dzialajacym
+  // JS) resetujemy widoczna wartosc na zero, zeby zachowac DOKLADNIE
+  // ten sam, przyjemny efekt "odliczania w gore" dla prawdziwych
+  // uzytkownikow - oni i tak zobacza tylko bardzo krotkie mignięcie
+  // przed animacja, ktora i tak zaczyna sie dopiero po wejsciu elementu
+  // w pole widoku (IntersectionObserver ponizej, bez zmian).
+  const [displayValue, setDisplayValue] = useState<string>(value)
   const hasAnimated = useRef(false)
 
   useEffect(() => {
     const parsed = parseValue(value)
     if (!parsed || !ref.current) { setDisplayValue(value); return }
+    setDisplayValue(`${parsed.prefix}0${parsed.suffix}`) // zerowanie TYLKO po stronie klienta, patrz komentarz wyzej
 
     let timeoutId: ReturnType<typeof setTimeout> | null = null
 

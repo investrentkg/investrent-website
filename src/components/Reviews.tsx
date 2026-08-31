@@ -15,6 +15,12 @@ interface Review {
   time: string
 }
 
+interface InitialData {
+  rating: number
+  total: number
+  reviews: Review[]
+}
+
 const FALLBACK: Review[] = [
   { author: 'Aneta Radomska',    avatar: null, rating: 5, text: 'Nic dodać nic ująć 🤗 pełna profeska pod każdym względem… miła obsługa, pomocna, komunikacja na najwyższym poziomie….', time: 'w ostatnim tygodniu' },
   { author: 'Wioletta Wiśniewska', avatar: null, rating: 5, text: 'Jesteśmy wdzięczni Pani Marcie za pomoc w sprzedaży mieszkania w Kołobrzegu. To bardzo cudowny człowiek któremu można zaufać — zawsze będę polecać Panią Martę.', time: 'w ostatnim tygodniu' },
@@ -51,15 +57,28 @@ function Avatar({ author, avatar }: { author: string; avatar: string | null }) {
   )
 }
 
-export default function Reviews() {
-  const [reviews, setReviews] = useState<Review[]>(FALLBACK)
-  const [rating, setRating]   = useState(4.9)
-  const [total, setTotal]     = useState(55)
+export default function Reviews({ initial }: { initial?: InitialData | null }) {
+  // NAPRAWA (31.08, potwierdzone na zywo: fetch tego samego adresu bez
+  // wykonywania JS pokazuje "0 opinii"/dane zapasowe zamiast
+  // prawdziwych 4.9/66 - widoczne dla kazdego kontekstu bez pelnej
+  // hydracji przegladarki, prawdopodobnie tez dla robota Google w
+  // zaleznosci od momentu zrzutu strony). Strony (page.tsx, o-nas/page.tsx)
+  // JUZ pobieraja te same dane PO STRONIE SERWERA na potrzeby znacznika
+  // JsonLd/AggregateRating - przekazywane tu jako `initial`, zeby
+  // PIERWSZY, statyczny HTML pokazywal od razu te same, prawdziwe liczby
+  // co znacznik schema (zamiast niezgodnych ze soba wartosci), a fetch
+  // w przegladarce ponizej staje sie tylko odswiezeniem "w tle", nie
+  // JEDYNYM zrodlem prawdziwych danych.
+  const hasInitial = !!(initial?.reviews && initial.reviews.length >= 2)
+  const [reviews, setReviews] = useState<Review[]>(hasInitial ? initial!.reviews : FALLBACK)
+  const [rating, setRating]   = useState(hasInitial ? initial!.rating : 4.9)
+  const [total, setTotal]     = useState(hasInitial ? initial!.total : 55)
   const [active, setActive]   = useState(0)
   const [paused, setPaused]   = useState(false)
-  const [isReal, setIsReal]   = useState(false)
+  const [isReal, setIsReal]   = useState(hasInitial)
 
   useEffect(() => {
+    if (hasInitial) return // mamy juz prawdziwe dane z serwera - fetch niepotrzebny przy pierwszym renderze
     fetch(`${API}/api/public/google-reviews`)
       .then(r => r.json())
       .then(d => {
@@ -71,7 +90,7 @@ export default function Reviews() {
         }
       })
       .catch(() => {})
-  }, [])
+  }, [hasInitial])
 
   const count = reviews.length
   const next = useCallback(() => setActive(a => (a + 1) % count), [count])
