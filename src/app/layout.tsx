@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Montserrat, Inter } from 'next/font/google'
 import Script from 'next/script'
 import './globals.css'
@@ -16,6 +16,17 @@ const inter = Inter({
   variable: '--font-inter',
   display: 'swap',
 })
+
+// NAPRAWA (audyt Safari/iOS): Next.js bez jawnego eksportu `viewport` generuje
+// domyślny <meta viewport> BEZ viewport-fit=cover - bez tego env(safe-area-inset-*)
+// w CSS (floating WhatsApp, menu mobilne przy notchu) zawsze rozwiązuje się do 0px
+// na Safari iOS. Root-owy statyczny index.html w tym repo (nieużywany przez Next -
+// realny <head> generuje ten plik) miał ten sam brak, ale to był martwy kod.
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+}
 
 export const metadata: Metadata = {
   // NAPRAWA (audyt SEO, Daniel 30.07.2026): metadataBase wymagane przez Next.js
