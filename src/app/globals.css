@@ -439,15 +439,18 @@ html, body {
   .cta-pulse, .cta-pulse-navy, .cta-pulse-limited { animation: none; }
 }
 
-/* NAPRAWA (audyt wizualny, batch 5): pływające przyciski WhatsApp/chat (FloatingWA.tsx,
-   ChatWidget.tsx) mają bottom:24 na sztywno, co na mobile nachodzi na typowe treści
-   przy dole ekranu - dolny rząd statystyk hero na stronie głównej oraz pasek miniatur
-   zdjęć na stronie oferty. Na mobile podnosimy je o dodatkowe ~64px bezpiecznego
-   marginesu; od md (768px) wracają do pierwotnego bottom:24/92. */
+/* NAPRAWA (audyt wizualny, batch 5, POPRAWKA po weryfikacji na żywo 07.09.2026):
+   pływające przyciski WhatsApp/chat (FloatingWA.tsx, ChatWidget.tsx) mają bottom:24
+   na sztywno, co na mobile nachodzi na typowe treści przy dole ekranu - dolny rząd
+   statystyk hero na stronie głównej oraz pasek miniatur zdjęć na stronie oferty.
+   Pierwsza poprawka (88px) okazała się NIEWYSTARCZAJĄCA - zmierzone na żywo na
+   375x812 nakładanie się rzędu "TRANSAKCJI" i przycisku WhatsApp mimo marginesu
+   (rect przycisku 676-724px, rząd statystyk 689-726px, ~35px realnego nachodzenia).
+   Podniesione do 148px z dodatkowym zapasem. Od md (768px) wracają do bottom:24/92. */
 .floating-btn-bottom { bottom: 24px; }
 .floating-panel-bottom { bottom: 92px; }
 @media (max-width: 767px) {
-  .floating-btn-bottom { bottom: 88px; }
+  .floating-btn-bottom { bottom: 148px; }
   .floating-panel-bottom { bottom: 156px; }
 }
 
