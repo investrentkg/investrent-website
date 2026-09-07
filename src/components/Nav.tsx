@@ -74,7 +74,7 @@ export default function Nav({ office }: { office: Office | null }) {
                   <a key={l.label} href={l.href} style={{ color: 'rgba(255,255,255,.65)', fontSize: 13, fontWeight: 500, textDecoration: 'none' }}>{l.label}</a>
                 ))}
                 <a href={`tel:${phone.replace(/\s/g, '')}`}
-                  style={{ background: '#f5a623', color: 'white', fontSize: 13, fontWeight: 700, padding: '10px 20px', borderRadius: 9, display: 'flex', alignItems: 'center', gap: 7, textDecoration: 'none' }}>
+                  style={{ background: '#f5a623', color: '#1a1a1a', fontSize: 13, fontWeight: 700, padding: '10px 20px', borderRadius: 9, display: 'flex', alignItems: 'center', gap: 7, textDecoration: 'none' }}>
                   <Phone size={13} /> {phone}
                 </a>
               </div>
@@ -83,7 +83,7 @@ export default function Nav({ office }: { office: Office | null }) {
             {!isDesktop && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <a href={`tel:${phone.replace(/\s/g, '')}`}
-                  style={{ background: '#f5a623', color: 'white', fontSize: 12, fontWeight: 700, padding: '8px 12px', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 6, textDecoration: 'none' }}>
+                  style={{ background: '#f5a623', color: '#1a1a1a', fontSize: 12, fontWeight: 700, padding: '8px 12px', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 6, textDecoration: 'none' }}>
                   <Phone size={12} /> {phone}
                 </a>
                 <button onClick={() => setOpen(true)} aria-label="Otwórz menu" style={{ color: 'rgba(255,255,255,.7)', background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>

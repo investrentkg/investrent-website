@@ -100,7 +100,7 @@ export default function Contact({ office }: { office: Office | null }) {
               })}
             </div>
             <a href="https://wa.me/48731554341" target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center gap-2.5 bg-[#25D366] text-white text-[14px] font-bold px-7 py-3.5 rounded-xl hover:brightness-105 transition-all">
+              className="inline-flex items-center gap-2.5 bg-[#25D366] text-[#1a1a1a] text-[14px] font-bold px-7 py-3.5 rounded-xl hover:brightness-105 transition-all">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21zm4.5-2.4a7 7 0 1 0-1.1-1.1l-.9 2 2-.9z"/>
               </svg>

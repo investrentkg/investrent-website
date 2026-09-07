@@ -152,7 +152,7 @@ export default function MortgageCalcSection() {
                       fontSize: 13, outline: 'none', minWidth: 0 }} />
                   <button onClick={submitCreditLead} disabled={!phone.trim() || leadStatus === 'loading'}
                     className="cta-pulse"
-                    style={{ background: '#f5a623', color: 'white', border: 'none', borderRadius: 10,
+                    style={{ background: '#f5a623', color: '#1a1a1a', border: 'none', borderRadius: 10,
                       padding: '10px 16px', fontSize: 13, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' as const }}>
                     Zamów rozmowę
                   </button>

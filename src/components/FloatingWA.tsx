@@ -3,7 +3,7 @@ import { MessageCircle } from 'lucide-react'
 export default function FloatingWA() {
   return (
     <a href="https://wa.me/48731554341" target="_blank" rel="noopener noreferrer"
-      className="cta-pulse-limited floating-btn-bottom fixed z-50 flex items-center gap-2 bg-[#25D366] text-white
+      className="cta-pulse-limited floating-btn-bottom fixed z-50 flex items-center gap-2 bg-[#25D366] text-[#1a1a1a]
                  text-[13px] font-bold px-5 py-3.5 rounded-full shadow-xl hover:-translate-y-0.5
                  transition-all"
       style={{ right: 90, boxShadow: '0 8px 24px rgba(37,211,102,.4)' }}>
