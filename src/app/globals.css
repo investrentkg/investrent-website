@@ -66,6 +66,15 @@ input, textarea, select {
   font-size: 16px; /* zapobiega zoom na iOS */
 }
 
+/* NAPRAWA (audyt a11y - WCAG 2.4.7): pola formularzy (widżet wyszukiwania
+   hero, formularz kontaktowy) nie miały ŻADNEGO widocznego wskaźnika
+   fokusu klawiaturowego - potwierdzone na żywo, pole "Imię i nazwisko"
+   było niewidoczne dla nawigacji Tab. Systemowe dla wszystkich inputów. */
+input:focus-visible, textarea:focus-visible, select:focus-visible {
+  outline: 2px solid #1a4fa0;
+  outline-offset: 1px;
+}
+
 /* ============================================================
    BREAKPOINTS
    Używać przez JS: window.innerWidth (Tailwind nie działa w prod)
