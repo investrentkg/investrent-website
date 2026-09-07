@@ -212,7 +212,7 @@ export default async function OfferPage({ params }: { params: { id: string } }) 
       <main>
         <div style={{ background: 'linear-gradient(135deg, #0d2a5c, #1a4fa0)', padding: '24px 0 20px' }}>
           <div className="container">
-            <Breadcrumb crumbs={[{ label: 'Strona główna', href: '/' }, { label: 'Oferty', href: '/oferty' }, { label: offer.title ?? offer.ref_number }]} />
+            <Breadcrumb crumbs={[{ label: 'Strona główna', href: '/' }, { label: 'Oferty', href: '/oferty' }, { label: offer.title || offer.ref_number }]} />
           </div>
         </div>
         <OfferDetailClient offer={offer} />
