@@ -27,12 +27,21 @@ const CLIENT_TYPE: Record<string, string> = {
 export default function Contact({ office }: { office: Office | null }) {
   const [form, setForm] = useState({ topic: '', name: '', phone: '', email: '', notes: '' })
   const [status, setStatus] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle')
+  // NAPRAWA (audyt wizualny 07.09.2026, P0 - przycisk "Wyślij" nie był w
+  // ogóle w <form>, więc submit nic nie robił dla pustego formularza:
+  // handleSubmit() nigdy się nie wykonywał przy braku owijającego <form
+  // onSubmit>. Dodany prawdziwy <form> + inline komunikat walidacji
+  // zamiast blokującego window.alert(), spójny wizualnie z resztą
+  // formularza (patrz istniejący styl "status === 'error'" niżej).
+  const [validationError, setValidationError] = useState('')
 
   const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
     setForm(prev => ({ ...prev, [k]: e.target.value }))
 
-  async function handleSubmit() {
-    if (!form.phone && !form.email) { alert('Podaj telefon lub email'); return }
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!form.phone && !form.email) { setValidationError('Podaj telefon lub email, żebyśmy mogli się odezwać.'); return }
+    setValidationError('')
     setStatus('loading')
     const res = await submitLead({
       full_name: form.name,
@@ -115,7 +124,7 @@ export default function Contact({ office }: { office: Office | null }) {
                 <div className="text-slate-500 text-sm">Skontaktujemy się z Tobą do 60 minut.</div>
               </div>
             ) : (
-              <div className="flex flex-col gap-2.5">
+              <form onSubmit={handleSubmit} className="flex flex-col gap-2.5">
                 <select value={form.topic} onChange={set('topic')} aria-label="Czego dotyczy zapytanie?"
                   className="bg-white border border-slate-200 rounded-xl px-4 py-3 text-[13px] text-slate-700 outline-none focus:border-blue w-full">
                   <option value="">Czego dotyczy zapytanie?</option>
@@ -132,18 +141,21 @@ export default function Contact({ office }: { office: Office | null }) {
                 <textarea placeholder="Opisz czego szukasz lub co chcesz sprzedać…" aria-label="Opisz czego szukasz lub co chcesz sprzedać"
                   value={form.notes} onChange={set('notes')} rows={3}
                   className="bg-white border border-slate-200 rounded-xl px-4 py-3 text-[13px] outline-none focus:border-blue resize-none" />
-                <button onClick={handleSubmit} disabled={status === 'loading'}
+                <button type="submit" disabled={status === 'loading'}
                   className="btn-navy justify-center text-[14px] py-4 mt-1 disabled:opacity-60">
                   <Send size={15} />
                   {status === 'loading' ? 'Wysyłanie…' : 'Wyślij — odpiszemy do 60 min'}
                 </button>
+                {validationError && (
+                  <p className="text-red-500 text-[12px] text-center">{validationError}</p>
+                )}
                 {status === 'error' && (
                   <p className="text-red-500 text-[12px] text-center">Błąd wysyłania. Spróbuj ponownie lub zadzwoń.</p>
                 )}
                 <p className="text-[10px] text-slate-400 text-center mt-1">
                   Dane chronione zgodnie z RODO · Nie wysyłamy spamu · Kontakt bez zobowiązań
                 </p>
-              </div>
+              </form>
             )}
           </div>
         </div>
