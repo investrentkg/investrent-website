@@ -187,7 +187,7 @@ export default function Hero({ stats, googleRating = 4.9, googleTotal = 55 }: He
                       <div className="font-mont font-black text-white text-[15px]">
                         <AnimatedCounter value={st.val} startDelay={revealDelay + 250} />
                       </div>
-                      <div className="text-white/45 text-[10px] uppercase tracking-[.8px]">{st.label}</div>
+                      <div className="text-white/65 text-[10px] uppercase tracking-[.8px]">{st.label}</div>
                     </div>
                   </div>
                 )

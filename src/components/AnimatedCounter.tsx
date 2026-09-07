@@ -43,7 +43,15 @@ export default function AnimatedCounter({ value, duration = 1900, startDelay = 0
   useEffect(() => {
     const parsed = parseValue(value)
     if (!parsed || !ref.current) { setDisplayValue(value); return }
-    setDisplayValue(`${parsed.prefix}0${parsed.suffix}`) // zerowanie TYLKO po stronie klienta, patrz komentarz wyzej
+    // NAPRAWA (audyt wizualny, batch 5): zerowanie wczesniej wykonywalo sie TUTAJ,
+    // czyli natychmiast po zamontowaniu komponentu - dla elementow widocznych od razu
+    // "powyzej zaginacia" (np. statystyki w Hero) IntersectionObserver ponizej wykrywal
+    // je jako widoczne niemal natychmiast, ale animacja liczenia nie startowala az po
+    // starDelay (do ok. 3s dla ostatniej statystyki w Hero) - w miedzyczasie uzytkownik
+    // widzial plaskie "0" zamiast prawdziwej, docelowej wartosci przez caly ten czas.
+    // Teraz zerowanie nastepuje dopiero TUZ PRZED faktycznym startem animacji (w run()),
+    // wiec do tego momentu widoczna jest prawdziwa wartosc z SSR, a "0" pojawia sie
+    // tylko na czas samej animacji liczenia (duration), nie delay+duration.
 
     let timeoutId: ReturnType<typeof setTimeout> | null = null
 
@@ -53,6 +61,7 @@ export default function AnimatedCounter({ value, duration = 1900, startDelay = 0
           hasAnimated.current = true
 
           const run = () => {
+            setDisplayValue(`${parsed.prefix}0${parsed.suffix}`) // zerowanie TYLKO tuz przed animacja
             const start = performance.now()
             const { prefix, number, decimals, suffix } = parsed
 

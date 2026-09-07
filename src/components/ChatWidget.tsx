@@ -46,8 +46,8 @@ export default function ChatWidget() {
     <>
       {/* Bąbel powitalny */}
       {bubble && !open && (
-        <div onClick={openChat} style={{
-          position: 'fixed', bottom: 24, right: 24, zIndex: 9998,
+        <div onClick={openChat} className="floating-btn-bottom" style={{
+          position: 'fixed', right: 24, zIndex: 9998,
           background: 'white', borderRadius: 16, padding: '14px 18px',
           boxShadow: '0 8px 32px rgba(0,0,0,.15)', cursor: 'pointer',
           maxWidth: 260, animation: 'fadeUp .3s ease',
@@ -67,9 +67,9 @@ export default function ChatWidget() {
 
       {/* Przycisk chat */}
       <button onClick={() => open ? setOpen(false) : openChat()}
-        className={!open ? 'cta-pulse-limited' : ''}
+        className={`floating-btn-bottom ${!open ? 'cta-pulse-limited' : ''}`}
         style={{
-          position: 'fixed', bottom: 24, right: 24, zIndex: 9998,
+          position: 'fixed', right: 24, zIndex: 9998,
           width: 56, height: 56, borderRadius: '50%', border: 'none',
           background: 'linear-gradient(135deg, #1a4fa0, #0d2a5c)',
           color: 'white', cursor: 'pointer',
@@ -88,8 +88,8 @@ export default function ChatWidget() {
 
       {/* Panel chatu */}
       {open && (
-        <div style={{
-          position: 'fixed', bottom: 92, right: 24, zIndex: 9997,
+        <div className="floating-panel-bottom" style={{
+          position: 'fixed', right: 24, zIndex: 9997,
           width: 320, background: 'white', borderRadius: 20,
           boxShadow: '0 16px 64px rgba(0,0,0,.18)',
           border: '1px solid rgba(26,79,160,.1)',
