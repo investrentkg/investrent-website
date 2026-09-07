@@ -10,6 +10,17 @@
 // strone bez wyjscia poza "wstecz" w przegladarce - stad zerowy czas i
 // 100% odrzucen. Ta strona zamienia strate w szanse: przyjazny komunikat +
 // aktualne, dostepne oferty do przegladania od razu.
+//
+// POPRAWKA (audyt wizualny, batch 5): TEN plik obsluguje notFound() z CALEJ
+// strony, nie tylko z ofert - kazdy nieistniejacy adres (literowka w URL,
+// stary/skasowany wpis blogowy, cokolwiek co nie pasuje do zadnej trasy)
+// tez tu trafia. Wczesniej komunikat brzmial "Ta oferta nie jest juz
+// dostepna", co dla kogos kto po prostu zle wpisal adres jest mylace -
+// sugeruje, ze szukal konkretnej oferty, ktora zniknela, a nie ze trafil
+// pod nieistniejacy URL. Faktyczny przypadek "oferta zniknela" (sprzedana/
+// wycofana - status 'gone') ma juz WLASNY, osobny widok bezposrednio w
+// oferty/[id]/page.tsx (nie korzysta z tego pliku) - tutaj zostaje wiec
+// neutralny komunikat pasujacy do KAZDEGO nieistniejacego adresu.
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import FloatingWA from '@/components/FloatingWA'
@@ -39,12 +50,12 @@ export default async function NotFound() {
       <main>
         <div style={{ background: 'linear-gradient(135deg, #0d2a5c, #1a4fa0)', padding: '56px 0 48px', textAlign: 'center' }}>
           <div className="container">
-            <div style={{ fontSize: 48, marginBottom: 12 }}>🔑</div>
+            <div style={{ fontSize: 48, marginBottom: 12 }}>🧭</div>
             <h1 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 32, color: 'white', letterSpacing: '-1px', marginBottom: 10 }}>
-              Ta oferta nie jest już dostępna
+              Strona nie istnieje
             </h1>
             <p style={{ color: 'rgba(255,255,255,.75)', fontSize: 15, maxWidth: 480, margin: '0 auto' }}>
-              Nieruchomość, której szukasz, została już sprzedana, wynajęta albo usunięta z oferty. Zobacz, co mamy aktualnie dostępne.
+              Nie znaleźliśmy strony pod tym adresem — mógł się w nim wkraść błąd, albo strona została usunięta. Zobacz, co aktualnie mamy do zaoferowania.
             </p>
           </div>
         </div>
