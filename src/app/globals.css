@@ -246,7 +246,10 @@ body {
     align-items: center;
     gap: 0.5rem;
     background-color: #f5a623;
-    color: white;
+    /* NAPRAWA (audyt WCAG AA, 07.09.2026): bialy tekst na #f5a623 daje ~2:1,
+       ponizej minimum AA (4.5:1). Ciemny tekst na tym samym zlocie daje >8:1,
+       bez zmiany koloru marki. */
+    color: #1a1a1a;
     font-weight: 700;
     border-radius: 0.75rem;
     padding: 0.875rem 1.75rem;

@@ -99,7 +99,7 @@ export default function KalkulatorClient() {
                 </div>
               </div>
             ))}
-            <a href="/kontakt" style={{ background: '#f5a623', color: 'white', borderRadius: 14, padding: '16px', textAlign: 'center' as const, textDecoration: 'none', fontWeight: 700, fontSize: 15, display: 'block' }}>
+            <a href="/kontakt" style={{ background: '#f5a623', color: '#1a1a1a', borderRadius: 14, padding: '16px', textAlign: 'center' as const, textDecoration: 'none', fontWeight: 700, fontSize: 15, display: 'block' }}>
               Zapytaj o kredyt — doradzimy bezpłatnie →
             </a>
           </div>

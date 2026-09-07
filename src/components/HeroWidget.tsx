@@ -73,7 +73,7 @@ export default function HeroWidget() {
             onKeyDown={e => e.key === 'Enter' && go()}
             style={fieldStyle} />
           <button type="button" onClick={go}
-            style={{ background: '#f5a623', color: 'white', border: 'none', borderRadius: 10, padding: '13px', fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', fontFamily: 'inherit' }}>
+            style={{ background: '#f5a623', color: '#1a1a1a', border: 'none', borderRadius: 10, padding: '13px', fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', fontFamily: 'inherit' }}>
             <Search size={16}/> Szukaj ofert
           </button>
           <p style={{ color: 'rgba(255,255,255,.4)', fontSize: 11, textAlign: 'center' as const, margin: 0 }}>
@@ -107,7 +107,7 @@ export default function HeroWidget() {
                 onKeyDown={e => e.key === 'Enter' && sell()}
                 style={{ ...fieldStyle, border: status === 'error' ? '1.5px solid #ef4444' : 'none' }} />
               <button type="button" onClick={sell} disabled={!sellPhone || status === 'loading'}
-                style={{ background: sellPhone ? '#f5a623' : 'rgba(245,166,35,.4)', color: 'white', border: 'none', borderRadius: 10, padding: '13px', fontSize: 14, fontWeight: 700, cursor: sellPhone ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', fontFamily: 'inherit' }}>
+                style={{ background: sellPhone ? '#f5a623' : 'rgba(245,166,35,.4)', color: sellPhone ? '#1a1a1a' : 'rgba(26,26,26,.6)', border: 'none', borderRadius: 10, padding: '13px', fontSize: 14, fontWeight: 700, cursor: sellPhone ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', fontFamily: 'inherit' }}>
                 <Phone size={15}/> {status === 'loading' ? 'Wysyłanie…' : 'Chcę bezpłatną wycenę'}
               </button>
               {status === 'error' && <p style={{ color: '#fca5a5', fontSize: 12, textAlign: 'center' as const, margin: 0 }}>Błąd — spróbuj ponownie</p>}
