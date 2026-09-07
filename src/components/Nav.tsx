@@ -97,7 +97,10 @@ export default function Nav({ office }: { office: Office | null }) {
 
       {open && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 200, background: 'rgba(9,30,64,.97)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 28 }}>
-          <button onClick={() => setOpen(false)} aria-label="Zamknij menu" style={{ position: 'absolute', top: 20, right: 24, color: 'rgba(255,255,255,.6)', background: 'none', border: 'none', cursor: 'pointer' }}>
+          {/* NAPRAWA (audyt Safari/iOS): top:20 stały mógł siedzieć pod paskiem
+              statusu/notchem na iPhone (viewport-fit=cover teraz aktywne w
+              layout.tsx) - dodany env(safe-area-inset-top). */}
+          <button onClick={() => setOpen(false)} aria-label="Zamknij menu" style={{ position: 'absolute', top: 'calc(20px + env(safe-area-inset-top, 0px))', right: 24, color: 'rgba(255,255,255,.6)', background: 'none', border: 'none', cursor: 'pointer' }}>
             <X size={28} />
           </button>
           {links.map(l => (

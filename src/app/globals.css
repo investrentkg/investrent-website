@@ -447,11 +447,15 @@ html, body {
    375x812 nakładanie się rzędu "TRANSAKCJI" i przycisku WhatsApp mimo marginesu
    (rect przycisku 676-724px, rząd statystyk 689-726px, ~35px realnego nachodzenia).
    Podniesione do 148px z dodatkowym zapasem. Od md (768px) wracają do bottom:24/92. */
-.floating-btn-bottom { bottom: 24px; }
-.floating-panel-bottom { bottom: 92px; }
+/* NAPRAWA (audyt Safari/iOS): env(safe-area-inset-bottom) dodane teraz, gdy
+   viewport-fit=cover jest wreszcie ustawione (patrz layout.tsx) - wcześniej
+   ten sam dodatek nie miałby żadnego efektu na Safari iOS. calc() z 0px jako
+   bazą jest neutralny na przeglądarkach bez wsparcia dla env(). */
+.floating-btn-bottom { bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
+.floating-panel-bottom { bottom: calc(92px + env(safe-area-inset-bottom, 0px)); }
 @media (max-width: 767px) {
-  .floating-btn-bottom { bottom: 148px; }
-  .floating-panel-bottom { bottom: 156px; }
+  .floating-btn-bottom { bottom: calc(148px + env(safe-area-inset-bottom, 0px)); }
+  .floating-panel-bottom { bottom: calc(156px + env(safe-area-inset-bottom, 0px)); }
 }
 
 /* ── Moment sukcesu po wysłaniu formularza - znaczek "rysuje się" + delikatne wjechanie ── */
