@@ -22,6 +22,12 @@ export function JsonLd({ office, googleRating, googleTotal }: { office: Office |
     "image": "https://www.investrent.com.pl/logo.png",
     "address": {
       "@type": "PostalAddress",
+      // NAPRAWA (audyt SEO 09.09.2026, punkt P0): brakujace streetAddress
+      // utrudnialo Google powiazanie strony z wizytowka Google Business
+      // Profile (niepelny NAP w schemacie). Ta sama, jedyna wersja adresu
+      // uzywana wszedzie indziej w tym repo (Contact.tsx, Footer, FALLBACK_OFFICE
+      // na kazdej podstronie) - musi zostac identyczna z wizytowka Google.
+      "streetAddress": "ul. Ratuszowa 12/1 lok. 3",
       "addressLocality": "Kołobrzeg",
       "postalCode": "78-100",
       "addressRegion": "Zachodniopomorskie",

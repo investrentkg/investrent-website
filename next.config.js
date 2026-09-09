@@ -160,6 +160,20 @@ const nextConfig = {
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
         ],
       },
+      // NAPRAWA (audyt SEO/Core Web Vitals 09.09.2026): pliki statyczne z
+      // /public (hero.jpg, hero-video.mp4, logo.png...) sa serwowane bez
+      // hashowanej nazwy w URL, wiec Next.js domyslnie wysyla je z
+      // "public, max-age=0, must-revalidate" - kazde odwiedziny wymuszaja
+      // round-trip rewalidacji zamiast dlugiego cache jak przy /_next/static
+      // (ktore MAJA hash w nazwie). Te konkretne pliki zmieniaja sie rzadko i
+      // recznie (deploy), wiec dlugi cache jest bezpieczny - przy realnej
+      // podmianie pliku warto dopisac wersje do nazwy (np. hero-v2.jpg).
+      {
+        source: '/:path*.(jpg|jpeg|png|webp|avif|svg|mp4|webm|ico)',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=2592000, stale-while-revalidate=86400' },
+        ],
+      },
     ]
   },
 }

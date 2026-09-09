@@ -469,6 +469,18 @@ html, body {
   .floating-btn-bottom { bottom: calc(148px + env(safe-area-inset-bottom, 0px)); }
   .floating-panel-bottom { bottom: calc(156px + env(safe-area-inset-bottom, 0px)); }
 }
+/* NAPRAWA (audyt SEO/mobile 09.09.2026): przycisk WhatsApp (position:fixed,
+   FloatingWA.tsx) na waskich ekranach nakladal sie POZIOMO na przyciski CTA
+   w Hero ("Chcę sprzedać") oraz na kontrolki galerii zdjec na stronie oferty
+   - potwierdzone zrzutami ekranu na 375px. Zamiast przesuwac tresc strony
+   (kruche, roznie na kazdej podstronie), zwezamy sam przycisk WA do samej
+   ikony na mobile - jego prawa krawedz zostaje w tym samym miejscu
+   (right:90), lewa cofa sie, wiec przestaje zachodzic na elementy po lewej.
+   Standardowy wzorzec (pelna pigulka na desktopie, FAB-ikona na mobile). */
+@media (max-width: 767px) {
+  .wa-floating-btn { width: 52px; height: 52px; padding: 0 !important; justify-content: center; }
+  .wa-floating-btn .wa-label { display: none; }
+}
 
 /* ── Moment sukcesu po wysłaniu formularza - znaczek "rysuje się" + delikatne wjechanie ── */
 @keyframes successCheckIn {

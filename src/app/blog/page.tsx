@@ -15,7 +15,11 @@ import Image from 'next/image'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Blog | InvestRent Nieruchomości Kołobrzeg',
+  // NAPRAWA (audyt SEO 09.09.2026): marka byla zaszyta TU i JESZCZE RAZ
+  // doklejana przez szablon layout.tsx (title.template) - zdublowana
+  // marka w <title> ("Blog | InvestRent Nieruchomości Kołobrzeg |
+  // InvestRent Nieruchomości"). Marka teraz tylko raz, z szablonu.
+  title: 'Blog',
   description: 'Poradniki, analizy rynku i praktyczne wskazówki o kupnie, sprzedaży i wynajmie nieruchomości w Kołobrzegu i na Wybrzeżu Bałtyckim.',
   alternates: { canonical: 'https://www.investrent.com.pl/blog' },
 }

@@ -44,7 +44,14 @@ function transactionLabel(t: string): string {
 
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
   const result = await getPublicOfferResult(params.id)
-  if (result.status === 'not_found') return { title: 'Oferta | InvestRent' }
+  // NAPRAWA (audyt SEO 09.09.2026): tytuly ponizej mialy zaszyta marke
+  // ("| InvestRent Kołobrzeg"/"| InvestRent") ORAZ layout.tsx doklejal
+  // WLASNY szablon ("%s | InvestRent Nieruchomości") na wierzch - efekt
+  // to zdublowana marka w <title> (np. "...| InvestRent Kołobrzeg |
+  // InvestRent Nieruchomości", 100 znakow), realna tresc (lokalizacja/cena)
+  // obcinana przez Google w wynikach wyszukiwania. Marka teraz TYLKO raz,
+  // z szablonu layout.tsx - tu zostaje sama tresc strony.
+  if (result.status === 'not_found') return { title: 'Oferta nie znaleziona' }
   // NAPRAWA (19.08, Google Search Console: 40 stron z bledem 404). Oferta
   // ISTNIEJE ale zostala sprzedana/wycofana - Next.js 14 App Router nie
   // wspiera customowego kodu HTTP (410) dla server components bez wiekszej
@@ -52,7 +59,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
   // sygnalem zeby Google nie indeksowal/usunal ta strone z indeksu, mimo ze
   // sama strona zwraca 200 (API backendu i tak juz zwraca prawdziwe 410).
   if (result.status === 'gone') {
-    return { title: 'Ta oferta nie jest już dostępna | InvestRent Kołobrzeg', robots: { index: false, follow: true } }
+    return { title: 'Ta oferta nie jest już dostępna', robots: { index: false, follow: true } }
   }
   const offer = result.data as any
   // NAPRAWA (audyt SEO, punkt 5): opis byl bardzo ubogi ("{typ} w {miasto}.
@@ -69,7 +76,11 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
   ].filter(Boolean)
   const description = descParts.join(', ') + '.'
   const mainPhoto = offer.offer_photos?.find((p: any) => p.is_main)?.url || offer.offer_photos?.[0]?.url
-  const title = `${offer.title ?? propertyTypeLabel(offer.property_type)} | InvestRent Kołobrzeg`
+  const title = offer.title ?? propertyTypeLabel(offer.property_type)
+  // OG/Twitter NIE sa objete szablonem layout.tsx (osobne pola, nie
+  // dziedzicza title.template), wiec tu marka zostaje doklejona jawnie -
+  // inaczej niz <title> ponizej, gdzie robi to sam szablon.
+  const socialTitle = `${title} | InvestRent Kołobrzeg`
   return {
     title,
     description,
@@ -78,9 +89,9 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
     // (dziedziczone z layout.tsx) zamiast zdjecia TEJ nieruchomosci - realnie
     // obniza klikalnosc gdy agent wysyla link klientowi.
     openGraph: mainPhoto ? {
-      title, description, images: [{ url: mainPhoto, width: 1200, height: 800, alt: offer.title ?? propertyTypeLabel(offer.property_type) }],
+      title: socialTitle, description, images: [{ url: mainPhoto, width: 1200, height: 800, alt: offer.title ?? propertyTypeLabel(offer.property_type) }],
     } : undefined,
-    twitter: mainPhoto ? { card: 'summary_large_image', title, description, images: [mainPhoto] } : undefined,
+    twitter: mainPhoto ? { card: 'summary_large_image', title: socialTitle, description, images: [mainPhoto] } : undefined,
     // NAPRAWA (audyt SEO, punkt 3): brak kanonicznych URL na calej stronie -
     // tutaj szczegolnie wazne, bo w przyszlosci mozliwe filtrowanie/parametry
     // przy tym samym ID oferty.

@@ -4,6 +4,7 @@ import FloatingWA from '@/components/FloatingWA'
 import SocialSidebar from '@/components/SocialSidebar'
 import Contact from '@/components/Contact'
 import Breadcrumb from '@/components/Breadcrumb'
+import { JsonLd } from '@/components/JsonLd'
 import { getOffice } from '@/lib/api'
 import type { Metadata } from 'next'
 
@@ -17,10 +18,22 @@ export const metadata: Metadata = {
 const FALLBACK_OFFICE = { name: 'InvestRent', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
 
 export default async function KontaktPage() {
-  const officeData = await getOffice()
+  // NAPRAWA (audyt SEO 09.09.2026, punkt P0): /kontakt - najwazniejsza
+  // strona dla lokalnego SEO, ma pelny NAP w tresci - nie mialo ZADNYCH
+  // danych strukturalnych (0 skryptow JSON-LD). Ten sam wzorzec co
+  // /o-nas i strona glowna (patrz JsonLd.tsx), zeby Google mogl powiazac
+  // te strone z wizytowka Google Business Profile.
+  const [officeData, reviewsData] = await Promise.all([
+    getOffice(),
+    fetch('https://investrent-crm-production.up.railway.app/api/public/google-reviews')
+      .then(r => r.json()).catch(() => null),
+  ])
   const office = officeData ?? FALLBACK_OFFICE
+  const googleRating: number = reviewsData?.rating ? reviewsData.rating : 4.9
+  const googleTotal: number = reviewsData?.total ? reviewsData.total : 55
   return (
     <>
+      <JsonLd office={office} googleRating={googleRating} googleTotal={googleTotal} />
       <Nav office={office} />
       <main>
         <div style={{ background: 'linear-gradient(135deg, #0d2a5c, #1a4fa0)', padding: '40px 0 32px' }}>
