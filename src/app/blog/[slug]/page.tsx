@@ -23,14 +23,19 @@ function formatDate(iso: string) {
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const post = await getPublicBlogPost(params.slug)
-  if (!post) return { title: 'Wpis | InvestRent' }
-  const title = post.meta_title || `${post.title} | InvestRent Blog`
+  // NAPRAWA (audyt SEO 09.09.2026): jak w /blog i /oferty/[id] - marka
+  // doklejana tu ORAZ przez szablon layout.tsx dublowala sie w <title>.
+  // Marka teraz tylko raz (szablon); OG/Twitter nie sa objete szablonem,
+  // wiec tam zostaje jawnie doklejona.
+  if (!post) return { title: 'Wpis nie znaleziony' }
+  const title = post.meta_title || post.title
+  const socialTitle = post.meta_title || `${post.title} | InvestRent Blog`
   const description = post.meta_description || post.excerpt || undefined
   return {
     title,
     description,
-    openGraph: post.cover_image_url ? { title, description, images: [{ url: post.cover_image_url, width: 1200, height: 630, alt: post.title }] } : undefined,
-    twitter: post.cover_image_url ? { card: 'summary_large_image', title, description, images: [post.cover_image_url] } : undefined,
+    openGraph: post.cover_image_url ? { title: socialTitle, description, images: [{ url: post.cover_image_url, width: 1200, height: 630, alt: post.title }] } : undefined,
+    twitter: post.cover_image_url ? { card: 'summary_large_image', title: socialTitle, description, images: [post.cover_image_url] } : undefined,
     alternates: { canonical: `${BASE_URL}/blog/${params.slug}` },
   }
 }
