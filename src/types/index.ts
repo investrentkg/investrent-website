@@ -20,6 +20,8 @@ export interface Offer {
   has_garden: boolean
   status: 'opublikowana' | 'zarezerwowana'
   created_at: string
+  video_url?: string | null
+  virtual_tour_url?: string | null
   main_photo: string | null
   main_photo_thumb: string | null
   photo_count: number
