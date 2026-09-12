@@ -34,8 +34,49 @@ interface OfferDetail {
   admin_fee?: number | null
   status: string
   created_at: string
+  video_url?: string | null
+  virtual_tour_url?: string | null
   offer_photos: Array<{ id: string; url: string; thumb_url?: string; is_main: boolean; sort_order: number }>
   agent: { full_name: string; avatar_url: string | null; phone: string | null } | null
+}
+
+// ── Wideo prezentacyjne (np. przelot dronem) ───────────────────
+// NOWE (12.09.2026, Daniel: pierwsza oferta inwestycyjna z materiałem z
+// drona - RESET Gąski - ale zapowiedział, że takich prezentacji będzie
+// więcej, ma to być stały element, nie jednorazowy hack). Pole `video_url`
+// istniało już od dawna w CRM (agent mógł je wypełnić, karta oferty
+// pokazywała gołym linkiem "Film →" - patrz OfferDetailPage.tsx w
+// investrent-crm), po prostu nigdy nie trafiało do publicznego API strony.
+// Dowolny URL wklejony przez agenta - rozpoznajemy YouTube/Vimeo i
+// osadzamy jako iframe, w przeciwnym razie traktujemy jak bezpośredni
+// link do pliku wideo (np. z Supabase Storage) i renderujemy naptywnym
+// <video>.
+function VideoEmbed({ url }: { url: string }) {
+  const youtubeMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]+)/)
+  const vimeoMatch = url.match(/vimeo\.com\/(\d+)/)
+
+  let embedSrc: string | null = null
+  if (youtubeMatch) embedSrc = `https://www.youtube.com/embed/${youtubeMatch[1]}`
+  else if (vimeoMatch) embedSrc = `https://player.vimeo.com/video/${vimeoMatch[1]}`
+
+  return (
+    <div style={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: 14, padding: '20px', marginTop: 14 }}>
+      <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 17, color: '#0d2a5c', marginBottom: 14 }}>
+        🎥 Prezentacja wideo
+      </h2>
+      <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', borderRadius: 10, overflow: 'hidden', background: '#000' }}>
+        {embedSrc ? (
+          <iframe src={embedSrc} title="Prezentacja wideo oferty" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none' }} />
+        ) : (
+          // eslint-disable-next-line jsx-a11y/media-has-caption
+          <video controls preload="metadata" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' as const }}>
+            <source src={url} />
+          </video>
+        )}
+      </div>
+    </div>
+  )
 }
 
 // ── Lightbox ──────────────────────────────────────────────────
@@ -270,6 +311,8 @@ export default function OfferDetailClient({ offer }: { offer: OfferDetail }) {
             </div>
 
             <Gallery photos={offer.offer_photos ?? []} label={photoLabel} />
+
+            {offer.video_url && <VideoEmbed url={offer.video_url} />}
 
             {/* Szczegóły */}
             <div style={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: 14, padding: '20px', marginTop: 20 }}>
