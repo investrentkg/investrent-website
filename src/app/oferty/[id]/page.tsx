@@ -42,8 +42,18 @@ function transactionLabel(t: string): string {
   return t === 'wynajem' ? 'wynajem' : 'sprzedaż'
 }
 
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  const result = await getPublicOfferResult(params.id)
+export async function generateMetadata({ params, searchParams }: { params: { id: string }; searchParams: { preview?: string } }): Promise<Metadata> {
+  const previewToken = searchParams?.preview
+  const result = await getPublicOfferResult(params.id, previewToken)
+  // Tryb podgladu (13.09.2026, patrz backend lib/offerPreviewToken.ts) -
+  // link roboczy do przejrzenia jeszcze niezatwierdzonej oferty. Musi byc
+  // NIEZNAJDYWALNY dla wyszukiwarek niezaleznie od tego co dalej zwroci
+  // backend, wiec noindex ustawiamy PRZED jakimkolwiek innym warunkiem.
+  if (previewToken) {
+    if (result.status !== 'ok') return { title: 'Podgląd oferty', robots: { index: false, follow: false } }
+    const offer = result.data as any
+    return { title: `[PODGLĄD] ${offer.title ?? 'Oferta'}`, robots: { index: false, follow: false } }
+  }
   // NAPRAWA (audyt SEO 09.09.2026): tytuly ponizej mialy zaszyta marke
   // ("| InvestRent Kołobrzeg"/"| InvestRent") ORAZ layout.tsx doklejal
   // WLASNY szablon ("%s | InvestRent Nieruchomości") na wierzch - efekt
@@ -160,9 +170,10 @@ function BreadcrumbJsonLd({ offer }: { offer: any }) {
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }} />
 }
 
-export default async function OfferPage({ params }: { params: { id: string } }) {
+export default async function OfferPage({ params, searchParams }: { params: { id: string }; searchParams: { preview?: string } }) {
+  const previewToken = searchParams?.preview
   const [result, officeData] = await Promise.all([
-    getPublicOfferResult(params.id),
+    getPublicOfferResult(params.id, previewToken),
     getOffice(),
   ])
   const office = officeData ?? FALLBACK_OFFICE
@@ -217,8 +228,17 @@ export default async function OfferPage({ params }: { params: { id: string } }) 
   const offer = result.data as any
   return (
     <>
-      <OfferJsonLd offer={offer} />
-      <BreadcrumbJsonLd offer={offer} />
+      {/* Dane strukturalne (JSON-LD) i tag kanoniczny to sygnaly DLA
+          WYSZUKIWAREK ze strona jest realna/indeksowalna - w trybie
+          podgladu (oferta jeszcze niezatwierdzona) celowo je pomijamy,
+          niezaleznie od tego ze <head> ma juz robots:noindex wyzej. */}
+      {!previewToken && <OfferJsonLd offer={offer} />}
+      {!previewToken && <BreadcrumbJsonLd offer={offer} />}
+      {previewToken && (
+        <div style={{ background: '#7c2d12', color: '#fff', textAlign: 'center', padding: '10px 16px', fontSize: 14, fontWeight: 600 }}>
+          🔒 PODGLĄD ROBOCZY — ta oferta nie jest jeszcze opublikowana ani widoczna dla odwiedzających stronę
+        </div>
+      )}
       <Nav office={office} />
       <main>
         <div style={{ background: 'linear-gradient(135deg, #0d2a5c, #1a4fa0)', padding: '24px 0 20px' }}>
