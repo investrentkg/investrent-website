@@ -157,6 +157,34 @@ function OfferJsonLd({ offer }: { offer: any }) {
 // wizualnie na stronie, ale bez towarzyszacych danych strukturalnych
 // BreadcrumbList Google nie pokazuje ich jako dodatkowej sciezki nawigacji
 // pod tytulem w wynikach wyszukiwania.
+// NOWE (13.09.2026, Daniel/SEO) - kazda strona oferty z filmem powinna
+// miec dedykowane oznakowanie schema.org VideoObject (embedUrl -> YouTube),
+// niezaleznie od mechanizmu blokujacego sugestie YouTube w VideoEmbed
+// (OfferDetailClient.tsx) - to inny sygnal, DLA WYSZUKIWAREK, nie dla
+// widza. Renderowane tylko gdy offer.video_url faktycznie wskazuje na
+// YouTube (jedyny obslugiwany dzis kanal hostingu wideo dla ofert, patrz
+// decyzja Daniela 13.09 - self-hosting w Supabase Storage odrzucony ze
+// wzgledu na koszt transferu + brak adaptacyjnego streamingu).
+function VideoJsonLd({ offer }: { offer: any }) {
+  const youtubeMatch = (offer.video_url as string)?.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]+)/)
+  if (!youtubeMatch) return null
+  const youtubeId = youtubeMatch[1]
+  const mainPhoto = offer.offer_photos?.find((p: any) => p.is_main)?.url || offer.offer_photos?.[0]?.url
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: `Prezentacja wideo: ${offer.title ?? propertyTypeLabel(offer.property_type)}`,
+    description: offer.description ? offer.description.slice(0, 500) : `Prezentacja wideo oferty w ${offer.address_city}`,
+    // thumbnailUrl jest WYMAGANE przez Google dla VideoObject - miniatura
+    // YouTube jest zawsze dostepna pod tym stalym adresem, niezaleznie od
+    // tego czy mamy wlasne zdjecie glowne oferty.
+    thumbnailUrl: mainPhoto ? [mainPhoto] : [`https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`],
+    uploadDate: offer.created_at,
+    embedUrl: `https://www.youtube.com/embed/${youtubeId}`,
+  }
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }} />
+}
+
 function BreadcrumbJsonLd({ offer }: { offer: any }) {
   const schema = {
     '@context': 'https://schema.org',
@@ -234,6 +262,7 @@ export default async function OfferPage({ params, searchParams }: { params: { id
           niezaleznie od tego ze <head> ma juz robots:noindex wyzej. */}
       {!previewToken && <OfferJsonLd offer={offer} />}
       {!previewToken && <BreadcrumbJsonLd offer={offer} />}
+      {!previewToken && offer.video_url && <VideoJsonLd offer={offer} />}
       {previewToken && (
         <div style={{ background: '#7c2d12', color: '#fff', textAlign: 'center', padding: '10px 16px', fontSize: 14, fontWeight: 600 }}>
           🔒 PODGLĄD ROBOCZY — ta oferta nie jest jeszcze opublikowana ani widoczna dla odwiedzających stronę
