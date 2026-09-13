@@ -58,9 +58,18 @@ export type PublicOfferResult =
   | { status: 'gone'; context: { property_type: string | null; transaction_type: string | null; address_city: string | null } }
   | { status: 'not_found' }
 
-export async function getPublicOfferResult(id: string): Promise<PublicOfferResult> {
+export async function getPublicOfferResult(id: string, previewToken?: string): Promise<PublicOfferResult> {
   try {
-    const res = await fetch(`${API}/api/public/offers/${id}`, { headers: INTERNAL_HEADERS, next: { revalidate: 60 } })
+    const url = previewToken
+      ? `${API}/api/public/offers/${id}?preview=${encodeURIComponent(previewToken)}`
+      : `${API}/api/public/offers/${id}`
+    // Tryb podgladu (13.09.2026) NIE korzysta z ISR/revalidate cache Next.js -
+    // to link roboczy do jeszcze niezatwierdzonej oferty, tresc moze sie
+    // zmienic miedzy kolejnymi odswiezeniami podczas przegladu, backend i tak
+    // juz zwraca dla niego 'Cache-Control: no-store' (patrz routes/public.ts).
+    const res = previewToken
+      ? await fetch(url, { headers: INTERNAL_HEADERS, cache: 'no-store' })
+      : await fetch(url, { headers: INTERNAL_HEADERS, next: { revalidate: 60 } })
     if (res.status === 410) {
       const body = await res.json().catch(() => null)
       return { status: 'gone', context: body?.offer_context || { property_type: null, transaction_type: null, address_city: null } }
