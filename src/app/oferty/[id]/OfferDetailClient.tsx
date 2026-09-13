@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { MapPin, LayoutGrid, Ruler, Layers, Phone, ChevronLeft, ChevronRight, Award, Shield, Clock, ArrowLeft, X, Expand } from 'lucide-react'
 import { submitLead } from '@/lib/api'
@@ -51,13 +51,72 @@ interface OfferDetail {
 // osadzamy jako iframe, w przeciwnym razie traktujemy jak bezpośredni
 // link do pliku wideo (np. z Supabase Storage) i renderujemy naptywnym
 // <video>.
+//
+// NAPRAWA (13.09.2026, Daniel wprost): sam parametr rel=0 na YouTube NIE
+// wystarcza - od 2018 YouTube i tak pokazuje siatke sugestii (WLASNY kanal
+// + czesciowo obce) na END SCREENIE po zakonczeniu filmu, rel=0 ogranicza
+// tylko "related videos" w niekt6rych miejscach, nie usuwa end-screena.
+// Skonfigurowanie w YouTube Studio "end screens" na elementy tylko z
+// naszego kanalu OGRANICZA natywny end-screen, ale go nie usuwa - nadal
+// jest to interfejs YouTube z jego wlasnym stylem/branded controls, nie
+// nasza tresc. Jedyny NIEZAWODNY sposob (udokumentowany, powszechnie
+// stosowany wzorzec): YouTube IFrame Player API - nasluchujemy zdarzenia
+// onStateChange(ENDED) i w tym momencie przykrywamy iframe WLASNA
+// nakladka (Twoje CTA, przycisk odtworz ponownie) - koniec-ekranu YouTube
+// nadal technicznie istnieje pod spodem, ale jest calkowicie zasloniety,
+// wiec uzytkownik nigdy go nie widzi. To jedyna z 3 rozwazanych opcji
+// ktora daje 100% pewnosc (Studio end-screens i rel=0 to tylko czesciowe
+// ograniczenia natywnego zachowania YouTube, nie jego wylaczenie).
 function VideoEmbed({ url }: { url: string }) {
   const youtubeMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]+)/)
   const vimeoMatch = url.match(/vimeo\.com\/(\d+)/)
+  const youtubeId = youtubeMatch?.[1] ?? null
+  const embedSrc = !youtubeId && vimeoMatch ? `https://player.vimeo.com/video/${vimeoMatch[1]}` : null
 
-  let embedSrc: string | null = null
-  if (youtubeMatch) embedSrc = `https://www.youtube.com/embed/${youtubeMatch[1]}`
-  else if (vimeoMatch) embedSrc = `https://player.vimeo.com/video/${vimeoMatch[1]}`
+  const containerRef = useRef<HTMLDivElement>(null)
+  const playerRef = useRef<any>(null)
+  const [ended, setEnded] = useState(false)
+
+  useEffect(() => {
+    if (!youtubeId) return
+    let cancelled = false
+
+    function createPlayer() {
+      if (cancelled || !containerRef.current) return
+      playerRef.current = new (window as any).YT.Player(containerRef.current, {
+        videoId: youtubeId,
+        playerVars: {
+          // rel:0 i modestbranding to higiena minimalna (patrz komentarz
+          // wyzej - NIE wystarcza samo w sobie), realna ochrona to
+          // onStateChange ponizej.
+          rel: 0, modestbranding: 1, iv_load_policy: 3, playsinline: 1, enablejsapi: 1,
+        },
+        events: {
+          onStateChange: (e: any) => {
+            if (e.data === (window as any).YT.PlayerState.ENDED) setEnded(true)
+          },
+        },
+      })
+    }
+
+    if ((window as any).YT?.Player) {
+      createPlayer()
+    } else {
+      if (!document.getElementById('youtube-iframe-api')) {
+        const tag = document.createElement('script')
+        tag.id = 'youtube-iframe-api'
+        tag.src = 'https://www.youtube.com/iframe_api'
+        document.body.appendChild(tag)
+      }
+      // Kilka VideoEmbed na jednej stronie nie wystepuje dzis (jedno wideo
+      // na oferte), ale gdyby - lancuchujemy poprzedni callback zamiast go
+      // nadpisywac.
+      const prev = (window as any).onYouTubeIframeAPIReady
+      ;(window as any).onYouTubeIframeAPIReady = () => { prev?.(); createPlayer() }
+    }
+
+    return () => { cancelled = true }
+  }, [youtubeId])
 
   return (
     <div style={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: 14, padding: '20px', marginTop: 14 }}>
@@ -65,7 +124,25 @@ function VideoEmbed({ url }: { url: string }) {
         🎥 Prezentacja wideo
       </h2>
       <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', borderRadius: 10, overflow: 'hidden', background: '#000' }}>
-        {embedSrc ? (
+        {youtubeId ? (
+          <>
+            <div ref={containerRef} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} />
+            {ended && (
+              <div style={{
+                position: 'absolute', inset: 0, background: '#0d2a5c', display: 'flex', flexDirection: 'column',
+                alignItems: 'center', justifyContent: 'center', gap: 16, color: 'white', textAlign: 'center', padding: 24,
+              }}>
+                <p style={{ fontWeight: 700, fontSize: 16, margin: 0 }}>Podobał Ci się ten film?</p>
+                <button
+                  onClick={() => { setEnded(false); playerRef.current?.seekTo(0); playerRef.current?.playVideo() }}
+                  style={{ padding: '10px 24px', background: 'white', color: '#0d2a5c', border: 'none', borderRadius: 8, fontWeight: 700, cursor: 'pointer', fontSize: 14 }}
+                >
+                  ▶ Odtwórz ponownie
+                </button>
+              </div>
+            )}
+          </>
+        ) : embedSrc ? (
           <iframe src={embedSrc} title="Prezentacja wideo oferty" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen
             style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none' }} />
         ) : (
