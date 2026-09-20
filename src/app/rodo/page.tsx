@@ -91,6 +91,16 @@ export default async function RodoPage() {
                 W ramach kampanii reklamowych prowadzonych na Facebooku i Instagramie korzystamy z formularzy kontaktowych (Instant Forms) udostępnianych przez Meta. Gdy wypełnią Państwo taki formularz, przekazane dane (imię i nazwisko, numer telefonu, adres e-mail oraz ewentualne odpowiedzi na pytania kwalifikujące) są automatycznie pobierane z systemów Meta do naszego wewnętrznego systemu CRM za pomocą oficjalnego interfejsu API Meta (Graph API), wyłącznie w celu skontaktowania się z Państwem w sprawie oferty nieruchomości, którą byli Państwo zainteresowani. Dostęp do tych danych w naszym systemie CRM mają wyłącznie upoważnieni pracownicy i współpracownicy Investrent sp. z o.o. Dane te podlegają tym samym zasadom przechowywania, ochrony i prawom osób, których dane dotyczą, opisanym w pozostałych częściach niniejszej polityki.
               </p>
 
+              {/* NOWE (20.09.2026, przygotowanie do weryfikacji OAuth Google dla
+                  zakresow Business Profile/Kalendarz/Analytics/Search Console -
+                  Google wymaga jawnego opisu wykorzystania danych z jego API oraz
+                  odwolania do Google API Services User Data Policy z klauzula
+                  Limited Use, dokladnie ten sam wzorzec co sekcja Meta powyzej. */}
+              <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 19, color: '#0d2a5c', marginTop: 32, marginBottom: 10 }}>Korzystanie z danych Google (Google API Services)</h2>
+              <p style={{ marginBottom: 20 }}>
+                Nasz wewnętrzny system CRM łączy się, wyłącznie za Państwa zgodą wyrażoną przy logowaniu przez konto Google, z wybranymi usługami Google w celu obsługi wizytówki firmowej Investrent sp. z o.o. Korzystamy z danych udostępnionych przez Google API w następującym zakresie: odczyt i publikacja treści wizytówki Google Business Profile (w tym opinie klientów i odpowiedzi na nie, posty, informacje o firmie), odczyt i zapis wydarzeń w Kalendarzu Google powiązanym z kontem firmowym oraz odczyt statystyk Google Analytics i Google Search Console. Dane te są wykorzystywane wyłącznie do świadczenia i ulepszania funkcji CRM widocznych dla upoważnionych pracowników i współpracowników Investrent sp. z o.o. i nie są przekazywane podmiotom trzecim ani wykorzystywane do celów reklamowych. Korzystanie i przekazywanie przez Investrent sp. z o.o. informacji uzyskanych z API Google innym aplikacjom podlega Google API Services User Data Policy, w tym wymogom Limited Use.
+              </p>
+
               <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 19, color: '#0d2a5c', marginTop: 32, marginBottom: 10 }}>Dobrowolność podania danych</h2>
               <p style={{ marginBottom: 20 }}>
                 Podanie danych osobowych jest dobrowolne, jednak niezbędne do skontaktowania się z Państwem, przygotowania oferty lub zawarcia i realizacji umowy pośrednictwa w obrocie nieruchomościami. Niepodanie danych może uniemożliwić realizację tych celów.
