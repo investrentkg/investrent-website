@@ -12,6 +12,10 @@ const BASE_URL = 'https://www.investrent.com.pl'
 const STATIC_PAGES = [
   { path: '', priority: 1.0, changeFrequency: 'daily' as const },
   { path: '/oferty', priority: 0.9, changeFrequency: 'daily' as const },
+  // NOWE (21.09.2026, SEO+Rozwój Produktu) — strona hub pod fraze
+  // "nieruchomosci kolobrzeg" (informacyjna, nie duplikuje "biuro
+  // nieruchomosci kolobrzeg" ktora zostaje przypisana do strony glownej).
+  { path: '/kolobrzeg', priority: 0.85, changeFrequency: 'weekly' as const },
   { path: '/kupno', priority: 0.8, changeFrequency: 'weekly' as const },
   { path: '/sprzedaz', priority: 0.8, changeFrequency: 'weekly' as const },
   { path: '/wynajem', priority: 0.8, changeFrequency: 'weekly' as const },
