@@ -66,7 +66,7 @@ function getBadge(o: Offer) {
 function OfferCard({ offer }: { offer: Offer }) {
   const badge = getBadge(offer)
   return (
-    <Link href={`/oferty/${offer.id}`} style={{ textDecoration: 'none', display: 'block' }}>
+    <Link href={`/oferty/${offer.slug || offer.id}`} style={{ textDecoration: 'none', display: 'block' }}>
       <div style={{ background: 'white', borderRadius: 14, border: '1px solid #e5e7eb', overflow: 'hidden', cursor: 'pointer', transition: 'transform .2s, box-shadow .2s' }}
         onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(-4px)'; el.style.boxShadow = '0 14px 32px rgba(0,0,0,.1)' }}
         onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.transform = ''; el.style.boxShadow = '' }}>

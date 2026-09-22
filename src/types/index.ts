@@ -1,5 +1,6 @@
 export interface Offer {
   id: string
+  slug?: string
   ref_number: string
   title: string | null
   property_type: 'mieszkanie' | 'dom' | 'dzialka' | 'lokal' | 'biuro' | 'magazyn' | 'garaz' | 'inwestycja'

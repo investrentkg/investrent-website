@@ -12,7 +12,7 @@ import Breadcrumb from '@/components/Breadcrumb'
 import OfferDetailClient from './OfferDetailClient'
 import { OfferCard } from '@/components/OffersSection'
 import { getPublicOfferResult, getOffice, getPublicOffers } from '@/lib/api'
-import { notFound } from 'next/navigation'
+import { notFound, permanentRedirect } from 'next/navigation'
 import type { Metadata } from 'next'
 
 const FALLBACK_OFFICE = { name: 'InvestRent', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
@@ -105,7 +105,11 @@ export async function generateMetadata({ params, searchParams }: { params: { id:
     // NAPRAWA (audyt SEO, punkt 3): brak kanonicznych URL na calej stronie -
     // tutaj szczegolnie wazne, bo w przyszlosci mozliwe filtrowanie/parametry
     // przy tym samym ID oferty.
-    alternates: { canonical: `${BASE_URL}/oferty/${params.id}` },
+    // NOWE (22.09.2026, czytelne adresy ofert): kanoniczny URL to ZAWSZE
+    // aktualny slug, niezaleznie od tego, jakim parametrem (UUID/stary
+    // previous_slug/aktualny slug) trafiono na te strone - Google ma miec
+    // jeden, spojny adres kanoniczny do zaindeksowania.
+    alternates: { canonical: `${BASE_URL}/oferty/${offer.slug || params.id}` },
   }
 }
 
@@ -119,7 +123,7 @@ function OfferJsonLd({ offer }: { offer: any }) {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'RealEstateListing',
-    url: `${BASE_URL}/oferty/${offer.id}`,
+    url: `${BASE_URL}/oferty/${offer.slug || offer.id}`,
     name: offer.title ?? `${propertyTypeLabel(offer.property_type)} na ${transactionLabel(offer.transaction_type)}, ${offer.address_city}`,
     description: offer.description ?? undefined,
     ...(mainPhoto ? { image: mainPhoto } : {}),
@@ -192,7 +196,7 @@ function BreadcrumbJsonLd({ offer }: { offer: any }) {
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Strona główna', item: BASE_URL },
       { '@type': 'ListItem', position: 2, name: 'Oferty', item: `${BASE_URL}/oferty` },
-      { '@type': 'ListItem', position: 3, name: offer.title ?? offer.ref_number, item: `${BASE_URL}/oferty/${offer.id}` },
+      { '@type': 'ListItem', position: 3, name: offer.title ?? offer.ref_number, item: `${BASE_URL}/oferty/${offer.slug || offer.id}` },
     ],
   }
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }} />
@@ -254,6 +258,18 @@ export default async function OfferPage({ params, searchParams }: { params: { id
   }
 
   const offer = result.data as any
+
+  // NOWE (22.09.2026, czytelne adresy ofert zamiast UUID) - jesli trafienie
+  // NIE bylo 1:1 po aktualnym slugu (stary surowy UUID, albo previous_slug
+  // po edycji typu/pokoi/miasta/ulicy oferty), 308-przekieruj na kanoniczny
+  // adres zamiast renderowac tresc pod nieaktualnym URL-em - ta sama
+  // filozofia "nigdy nie 404, zawsze przekieruj" co juz dziala w
+  // next.config.js. Pomijane w trybie podgladu (link roboczy dla managera,
+  // celowo generowany po UUID, patrz routes/offers.ts preview-link).
+  if (!previewToken && offer.resolved_via && offer.resolved_via !== 'slug' && offer.canonical_slug) {
+    permanentRedirect(`/oferty/${offer.canonical_slug}`)
+  }
+
   return (
     <>
       {/* Dane strukturalne (JSON-LD) i tag kanoniczny to sygnaly DLA
