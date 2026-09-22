@@ -19,6 +19,9 @@ const LINKS = [
   // z Nav.tsx (patrz komentarz tam) - link wciaz istnieje, tylko nie
   // zabiera juz miejsca w ciasnym, gornym pasku nawigacji.
   { label: 'Blog',                href: '/blog' },
+  // NOWE (21.09.2026, SEO+Rozwój Produktu) - ten sam wzorzec co Blog powyzej,
+  // celowo w stopce a nie w ciasnym gornym menu.
+  { label: 'Nieruchomości Kołobrzeg', href: '/kolobrzeg' },
 ]
 
 export default function Footer({ office }: { office: Office | null }) {
