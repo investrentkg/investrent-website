@@ -66,7 +66,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       if (!res) break
       offerEntries = offerEntries.concat(
         res.data.map(o => ({
-          url: `${BASE_URL}/oferty/${o.id}`,
+          url: `${BASE_URL}/oferty/${o.slug || o.id}`,
           lastModified: new Date(o.created_at),
           changeFrequency: 'weekly' as const,
           priority: 0.7,

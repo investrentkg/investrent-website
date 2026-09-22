@@ -68,7 +68,7 @@ export default async function NotFound() {
               </h2>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 20, marginBottom: 32 }}>
                 {offers.map((offer: any) => (
-                  <Link key={offer.id} href={`/oferty/${offer.id}`} style={{ textDecoration: 'none', display: 'block' }}>
+                  <Link key={offer.id} href={`/oferty/${offer.slug || offer.id}`} style={{ textDecoration: 'none', display: 'block' }}>
                     <div style={{ background: 'white', borderRadius: 14, border: '1px solid #e5e7eb', overflow: 'hidden' }}>
                       <div style={{ height: 180, overflow: 'hidden', background: '#f0f4ff', position: 'relative' }}>
                         {offer.main_photo
