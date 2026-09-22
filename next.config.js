@@ -122,6 +122,28 @@ const nextConfig = {
       // zbudowania odpowiednika") stalo sie sprzeczne - blokowaloby
       // dostep do nowej, prawdziwej strony. Usuniete.
 
+      // NAPRAWA (22.09, zgloszenie SEO/Pozycjonowanie): generator slugow
+      // bloga (investrent-crm, blog.ts/blogScheduler.ts) mial bug NFD -
+      // "l" nie ma dekompozycji kanonicznej w Unicode, wiec "Kolobrzeg"
+      // stawalo sie "koobrzeg" zamiast "kolobrzeg" (naprawione u zrodla w
+      // PR #364, ale TYLKO dla nowo generowanych slugow - 5 juz
+      // opublikowanych, zaindeksowanych postow zostalo ze starym, blednym
+      // slugiem). Te 5 wpisow zostalo recznie poprawionych w bazie na
+      // docelowy, poprawny slug (ta sama, juz naprawiona funkcja slugify) -
+      // te reguly przekierowuja stary, zaindeksowany przez Google adres na
+      // nowy, zeby nie 404-owal i zeby "moc" SEO starego adresu przeszla
+      // na nowy (301, nie 302).
+      { source: '/blog/wynajem-mieszkania-w-koobrzegu-kompletny-przewodnik-dla-najemcow-i-wascicieli',
+        destination: '/blog/wynajem-mieszkania-w-kolobrzegu-kompletny-przewodnik-dla-najemcow-i-wlascicieli', permanent: true },
+      { source: '/blog/inwestycja-w-nieruchomosci-w-koobrzegu-czy-to-sie-naprawde-opaca',
+        destination: '/blog/inwestycja-w-nieruchomosci-w-kolobrzegu-czy-to-sie-naprawde-oplaca', permanent: true },
+      { source: '/blog/nieruchomosci-koobrzeg-co-warto-wiedziec-przed-zakupem-sprzedaza-lub-wynajmem-na',
+        destination: '/blog/nieruchomosci-kolobrzeg-co-warto-wiedziec-przed-zakupem-sprzedaza-lub-wynajmem-n', permanent: true },
+      { source: '/blog/jak-wybrac-biuro-nieruchomosci-w-koobrzegu-praktyczny-przewodnik-przed-podpisani',
+        destination: '/blog/jak-wybrac-biuro-nieruchomosci-w-kolobrzegu-praktyczny-przewodnik-przed-podpisan', permanent: true },
+      { source: '/blog/trudne-nieruchomosci-w-koobrzegu-czym-sa-i-jak-skutecznie-je-sprzedac-lub-kupic',
+        destination: '/blog/trudne-nieruchomosci-w-kolobrzegu-czym-sa-i-jak-skutecznie-je-sprzedac-lub-kupic', permanent: true },
+
       // KATCH-ALL: pojedyncze strony ofert na starej stronie mialy adresy typu
       // "/hale-na-sprzedaz-1390000zl-4000m2-gryfice/7150775" (slug + numeryczne
       // ID Virgo) - te ID nie maja zadnego odpowiednika w nowej bazie (inny
