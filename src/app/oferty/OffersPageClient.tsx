@@ -1,5 +1,5 @@
 "use client"
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { Search, MapPin, LayoutGrid, Ruler, Layers, ChevronLeft, ChevronRight, SlidersHorizontal, X } from 'lucide-react'
 import type { Offer } from '@/types'
@@ -148,37 +148,69 @@ export default function OffersPageClient({ initialOffers, initialTotal, defaultT
 
   const activeFilterCount = Object.entries(filters).filter(([, v]) => v !== '').length
 
+  // Filtry, których API nie obsługuje (miasto, pokoje, cena, powierzchnia) są
+  // stosowane po stronie klienta. Wtedy NIE można paginować po stronie serwera —
+  // serwer zwraca niefiltrowaną stronę, a total/pages liczy z niefiltrowanej
+  // liczby ofert (strony puste / błędna liczba stron). Pobieramy więc komplet
+  // ofert (zawężony filtrami serwerowymi), filtrujemy lokalnie i stronicujemy lokalnie.
+  const hasClientFilters = (fil: Filters) => !!(fil.city || fil.rooms || fil.price_min || fil.price_max || fil.area_min || fil.area_max)
+  const reqId = useRef(0)
+
+  const applyClientFilters = (list: Offer[], fil: Filters) => {
+    let results = list
+    if (fil.city)      results = results.filter(o => (o.address_city ?? '').toLowerCase().includes(fil.city.trim().toLowerCase()))
+    if (fil.rooms)     results = results.filter(o => { const r = parseInt(fil.rooms); return r === 5 ? (o.rooms_count ?? 0) >= 5 : o.rooms_count === r })
+    if (fil.price_min) results = results.filter(o => (o.price ?? 0) >= parseInt(fil.price_min))
+    if (fil.price_max) results = results.filter(o => (o.price ?? Infinity) <= parseInt(fil.price_max))
+    if (fil.area_min)  results = results.filter(o => (o.area ?? 0) >= parseInt(fil.area_min))
+    if (fil.area_max)  results = results.filter(o => (o.area ?? Infinity) <= parseInt(fil.area_max))
+    return results
+  }
+
   const doSearch = useCallback(async (fil: Filters, p: number) => {
+    const myReq = ++reqId.current
     setLoading(true)
     try {
-      const q = new URLSearchParams({ limit: String(LIMIT), page: String(p) })
-      if (fil.transaction_type) q.set('transaction_type', fil.transaction_type)
-      if (fil.property_type)   q.set('property_type',   fil.property_type)
-      if (agentId)              q.set('agent_id',        agentId)
-      const res = await fetch(`${API}/api/public/offers?${q}`)
-      const data = await res.json()
-      if ((data.data?.length ?? 0) > 0) {
-        let results = data.data as Offer[]
-        // Filtruj lokalnie po polach które API nie obsługuje
-        if (fil.market_type) results = results.filter(o => !fil.market_type || o.market_type === fil.market_type)
-    if (fil.city)      results = results.filter(o => o.address_city.toLowerCase().includes(fil.city.toLowerCase()))
-        if (fil.rooms)     results = results.filter(o => { const r = parseInt(fil.rooms); return r === 5 ? (o.rooms_count ?? 0) >= 5 : o.rooms_count === r })
-        if (fil.price_min) results = results.filter(o => (o.price ?? 0) >= parseInt(fil.price_min))
-        if (fil.price_max) results = results.filter(o => (o.price ?? Infinity) <= parseInt(fil.price_max))
-        if (fil.area_min)  results = results.filter(o => (o.area ?? 0) >= parseInt(fil.area_min))
-        if (fil.area_max)  results = results.filter(o => (o.area ?? Infinity) <= parseInt(fil.area_max))
-        setOffers(results)
-        setTotal(data.pagination?.total ?? initialTotal)
-      } else {
-        setOffers([])
-        setTotal(0)
+      const base = new URLSearchParams()
+      if (fil.transaction_type) base.set('transaction_type', fil.transaction_type)
+      if (fil.property_type)   base.set('property_type',   fil.property_type)
+      if (fil.market_type)     base.set('market_type',     fil.market_type)
+      if (agentId)             base.set('agent_id',        agentId)
+
+      if (!hasClientFilters(fil)) {
+        // Tylko filtry serwerowe — paginacja po stronie serwera
+        const q = new URLSearchParams(base); q.set('limit', String(LIMIT)); q.set('page', String(p))
+        const data = await (await fetch(`${API}/api/public/offers?${q}`)).json()
+        if (myReq !== reqId.current) return
+        setOffers((data.data ?? []) as Offer[])
+        setTotal(data.pagination?.total ?? 0)
+        return
       }
+
+      // Filtry klienckie — pobierz wszystkie strony (max 24/stronę), filtruj i stronicuj lokalnie
+      let all: Offer[] = []
+      let pages = 1
+      for (let sp = 1; sp <= pages && sp <= 20; sp++) {
+        const q = new URLSearchParams(base); q.set('limit', '24'); q.set('page', String(sp))
+        const data = await (await fetch(`${API}/api/public/offers?${q}`)).json()
+        all = all.concat((data.data ?? []) as Offer[])
+        pages = data.pagination?.pages ?? 1
+      }
+      if (myReq !== reqId.current) return
+      const filtered = applyClientFilters(all, fil)
+      const maxPage = Math.max(1, Math.ceil(filtered.length / LIMIT))
+      const safePage = Math.min(p, maxPage)
+      if (safePage !== p) setPage(safePage)
+      setOffers(filtered.slice((safePage - 1) * LIMIT, safePage * LIMIT))
+      setTotal(filtered.length)
     } catch {
+      if (myReq !== reqId.current) return
       setOffers([])
       setTotal(0)
-    } finally { setLoading(false) }
+    } finally { if (myReq === reqId.current) setLoading(false) }
   }, [agentId])
 
+  function goToPage(np: number) { setPage(np); doSearch(filters, np); window.scrollTo({ top: 0, behavior: 'smooth' }) }
   function search() { setPage(1); doSearch(filters, 1) }
 
   function reset() {
@@ -302,17 +334,17 @@ export default function OffersPageClient({ initialOffers, initialTotal, defaultT
             </div>
             {totalPages > 1 && (
               <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8 }}>
-                <button onClick={() => { const np = Math.max(1, page - 1); setPage(np); doSearch(filters, np) }} disabled={page === 1} aria-label="Poprzednia strona"
+                <button onClick={() => goToPage(Math.max(1, page - 1))} disabled={page === 1} aria-label="Poprzednia strona"
                   style={{ width: 38, height: 38, borderRadius: '50%', border: '1.5px solid #e5e7eb', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: page === 1 ? .4 : 1 }}>
                   <ChevronLeft size={16} />
                 </button>
                 {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => i + 1).map(p => (
-                  <button key={p} onClick={() => { setPage(p); doSearch(filters, p) }}
+                  <button key={p} onClick={() => goToPage(p)}
                     style={{ width: 38, height: 38, borderRadius: '50%', border: '1.5px solid', borderColor: p === page ? '#1a4fa0' : '#e5e7eb', background: p === page ? '#1a4fa0' : 'white', color: p === page ? 'white' : '#374151', fontWeight: p === page ? 700 : 400, cursor: 'pointer', fontSize: 14 }}>
                     {p}
                   </button>
                 ))}
-                <button onClick={() => { const np = Math.min(totalPages, page + 1); setPage(np); doSearch(filters, np) }} disabled={page === totalPages} aria-label="Następna strona"
+                <button onClick={() => goToPage(Math.min(totalPages, page + 1))} disabled={page === totalPages} aria-label="Następna strona"
                   style={{ width: 38, height: 38, borderRadius: '50%', border: '1.5px solid #e5e7eb', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: page === totalPages ? .4 : 1 }}>
                   <ChevronRight size={16} />
                 </button>
