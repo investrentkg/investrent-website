@@ -85,7 +85,14 @@ export async function generateMetadata({ params, searchParams }: { params: { id:
     offer.price ? `${offer.price.toLocaleString('pl-PL')} zł` : 'cena na zapytanie',
   ].filter(Boolean)
   const description = descParts.join(', ') + '.'
-  const mainPhoto = offer.offer_photos?.find((p: any) => p.is_main)?.url || offer.offer_photos?.[0]?.url
+  // NAPRAWA (23.09, zgłoszenie Weroniki - miniaturka na liście ofert vs
+  // pierwsze zdjęcie w galerii oferty pokazywały co innego): is_main
+  // potrafiło się rozjechać z sort_order (patrz naprawa w offers.ts
+  // /reorder). Backend (public.ts, GET /offers/:id) już sortuje
+  // offer_photos po sort_order rosnąco, więc [0] JEST zdjęciem głównym
+  // z definicji - to samo zdjęcie co pierwszy slajd w galerii poniżej
+  // (OfferDetailClient.tsx -> Gallery), zamiast osobno liczonego is_main.
+  const mainPhoto = offer.offer_photos?.[0]?.url
   const title = offer.title ?? propertyTypeLabel(offer.property_type)
   // OG/Twitter NIE sa objete szablonem layout.tsx (osobne pola, nie
   // dziedzicza title.template), wiec tu marka zostaje doklejona jawnie -
@@ -119,7 +126,8 @@ export async function generateMetadata({ params, searchParams }: { params: { id:
 // "zwykly tekst", nie jako ogloszenie nieruchomosci z cena/dostepnoscia.
 function OfferJsonLd({ offer }: { offer: any }) {
   const schemaType = SCHEMA_TYPE_MAP[offer.property_type] ?? 'Accommodation'
-  const mainPhoto = offer.offer_photos?.find((p: any) => p.is_main)?.url || offer.offer_photos?.[0]?.url
+  // NAPRAWA (23.09) - patrz komentarz przy generateMetadata wyżej.
+  const mainPhoto = offer.offer_photos?.[0]?.url
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'RealEstateListing',
@@ -173,7 +181,8 @@ function VideoJsonLd({ offer }: { offer: any }) {
   const youtubeMatch = (offer.video_url as string)?.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]+)/)
   if (!youtubeMatch) return null
   const youtubeId = youtubeMatch[1]
-  const mainPhoto = offer.offer_photos?.find((p: any) => p.is_main)?.url || offer.offer_photos?.[0]?.url
+  // NAPRAWA (23.09) - patrz komentarz przy generateMetadata wyżej.
+  const mainPhoto = offer.offer_photos?.[0]?.url
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'VideoObject',
