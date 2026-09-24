@@ -1,3 +1,5 @@
+import { postLead, trackLeadSuccess } from '@/lib/leadSubmit'
+
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://investrent-crm-production.up.railway.app'
 
 // Zapytania z tej strony do CRM idą z serwera Next.js (SSR), nie z przeglądarki -
@@ -156,12 +158,12 @@ export async function submitLead(payload: {
   client_type?: string
   preferred_city?: string
 }) {
-  const res = await fetch(`${API}/api/public/leads`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  })
-  return res.json()
+  // Nigdy nie rzuca (timeout 15 s, siec, odpowiedz nie-JSON) - zwraca { ok, reason? }.
+  // Wywolujacy sprawdzaja tylko r?.ok, wiec dla nich nic sie nie zmienia poza tym,
+  // ze formularz juz nie wisi na "Wysylanie...".
+  const result = await postLead(`${API}/api/public/leads`, payload)
+  if (result.ok) trackLeadSuccess(payload.source)
+  return result
 }
 
 // ── Blog (14.08, patrz backend/src/routes/blog.ts w investrent-crm) ──
