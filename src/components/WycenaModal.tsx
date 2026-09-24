@@ -1,7 +1,8 @@
 "use client"
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { X, Phone, CheckCircle, Home } from 'lucide-react'
 import { submitLead } from '@/lib/api'
+import { LEAD_ERROR_MESSAGE } from '@/lib/leadSubmit'
 
 interface Props { isOpen: boolean; onClose: () => void }
 
@@ -9,9 +10,11 @@ export default function WycenaModal({ isOpen, onClose }: Props) {
   const [name, setName]     = useState('')
   const [phone, setPhone]   = useState('')
   const [status, setStatus] = useState<'idle'|'loading'|'ok'|'error'>('idle')
+  const [sendFailed, setSendFailed] = useState(false) // true = blad wysylki (siec/serwer), false = zly numer
+  const inFlight = useRef(false)
 
   useEffect(() => {
-    if (!isOpen) { setName(''); setPhone(''); setStatus('idle') }
+    if (!isOpen) { setName(''); setPhone(''); setStatus('idle'); setSendFailed(false) }
     const esc = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
     document.addEventListener('keydown', esc)
     return () => document.removeEventListener('keydown', esc)
@@ -23,11 +26,21 @@ export default function WycenaModal({ isOpen, onClose }: Props) {
   }
 
   async function submit() {
-    if (!phone.trim()) return
-    if (!isValidPhone(phone)) { setStatus('error'); return }
+    if (!phone.trim() || inFlight.current) return
+    if (!isValidPhone(phone)) { setSendFailed(false); setStatus('error'); return }
+    inFlight.current = true
+    setSendFailed(false)
     setStatus('loading')
-    const r = await submitLead({ full_name: name || 'Właściciel', phone: phone.trim(), source: 'wycena_modal', client_type: 'seller', notes: 'Bezpłatna wycena — popup strony głównej' })
-    setStatus(r?.ok ? 'ok' : 'error')
+    try {
+      const r = await submitLead({ full_name: name || 'Właściciel', phone: phone.trim(), source: 'wycena_modal', client_type: 'seller', notes: 'Bezpłatna wycena — popup strony głównej' })
+      setSendFailed(!r?.ok)
+      setStatus(r?.ok ? 'ok' : 'error')
+    } catch {
+      setSendFailed(true)
+      setStatus('error')
+    } finally {
+      inFlight.current = false
+    }
   }
 
   if (!isOpen) return null
@@ -71,7 +84,7 @@ export default function WycenaModal({ isOpen, onClose }: Props) {
                 style={{ background: phone.trim() ? 'linear-gradient(135deg, #1a4fa0, #0d2a5c)' : '#cbd5e1', color: 'white', border: 'none', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, cursor: phone.trim() ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: 'inherit' }}>
                 <Phone size={16} /> {status === 'loading' ? 'Wysyłanie…' : 'Zamów rozmowę — bezpłatnie'}
               </button>
-              {status === 'error' && <p style={{ color: '#ef4444', fontSize: 13, textAlign: 'center' as const, margin: 0 }}>Coś poszło nie tak — spróbuj ponownie</p>}
+              {status === 'error' && <p style={{ color: '#ef4444', fontSize: 13, textAlign: 'center' as const, margin: 0 }}>{sendFailed ? LEAD_ERROR_MESSAGE : 'Coś poszło nie tak — spróbuj ponownie'}</p>}
               <p style={{ color: '#94a3b8', fontSize: 11, textAlign: 'center' as const, margin: 0 }}>🔒 Dane chronione zgodnie z RODO · Bez zobowiązań</p>
             </div>
             <div style={{ display: 'flex', gap: 16, marginTop: 20, paddingTop: 16, borderTop: '1px solid #f1f5f9' }}>
