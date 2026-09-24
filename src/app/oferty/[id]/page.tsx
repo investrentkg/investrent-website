@@ -157,16 +157,14 @@ function OfferJsonLd({ offer }: { offer: any }) {
       name: offer.title ?? propertyTypeLabel(offer.property_type),
       ...(offer.area ? { floorSize: { '@type': 'QuantitativeValue', value: offer.area, unitCode: 'MTK' } } : {}),
       ...(offer.rooms_count ? { numberOfRooms: offer.rooms_count } : {}),
+      // ZASADA (24.09.2026): brak dokladnego adresu w publicznych ogloszeniach -
+      // celowo BEZ streetAddress i BEZ geo (wspolrzednych) w JSON-LD oferty.
       address: {
         '@type': 'PostalAddress',
         addressLocality: offer.address_city,
         ...(offer.address_district ? { addressRegion: offer.address_district } : {}),
-        ...(offer.address_street ? { streetAddress: offer.address_street } : {}),
         addressCountry: 'PL',
       },
-      ...(offer.address_lat && offer.address_lng ? {
-        geo: { '@type': 'GeoCoordinates', latitude: offer.address_lat, longitude: offer.address_lng },
-      } : {}),
     },
     offers: {
       '@type': 'Offer',
