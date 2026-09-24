@@ -39,8 +39,14 @@ import type { Office } from '@/types'
 // (zamiast tylko dziedziczyc z layout.tsx), z wartoscia z CRM (jesli ktos
 // jej uzyl) albo z fallbackiem do TYCH SAMYCH wartosci co dotychczas w
 // layout.tsx - zero zmiany zachowania dopoki nikt nic nie edytuje.
-const DEFAULT_TITLE = 'InvestRent Nieruchomości Kołobrzeg | Kupno, Sprzedaż, Wynajem'
-const DEFAULT_DESCRIPTION = 'Biuro nieruchomości Kołobrzeg. Kupno, sprzedaż i wynajem mieszkań nad Bałtykiem. Odpowiadamy do 60 minut. Bezpłatna wycena nieruchomości.'
+// ZMIANA (24.09.2026, paczka SEO wg diagnozy pozycji "biuro nieruchomosci
+// kolobrzeg"): fraza na poczatku title (do ~60 zn., bez obcinania w SERP) i
+// w description (~155 zn.) - naturalnie, z marka i argumentem klikalnosci
+// (ocena Google, wycena, czas odpowiedzi). Uwaga: jesli w CRM (Strony ->
+// strona-glowna) ustawiono wlasne meta_title/meta_description, one nadal
+// maja pierwszenstwo nad tymi wartosciami domyslnymi.
+const DEFAULT_TITLE = 'Biuro nieruchomości Kołobrzeg | Invest Rent'
+const DEFAULT_DESCRIPTION = 'Biuro nieruchomości w Kołobrzegu i okolicach: sprzedaż, kupno i wynajem mieszkań oraz domów. Ocena 4,9/5 w Google, bezpłatna wycena, odpowiedź do 60 minut.'
 export async function generateMetadata(): Promise<Metadata> {
   const content = await getPageContent('strona-glowna')
   return {

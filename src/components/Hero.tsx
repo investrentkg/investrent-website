@@ -20,8 +20,15 @@ interface HeroProps {
 // miasta w samym naglowku (byla tylko w malej plakietce nad nim). Przy celu
 // "zdominowac wyszukiwania lokalne dla Kolobrzegu" to realna, warta poprawy
 // okazja - "w Kolobrzegu" zamiast "nad Baltykiem" jako ostatnia linia.
+//
+// ZMIANA (24.09.2026, paczka SEO - diagnoza pozycji): H1 nie zawieral slowa
+// "biuro" (fraza "biuro nieruchomosci kolobrzeg" byla tylko w title/meta).
+// Teraz H1 = "Biuro nieruchomości w Kołobrzegu" (te same 3 wiersze i ten sam
+// zloty akcent co wczesniej, wiec uklad/animacja bez zmian). Dotychczasowy,
+// bardziej emocjonalny przekaz ("Twoje wymarzone nieruchomosci") zostaje w
+// tekscie pod naglowkiem.
 const HEADLINE_LINES: { words: string[]; gold?: boolean }[] = [
-  { words: ['Twoje', 'wymarzone'] },
+  { words: ['Biuro'] },
   { words: ['nieruchomości'], gold: true },
   { words: ['w', 'Kołobrzegu'] },
 ]
@@ -160,8 +167,10 @@ export default function Hero({ stats, googleRating = 4.9, googleTotal = 55 }: He
             </h1>
 
             <p className={`text-white/70 text-[15px] leading-[1.8] max-w-[480px] mb-8 hero-reveal ${mounted ? 'hero-reveal-in' : ''}`} style={{ transitionDelay: '1200ms' }}>
-              Pomagamy kupować, sprzedawać i wynajmować nieruchomości w Kołobrzegu i okolicach.
+              Twoje wymarzone nieruchomości w Kołobrzegu i okolicach — pomagamy je kupować, sprzedawać
+              i <a href="/wynajem" className="text-white/90 underline underline-offset-2 hover:text-gold">wynajmować</a>.
               Bezpiecznie, skutecznie i bez stresu — od pierwszego kontaktu po klucze.
+              {' '}<a href="/kolobrzeg" className="text-white/90 underline underline-offset-2 hover:text-gold">Poznaj rynek nieruchomości w Kołobrzegu</a>.
             </p>
             <div className={`flex gap-3 mb-8 flex-wrap hero-reveal ${mounted ? 'hero-reveal-in' : ''}`} style={{ transitionDelay: '1380ms' }}>
               <a href="/oferty" className="btn-gold text-[14px] font-bold">
