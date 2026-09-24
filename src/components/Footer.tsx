@@ -22,6 +22,10 @@ const LINKS = [
   // NOWE (21.09.2026, SEO+Rozwój Produktu) - ten sam wzorzec co Blog powyzej,
   // celowo w stopce a nie w ciasnym gornym menu.
   { label: 'Nieruchomości Kołobrzeg', href: '/kolobrzeg' },
+  // NOWE (24.09.2026, paczka SEO) - /wynajem jest w gornym menu, ale stopka to
+  // druga, staly zestaw linkow wewnetrznych na kazdej podstronie (intencja
+  // "mieszkania na wynajem kolobrzeg" - GSC poz. ~8, 0 klikniec).
+  { label: 'Wynajem nieruchomości', href: '/wynajem' },
 ]
 
 export default function Footer({ office }: { office: Office | null }) {

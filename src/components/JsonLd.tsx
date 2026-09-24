@@ -11,10 +11,15 @@ import type { Office } from '@/types'
 // widget, nie sztywne liczby) byla dostepna tez na /o-nas i kazdej
 // kolejnej stronie, ktora tego bedzie potrzebowac, bez duplikowania kodu.
 export function JsonLd({ office, googleRating, googleTotal }: { office: Office | null; googleRating: number; googleTotal: number }) {
+  const sameAs = [office?.facebook_url, office?.instagram_url].filter((u): u is string => !!u)
   const schema = {
     "@context": "https://schema.org",
     "@type": "RealEstateAgent",
+    // NOWE (24.09.2026, paczka SEO): stabilny @id - ten sam byt biznesowy
+    // opisany na /, /o-nas i /kontakt jest dla Google jednym obiektem.
+    "@id": "https://www.investrent.com.pl/#biuro",
     "name": office?.name ?? "InvestRent Nieruchomości",
+    "alternateName": "Invest Rent",
     "description": "Biuro nieruchomości w Kołobrzegu. Kupno, sprzedaż i wynajem nieruchomości nad Bałtykiem.",
     "url": "https://www.investrent.com.pl",
     "telephone": office?.phone ?? "+48731554341",
@@ -41,6 +46,15 @@ export function JsonLd({ office, googleRating, googleTotal }: { office: Office |
       { "@type": "City", "name": "Gąski" },
       { "@type": "City", "name": "Trzebiatów" },
     ],
+    // NOWE (24.09.2026): godziny otwarcia - te same, ktore sa widoczne na
+    // stronie (Contact.tsx: "Pon-Pt 8:00-16:00 - Sob 9:00-14:00"). Przy zmianie
+    // godzin zaktualizowac OBA miejsca.
+    "openingHoursSpecification": [
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "opens": "08:00", "closes": "16:00" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "09:00", "closes": "14:00" },
+    ],
+    // sameAs tylko z profili faktycznie ustawionych w Ustawieniach biura (CRM).
+    ...(sameAs.length > 0 ? { "sameAs": sameAs } : {}),
     "aggregateRating": { "@type": "AggregateRating", "ratingValue": String(googleRating), "reviewCount": String(googleTotal) }
   }
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }} />
