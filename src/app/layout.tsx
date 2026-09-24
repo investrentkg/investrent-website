@@ -34,6 +34,12 @@ export const metadata: Metadata = {
   // ostrzezenia budu i obrazek podgladu mogl nie dzialac poprawnie na niektorych
   // platformach (np. WhatsApp).
   metadataBase: new URL('https://www.investrent.com.pl'),
+  // Weryfikacja wlasnosci strony w Google Search Console (konto daniel.kaminski2711@gmail.com,
+  // potrzebne do weryfikacji marki aplikacji OAuth w Google Cloud). NIE USUWAC -
+  // usuniecie cofa weryfikacje.
+  verification: {
+    google: 'DPbWw1Vt5Jf3CsaKHwQUJNbde9eieF0VuieK2S1BICs',
+  },
   icons: {
     icon: '/favicon.ico',
     apple: '/apple-touch-icon.png',
