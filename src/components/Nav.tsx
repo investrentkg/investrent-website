@@ -31,6 +31,9 @@ export default function Nav({ office }: { office: Office | null }) {
     { label: 'Kupno',    href: '/kupno' },
     { label: 'Sprzedaż', href: '/sprzedaz' },
     { label: 'Wynajem',  href: '/wynajem' },
+    // NOWE (24.09.2026, SEO): GSC pokazal, ze /kolobrzeg nie ma zadnego linku wejsciowego wykrytego przez Google
+    // ("wykryta - obecnie niezindeksowana") - link w glownym menu na kazdej podstronie. Krotka etykieta (menu jest ciasne).
+    { label: 'Kołobrzeg', href: '/kolobrzeg' },
     // NAPRAWA (audyt tresci, Daniel 30.07.2026): bylo w glownym menu starej
     // strony, brakowalo calkowicie w nowym - realna usluga firmy.
     { label: 'Zarządzanie najmem', href: '/zarzadzanie-najmem' },
