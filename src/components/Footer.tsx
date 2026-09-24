@@ -78,7 +78,7 @@ export default function Footer({ office }: { office: Office | null }) {
             <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
               {LINKS.map(l => (
                 <a key={l.label} href={l.href}
-                  style={{ color: 'rgba(255,255,255,.4)', fontSize: 12, textDecoration: 'none' }}>
+                  style={{ color: 'rgba(255,255,255,.75)', fontSize: 13, textDecoration: 'none' }}>
                   {l.label}
                 </a>
               ))}
