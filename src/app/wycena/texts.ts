@@ -71,16 +71,15 @@ export const T = {
     phoneHint: 'Podaj 9 cyfr (numer polski) albo pełny numer z kierunkowym kraju, zaczynający się od +.',
     // Teksty zgód i klauzuli = wersja CONSENT_VERSION (lib/valuation.ts). Zmiana JAKIEGOKOLWIEK z tych tekstów = nowy numer wersji.
     // Zatwierdzenie treści: Krytyk + przegląd AI (kancelaria nieangażowana wg decyzji Daniela 25.09; ryzyko przyjęte świadomie).
-    // Dwa OSOBNE pola, oba NIEZAZNACZONE domyślnie: (1) wymagana do oddzwonienia, (2) dobrowolna (marketing tel./SMS), nie warunkuje wyniku.
+    // Dwa OSOBNE pola, oba NIEZAZNACZONE domyślnie: (1) wymagana do oddzwonienia, (2) dobrowolna (marketing telefon+SMS, jedna zgoda), nie warunkuje wyniku.
     consentCallRequired: '(wymagana, jeśli podajesz numer telefonu)',
     consentCall:
       'Zgadzam się, aby spółka INVESTRENT SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ (biuro nieruchomości InvestRent) zadzwoniła do mnie pod podany numer wyłącznie w sprawie wyceny mojej nieruchomości. Zgodę mogę cofnąć w każdej chwili, pisząc na biuro@investrent.com.pl lub mówiąc o tym podczas rozmowy.',
-    // Zgoda marketingowa ROZDZIELONA na dwa kanały (telefon / SMS): każdy osobny, dobrowolny, niezaznaczony checkbox.
+    // Zgoda marketingowa: JEDNA, obejmuje dwa kanały naraz (telefon i SMS), jeden cel (oferty i usługi biura). Decyzja Daniela 25.09.2026
+    // (ryzyko granularności przyjęte świadomie, patrz lia_kalkulator_wyceny_2026_09_25.md). Bez "STOP": bramka SMS nie istnieje w systemie.
     consentMarketingOptional: '(dobrowolna)',
-    consentMarketingPhone:
-      'Chcę otrzymywać od spółki INVESTRENT SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ (biuro nieruchomości InvestRent) informacje o ofertach nieruchomości i usługach biura w rozmowach telefonicznych pod podany numer. Nie wpływa to na wynik wyceny ani na oddzwonienie w jej sprawie. Zgodę mogę cofnąć w każdej chwili, pisząc na biuro@investrent.com.pl lub mówiąc o tym podczas rozmowy.',
-    consentMarketingSms:
-      'Chcę otrzymywać od spółki INVESTRENT SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ (biuro nieruchomości InvestRent) informacje o ofertach nieruchomości i usługach biura w wiadomościach SMS pod podany numer. Nie wpływa to na wynik wyceny ani na oddzwonienie w jej sprawie. Zgodę mogę cofnąć w każdej chwili, pisząc na biuro@investrent.com.pl lub mówiąc o tym podczas rozmowy.',
+    consentMarketing:
+      'Chcę otrzymywać od spółki INVESTRENT SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ (biuro nieruchomości InvestRent) informacje o ofertach nieruchomości i usługach biura w rozmowach telefonicznych oraz w wiadomościach SMS pod podany numer. Nie wpływa to na wynik wyceny ani na oddzwonienie w jej sprawie. Zgodę mogę cofnąć w każdej chwili, pisząc na biuro@investrent.com.pl lub mówiąc o tym podczas rozmowy.',
     // Klauzula informacyjna (art. 13 RODO): pełne dane administratora wg odpisu KRS (api-krs.ms.gov.pl, 25.09.2026).
     // Fakty (kod backendu origin/main 25.09.2026): IP w limiterze w pamięci procesu (okno 24 h; 30 zapytań/h to okno 1 h), bez zapisu w bazie;
     // ai_valuations bez kontaktu i IP; odbiorcy danych leada: Brevo (mail do managerów), kalendarz Google (zadanie z imieniem i numerem).
@@ -91,8 +90,7 @@ export const T = {
       { h: 'Po co i na jakiej podstawie.', t: 'Wykorzystujemy Twoje dane w tych celach:', items: [
         'obliczenie i pokazanie szacunku — wykonanie Twojego żądania (art.\u00A06 ust.\u00A01 lit.\u00A0b RODO);',
         'telefon w sprawie wyceny — Twoja zgoda (art.\u00A06 ust.\u00A01 lit.\u00A0a RODO), jeśli podasz numer i zaznaczysz zgodę na telefon w sprawie wyceny;',
-        'informacje o ofertach i usługach w rozmowach telefonicznych — Twoja zgoda (art.\u00A06 ust.\u00A01 lit.\u00A0a RODO), jeśli ją zaznaczysz;',
-        'informacje o ofertach i usługach w wiadomościach SMS — Twoja zgoda (art.\u00A06 ust.\u00A01 lit.\u00A0a RODO), jeśli ją zaznaczysz;',
+        'informacje o ofertach nieruchomości i usługach biura w rozmowach telefonicznych i wiadomościach SMS — Twoja zgoda (art.\u00A06 ust.\u00A01 lit.\u00A0a RODO), jeśli zaznaczysz osobną, dobrowolną zgodę marketingową (jedna zgoda obejmuje oba kanały);',
         'dowód udzielonych zgód, aby wykazać ich udzielenie i bronić się przed roszczeniami — nasz prawnie uzasadniony interes (art.\u00A06 ust.\u00A01 lit.\u00A0f oraz art.\u00A07 ust.\u00A01 RODO);',
         'bezpieczeństwo formularza i ograniczenie liczby zapytań (adres IP) — nasz prawnie uzasadniony interes (art.\u00A06 ust.\u00A01 lit.\u00A0f RODO).',
       ] },

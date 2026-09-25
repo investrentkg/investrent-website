@@ -291,8 +291,7 @@ function LeadPanel({ outcome, values }: { outcome: EstimateOutcome | null; value
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [consent, setConsent] = useState(false) // zgoda 1 (wymagana) - NIEZAZNACZONA domyslnie
-  const [marketingPhone, setMarketingPhone] = useState(false) // zgoda 2 (marketing telefon, opcjonalna) - NIEZAZNACZONA domyslnie
-  const [marketingSms, setMarketingSms] = useState(false) // zgoda 3 (marketing SMS, opcjonalna) - NIEZAZNACZONA domyslnie
+  const [marketing, setMarketing] = useState(false) // zgoda 2 (marketing telefon+SMS, jedna, opcjonalna) - NIEZAZNACZONA domyslnie
   const [errs, setErrs] = useState<{ phone?: string; consent?: string }>({})
   const [state, setState] = useState<'idle' | 'sending' | 'ok' | 'fail'>('idle')
   const inFlight = useRef(false)
@@ -316,7 +315,7 @@ function LeadPanel({ outcome, values }: { outcome: EstimateOutcome | null; value
         source: 'wycena_modal',
         client_type: 'seller',
         preferred_city: values.city.trim(),
-        notes: buildLeadNotes(values, outcome, readUtm(window.location.search), { marketingPhone, marketingSms }),
+        notes: buildLeadNotes(values, outcome, readUtm(window.location.search), { marketing }),
       })
       if (r?.ok) { setState('ok'); trackValuation('wycena_lead', { mode: outcome?.kind ?? 'none' }) } else setState('fail')
     } catch {
@@ -363,16 +362,10 @@ function LeadPanel({ outcome, values }: { outcome: EstimateOutcome | null; value
           {errs.consent && <div id="wy-consent-err" role="alert" style={{ ...errStyle, marginLeft: 34 }}>{errs.consent}</div>}
         </div>
         <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-          <input id="wy-marketing-phone" className="wy-check" type="checkbox" checked={marketingPhone}
-            onChange={e => setMarketingPhone(e.target.checked)}
+          <input id="wy-marketing" className="wy-check" type="checkbox" checked={marketing}
+            onChange={e => setMarketing(e.target.checked)}
             style={{ width: 22, height: 22, marginTop: 2, flexShrink: 0, accentColor: '#0d2a5c' }} />
-          <label htmlFor="wy-marketing-phone" style={{ fontSize: 14, color: '#374151', lineHeight: 1.6 }}>{T.lead.consentMarketingPhone} <strong>{T.lead.consentMarketingOptional}</strong></label>
-        </div>
-        <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-          <input id="wy-marketing-sms" className="wy-check" type="checkbox" checked={marketingSms}
-            onChange={e => setMarketingSms(e.target.checked)}
-            style={{ width: 22, height: 22, marginTop: 2, flexShrink: 0, accentColor: '#0d2a5c' }} />
-          <label htmlFor="wy-marketing-sms" style={{ fontSize: 14, color: '#374151', lineHeight: 1.6 }}>{T.lead.consentMarketingSms} <strong>{T.lead.consentMarketingOptional}</strong></label>
+          <label htmlFor="wy-marketing" style={{ fontSize: 14, color: '#374151', lineHeight: 1.6 }}>{T.lead.consentMarketing} <strong>{T.lead.consentMarketingOptional}</strong></label>
         </div>
         <div id="wy-consent-hint" style={hint}>
           {T.lead.consentInfo.map(c => (
