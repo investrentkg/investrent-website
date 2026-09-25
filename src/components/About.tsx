@@ -66,7 +66,7 @@ export default function About() {
               Nieruchomości nad Bałtykiem&nbsp;— to nasza specjalność
             </h2>
             <p style={{ fontSize: 14, color: '#6b7280', lineHeight: 1.8, marginBottom: 16 }}>
-              InvestRent to kołobrzeskie biuro nieruchomości z wieloletnim doświadczeniem na rynku nadmorskim. Doskonale znamy lokalne realia — od cen po prawne zawiłości rynku wakacyjnego.
+              InvestRent to kołobrzeskie <a href="/kolobrzeg" style={{ color: '#1a4fa0', textDecoration: 'underline' }}>biuro nieruchomości</a> z wieloletnim doświadczeniem na rynku nadmorskim. Doskonale znamy lokalne realia — od cen po prawne zawiłości rynku wakacyjnego.
             </p>
             <p style={{ fontSize: 14, color: '#6b7280', lineHeight: 1.8, marginBottom: 24 }}>
               Naszą misją jest przeprowadzenie klientów przez każdą transakcję bezpiecznie i bez stresu. Nie znikamy po podpisaniu umowy — jesteśmy do dyspozycji przez cały proces i długo po nim.

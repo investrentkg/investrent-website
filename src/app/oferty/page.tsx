@@ -16,9 +16,17 @@ import type { Metadata } from 'next'
 // nic nie edytuje w CRM.
 const DEFAULT_TITLE = 'Oferty nieruchomości Kołobrzeg'
 const DEFAULT_DESCRIPTION = 'Przeglądaj aktualne oferty mieszkań, domów i działek na sprzedaż i wynajem w Kołobrzegu i okolicach nadmorskich.'
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({ searchParams }: { searchParams: { [k: string]: string } }): Promise<Metadata> {
   const content = await getPageContent('oferty')
+  // NOWE (24.09.2026, paczka SEO - "strony-smieci w indeksie"): widok ofert
+  // pojedynczego agenta (?agent_id=...) to cienka, duplikujaca strona bez wartosci
+  // wyszukiwawczej - noindex,follow (linki do ofert nadal sa sledzone).
+  // Filtry typu/transakcji (?property_type=, ?transaction_type=) zostaja
+  // indeksowalne: kieruja na nie 301 ze starych adresow kategorii, a canonical
+  // (nizej) i tak wskazuje /oferty.
+  const robots = searchParams?.agent_id ? { index: false, follow: true } : undefined
   return {
+    ...(robots ? { robots } : {}),
     title: content?.blocks?.meta_title || DEFAULT_TITLE,
     description: content?.blocks?.meta_description || DEFAULT_DESCRIPTION,
     // NAPRAWA (audyt SEO 31.07.2026, punkt 3): brak kanonicznego URL na calej stronie.

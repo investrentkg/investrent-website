@@ -76,15 +76,23 @@ export async function generateMetadata({ params, searchParams }: { params: { id:
   // {cena} zl") - brak ulicy/dzielnicy, metrazu, pokoi. Teraz wykorzystuje
   // kazda dostepna, konkretna dana - wiecej fraz kluczowych ktorymi ludzie
   // faktycznie szukaja, bez wymyslania tresci ktorej oferta nie ma.
-  const locationBits = [offer.address_district, offer.address_city].filter(Boolean).join(', ')
+  // ZMIANA (24.09.2026, paczka SEO): opis skladany z pol strukturalnych w
+  // poprawnej polszczyznie: zamiast dawnego "w Sianozety, Kolobrzeg" (bledna
+  // odmiana, bo miejscowosc byla wstawiana po "w") uzywamy odmiany-neutralnego
+  // "Lokalizacja: miasto (dzielnica)"; zawsze typ, transakcja, lokalizacja,
+  // metraz, pokoje i cena => unikalny opis per oferta. ZASADA: bez ulicy/numeru w meta
+  // (brak dokladnego adresu w publicznym tekscie ogloszenia).
+  const locationLabel = offer.address_city
+    ? `${offer.address_city}${offer.address_district ? ` (${offer.address_district})` : ''}`
+    : ''
   const descParts = [
     `${propertyTypeLabel(offer.property_type)} na ${transactionLabel(offer.transaction_type)}`,
-    locationBits && `w ${locationBits}`,
+    locationLabel && `lokalizacja: ${locationLabel}`,
     offer.area && `${offer.area} m²`,
     offer.rooms_count && `${offer.rooms_count} pok.`,
-    offer.price ? `${offer.price.toLocaleString('pl-PL')} zł` : 'cena na zapytanie',
+    offer.price ? `${Number(offer.price).toLocaleString('pl-PL')} zł` : 'cena na zapytanie',
   ].filter(Boolean)
-  const description = descParts.join(', ') + '.'
+  const description = `${descParts.join(', ')}. Oferta biura nieruchomości InvestRent Kołobrzeg.`
   // NAPRAWA (23.09, zgłoszenie Weroniki - miniaturka na liście ofert vs
   // pierwsze zdjęcie w galerii oferty pokazywały co innego): is_main
   // potrafiło się rozjechać z sort_order (patrz naprawa w offers.ts
@@ -93,7 +101,15 @@ export async function generateMetadata({ params, searchParams }: { params: { id:
   // z definicji - to samo zdjęcie co pierwszy slajd w galerii poniżej
   // (OfferDetailClient.tsx -> Gallery), zamiast osobno liczonego is_main.
   const mainPhoto = offer.offer_photos?.[0]?.url
-  const title = offer.title ?? propertyTypeLabel(offer.property_type)
+  // Tytul: wlasny tytul oferty (jesli agent go nadal), a gdy pusty - generowany
+  // z typu, metrazu i miejscowosci (wczesniej samo "Mieszkanie" - nieunikalne).
+  const title = offer.title
+    ?? [
+      `${propertyTypeLabel(offer.property_type)} na ${transactionLabel(offer.transaction_type)}`,
+      offer.address_city,
+      offer.area && `${offer.area} m²`,
+      offer.rooms_count && `${offer.rooms_count} pok.`,
+    ].filter(Boolean).join(', ')
   // OG/Twitter NIE sa objete szablonem layout.tsx (osobne pola, nie
   // dziedzicza title.template), wiec tu marka zostaje doklejona jawnie -
   // inaczej niz <title> ponizej, gdzie robi to sam szablon.
@@ -141,16 +157,14 @@ function OfferJsonLd({ offer }: { offer: any }) {
       name: offer.title ?? propertyTypeLabel(offer.property_type),
       ...(offer.area ? { floorSize: { '@type': 'QuantitativeValue', value: offer.area, unitCode: 'MTK' } } : {}),
       ...(offer.rooms_count ? { numberOfRooms: offer.rooms_count } : {}),
+      // ZASADA (24.09.2026): brak dokladnego adresu w publicznych ogloszeniach -
+      // celowo BEZ streetAddress i BEZ geo (wspolrzednych) w JSON-LD oferty.
       address: {
         '@type': 'PostalAddress',
         addressLocality: offer.address_city,
         ...(offer.address_district ? { addressRegion: offer.address_district } : {}),
-        ...(offer.address_street ? { streetAddress: offer.address_street } : {}),
         addressCountry: 'PL',
       },
-      ...(offer.address_lat && offer.address_lng ? {
-        geo: { '@type': 'GeoCoordinates', latitude: offer.address_lat, longitude: offer.address_lng },
-      } : {}),
     },
     offers: {
       '@type': 'Offer',
