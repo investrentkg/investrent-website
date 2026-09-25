@@ -91,7 +91,7 @@ export function validateForm(v: FormValues): FormErrors {
   else if (city.length > 80) e.city = 'Nazwa miejscowości jest za długa.'
   if (v.district.trim().length > 80) e.district = 'Nazwa dzielnicy jest za długa.'
   else if (v.property_type === 'mieszkanie' && isKolobrzeg(city) && !v.district.trim()) {
-    e.district = 'Podaj dzielnicę lub osiedle — bez niej nie policzymy widełek. Jeśli nie znasz nazwy, zostaw sam numer: agent wyceni mieszkanie indywidualnie.'
+    e.district = 'Podaj dzielnicę lub osiedle — bez niej nie policzymy widełek. Jeśli nie znasz nazwy, możesz zostawić sam numer telefonu i zgodę na kontakt, a agent przygotuje wycenę indywidualnie.'
   }
 
   const area = parseNum(v.area_m2)
@@ -216,10 +216,10 @@ export function formatRange(r: Range): string {
 }
 
 // ── Notatka do leada (pole notes w /api/public/leads) ──
-// Wersja tekstow zgod i klauzuli (texts.ts: consentCall, consentMarketing, consentInfoPrefix). v2 = wersja OCZEKUJACA:
+// Wersja tekstow zgod i klauzuli (texts.ts: consentCall, consentMarketing, consentInfoPrefix). v3 = wersja OCZEKUJACA (v2: pierwsza wersja po Krytyku 6/10 zastapiona przed publikacja):
 // publikacja na produkcji wymaga zatwierdzenia tresci (Krytyk + przeglad AI; kancelaria nieangazowana wg decyzji Daniela 25.09); kazda zmiana tych tekstow = nowy numer wersji.
 // Pelne brzmienie danej wersji jest wersjonowane w repo (git) - do leada zapisujemy TYLKO znacznik (limit backendu: 500 znakow).
-export const CONSENT_VERSION = 'wycena-2026-09-25-v2'
+export const CONSENT_VERSION = 'wycena-2026-09-25-v3'
 export const NOTES_MAX = 490 // backend /api/public/leads zapisuje clean(notes) = pierwsze 500 znakow (odrzuca > 1000)
 
 export function describeInput(v: FormValues): string {

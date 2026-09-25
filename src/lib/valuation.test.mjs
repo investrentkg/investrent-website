@@ -65,16 +65,16 @@ test('telefon i UTM', () => {
 const rangeOut = { kind: 'range', range: { low: 400000, high: 480000 }, pricePerM2: null, comparables: null, quality: null, disclaimer: null, message: null }
 test('notatka leada: dane, wynik, znacznik zgody, UTM (zgoda bez pelnych tekstow)', () => {
   const n = buildLeadNotes(ok, rangeOut, 'utm_source=meta', { marketing: false, at: '2026-09-25T10:00:00.000Z' })
-  assert.ok(n.startsWith('[Zgoda-kalkulator] wersja=wycena-2026-09-25-v2; czas=2026-09-25T10:00:00.000Z; kontakt=tak; marketing=nie'))
+  assert.ok(n.startsWith('[Zgoda-kalkulator] wersja=wycena-2026-09-25-v3; czas=2026-09-25T10:00:00.000Z; kontakt=tak; marketing=nie'))
   assert.ok(n.includes('Źródło: kalkulator wyceny (z wynikiem: tak)')); assert.ok(n.includes('Mieszkanie, Kołobrzeg (Podczele)')); assert.ok(n.includes('52,5 m²')); assert.ok(n.includes('utm_source=meta'))
   assert.equal(buildConsentMarker({ marketing: true }).includes('marketing=tak'), true)
-  assert.ok(CONSENT_VERSION.endsWith('-v2') && !CONSENT_VERSION.includes('DO-PRAWNIKA'))
+  assert.ok(CONSENT_VERSION.endsWith('-v3') && !CONSENT_VERSION.includes('DO-PRAWNIKA'))
 })
 test('notatka leada: z zgoda marketingowa i dlugim UTM miesci sie w limicie 500 znakow backendu, znacznik zgody nieuciety', () => {
   const longUtm = ['utm_source','utm_medium','utm_campaign','utm_content','utm_term'].map(k => k + '=' + 'x'.repeat(80)).join(' ')
   const n = buildLeadNotes({ ...ok, district: 'Radzikowo-Osiedle Nadmorskie' }, rangeOut, longUtm, { marketing: true, at: '2026-09-25T10:00:00.000Z' })
   assert.ok(n.length <= NOTES_MAX && NOTES_MAX < 500, 'dlugosc ' + n.length)
-  assert.ok(n.startsWith('[Zgoda-kalkulator] wersja=wycena-2026-09-25-v2; czas=2026-09-25T10:00:00.000Z; kontakt=tak; marketing=tak'))
+  assert.ok(n.startsWith('[Zgoda-kalkulator] wersja=wycena-2026-09-25-v3; czas=2026-09-25T10:00:00.000Z; kontakt=tak; marketing=tak'))
   const clean = String(n).slice(0, 500).replace(/[<>]/g, '') // jak backend: clean(notes)
   assert.equal(clean, n)
 })

@@ -255,9 +255,9 @@ function OutcomePanel({ outcome, scoped, onAgain }: { outcome: EstimateOutcome; 
             </div>
           )}
         </div>
+        <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '0 0 8px' }}><strong>{T.result.scopeNote}</strong></p>
         {outcome.message && <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '0 0 8px' }}>{outcome.message}</p>}
         {outcome.comparables && <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '0 0 8px' }}>{T.result.comparables(outcome.comparables.min, outcome.comparables.max)}</p>}
-        <p style={{ color: '#374151', fontSize: 14.5, margin: '0 0 8px' }}>{T.result.scopeNote}</p>
         <p style={{ color: '#7c2d12', background: '#fff7ed', border: '1px solid #fed7aa', borderRadius: 10, padding: '10px 14px', fontSize: 14, lineHeight: 1.6, margin: '12px 0 0' }}>
           <strong>{outcome.disclaimer ?? T.result.disclaimerFallback}</strong>
         </p>
@@ -357,7 +357,7 @@ function LeadPanel({ outcome, values }: { outcome: EstimateOutcome | null; value
               aria-invalid={!!errs.consent} aria-describedby={describedBy('wy-consent', false, !!errs.consent)}
               onChange={e => { setConsent(e.target.checked); if (errs.consent) setErrs(p => ({ ...p, consent: undefined })) }}
               style={{ width: 22, height: 22, marginTop: 2, flexShrink: 0, accentColor: '#0d2a5c' }} />
-            <label htmlFor="wy-consent" style={{ fontSize: 14, color: '#374151', lineHeight: 1.6 }}>{T.lead.consentCall} *</label>
+            <label htmlFor="wy-consent" style={{ fontSize: 14, color: '#374151', lineHeight: 1.6 }}>{T.lead.consentCall} <strong>{T.lead.consentCallRequired}</strong></label>
           </div>
           {errs.consent && <div id="wy-consent-err" role="alert" style={{ ...errStyle, marginLeft: 34 }}>{errs.consent}</div>}
         </div>
@@ -365,10 +365,11 @@ function LeadPanel({ outcome, values }: { outcome: EstimateOutcome | null; value
           <input id="wy-marketing" className="wy-check" type="checkbox" checked={marketing}
             onChange={e => setMarketing(e.target.checked)}
             style={{ width: 22, height: 22, marginTop: 2, flexShrink: 0, accentColor: '#0d2a5c' }} />
-          <label htmlFor="wy-marketing" style={{ fontSize: 14, color: '#374151', lineHeight: 1.6 }}>{T.lead.consentMarketing} {T.lead.optionalLabel}</label>
+          <label htmlFor="wy-marketing" style={{ fontSize: 14, color: '#374151', lineHeight: 1.6 }}>{T.lead.consentMarketing} <strong>{T.lead.consentMarketingOptional}</strong></label>
         </div>
         <div id="wy-consent-hint" style={hint}>
-          {T.lead.consentInfoPrefix}<a href="/rodo" target="_blank" rel="noopener noreferrer" style={{ color: '#1a4fa0', textDecoration: 'underline' }}>{T.lead.consentInfoLink}</a>{T.lead.consentInfoSuffix}
+          {T.lead.consentInfo.map(c => <p key={c.h} style={{ margin: '0 0 6px' }}><strong>{c.h}</strong> {c.t}</p>)}
+          <p style={{ margin: 0 }}>{T.lead.consentInfoMore}<a href="/rodo" target="_blank" rel="noopener noreferrer" style={{ color: '#1a4fa0', textDecoration: 'underline' }}>{T.lead.consentInfoLink}</a>{T.lead.consentInfoSuffix}</p>
         </div>
       </div>
 
