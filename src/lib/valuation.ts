@@ -216,10 +216,10 @@ export function formatRange(r: Range): string {
 }
 
 // ── Notatka do leada (pole notes w /api/public/leads) ──
-// Wersja tekstow zgod i klauzuli (texts.ts: consentCall, consentMarketing, consentInfoPrefix). v7 = wersja OCZEKUJACA (v2-v6 zastapione przed publikacja po recenzjach Krytyka):
+// Wersja tekstow zgod i klauzuli (texts.ts: consentCall, consentMarketing, consentInfoPrefix). v8 = wersja OCZEKUJACA (v2-v7 zastapione przed publikacja po recenzjach Krytyka):
 // publikacja na produkcji wymaga zatwierdzenia tresci (Krytyk + przeglad AI; kancelaria nieangazowana wg decyzji Daniela 25.09); kazda zmiana tych tekstow = nowy numer wersji.
 // Pelne brzmienie danej wersji jest wersjonowane w repo (git) - do leada zapisujemy TYLKO znacznik (limit backendu: 500 znakow).
-export const CONSENT_VERSION = 'wycena-2026-09-25-v7'
+export const CONSENT_VERSION = 'wycena-2026-09-25-v8'
 export const NOTES_MAX = 490 // backend /api/public/leads zapisuje clean(notes) = pierwsze 500 znakow (odrzuca > 1000)
 
 export function describeInput(v: FormValues): string {
@@ -275,7 +275,7 @@ export function formatRetryAfter(seconds: number | null): string {
 // NIE pasuje do parsera zgod CRM (wzorzec "[Zgoda]" / "[Wypisanie]" w consentRules.ts) ani do blokady looksLikeConsentNote, wiec nie udaje wpisu podpisanego serwerem.
 // UWAGA: endpoint publiczny nie podpisuje wpisow (podpis HMAC ma tylko serwer); wartosc dowodowa = wersja tekstu w repo + czas zapisu notatki po stronie CRM.
 export function buildConsentMarker(c: ConsentRecord): string {
-  const channels = ['telefon-wycena', ...(c.marketing ? ['marketing-telefon-sms'] : [])] // jedna zgoda marketingowa = jeden token kanału
+  const channels = ['telefon-wycena', ...(c.marketing ? ['marketing-telefon'] : [])] // zgoda marketingowa tylko na telefon (SMS odlozony do uruchomienia bramki)
   return `[Zgoda-kalkulator] kanał=${channels.join(',')}; czas=${c.at ?? new Date().toISOString()}; wersja=${CONSENT_VERSION}`
 }
 

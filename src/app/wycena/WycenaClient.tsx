@@ -291,7 +291,7 @@ function LeadPanel({ outcome, values }: { outcome: EstimateOutcome | null; value
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [consent, setConsent] = useState(false) // zgoda 1 (wymagana) - NIEZAZNACZONA domyslnie
-  const [marketing, setMarketing] = useState(false) // zgoda 2 (marketing telefon+SMS, jedna, opcjonalna) - NIEZAZNACZONA domyslnie
+  const [marketing, setMarketing] = useState(false) // zgoda 2 (marketing tylko telefon, opcjonalna) - NIEZAZNACZONA domyslnie
   const [errs, setErrs] = useState<{ phone?: string; consent?: string }>({})
   const [state, setState] = useState<'idle' | 'sending' | 'ok' | 'fail'>('idle')
   const inFlight = useRef(false)

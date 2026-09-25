@@ -65,16 +65,16 @@ test('telefon i UTM', () => {
 const rangeOut = { kind: 'range', range: { low: 400000, high: 480000 }, pricePerM2: null, comparables: null, quality: null, disclaimer: null, message: null }
 test('notatka leada: dane, wynik, znacznik zgody, UTM (zgoda bez pelnych tekstow)', () => {
   const n = buildLeadNotes(ok, rangeOut, 'utm_source=meta', { marketing: false, at: '2026-09-25T10:00:00.000Z' })
-  assert.ok(n.startsWith('[Zgoda-kalkulator] kanał=telefon-wycena; czas=2026-09-25T10:00:00.000Z; wersja=wycena-2026-09-25-v7'))
+  assert.ok(n.startsWith('[Zgoda-kalkulator] kanał=telefon-wycena; czas=2026-09-25T10:00:00.000Z; wersja=wycena-2026-09-25-v8'))
   assert.ok(n.includes('Źródło: kalkulator wyceny (z wynikiem: tak)')); assert.ok(n.includes('Mieszkanie, Kołobrzeg (Podczele)')); assert.ok(n.includes('52,5 m²')); assert.ok(n.includes('utm_source=meta'))
-  assert.equal(buildConsentMarker({ marketing: true }).includes('marketing-telefon-sms'), true)
-  assert.ok(CONSENT_VERSION.endsWith('-v7') && !CONSENT_VERSION.includes('DO-PRAWNIKA'))
+  assert.equal(buildConsentMarker({ marketing: true }).includes('marketing-telefon'), true)
+  assert.ok(CONSENT_VERSION.endsWith('-v8') && !CONSENT_VERSION.includes('DO-PRAWNIKA'))
 })
 test('notatka leada: z zgoda marketingowa i dlugim UTM miesci sie w limicie 500 znakow backendu, znacznik zgody nieuciety', () => {
   const longUtm = ['utm_source','utm_medium','utm_campaign','utm_content','utm_term'].map(k => k + '=' + 'x'.repeat(80)).join(' ')
   const n = buildLeadNotes({ ...ok, district: 'Radzikowo-Osiedle Nadmorskie' }, rangeOut, longUtm, { marketing: true, at: '2026-09-25T10:00:00.000Z' })
   assert.ok(n.length <= NOTES_MAX && NOTES_MAX < 500, 'dlugosc ' + n.length)
-  assert.ok(n.startsWith('[Zgoda-kalkulator] kanał=telefon-wycena,marketing-telefon-sms; czas=2026-09-25T10:00:00.000Z; wersja=wycena-2026-09-25-v7'))
+  assert.ok(n.startsWith('[Zgoda-kalkulator] kanał=telefon-wycena,marketing-telefon; czas=2026-09-25T10:00:00.000Z; wersja=wycena-2026-09-25-v8'))
   const clean = String(n).slice(0, 500).replace(/[<>]/g, '') // jak backend: clean(notes)
   assert.equal(clean, n)
 })
@@ -96,7 +96,7 @@ test('minimalny czas wypelnienia: < 3 s od zaladowania = za szybko', () => {
 test('znacznik zgody: pola kanał/czas/wersja czytelne dla redakcji retencji (kanał[:=], czas ISO, wersja), bez danych kontaktowych', () => {
   const m = buildConsentMarker({ marketing: true, at: '2026-09-25T10:00:00.000Z' })
   const field = key => new RegExp(String.raw`(?:^|[;\s])` + key + String.raw`[:=]\s*([^;]*)`, 'i').exec(m)?.[1]?.trim()
-  assert.equal(field('kanał'), 'telefon-wycena,marketing-telefon-sms'); assert.equal(field('czas'), '2026-09-25T10:00:00.000Z'); assert.equal(field('wersja'), CONSENT_VERSION)
+  assert.equal(field('kanał'), 'telefon-wycena,marketing-telefon'); assert.equal(field('czas'), '2026-09-25T10:00:00.000Z'); assert.equal(field('wersja'), CONSENT_VERSION)
   // jak w backendzie (consentNoteHasContactData): daty ISO (takze w numerze wersji) sa odejmowane przed liczeniem cyfr
   const withoutTime = m.replace(new RegExp(String.raw`\d{4}-\d{2}-\d{2}(?:T[\d:.]+Z)?`, 'g'), '')
   assert.ok(!m.includes('@')); assert.ok((withoutTime.match(new RegExp(String.raw`\d`, 'g')) ?? []).length < 9)
@@ -106,10 +106,10 @@ test('teksty: liczba porownan (przedzial i "min lub wiecej" gdy max == min)', as
   assert.equal(T.result.comparables(20, 49), 'Do szacunku wykorzystaliśmy co najmniej 20 porównywalnych nieruchomości z okolicy.')
   assert.equal(T.result.comparables(50, 50), 'Do szacunku wykorzystaliśmy co najmniej 50 porównywalnych nieruchomości z okolicy.')
 })
-test('jedna zgoda marketingowa: jeden token marketing-telefon-sms; brak marketingu = tylko telefon-wycena', () => {
-  assert.equal(buildConsentMarker({ marketing: true, at: 'X' }), '[Zgoda-kalkulator] kanał=telefon-wycena,marketing-telefon-sms; czas=X; wersja=' + CONSENT_VERSION)
+test('zgoda marketingowa tylko na telefon: token marketing-telefon; brak marketingu = tylko telefon-wycena; SMS nigdzie', () => {
+  assert.equal(buildConsentMarker({ marketing: true, at: 'X' }), '[Zgoda-kalkulator] kanał=telefon-wycena,marketing-telefon; czas=X; wersja=' + CONSENT_VERSION)
   assert.ok(buildConsentMarker({ marketing: false, at: 'X' }).includes('kanał=telefon-wycena;'))
-  assert.ok(!buildConsentMarker({ marketing: true }).includes('marketing-sms;'))
+  assert.ok(!buildConsentMarker({ marketing: true }).toLowerCase().includes('sms'))
 })
 test('komunikat limitu: czas ponowienia z retry_after_seconds backendu (okno 1 h albo 24 h)', () => {
   assert.equal(formatRetryAfter(30), 'minutę'); assert.equal(formatRetryAfter(1800), '30 min')
@@ -129,10 +129,14 @@ test('teksty v6: art. 17 ust. 3 lit. e, skrot numeru w "Jak liczymy", brak niepo
   assert.ok(all.includes('Przekazanie danych do Cloudflare i Google opiera się na Data Privacy Framework')); assert.ok(!all.includes('standardowych klauzulach umownych'))
   assert.ok(T.lead.bodyFallback.startsWith('Zaznacz zgodę na telefon w sprawie wyceny'))
 })
-test('teksty v7: jeden checkbox marketingowy nazywa oba kanaly, cel i sposob cofniecia; bez STOP i bez osobnych zgod', async () => {
+test('teksty v8: zgoda marketingowa tylko telefon (bez SMS), okres marketingu wprost, errConsent w liczbie pojedynczej', async () => {
   const { T } = await import('../app/wycena/texts.ts')
+  const all = JSON.stringify(T)
   const m = T.lead.consentMarketing
-  assert.ok(m.includes('rozmowach telefonicznych oraz w wiadomościach SMS')); assert.ok(m.includes('ofertach nieruchomości i usługach biura'))
+  assert.ok(m.includes('w rozmowach telefonicznych pod podany numer')); assert.ok(m.includes('ofertach nieruchomości i usługach biura'))
   assert.ok(m.includes('biuro@investrent.com.pl') && m.includes('mówiąc o tym podczas rozmowy'))
-  assert.ok(!JSON.stringify(T).includes('STOP')); assert.equal(T.lead.consentMarketingPhone, undefined); assert.equal(T.lead.consentMarketingSms, undefined)
+  assert.ok(!all.includes('SMS') && !all.includes('STOP'))
+  assert.ok(all.includes('wygasa razem ze zgłoszeniem')); assert.ok(T.lead.errConsent.endsWith('Zgoda marketingowa jest dobrowolna.'))
+  assert.ok(T.result.outOfScopeBody.includes('tylko wtedy, gdy zaznaczysz osobną zgodę marketingową'))
+  assert.ok(!all.includes('wiadomości lub rozmowy'))
 })
