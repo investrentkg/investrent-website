@@ -63,19 +63,22 @@ export const T = {
     name: 'Imię (opcjonalnie)',
     phone: 'Numer telefonu',
     phoneHint: 'Np. 600 100 200',
-    // PRAWNIK: przed włączeniem — wersja robocza Krytyka; do uzupełnienia: adres z KRS + kod pocztowy,
-    // e-mail do cofania zgody, decyzja: jedna zgoda czy dwa pola (art. 398 PKE).
-    consent:
-      'Wyrażam zgodę na kontakt telefoniczny ze strony Investrent sp. z o.o. z siedzibą w Kołobrzegu, [adres z KRS, kod pocztowy], w sprawie wyceny mojej nieruchomości, w tym na przedstawienie oferty pośrednictwa w jej sprzedaży lub wynajmie. Zgodę mogę w każdej chwili cofnąć, pisząc na [e-mail biura] lub dzwoniąc pod +48 731 554 341. Cofnięcie zgody nie wpływa na zgodność z prawem kontaktu sprzed jej cofnięcia.',
-    // PRAWNIK: przed włączeniem — dane administratora, okres przechowywania, odbiorcy (hosting/CRM, Cloudflare Turnstile).
+    // PRAWNIK: przed włączeniem — wersja v1 do zatwierdzenia przez kancelarię (plik de_zgody_per_kanal...pkt 2).
+    // Dwa OSOBNE pola: (1) obowiązkowe — telefon w sprawie wyceny, (2) opcjonalne, niezaznaczone — marketing tel./SMS (art. 398 PKE).
+    consentCall:
+      'Zgadzam się, aby Investrent sp. z o.o. z siedzibą w Kołobrzegu, ul. Ratuszowa\u00A012/1\u00A0lok.\u00A03, 78-100 Kołobrzeg, zadzwoniła do mnie pod podany numer telefonu w sprawie wyceny mojej nieruchomości. Zgodę mogę cofnąć w każdej chwili, pisząc na biuro@investrent.com.pl lub dzwoniąc pod +48\u00A0731\u00A0554\u00A0341; cofnięcie nie wpływa na zgodność z prawem kontaktu sprzed jego cofnięcia.',
+    consentMarketing:
+      'Wyrażam zgodę na kontakt telefoniczny i SMS w celu przedstawienia mi oferty pośrednictwa w sprzedaży lub wynajmie mojej nieruchomości oraz innych ofert Investrent sp. z o.o. (marketing bezpośredni, art.\u00A0398 Prawa komunikacji elektronicznej). Zgoda jest dobrowolna, niezaznaczona domyślnie i niewymagana do skorzystania z kalkulatora ani do oddzwonienia w sprawie wyceny. Mogę ją cofnąć w każdej chwili w sposób podany wyżej.',
+    optionalLabel: '(opcjonalnie)',
+    // PRAWNIK: przed włączeniem — klauzula informacyjna; okres przechowywania w nawiasie do potwierdzenia przez prawnika.
     consentInfoPrefix:
-      'Administratorem Twoich danych (numer telefonu, imię, dane nieruchomości i wynik szacunku) jest Investrent sp. z o.o., [adres]. Przetwarzamy je, aby skontaktować się z Tobą w sprawie wyceny, przez [okres – do ustalenia]. Formularz kalkulatora chroni przed nadużyciami usługa Cloudflare Turnstile (Cloudflare, Inc.), która może przetwarzać dane techniczne przeglądarki i adres IP. Masz prawo dostępu do danych, ich sprostowania, usunięcia, ograniczenia przetwarzania, przenoszenia oraz wniesienia skargi do Prezesa UODO. Więcej informacji znajdziesz w ',
-    consentInfoLink: 'polityce prywatności',
+      'Administratorem Twoich danych (numer telefonu, imię, dane nieruchomości i wynik szacunku) jest Investrent sp. z o.o., ul. Ratuszowa\u00A012/1\u00A0lok.\u00A03, 78-100 Kołobrzeg, e-mail: biuro@investrent.com.pl. Dane przetwarzamy: (1) aby zadzwonić w sprawie wyceny na Twoje żądanie (art.\u00A06 ust.\u00A01 lit.\u00A0b RODO), (2) w celach marketingowych tylko po zaznaczeniu zgody opcjonalnej (art.\u00A06 ust.\u00A01 lit.\u00A0a RODO), (3) dla bezpieczeństwa i limitów zapytań, w tym adres IP (art.\u00A06 ust.\u00A01 lit.\u00A0f RODO). Przechowujemy je [12 miesięcy od ostatniego kontaktu – do potwierdzenia przez prawnika], a dane z rozmów prowadzących do umowy tak długo, jak wymagają tego przepisy. Odbiorcy: dostawcy hostingu i CRM (Vercel, Railway, Supabase), dostawca AI, który otrzymuje wyłącznie dane nieruchomości bez danych kontaktowych (Anthropic), oraz ochrona formularza (Cloudflare Turnstile); część z nich w USA na podstawie DPF lub standardowych klauzul umownych. Masz prawo dostępu, sprostowania, usunięcia, ograniczenia przetwarzania, przenoszenia, sprzeciwu (w tym w każdej chwili wobec marketingu bezpośredniego) oraz skargi do Prezesa UODO. Podanie danych jest dobrowolne, ale niezbędne do zadzwonienia w sprawie wyceny. Szczegóły znajdziesz w ',
+    consentInfoLink: 'polityce prywatności (RODO)',
     consentInfoSuffix: '.',
     submit: 'Proszę o kontakt',
     submitting: 'Wysyłanie…',
     errPhone: 'Wpisz numer telefonu: 9 cyfr albo z kierunkowym kraju, np. +48 600 100 200.',
-    errConsent: 'Zaznacz zgodę na kontakt telefoniczny – bez niej nie możemy do Ciebie zadzwonić.',
+    errConsent: 'Zaznacz zgodę na telefon w sprawie wyceny – bez niej nie możemy do Ciebie zadzwonić. Druga zgoda jest opcjonalna.',
     doneTitle: 'Dziękujemy, otrzymaliśmy Twój numer',
     doneBody: 'Agent zadzwoni do Ciebie w godzinach pracy biura.',
   },
@@ -96,8 +99,8 @@ export const T = {
     body: [
       'Porównujemy dane Twojej nieruchomości z cenami transakcyjnymi i ofertowymi podobnych nieruchomości z okolicy. Szacunek wylicza automatycznie system (z pomocą AI), bez oględzin. Ceny ofertowe bywają wyższe od faktycznie zapłaconych.',
       'Widełki są zaokrąglone i mają charakter orientacyjny. Nie zastępują operatu szacunkowego sporządzanego przez rzeczoznawcę majątkowego (np. do kredytu, sądu lub urzędu).',
-      // PRAWNIK: przed włączeniem — akapit o przetwarzaniu danych (poprzednie "wyłącznie" było nieprawdziwe).
-      'Dane nieruchomości wpisane do kalkulatora służą do obliczenia szacunku. Numer telefonu podajesz tylko wtedy, gdy chcesz, żeby zadzwonił do Ciebie agent – wtedy przekażemy mu też dane nieruchomości i wynik szacunku.',
+      // PRAWNIK: przed włączeniem — akapit zgodny ze stanem faktycznym (dane trafiają do CRM po zostawieniu numeru; IP dla limitów i Turnstile).
+      'Dane nieruchomości wpisane do kalkulatora przekazujemy do obliczenia szacunku dostawcy AI (bez Twoich danych kontaktowych). Dla ochrony przed nadużyciami i limitów zapytań krótko przechowujemy adres IP, a formularz chroni Cloudflare Turnstile. Numer telefonu podajesz tylko wtedy, gdy chcesz, żeby zadzwonił do Ciebie agent – wtedy zapisujemy w naszym systemie CRM Twoje imię, numer, dane nieruchomości i wynik szacunku oraz datę, treść i wersję udzielonych zgód. Szczegóły: polityka prywatności (RODO).',
     ],
   },
 } as const

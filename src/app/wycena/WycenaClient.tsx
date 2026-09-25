@@ -284,7 +284,8 @@ function OutcomePanel({ outcome, onAgain }: { outcome: EstimateOutcome; onAgain:
 function LeadPanel({ outcome, values }: { outcome: EstimateOutcome | null; values: FormValues }) {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
-  const [consent, setConsent] = useState(false) // NIEZAZNACZONA domyslnie
+  const [consent, setConsent] = useState(false) // zgoda 1 (wymagana) - NIEZAZNACZONA domyslnie
+  const [marketing, setMarketing] = useState(false) // zgoda 2 (opcjonalna) - NIEZAZNACZONA domyslnie
   const [errs, setErrs] = useState<{ phone?: string; consent?: string }>({})
   const [state, setState] = useState<'idle' | 'sending' | 'ok' | 'fail'>('idle')
   const inFlight = useRef(false)
@@ -308,7 +309,7 @@ function LeadPanel({ outcome, values }: { outcome: EstimateOutcome | null; value
         source: 'wycena_modal',
         client_type: 'seller',
         preferred_city: values.city.trim(),
-        notes: buildLeadNotes(values, outcome, readUtm(window.location.search), T.lead.consent),
+        notes: buildLeadNotes(values, outcome, readUtm(window.location.search), { callText: T.lead.consentCall, marketing, marketingText: T.lead.consentMarketing }),
       })
       if (r?.ok) { setState('ok'); trackValuation('wycena_lead', { mode: outcome?.kind ?? 'none' }) } else setState('fail')
     } catch {
@@ -343,18 +344,26 @@ function LeadPanel({ outcome, values }: { outcome: EstimateOutcome | null; value
         </Field>
       </div>
 
-      <div style={{ marginTop: 16 }}>
-        <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-          <input id="wy-consent" className="wy-check" type="checkbox" checked={consent} required aria-required="true"
-            aria-invalid={!!errs.consent} aria-describedby={describedBy('wy-consent', true, !!errs.consent)}
-            onChange={e => { setConsent(e.target.checked); if (errs.consent) setErrs(p => ({ ...p, consent: undefined })) }}
-            style={{ width: 22, height: 22, marginTop: 2, flexShrink: 0, accentColor: '#0d2a5c' }} />
-          <label htmlFor="wy-consent" style={{ fontSize: 14, color: '#374151', lineHeight: 1.6 }}>{T.lead.consent} *</label>
+      <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <div>
+          <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+            <input id="wy-consent" className="wy-check" type="checkbox" checked={consent} required aria-required="true"
+              aria-invalid={!!errs.consent} aria-describedby={describedBy('wy-consent', false, !!errs.consent)}
+              onChange={e => { setConsent(e.target.checked); if (errs.consent) setErrs(p => ({ ...p, consent: undefined })) }}
+              style={{ width: 22, height: 22, marginTop: 2, flexShrink: 0, accentColor: '#0d2a5c' }} />
+            <label htmlFor="wy-consent" style={{ fontSize: 14, color: '#374151', lineHeight: 1.6 }}>{T.lead.consentCall} *</label>
+          </div>
+          {errs.consent && <div id="wy-consent-err" role="alert" style={{ ...errStyle, marginLeft: 34 }}>{errs.consent}</div>}
         </div>
-        <div id="wy-consent-hint" style={{ ...hint, marginLeft: 34 }}>
+        <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+          <input id="wy-marketing" className="wy-check" type="checkbox" checked={marketing}
+            onChange={e => setMarketing(e.target.checked)}
+            style={{ width: 22, height: 22, marginTop: 2, flexShrink: 0, accentColor: '#0d2a5c' }} />
+          <label htmlFor="wy-marketing" style={{ fontSize: 14, color: '#374151', lineHeight: 1.6 }}>{T.lead.consentMarketing} {T.lead.optionalLabel}</label>
+        </div>
+        <div id="wy-consent-hint" style={hint}>
           {T.lead.consentInfoPrefix}<a href="/rodo" target="_blank" rel="noopener noreferrer" style={{ color: '#1a4fa0', textDecoration: 'underline' }}>{T.lead.consentInfoLink}</a>{T.lead.consentInfoSuffix}
         </div>
-        {errs.consent && <div id="wy-consent-err" role="alert" style={{ ...errStyle, marginLeft: 34 }}>{errs.consent}</div>}
       </div>
 
       {state === 'fail' && <p role="alert" style={{ ...errStyle, marginTop: 16 }}>{T.errors.leadFail} <PhoneLink /></p>}

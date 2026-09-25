@@ -63,6 +63,6 @@ test('telefon i UTM', () => {
   assert.equal(readUtm('?utm_source=meta&utm_campaign=wycena&x=1'), 'utm_source=meta utm_campaign=wycena')
 })
 test('notatka leada: dane, wynik, zgoda, UTM', () => {
-  const n = buildLeadNotes(ok, { kind: 'range', range: { low: 400000, high: 480000 }, pricePerM2: null, comparables: null, quality: null, disclaimer: null, message: null }, 'utm_source=meta', 'TRESC ZGODY')
-  assert.match(n, /Źródło: kalkulator wyceny \(z wynikiem: tak\)/); assert.match(n, /Mieszkanie, Kołobrzeg/); assert.match(n, /52,5 m²/); assert.match(n, /Zgoda na kontakt telefoniczny: TAK/); assert.match(n, /TRESC ZGODY/); assert.match(n, /utm_source=meta/)
+  const n = buildLeadNotes(ok, { kind: 'range', range: { low: 400000, high: 480000 }, pricePerM2: null, comparables: null, quality: null, disclaimer: null, message: null }, 'utm_source=meta', { callText: 'TRESC ZGODY', marketing: false, marketingText: 'MKT' })
+  assert.match(n, /Źródło: kalkulator wyceny \(z wynikiem: tak\)/); assert.match(n, /Mieszkanie, Kołobrzeg/); assert.match(n, /52,5 m²/); assert.match(n, /Zgoda 1 \(telefon w sprawie wyceny, wymagana\): TAK/); assert.match(n, /Zgoda 2 .*: NIE/); assert.doesNotMatch(n, /MKT/); assert.match(n, /TRESC ZGODY/); assert.match(n, /utm_source=meta/)
 })

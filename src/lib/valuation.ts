@@ -194,7 +194,7 @@ export function formatRange(r: Range): string {
 }
 
 // ── Notatka do leada (pole notes w /api/public/leads) ──
-export const CONSENT_VERSION = 'wycena-2026-09-25-v0-DO-RECENZJI'
+export const CONSENT_VERSION = 'wycena-2026-09-25-v1-DO-PRAWNIKA'
 
 export function describeInput(v: FormValues): string {
   const type = PROPERTY_TYPES.find(t => t.value === v.property_type)?.label ?? v.property_type
@@ -234,12 +234,15 @@ export function readUtm(search: string): string {
   } catch { return '' }
 }
 
-export function buildLeadNotes(v: FormValues, o: EstimateOutcome | null, utm: string, consentText: string): string {
+export type ConsentRecord = { callText: string; marketing: boolean; marketingText: string }
+
+export function buildLeadNotes(v: FormValues, o: EstimateOutcome | null, utm: string, c: ConsentRecord): string {
   return [
     `Źródło: kalkulator wyceny (z wynikiem: ${o?.kind === 'range' ? 'tak' : 'nie'}) — strona /wycena.`,
     v.property_type ? `Dane: ${describeInput(v)}.` : '',
     describeOutcome(o),
-    `Zgoda na kontakt telefoniczny: TAK (wersja ${CONSENT_VERSION}). Treść: ${consentText}`,
+    `Zgoda 1 (telefon w sprawie wyceny, wymagana): TAK (wersja ${CONSENT_VERSION}). Treść: ${c.callText}`,
+    `Zgoda 2 (marketing telefon/SMS, opcjonalna): ${c.marketing ? 'TAK' : 'NIE'} (wersja ${CONSENT_VERSION}).${c.marketing ? ` Treść: ${c.marketingText}` : ''}`,
     utm ? `UTM: ${utm}` : '',
   ].filter(Boolean).join('\n')
 }
