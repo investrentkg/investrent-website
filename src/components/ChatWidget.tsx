@@ -36,7 +36,7 @@ export default function ChatWidget() {
     const r = await submitLead({
       full_name: name || 'Klient chat',
       phone: phone.trim(),
-      notes: msg ? `Chat: ${msg}` : 'Kontakt przez chat na stronie',
+      notes: msg.trim() ? `Chat: ${msg.trim()}` : 'Kontakt przez chat na stronie',
       source: 'chat_widget',
       client_type: 'buyer',
     })
@@ -147,10 +147,12 @@ export default function ChatWidget() {
                     style={{ padding: '10px 14px', borderRadius: 10,
                       border: `1.5px solid ${status === 'error' ? '#ef4444' : '#e2e8f0'}`,
                       fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
-                  <input type="text" placeholder="Czego szukasz? (opcjonalnie)"
-                    value={msg} onChange={e => setMsg(e.target.value)}
+                  {/* Pole wiadomości widoczne domyślnie; nie blokuje wysyłki (zgłoszenie z samym telefonem nadal działa).
+                      Limit 900 znaków + prefiks "Chat: " mieści się w limicie 1000 znaków backendu (/api/public/leads). */}
+                  <textarea placeholder="Napisz, czego szukasz" aria-label="Napisz, czego szukasz"
+                    value={msg} onChange={e => setMsg(e.target.value)} rows={3} maxLength={900}
                     style={{ padding: '10px 14px', borderRadius: 10, border: '1.5px solid #e2e8f0',
-                      fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
+                      fontSize: 13, outline: 'none', fontFamily: 'inherit', resize: 'vertical' as const }} />
                   <button type="button" onClick={send} disabled={!phone.trim() || status === 'loading'}
                     style={{ background: phone.trim() ? 'linear-gradient(135deg,#1a4fa0,#0d2a5c)' : '#cbd5e1',
                       color: 'white', border: 'none', borderRadius: 10, padding: '11px',
