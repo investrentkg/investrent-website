@@ -3,7 +3,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import {
   validateForm, buildPayload, interpretResponse, requestEstimate, buildLeadNotes,
-  isValidPhone, readUtm, EMPTY_FORM, fieldApplies, isOutOfScope, submittedTooFast, buildConsentMarker, CONSENT_VERSION, NOTES_MAX,
+  isValidPhone, readUtm, EMPTY_FORM, fieldApplies, isOutOfScope, submittedTooFast, buildConsentMarker, formatRetryAfter, CONSENT_VERSION, NOTES_MAX,
 } from './valuation.ts'
 
 const ok = { ...EMPTY_FORM, property_type: 'mieszkanie', district: 'Podczele', area_m2: '52,5', rooms: '3', floor: '2', condition: 'dobry' }
@@ -64,17 +64,17 @@ test('telefon i UTM', () => {
 })
 const rangeOut = { kind: 'range', range: { low: 400000, high: 480000 }, pricePerM2: null, comparables: null, quality: null, disclaimer: null, message: null }
 test('notatka leada: dane, wynik, znacznik zgody, UTM (zgoda bez pelnych tekstow)', () => {
-  const n = buildLeadNotes(ok, rangeOut, 'utm_source=meta', { marketing: false, at: '2026-09-25T10:00:00.000Z' })
-  assert.ok(n.startsWith('[Zgoda-kalkulator] kanał=telefon-wycena; czas=2026-09-25T10:00:00.000Z; wersja=wycena-2026-09-25-v4'))
+  const n = buildLeadNotes(ok, rangeOut, 'utm_source=meta', { marketingPhone: false, marketingSms: false, at: '2026-09-25T10:00:00.000Z' })
+  assert.ok(n.startsWith('[Zgoda-kalkulator] kanał=telefon-wycena; czas=2026-09-25T10:00:00.000Z; wersja=wycena-2026-09-25-v5'))
   assert.ok(n.includes('Źródło: kalkulator wyceny (z wynikiem: tak)')); assert.ok(n.includes('Mieszkanie, Kołobrzeg (Podczele)')); assert.ok(n.includes('52,5 m²')); assert.ok(n.includes('utm_source=meta'))
-  assert.equal(buildConsentMarker({ marketing: true }).includes('telefon-sms-marketing'), true)
-  assert.ok(CONSENT_VERSION.endsWith('-v4') && !CONSENT_VERSION.includes('DO-PRAWNIKA'))
+  assert.equal(buildConsentMarker({ marketingPhone: true, marketingSms: false }).includes('marketing-telefon'), true)
+  assert.ok(CONSENT_VERSION.endsWith('-v5') && !CONSENT_VERSION.includes('DO-PRAWNIKA'))
 })
 test('notatka leada: z zgoda marketingowa i dlugim UTM miesci sie w limicie 500 znakow backendu, znacznik zgody nieuciety', () => {
   const longUtm = ['utm_source','utm_medium','utm_campaign','utm_content','utm_term'].map(k => k + '=' + 'x'.repeat(80)).join(' ')
-  const n = buildLeadNotes({ ...ok, district: 'Radzikowo-Osiedle Nadmorskie' }, rangeOut, longUtm, { marketing: true, at: '2026-09-25T10:00:00.000Z' })
+  const n = buildLeadNotes({ ...ok, district: 'Radzikowo-Osiedle Nadmorskie' }, rangeOut, longUtm, { marketingPhone: true, marketingSms: true, at: '2026-09-25T10:00:00.000Z' })
   assert.ok(n.length <= NOTES_MAX && NOTES_MAX < 500, 'dlugosc ' + n.length)
-  assert.ok(n.startsWith('[Zgoda-kalkulator] kanał=telefon-wycena,telefon-sms-marketing; czas=2026-09-25T10:00:00.000Z; wersja=wycena-2026-09-25-v4'))
+  assert.ok(n.startsWith('[Zgoda-kalkulator] kanał=telefon-wycena,marketing-telefon,marketing-sms; czas=2026-09-25T10:00:00.000Z; wersja=wycena-2026-09-25-v5'))
   const clean = String(n).slice(0, 500).replace(/[<>]/g, '') // jak backend: clean(notes)
   assert.equal(clean, n)
 })
@@ -94,9 +94,9 @@ test('minimalny czas wypelnienia: < 3 s od zaladowania = za szybko', () => {
   assert.equal(submittedTooFast(1000, 2500), true); assert.equal(submittedTooFast(1000, 4000), false); assert.equal(submittedTooFast(1000, 4000, 5000), true)
 })
 test('znacznik zgody: pola kanał/czas/wersja czytelne dla redakcji retencji (kanał[:=], czas ISO, wersja), bez danych kontaktowych', () => {
-  const m = buildConsentMarker({ marketing: true, at: '2026-09-25T10:00:00.000Z' })
+  const m = buildConsentMarker({ marketingPhone: true, marketingSms: true, at: '2026-09-25T10:00:00.000Z' })
   const field = key => new RegExp(String.raw`(?:^|[;\s])` + key + String.raw`[:=]\s*([^;]*)`, 'i').exec(m)?.[1]?.trim()
-  assert.equal(field('kanał'), 'telefon-wycena,telefon-sms-marketing'); assert.equal(field('czas'), '2026-09-25T10:00:00.000Z'); assert.equal(field('wersja'), CONSENT_VERSION)
+  assert.equal(field('kanał'), 'telefon-wycena,marketing-telefon,marketing-sms'); assert.equal(field('czas'), '2026-09-25T10:00:00.000Z'); assert.equal(field('wersja'), CONSENT_VERSION)
   // jak w backendzie (consentNoteHasContactData): daty ISO (takze w numerze wersji) sa odejmowane przed liczeniem cyfr
   const withoutTime = m.replace(new RegExp(String.raw`\d{4}-\d{2}-\d{2}(?:T[\d:.]+Z)?`, 'g'), '')
   assert.ok(!m.includes('@')); assert.ok((withoutTime.match(new RegExp(String.raw`\d`, 'g')) ?? []).length < 9)
@@ -105,4 +105,19 @@ test('teksty: liczba porownan (przedzial i "min lub wiecej" gdy max == min)', as
   const { T } = await import('../app/wycena/texts.ts')
   assert.equal(T.result.comparables(20, 49), 'Do szacunku wykorzystaliśmy od 20 do 49 porównywalnych nieruchomości z okolicy.')
   assert.equal(T.result.comparables(50, 50), 'Do szacunku wykorzystaliśmy co najmniej 50 porównywalnych nieruchomości z okolicy.')
+})
+test('zgody rozdzielone: telefon i SMS niezaleznie w znaczniku; brak marketingu = tylko telefon-wycena', () => {
+  assert.equal(buildConsentMarker({ marketingPhone: false, marketingSms: true, at: 'X' }), '[Zgoda-kalkulator] kanał=telefon-wycena,marketing-sms; czas=X; wersja=' + CONSENT_VERSION)
+  assert.ok(buildConsentMarker({ marketingPhone: false, marketingSms: false, at: 'X' }).includes('kanał=telefon-wycena;'))
+})
+test('komunikat limitu: czas ponowienia z retry_after_seconds backendu (okno 1 h albo 24 h)', () => {
+  assert.equal(formatRetryAfter(30), 'za minutę'); assert.equal(formatRetryAfter(1800), 'za około 30 min')
+  assert.equal(formatRetryAfter(7200), 'za około 2 h'); assert.equal(formatRetryAfter(86400), 'jutro')
+  assert.ok(formatRetryAfter(null).includes('24 godzin'))
+})
+test('teksty: brak realnego numeru w komunikatach i jedno okreslenie zgody na telefon', async () => {
+  const { T } = await import('../app/wycena/texts.ts')
+  const all = JSON.stringify(T)
+  assert.ok(!all.includes('600 100 200')); assert.ok(!all.includes('zgodę na kontakt'))
+  assert.ok(T.errors.rateLimited('za około 2 h').includes('za około 2 h'))
 })

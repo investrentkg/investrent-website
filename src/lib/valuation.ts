@@ -91,7 +91,7 @@ export function validateForm(v: FormValues): FormErrors {
   else if (city.length > 80) e.city = 'Nazwa miejscowości jest za długa.'
   if (v.district.trim().length > 80) e.district = 'Nazwa dzielnicy jest za długa.'
   else if (v.property_type === 'mieszkanie' && isKolobrzeg(city) && !v.district.trim()) {
-    e.district = 'Podaj dzielnicę lub osiedle — bez niej nie policzymy widełek. Jeśli nie znasz nazwy, możesz zostawić sam numer telefonu i zgodę na kontakt, a agent przygotuje wycenę indywidualnie.'
+    e.district = 'Podaj dzielnicę lub osiedle — bez niej nie policzymy widełek. Jeśli nie znasz nazwy, możesz zostawić sam numer telefonu i zaznaczyć zgodę na telefon w sprawie wyceny, a agent przygotuje wycenę indywidualnie.'
   }
 
   const area = parseNum(v.area_m2)
@@ -216,10 +216,10 @@ export function formatRange(r: Range): string {
 }
 
 // ── Notatka do leada (pole notes w /api/public/leads) ──
-// Wersja tekstow zgod i klauzuli (texts.ts: consentCall, consentMarketing, consentInfoPrefix). v4 = wersja OCZEKUJACA (v2/v3 zastapione przed publikacja po recenzjach Krytyka):
+// Wersja tekstow zgod i klauzuli (texts.ts: consentCall, consentMarketing, consentInfoPrefix). v5 = wersja OCZEKUJACA (v2-v4 zastapione przed publikacja po recenzjach Krytyka):
 // publikacja na produkcji wymaga zatwierdzenia tresci (Krytyk + przeglad AI; kancelaria nieangazowana wg decyzji Daniela 25.09); kazda zmiana tych tekstow = nowy numer wersji.
 // Pelne brzmienie danej wersji jest wersjonowane w repo (git) - do leada zapisujemy TYLKO znacznik (limit backendu: 500 znakow).
-export const CONSENT_VERSION = 'wycena-2026-09-25-v4'
+export const CONSENT_VERSION = 'wycena-2026-09-25-v5'
 export const NOTES_MAX = 490 // backend /api/public/leads zapisuje clean(notes) = pierwsze 500 znakow (odrzuca > 1000)
 
 export function describeInput(v: FormValues): string {
@@ -260,13 +260,23 @@ export function readUtm(search: string): string {
   } catch { return '' }
 }
 
-export type ConsentRecord = { marketing: boolean; at?: string }
+export type ConsentRecord = { marketingPhone: boolean; marketingSms: boolean; at?: string }
+
+// Kiedy mozna ponowic po 429: backend zwraca retry_after_seconds z faktycznego okna (30 zapytan/h albo 3 wyceny/24 h na IP).
+export function formatRetryAfter(seconds: number | null): string {
+  if (seconds == null || !Number.isFinite(seconds) || seconds <= 0) return 'później (limit zapytań obowiązuje do 24 godzin)'
+  if (seconds < 90) return 'za minutę'
+  if (seconds < 3600) return `za około ${Math.ceil(seconds / 60)} min`
+  if (seconds < 86400) return `za około ${Math.ceil(seconds / 3600)} h`
+  return 'jutro'
+}
 
 // Znacznik dowodu zgody. Styl jak [Meta-zgoda] (pary klucz=wartosc oddzielone "; "), ale osobny prefiks "[Zgoda-kalkulator]":
 // NIE pasuje do parsera zgod CRM (wzorzec "[Zgoda]" / "[Wypisanie]" w consentRules.ts) ani do blokady looksLikeConsentNote, wiec nie udaje wpisu podpisanego serwerem.
 // UWAGA: endpoint publiczny nie podpisuje wpisow (podpis HMAC ma tylko serwer); wartosc dowodowa = wersja tekstu w repo + czas zapisu notatki po stronie CRM.
 export function buildConsentMarker(c: ConsentRecord): string {
-  return `[Zgoda-kalkulator] kanał=${c.marketing ? 'telefon-wycena,telefon-sms-marketing' : 'telefon-wycena'}; czas=${c.at ?? new Date().toISOString()}; wersja=${CONSENT_VERSION}`
+  const channels = ['telefon-wycena', ...(c.marketingPhone ? ['marketing-telefon'] : []), ...(c.marketingSms ? ['marketing-sms'] : [])]
+  return `[Zgoda-kalkulator] kanał=${channels.join(',')}; czas=${c.at ?? new Date().toISOString()}; wersja=${CONSENT_VERSION}`
 }
 
 // Notatka musi zmiescic sie w NOTES_MAX (backend obcina po 500 znakach). Kolejnosc = priorytet: znacznik zgody PIERWSZY, UTM ostatni

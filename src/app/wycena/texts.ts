@@ -7,7 +7,7 @@
 
 export const T = {
   // title bez doklejania marki: page.tsx uzywa title.absolute (layout ma szablon '%s | InvestRent Nieruchomości')
-  metaTitle: 'Darmowa wycena mieszkania w Kołobrzegu — orientacyjna cena',
+  metaTitle: 'Wycena mieszkania w Kołobrzegu online — sprawdź orientacyjną cenę',
   metaDescription:
     'Ile jest warte mieszkanie w Kołobrzegu? Podaj kilka danych i sprawdź orientacyjne widełki ceny oraz cenę za m². Bez numeru telefonu.',
   metaDescriptionOff:
@@ -47,7 +47,7 @@ export const T = {
     // Backend: najwyższy przedział ma max == min i oznacza "min lub więcej" (comparablesBucket); nie pisać "od 50 do 50".
     comparables: (min: number, max: number) =>
       max <= min
-        ? `Do szacunku wykorzystaliśmy co najmniej ${min} porównywalnych nieruchomości z okolicy.`
+        ? `Do szacunku wykorzystaliśmy co najmniej ${min} ${min === 1 ? 'porównywalnej nieruchomości' : 'porównywalnych nieruchomości'} z okolicy.`
         : `Do szacunku wykorzystaliśmy od ${min} do ${max} porównywalnych nieruchomości z okolicy.`,
     scopeNote: 'Orientacyjny zakres liczony automatycznie z użyciem sztucznej inteligencji na podstawie danych rynkowych (m.in. cen ofertowych z ogłoszeń i cen transakcyjnych). To nie jest operat szacunkowy ani wycena rzeczoznawcy. Cena, za którą faktycznie sprzedasz mieszkanie, może się od niego wyraźnie różnić.',
     disclaimerFallback:
@@ -55,17 +55,17 @@ export const T = {
     // Poza zakresem liczb online (dom, działka, inna miejscowość, Śródmieście) - to reguła, nie brak danych.
     outOfScopeTitle: 'Widełek dla tej nieruchomości nie podajemy online',
     outOfScopeBody:
-      'Widełki online liczymy tylko dla mieszkań w Kołobrzegu, poza Śródmieściem. W pozostałych przypadkach (domy, działki, Śródmieście, inne miejscowości) agent sprawdzi, czy i jak może przygotować wycenę. Jeśli chcesz, zostaw numer telefonu i zaznacz zgodę na kontakt — zadzwonimy tylko w sprawie Twojej wyceny.',
+      'Widełki online liczymy tylko dla mieszkań w Kołobrzegu, poza Śródmieściem. W pozostałych przypadkach (domy, działki, Śródmieście, inne miejscowości) agent sprawdzi, czy i jak może przygotować wycenę. Jeśli chcesz, zostaw numer telefonu i zaznacz zgodę na telefon w sprawie wyceny — zadzwonimy tylko w sprawie Twojej wyceny.',
     // W zakresie, ale silnik nie ma dość porównań.
     noNumbersTitle: 'Nie mamy dość danych, żeby podać widełki',
     noNumbersBody:
-      'Dla tej nieruchomości mamy za mało porównywalnych danych rynkowych, żeby rzetelnie wyznaczyć widełki. Jeśli chcesz, zostaw numer telefonu i zaznacz zgodę na kontakt — agent przygotuje wycenę indywidualnie.',
+      'Dla tej nieruchomości mamy za mało porównywalnych danych rynkowych, żeby rzetelnie wyznaczyć widełki. Jeśli chcesz, zostaw numer telefonu i zaznacz zgodę na telefon w sprawie wyceny — agent przygotuje wycenę indywidualnie.',
     again: 'Wyceń inną nieruchomość',
   },
 
   lead: {
     titleRange: 'Chcesz szczegółową analizę z porównaniami i mapą?',
-    bodyRange: 'Zostaw numer telefonu i zaznacz zgodę na kontakt — agent zadzwoni, omówi z Tobą wynik i przygotuje szczegółowy raport. Bez zobowiązań.',
+    bodyRange: 'Zostaw numer telefonu i zaznacz zgodę na telefon w sprawie wyceny — agent zadzwoni, omówi z Tobą wynik i przygotuje szczegółowy raport. Bez zobowiązań.',
     titleFallback: 'Zostaw numer, a przygotujemy wycenę indywidualnie',
     bodyFallback: 'Agent zadzwoni i omówi z Tobą Twoją nieruchomość. Bez zobowiązań.',
     name: 'Imię (opcjonalnie)',
@@ -77,20 +77,36 @@ export const T = {
     consentCallRequired: '(wymagana, jeśli podajesz numer telefonu)',
     consentCall:
       'Zgadzam się, aby spółka INVESTRENT SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ (biuro nieruchomości InvestRent) zadzwoniła do mnie pod podany numer wyłącznie w sprawie wyceny mojej nieruchomości. Zgodę mogę cofnąć w każdej chwili, pisząc na biuro@investrent.com.pl lub mówiąc o tym podczas rozmowy.',
+    // Zgoda marketingowa ROZDZIELONA na dwa kanały (telefon / SMS): każdy osobny, dobrowolny, niezaznaczony checkbox.
     consentMarketingOptional: '(dobrowolna)',
-    consentMarketing:
-      'Chcę otrzymywać od spółki INVESTRENT SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ (biuro nieruchomości InvestRent) informacje o ofertach i usługach telefonicznie i SMS-em. Nie wpływa to na wynik wyceny ani na oddzwonienie w jej sprawie. Zgodę mogę cofnąć w każdej chwili, pisząc na biuro@investrent.com.pl lub mówiąc o tym podczas rozmowy.',
+    consentMarketingPhone:
+      'Chcę otrzymywać od spółki INVESTRENT SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ (biuro nieruchomości InvestRent) informacje o ofertach i usługach w rozmowach telefonicznych. Nie wpływa to na wynik wyceny ani na oddzwonienie w jej sprawie. Zgodę mogę cofnąć w każdej chwili, pisząc na biuro@investrent.com.pl lub mówiąc o tym podczas rozmowy.',
+    consentMarketingSms:
+      'Chcę otrzymywać od spółki INVESTRENT SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ (biuro nieruchomości InvestRent) informacje o ofertach i usługach w wiadomościach SMS. Nie wpływa to na wynik wyceny ani na oddzwonienie w jej sprawie. Zgodę mogę cofnąć w każdej chwili, pisząc na biuro@investrent.com.pl lub mówiąc o tym podczas rozmowy.',
     // Klauzula informacyjna (art. 13 RODO): pełne dane administratora wg odpisu KRS (api-krs.ms.gov.pl, 25.09.2026).
-    // Fakty techniczne (sprawdzone w kodzie backendu 25.09.2026): IP tylko w pamięci procesu (limiter, okno 24 h), bez zapisu w bazie;
-    // ai_valuations (wycena publiczna) nie zawiera danych kontaktowych ani IP; job retencji (PR #496) po 12 mies. czyści teksty wyceny,
-    // a dowód zgód zostaje w formie zredagowanej do 3 lat od końca roku zakończenia przetwarzania (wymaga poprawki zapisu znacznika, patrz plan).
+    // Fakty (kod backendu origin/main 25.09.2026): IP w limiterze w pamięci procesu (okno 24 h; 30 zapytań/h to okno 1 h), bez zapisu w bazie;
+    // ai_valuations bez kontaktu i IP; odbiorcy danych leada: Brevo (mail do managerów), kalendarz Google (zadanie z imieniem i numerem).
+    // Dowód zgód w formie pseudonimizowanej (id_hash) wymaga wdrożenia kontraktu z pliku kontrakt_dowod_zgody_kalkulator_2026_09_25.md.
     consentInfo: [
       { h: 'Kto jest administratorem Twoich danych.', t: 'Administratorem jest INVESTRENT SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ, ul. Ratuszowa\u00A012/1\u00A0lok.\u00A03, 78-100 Kołobrzeg, KRS\u00A00001069797, NIP\u00A0671\u00A0185\u00A085\u00A059. Działamy pod marką InvestRent. Kontakt: biuro@investrent.com.pl.' },
-      { h: 'Po co i na jakiej podstawie.', t: 'Dane nieruchomości z formularza wykorzystujemy do obliczenia i pokazania Ci szacunku (podstawa: wykonanie Twojego żądania, art.\u00A06 ust.\u00A01 lit.\u00A0b RODO). Jeśli podasz numer telefonu i zaznaczysz pierwszą zgodę, zadzwonimy w sprawie wyceny (podstawa: Twoja zgoda, art.\u00A06 ust.\u00A01 lit.\u00A0a RODO). Jeśli zaznaczysz drugą, dobrowolną zgodę, będziemy przekazywać Ci informacje o ofertach i usługach telefonicznie i SMS-em (podstawa: Twoja zgoda). Dowód udzielonych zgód przechowujemy, aby wykazać ich udzielenie i bronić się przed roszczeniami (art.\u00A06 ust.\u00A01 lit.\u00A0f oraz art.\u00A07 ust.\u00A01 RODO). Dla bezpieczeństwa i ograniczenia liczby zapytań przetwarzamy adres IP przez 24\u00A0godziny (art.\u00A06 ust.\u00A01 lit.\u00A0f RODO).' },
+      { h: 'Po co i na jakiej podstawie.', t: 'Wykorzystujemy Twoje dane w tych celach:', items: [
+        'obliczenie i pokazanie szacunku — wykonanie Twojego żądania (art.\u00A06 ust.\u00A01 lit.\u00A0b RODO);',
+        'telefon w sprawie wyceny — Twoja zgoda (art.\u00A06 ust.\u00A01 lit.\u00A0a RODO), jeśli podasz numer i zaznaczysz zgodę na telefon w sprawie wyceny;',
+        'informacje o ofertach i usługach w rozmowach telefonicznych — Twoja zgoda (art.\u00A06 ust.\u00A01 lit.\u00A0a RODO), jeśli ją zaznaczysz;',
+        'informacje o ofertach i usługach w wiadomościach SMS — Twoja zgoda (art.\u00A06 ust.\u00A01 lit.\u00A0a RODO), jeśli ją zaznaczysz;',
+        'dowód udzielonych zgód, aby wykazać ich udzielenie i bronić się przed roszczeniami — nasz prawnie uzasadniony interes (art.\u00A06 ust.\u00A01 lit.\u00A0f oraz art.\u00A07 ust.\u00A01 RODO);',
+        'bezpieczeństwo formularza i ograniczenie liczby zapytań (adres IP) — nasz prawnie uzasadniony interes (art.\u00A06 ust.\u00A01 lit.\u00A0f RODO).',
+      ] },
       { h: 'Sztuczna inteligencja.', t: 'Szacunek liczymy automatycznie z użyciem sztucznej inteligencji na podstawie danych rynkowych. Do dostawcy AI przekazujemy wyłącznie dane nieruchomości, bez Twoich danych kontaktowych i adresu IP. Wynik nie jest decyzją wiążącą i nie jest operatem szacunkowym.' },
-      { h: 'Komu przekazujemy dane.', t: 'Dostawcom usług IT: hostingu i bazy danych (Vercel, Railway, Supabase), dostawcy usługi AI (Anthropic) oraz dostawcy ochrony formularza (Cloudflare Turnstile). Część z nich ma siedzibę w USA; przekazanie opiera się na Data Privacy Framework lub standardowych klauzulach umownych. Kopię zabezpieczeń możesz uzyskać, pisząc na biuro@investrent.com.pl.' },
-      { h: 'Jak długo.', t: 'Adres IP przechowujemy wyłącznie w pamięci serwera przez 24\u00A0godziny (okno limitu zapytań); nie zapisujemy go w bazie danych. Jeśli nie zostawisz numeru telefonu, dane nieruchomości i wynik zapisujemy bez danych kontaktowych i nie łączymy ich z Tobą; po 12\u00A0miesiącach od dnia zapytania usuwamy opis wyniku, a w formie statystycznej zostają parametry nieruchomości (typ, powierzchnia, miejscowość, dzielnica, stan), widełki ceny i data. Jeśli zostawisz numer telefonu, zapytanie i dane kontaktowe przechowujemy do 12\u00A0miesięcy od ostatniego kontaktu z Tobą (wiadomości lub rozmowy w sprawie wyceny), a jeśli do kontaktu nie doszło, od dnia zapytania. Dowód zgód przechowujemy 3\u00A0lata od końca roku, w którym zgodę cofnięto lub zakończono przetwarzanie; po upływie 12\u00A0miesięcy zostaje on bez danych osobowych (wersja zgody, kanał i czas). Dane z rozmów prowadzących do umowy przechowujemy tak długo, jak wymagają tego przepisy.' },
-      { h: 'Twoje prawa.', t: 'Możesz żądać dostępu do danych, ich sprostowania, usunięcia, ograniczenia przetwarzania i przeniesienia, możesz też wnieść sprzeciw oraz w każdej chwili cofnąć zgodę (cofnięcie nie wpływa na zgodność z prawem tego, co zrobiliśmy wcześniej). Wobec przetwarzania opartego na naszym prawnie uzasadnionym interesie (dowód zgód, adres IP) przysługuje Ci sprzeciw z przyczyn związanych z Twoją szczególną sytuacją (art.\u00A021 RODO). Napisz na biuro@investrent.com.pl lub powiedz o tym podczas rozmowy. Możesz też złożyć skargę do Prezesa Urzędu Ochrony Danych Osobowych. Podanie danych jest dobrowolne; bez numeru telefonu pokażemy wynik, ale nie oddzwonimy.' },
+      { h: 'Komu przekazujemy dane.', t: 'Dostawcom usług IT: hostingu i bazy danych (Vercel, Railway, Supabase), usługi AI (Anthropic, wyłącznie dane nieruchomości), ochrony formularza (Cloudflare Turnstile, adres IP i informacje o przeglądarce), poczty e-mail, którą powiadamiamy pracowników biura o zgłoszeniu (Brevo, imię, numer telefonu i treść zgłoszenia), oraz kalendarza Google pracowników biura, jeśli mają go połączonego z naszym systemem (zadanie oddzwonienia z imieniem i numerem). Część z nich ma siedzibę w USA; przekazanie opiera się na standardowych klauzulach umownych zatwierdzonych przez Komisję Europejską, a w przypadku Cloudflare i Google także na Data Privacy Framework. Kopię zabezpieczeń możesz uzyskać, pisząc na biuro@investrent.com.pl.' },
+      { h: 'Jak długo.', t: 'Okresy przechowywania:', items: [
+        'adres IP: nasza aplikacja przechowuje go wyłącznie w pamięci serwera do 24\u00A0godzin (okno limitu zapytań) i nie zapisuje w bazie danych; adres IP przetwarzają też w swoich logach technicznych dostawcy: hostingu API (Railway, zwykle do 30\u00A0dni), hostingu strony (Vercel) i ochrony formularza (Cloudflare), według własnych zasad;',
+        'zapytanie bez numeru telefonu: dane nieruchomości i wynik zapisujemy bez danych kontaktowych i adresu IP; po 12\u00A0miesiącach od dnia zapytania usuwamy szczegółowy opis wyceny, a zostaje statystyka (typ, powierzchnia, miejscowość, dzielnica, stan, widełki ceny, data), która nie pozwala nam Cię zidentyfikować;',
+        'zapytanie z numerem telefonu: do 12\u00A0miesięcy od ostatniego kontaktu z Tobą (wiadomości lub rozmowy w sprawie wyceny), a jeśli do kontaktu nie doszło, od dnia zapytania; dane z rozmów prowadzących do umowy tak długo, jak wymagają tego przepisy;',
+        'dowód zgód: 3\u00A0lata od końca roku, w którym zgodę cofnięto lub zakończono przetwarzanie. Po 12\u00A0miesiącach zostaje w formie pseudonimizowanej: wersja zgody, kanał, czas i skrót numeru telefonu, który potrafimy porównać z numerem tylko wtedy, gdy trzeba wykazać zgodę (bez klucza, który znamy tylko my, nie da się z niego odczytać numeru). To nadal dane osobowe, przetwarzane na podstawie naszego prawnie uzasadnionego interesu (art.\u00A06 ust.\u00A01 lit.\u00A0f RODO).',
+      ] },
+      { h: 'Twoje prawa.', t: 'Możesz żądać dostępu do danych, ich sprostowania, usunięcia, ograniczenia przetwarzania i przeniesienia oraz w każdej chwili cofnąć zgodę (cofnięcie nie wpływa na zgodność z prawem tego, co zrobiliśmy wcześniej). Napisz na biuro@investrent.com.pl lub powiedz o tym podczas rozmowy. Możesz też złożyć skargę do Prezesa Urzędu Ochrony Danych Osobowych. Podanie danych jest dobrowolne; bez numeru telefonu pokażemy wynik, ale nie oddzwonimy.' },
+      { h: 'Prawo sprzeciwu.', highlight: true, t: 'Masz prawo w każdej chwili wnieść sprzeciw wobec przetwarzania Twoich danych opartego na naszym prawnie uzasadnionym interesie (dowód zgód, adres IP; art.\u00A06 ust.\u00A01 lit.\u00A0f RODO), z przyczyn związanych z Twoją szczególną sytuacją (art.\u00A021 RODO). Możesz też w każdej chwili sprzeciwić się przetwarzaniu do celów marketingu bezpośredniego. Napisz na biuro@investrent.com.pl lub powiedz o tym podczas rozmowy.' },
     ],
     consentInfoMore: 'Szczegóły znajdziesz w ',
     consentInfoLink: 'polityce prywatności (RODO)',
@@ -98,8 +114,8 @@ export const T = {
     optionalLabel: '(opcjonalnie)',
     submit: 'Proszę o kontakt',
     submitting: 'Wysyłanie…',
-    errPhone: 'Wpisz numer telefonu: 9 cyfr albo z kierunkowym kraju, np. +48 600 100 200.',
-    errConsent: 'Zaznacz zgodę na telefon w sprawie wyceny — bez niej nie możemy do Ciebie zadzwonić. Druga zgoda jest opcjonalna.',
+    errPhone: 'Wpisz numer telefonu: 9 cyfr albo numer z kierunkowym kraju (+48 i 9 cyfr).',
+    errConsent: 'Zaznacz zgodę na telefon w sprawie wyceny — bez niej nie możemy do Ciebie zadzwonić. Pozostałe zgody są dobrowolne.',
     doneTitle: 'Dziękujemy, otrzymaliśmy Twój numer',
     doneBody: 'Agent zadzwoni do Ciebie w godzinach pracy biura.',
   },
@@ -107,7 +123,8 @@ export const T = {
   // Komunikaty konczace sie na "zadzwon:" - numer biura dopisuje komponent jako link tel:.
   errors: {
     disabled: 'Kalkulator jest chwilowo niedostępny. Możemy przygotować wycenę indywidualnie — zostaw numer poniżej lub zadzwoń:',
-    rateLimited: 'Wykonano już kilka wycen w krótkim czasie. Spróbuj ponownie za około godzinę. Możesz też zostawić numer poniżej lub zadzwonić:',
+    // when = wynik formatRetryAfter(retry_after_seconds z backendu; okno 1 h dla luźnego limitu, 24 h dla limitu 3 wycen)
+    rateLimited: (when: string) => `Wykonano już kilka wycen z tego łącza. Limit zapytań obowiązuje do 24 godzin; spróbuj ponownie ${when}. Możesz też zostawić numer poniżej lub zadzwonić:`,
     network: 'Nie udało się połączyć z kalkulatorem. Spróbuj ponownie za chwilę, a jeśli problem się powtórzy, sprawdź połączenie z internetem. Możesz też zostawić numer poniżej lub zadzwonić:',
     server: 'Coś poszło nie tak po naszej stronie. Spróbuj ponownie za chwilę. Możesz też zostawić numer poniżej lub zadzwonić:',
     turnstilePending: 'Weryfikacja antyspamowa jeszcze się ładuje. Poczekaj chwilę i spróbuj ponownie.',
@@ -123,8 +140,8 @@ export const T = {
       'Porównujemy dane Twojej nieruchomości z cenami transakcyjnymi i ofertowymi podobnych nieruchomości z okolicy. Szacunek liczymy automatycznie z użyciem sztucznej inteligencji, bez oględzin. Ceny ofertowe bywają wyższe od faktycznie zapłaconych.',
       'Widełki są zaokrąglone i mają charakter orientacyjny. Nie zastępują operatu szacunkowego sporządzanego przez rzeczoznawcę majątkowego (np. do kredytu, sądu lub urzędu).',
       'Co trafia do sztucznej inteligencji: wyłącznie dane nieruchomości wpisane w kalkulatorze, bez Twoich danych kontaktowych i adresu IP.',
-      'Co zapisujemy: jeśli nie zostawisz numeru telefonu, dane nieruchomości i wynik zapisujemy bez danych kontaktowych i nie łączymy ich z Tobą, a adres IP trzymamy tylko w pamięci serwera przez 24\u00A0godziny, dla limitu zapytań (formularz chroni Cloudflare Turnstile). Jeśli zostawisz numer telefonu, zapisujemy w naszym systemie CRM Twoje imię, numer, dane nieruchomości i wynik oraz znacznik udzielonych zgód (wersja, kanał, czas).',
-      'Jak długo: zapytanie i dane kontaktowe do 12\u00A0miesięcy od ostatniego kontaktu z Tobą (wiadomości lub rozmowy w sprawie wyceny), a jeśli do kontaktu nie doszło, od dnia zapytania. Dowód zgód, po usunięciu danych osobowych, 3\u00A0lata od końca roku, w którym zgodę cofnięto lub zakończono przetwarzanie. Zgodę możesz cofnąć w każdej chwili, pisząc na biuro@investrent.com.pl lub mówiąc o tym podczas rozmowy. Szczegóły: polityka prywatności (RODO).',
+      'Co zapisujemy: jeśli nie zostawisz numeru telefonu, dane nieruchomości i wynik zapisujemy bez danych kontaktowych i adresu IP; nie pozwalają nam Cię zidentyfikować. Adres IP trzymamy w pamięci serwera do 24\u00A0godzin, dla limitu zapytań (formularz chroni Cloudflare Turnstile). Jeśli zostawisz numer telefonu, zapisujemy w naszym systemie CRM Twoje imię, numer, dane nieruchomości i wynik oraz znacznik udzielonych zgód (wersja, kanał, czas).',
+      'Jak długo: zapytanie bez numeru telefonu 12\u00A0miesięcy od dnia zapytania (potem zostaje sama statystyka); zapytanie z numerem do 12\u00A0miesięcy od ostatniego kontaktu z Tobą (wiadomości lub rozmowy w sprawie wyceny), a jeśli do kontaktu nie doszło, od dnia zapytania. Dowód zgód 3\u00A0lata od końca roku, w którym zgodę cofnięto lub zakończono przetwarzanie (po 12\u00A0miesiącach w formie pseudonimizowanej). Zgodę możesz cofnąć w każdej chwili, pisząc na biuro@investrent.com.pl lub mówiąc o tym podczas rozmowy. Szczegóły: polityka prywatności (RODO).',
     ],
 
   },
