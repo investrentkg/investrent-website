@@ -30,6 +30,8 @@ export default function Nav({ office }: { office: Office | null }) {
     { label: 'Oferty',   href: '/oferty' },
     { label: 'Kupno',    href: '/kupno' },
     { label: 'Sprzedaż', href: '/sprzedaz' },
+    // NOWE (25.09.2026): publiczny kalkulator wyceny (fraza "wycena mieszkania Kolobrzeg").
+    { label: 'Wycena', href: '/wycena' },
     { label: 'Wynajem',  href: '/wynajem' },
     // NOWE (24.09.2026, SEO): GSC pokazal, ze /kolobrzeg nie ma zadnego linku wejsciowego wykrytego przez Google
     // ("wykryta - obecnie niezindeksowana") - link w glownym menu na kazdej podstronie. Krotka etykieta (menu jest ciasne).
