@@ -32,7 +32,7 @@ export default function ImpressumPage() {
         Rechtsform: Gesellschaft mit beschränkter Haftung nach polnischem Recht (spółka z ograniczoną odpowiedzialnością)
       </P>
       <P>
-        Vertretungsberechtigt: Vorstand (zarząd), die beiden Vorstandsmitglieder Daniel Kamiński und Dawid Sadownik sind jeweils einzelvertretungsberechtigt.
+        Vertretungsberechtigt: Geschäftsführung (Vorstand, zarząd), die beiden Mitglieder Daniel Kamiński und Dawid Sadownik sind jeweils einzelvertretungsberechtigt.
         {/* Zarzad wg decyzji Daniela 25.09.2026 (zgodnie z odpisem KRS: kazdy czlonek zarzadu jednoosobowo) - do weryfikacji z odpisem KRS */}
       </P>
 
@@ -62,9 +62,9 @@ export default function ImpressumPage() {
         {/* ERLEDIGT (Przeglad 3.12, uwaga 21): numer polski VAT-UE (PL+NIP); VIES potwierdza aktywny VAT-UE (25.09.2026). Odwolanie do "§ 27a UStG" usuniete (dotyczy niemieckiego numeru). */}
       </P>
 
-      <H2>Berufsrechtliche Angaben</H2>
+      <H2>Tätigkeit und Berufshaftpflichtversicherung</H2>
       <P>
-        Tätigkeit: Vermittlung von Immobilien (Immobilienmakler nach polnischem Recht, pośrednik w obrocie nieruchomościami). Eine behördliche Erlaubnis oder Registrierung ist für diese Tätigkeit in Polen nicht erforderlich; eine Aufsichtsbehörde im Sinne des § 5 Abs. 1 Nr. 4 DDG besteht daher nicht. Unsere Tätigkeit bezieht sich auf Immobilien in der Republik Polen und wird von Polen aus erbracht. Wir kontaktieren Interessenten nur auf deren Anfrage bzw. mit deren Einwilligung und führen keine Kaltakquise durch.<br />
+        Tätigkeit: Vermittlung von Immobilien (Immobilienmakler nach polnischem Recht, pośrednik w obrocie nieruchomościami). Die Tätigkeit bedarf in Polen keiner behördlichen Zulassung; eine Aufsichtsbehörde im Sinne des § 5 Abs. 1 Nr. 4 DDG besteht daher nicht. Unsere Tätigkeit bezieht sich auf Immobilien in der Republik Polen und wird von Polen aus erbracht.<br />
         Berufshaftpflichtversicherung für Immobilienmakler (nach polnischem Recht vorgeschrieben): Powszechny Zakład Ubezpieczeń Spółka Akcyjna (PZU SA), Rondo Ignacego Daszyńskiego 4, 00-843 Warszawa, Polen; Deckungssumme 25.000 EUR je Schadensfall und insgesamt 25.000 EUR.
         {/* Polisa OC (dane od Daniela 25.09.2026, NIE publicznie): PZU, nr polisy 1118663294, okres 12.03.2026-11.03.2027, ubezpieczajacy i ubezpieczony INVESTRENT sp. z o.o. (REGON 526973936), OC obowiazkowe posrednika w obrocie nieruchomosciami, suma gwarancyjna 25 000 EUR na jedno zdarzenie i 25 000 EUR na wszystkie zdarzenia (kurs sredni NBP z pierwszego dnia roboczego roku zawarcia umowy). Adres ubezpieczyciela zweryfikowany 25.09.2026 na https://www.pzu.pl/grupa-pzu/spolki/pzu-sa (Rondo Ignacego Daszynskiego 4, 00-843 Warszawa; KRS 0000009831; Sad Rejonowy dla m.st. Warszawy, XIII Wydzial Gospodarczy KRS). Numer polisy i okres nie sa wymagane publicznie (§ 2 Abs. 1 Nr. 11 DL-InfoV: nazwa i adres ubezpieczyciela oraz zasieg terytorialny; przeglad prawny rundy 1 i 2 nie wymaga numeru). PRZYPOMNIENIE: polisa wygasa 11.03.2027 - odnowic i zaktualizowac Impressum ok. 30 dni wczesniej (backlog: _wspolne_pliki
 etencja_danych_stan_i_backlog_2026_09_25.md). Zasieg terytorialny: decyzja Daniela 25.09.2026 - nie podajemy (uslugi tylko w Polsce, w Niemczech wylacznie reklama). */}
