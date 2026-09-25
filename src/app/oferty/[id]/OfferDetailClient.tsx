@@ -6,6 +6,7 @@ import { submitLead } from '@/lib/api'
 import { formatPhoneDisplay } from '@/lib/phone'
 import MortgageMiniCalculator from '@/components/MortgageMiniCalculator'
 import Link from 'next/link'
+import MapEmbed, { ConsentGate } from '@/components/ConsentEmbed'
 
 interface OfferDetail {
   id: string
@@ -76,20 +77,25 @@ function VideoEmbed({ url }: { url: string }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const playerRef = useRef<any>(null)
   const [ended, setEnded] = useState(false)
+  // Click-to-load (25.09.2026): zadne zasoby YouTube/Vimeo nie laduja sie przed
+  // kliknieciem "Zaladuj wideo"; stan tylko w pamieci komponentu (bez cookie/localStorage).
+  const [ytLoaded, setYtLoaded] = useState(false)
 
   useEffect(() => {
-    if (!youtubeId) return
+    if (!youtubeId || !ytLoaded) return
     let cancelled = false
 
     function createPlayer() {
       if (cancelled || !containerRef.current) return
       playerRef.current = new (window as any).YT.Player(containerRef.current, {
         videoId: youtubeId,
+        // youtube-nocookie: tryb rozszerzonej prywatnosci (bez cookies przed odtworzeniem)
+        host: 'https://www.youtube-nocookie.com',
         playerVars: {
           // rel:0 i modestbranding to higiena minimalna (patrz komentarz
           // wyzej - NIE wystarcza samo w sobie), realna ochrona to
           // onStateChange ponizej.
-          rel: 0, modestbranding: 1, iv_load_policy: 3, playsinline: 1, enablejsapi: 1,
+          rel: 0, modestbranding: 1, iv_load_policy: 3, playsinline: 1, enablejsapi: 1, autoplay: 1,
         },
         events: {
           onStateChange: (e: any) => {
@@ -116,7 +122,7 @@ function VideoEmbed({ url }: { url: string }) {
     }
 
     return () => { cancelled = true }
-  }, [youtubeId])
+  }, [youtubeId, ytLoaded])
 
   return (
     <div style={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: 14, padding: '20px', marginTop: 14 }}>
@@ -126,7 +132,8 @@ function VideoEmbed({ url }: { url: string }) {
       <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', borderRadius: 10, overflow: 'hidden', background: '#000' }}>
         {youtubeId ? (
           <>
-            <div ref={containerRef} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} />
+            {!ytLoaded && <ConsentGate provider="youtube" onLoad={() => setYtLoaded(true)}><></></ConsentGate>}
+            {ytLoaded && <div ref={containerRef} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} />}
             {ended && (
               <div style={{
                 position: 'absolute', inset: 0, background: '#0d2a5c', display: 'flex', flexDirection: 'column',
@@ -143,8 +150,10 @@ function VideoEmbed({ url }: { url: string }) {
             )}
           </>
         ) : embedSrc ? (
-          <iframe src={embedSrc} title="Prezentacja wideo oferty" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen
-            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none' }} />
+          <ConsentGate provider="vimeo">
+            <iframe src={`${embedSrc}?dnt=1`} title="Prezentacja wideo oferty" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen
+              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none' }} />
+          </ConsentGate>
         ) : (
           // eslint-disable-next-line jsx-a11y/media-has-caption
           <video controls preload="metadata" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' as const }}>
@@ -417,14 +426,8 @@ export default function OfferDetailClient({ offer }: { offer: OfferDetail }) {
               <div style={{ padding: '16px 20px', borderBottom: '1px solid #f3f4f6' }}>
                 <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 17, color: '#0d2a5c', margin: 0 }}>Lokalizacja</h2>
               </div>
-              <iframe
-                src={`https://maps.google.com/maps?q=${mapQuery}&output=embed&hl=pl&z=15`}
-                width="100%"
-                height="280"
-                style={{ border: 'none', display: 'block' }}
-                loading="lazy"
-                allowFullScreen
-              />
+              {/* Click-to-load (25.09.2026): mapa Google laduje sie dopiero po kliknieciu (ConsentEmbed). */}
+              <MapEmbed query={mapQuery} zoom={15} height={280} title="Lokalizacja oferty" />
             </div>
           </div>
 

@@ -4,6 +4,7 @@ import { Phone, Mail, Clock, MapPin, Send, MessageSquare } from 'lucide-react'
 import { submitLead } from '@/lib/api'
 import { formatPhoneDisplay } from '@/lib/phone'
 import SuccessBadge from '@/components/SuccessBadge'
+import MapEmbed from '@/components/ConsentEmbed'
 import type { Office } from '@/types'
 
 const TOPICS = [
@@ -162,14 +163,8 @@ export default function Contact({ office }: { office: Office | null }) {
 
         {/* Map — pełna szerokość, pod obiema kolumnami */}
         <div className="mt-10 rounded-2xl overflow-hidden border border-slate-200">
-          <div className="relative w-full" style={{ paddingBottom: '28%', minHeight: 260 }}>
-            <iframe
-              src="https://maps.google.com/maps?q=Ratuszowa+12%2F1+lok.+3+Ko%C5%82obrzeg&output=embed&hl=pl&z=17"
-              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 0, display: 'block' }}
-              allowFullScreen loading="lazy"
-              title="InvestRent — lokalizacja biura"
-            />
-          </div>
+          {/* Click-to-load (25.09.2026): mapa Google laduje sie dopiero po kliknieciu (ConsentEmbed); link "Wyznacz trase" ponizej to zwykly link zewnetrzny. */}
+          <MapEmbed query="Ratuszowa+12%2F1+lok.+3+Ko%C5%82obrzeg" zoom={17} paddingBottom="28%" minHeight={260} hideLink title="InvestRent — lokalizacja biura" />
           <a href="https://www.google.com/maps/dir/?api=1&destination=Ratuszowa+12%2F1+lok.+3+Ko%C5%82obrzeg"
             target="_blank" rel="noopener noreferrer"
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, background: '#1a4fa0', color: 'white', padding: '15px 20px', fontWeight: 700, fontSize: 14, textDecoration: 'none' }}>

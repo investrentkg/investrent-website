@@ -16,6 +16,7 @@ import Team from '@/components/Team'
 import Reviews from '@/components/Reviews'
 import { JsonLd } from '@/components/JsonLd'
 import Breadcrumb from '@/components/Breadcrumb'
+import MapEmbed from '@/components/ConsentEmbed'
 import { getTeam, getStats, getOffice } from '@/lib/api'
 import { MapPin, Phone, Mail, Shield, Heart, TrendingUp, Users, CheckCircle } from 'lucide-react'
 import type { Metadata } from 'next'
@@ -160,13 +161,9 @@ export default async function ONasPage() {
                   )
                 })}
               </div>
-              <div style={{ borderRadius: 16, overflow: 'hidden', height: 280, border: '1px solid #e5e7eb' }}>
-                <iframe
-                  src="https://maps.google.com/maps?q=Ratuszowa+12%2F1+lok.+3+Ko%C5%82obrzeg&output=embed&hl=pl&z=18"
-                  width="100%" height="280" style={{ border: 0, display: 'block' }}
-                  allowFullScreen loading="lazy"
-                  title="InvestRent — lokalizacja biura"
-                />
+              {/* Click-to-load (25.09.2026): mapa Google laduje sie dopiero po kliknieciu (ConsentEmbed). */}
+              <div style={{ borderRadius: 16, overflow: 'hidden', border: '1px solid #e5e7eb' }}>
+                <MapEmbed query="Ratuszowa+12%2F1+lok.+3+Ko%C5%82obrzeg" zoom={18} height={280} title="InvestRent — lokalizacja biura" />
               </div>
             </div>
           </div>
