@@ -291,7 +291,6 @@ function LeadPanel({ outcome, values }: { outcome: EstimateOutcome | null; value
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [consent, setConsent] = useState(false) // zgoda 1 (wymagana) - NIEZAZNACZONA domyslnie
-  const [marketing, setMarketing] = useState(false) // zgoda 2 (marketing tylko telefon, opcjonalna) - NIEZAZNACZONA domyslnie
   const [errs, setErrs] = useState<{ phone?: string; consent?: string }>({})
   const [state, setState] = useState<'idle' | 'sending' | 'ok' | 'fail'>('idle')
   const inFlight = useRef(false)
@@ -315,7 +314,7 @@ function LeadPanel({ outcome, values }: { outcome: EstimateOutcome | null; value
         source: 'wycena_modal',
         client_type: 'seller',
         preferred_city: values.city.trim(),
-        notes: buildLeadNotes(values, outcome, readUtm(window.location.search), { marketing }),
+        notes: buildLeadNotes(values, outcome, readUtm(window.location.search), {}),
       })
       if (r?.ok) { setState('ok'); trackValuation('wycena_lead', { mode: outcome?.kind ?? 'none' }) } else setState('fail')
     } catch {
@@ -360,12 +359,6 @@ function LeadPanel({ outcome, values }: { outcome: EstimateOutcome | null; value
             <label htmlFor="wy-consent" style={{ fontSize: 14, color: '#374151', lineHeight: 1.6 }}>{T.lead.consentCall} <strong>{T.lead.consentCallRequired}</strong></label>
           </div>
           {errs.consent && <div id="wy-consent-err" role="alert" style={{ ...errStyle, marginLeft: 34 }}>{errs.consent}</div>}
-        </div>
-        <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-          <input id="wy-marketing" className="wy-check" type="checkbox" checked={marketing}
-            onChange={e => setMarketing(e.target.checked)}
-            style={{ width: 22, height: 22, marginTop: 2, flexShrink: 0, accentColor: '#0d2a5c' }} />
-          <label htmlFor="wy-marketing" style={{ fontSize: 14, color: '#374151', lineHeight: 1.6 }}>{T.lead.consentMarketing} <strong>{T.lead.consentMarketingOptional}</strong></label>
         </div>
         <div id="wy-consent-hint" style={hint}>
           {T.lead.consentInfo.map(c => (
