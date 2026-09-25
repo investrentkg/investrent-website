@@ -63,7 +63,7 @@ export default function DatenschutzPage() {
 
       <H2>3. Hosting, technische Bereitstellung und eingebettete Inhalte</H2>
       <P>
-        Diese Website wird bei Vercel Inc. (USA) gehostet. Beim Aufruf verarbeitet der Hosting-Anbieter technisch erforderliche Verbindungsdaten (IP-Adresse, Datum und Uhrzeit, aufgerufene Seite, Browsertyp), um die Website auszuliefern und ihre Sicherheit zu gewährleisten (Art. 6 Abs. 1 lit. f DSGVO – berechtigtes Interesse am sicheren und stabilen Betrieb der Website). Diese Daten werden in Server-Logdateien für <Ph>[30]</Ph> Tage gespeichert. Die Anwendungsschnittstelle (API) unseres CRM-Systems wird bei Railway Corp. betrieben, die Datenbank bei Supabase Inc. Die Datenbank liegt in der EU-Region Irland (Supabase, eu-west-1), die API läuft in der EU-Region Niederlande (Railway, europe-west4); die Funktionen der Website laufen bei Vercel in Frankfurt (fra1), statische Inhalte werden über das Vercel-Netzwerk ausgeliefert. Mit den Anbietern bestehen Auftragsverarbeitungsverträge nach Art. 28 DSGVO <Ph>[DO POTWIERDZENIA: podpisane DPA z Vercel, Railway, Supabase]</Ph>. Zu Übermittlungen in Drittländer siehe Abschnitt 11.
+        Diese Website wird bei Vercel Inc. (USA) gehostet. Beim Aufruf verarbeitet der Hosting-Anbieter technisch erforderliche Verbindungsdaten (IP-Adresse, Datum und Uhrzeit, aufgerufene Seite, Browsertyp), um die Website auszuliefern und ihre Sicherheit zu gewährleisten (Art. 6 Abs. 1 lit. f DSGVO – berechtigtes Interesse am sicheren und stabilen Betrieb der Website). Diese Daten werden in Server-Logdateien höchstens 30 Tage gespeichert. Die Anwendungsschnittstelle (API) unseres CRM-Systems wird bei Railway Corp. betrieben, die Datenbank bei Supabase Inc. Die Datenbank liegt in der EU-Region Irland (Supabase, eu-west-1), die API läuft in der EU-Region Niederlande (Railway, europe-west4); die Funktionen der Website laufen bei Vercel in Frankfurt (fra1), statische Inhalte werden über das Vercel-Netzwerk ausgeliefert. Mit den Anbietern bestehen Auftragsverarbeitungsverträge nach Art. 28 DSGVO <Ph>[DO POTWIERDZENIA: podpisane DPA z Vercel, Railway, Supabase]</Ph>. Zu Übermittlungen in Drittländer siehe Abschnitt 11.
         {/* ERLEDIGT (Przeglad 3.3): tekst prawnika. Regiony zweryfikowane 25.09.2026: Supabase eu-west-1 (get_project), Railway europe-west4 (multiRegionConfig prod), Vercel fra1 (vercel.json) - patrz _wspolne_pliki\de_fakty_do_polityki_weryfikacja_2026_09_25.md. Daniel: okres logow, potwierdzenie podpisanych DPA. Paragraf o Google Analytics USUNIETY (uwaga 11): layout.tsx uruchamia GA4 tylko po ustawieniu NEXT_PUBLIC_GA_MEASUREMENT_ID - PRZED ustawieniem tej zmiennej w Vercelu trzeba wdrozyc baner zgod (§ 25 TDDDG), osobna sekcje i transfer. */}
       </P>
       <H3>Eingebettete Inhalte Dritter (Zwei-Klick-Lösung)</H3>
@@ -175,16 +175,17 @@ export default function DatenschutzPage() {
 
       <H2>14. Speicherdauer</H2>
       <P>
-        Ihre personenbezogenen Daten werden so lange gespeichert, wie es zur Erfüllung der Verarbeitungszwecke erforderlich ist, und danach für den Zeitraum und im Umfang, wie er sich aus gesetzlichen Vorschriften ergibt oder zur Sicherung etwaiger Ansprüche erforderlich ist. Im Einzelnen speichern wir Ihre Daten wie folgt:
+        Ihre personenbezogenen Daten werden so lange gespeichert, wie es zur Erfüllung der Verarbeitungszwecke erforderlich ist, und danach für den Zeitraum und im Umfang, wie er sich aus gesetzlichen Vorschriften ergibt oder zur Sicherung etwaiger Ansprüche erforderlich ist. Im Einzelnen gelten folgende Höchstfristen; wir speichern Ihre Daten nicht länger als:
       </P>
       <UL>
-        <LI>Anfragen und Kontaktdaten ohne Vertragsschluss (Suchwünsche, Rückrufwünsche, Bewertungsanfragen): bis zu <Ph>[OKRES PRZECHOWYWANIA — propozycja 12 Monate, PRAWNIK]</Ph> nach dem letzten Kontakt, bei Widerruf oder Widerspruch früher;</LI>
-        <LI>Nachweis erteilter Einwilligungen: bis zum Ablauf der Verjährungsfrist möglicher Ansprüche, höchstens <Ph>[3]</Ph> Jahre nach Ende des Jahres, in dem die Einwilligung widerrufen wurde oder die Verarbeitung endete;</LI>
-        <LI>Vertragsdaten: für die Dauer des Vertrags und danach <Ph>[5]</Ph> Jahre ab Ende des Kalenderjahres, in dem die steuer- und buchhaltungsrechtliche Pflicht entstanden ist (polnisches Steuer- und Rechnungslegungsrecht); ggf. länger zur Wahrung von Ansprüchen (Verjährung nach polnischem Zivilrecht, bis zu <Ph>[6]</Ph> Jahre);</LI>
-        <LI>Daten, die wir nach den polnischen Vorschriften zur Bekämpfung der Geldwäsche erheben: <Ph>[5]</Ph> Jahre nach Beendigung der Geschäftsbeziehung;</LI>
-        <LI>Server-Logdateien: <Ph>[30]</Ph> Tage.</LI>
+        <LI>Anfragen und Kontaktdaten ohne Vertragsschluss (Suchwünsche, Rückrufwünsche, Bewertungsanfragen): 12 Monate nach dem letzten Kontakt, bei Widerruf oder Widerspruch früher;</LI>
+        <LI>Nachweis erteilter Einwilligungen: 3 Jahre ab Ende des Jahres, in dem die Einwilligung widerrufen wurde oder die Verarbeitung endete;</LI>
+        <LI>Verträge und Dokumente zu Transaktionen: 5 Jahre ab Ende des Kalenderjahres, in dem die steuer- und buchhaltungsrechtliche Pflicht entstanden ist (polnisches Steuer- und Rechnungslegungsrecht); in laufenden Rechtsstreitigkeiten bis zu deren Abschluss;</LI>
+        <LI>Daten, die wir nach den polnischen Vorschriften zur Bekämpfung der Geldwäsche erheben: 5 Jahre nach Beendigung der Geschäftsbeziehung;</LI>
+        <LI>Daten aus öffentlich zugänglichen Immobilienanzeigen (einschließlich Telefonnummern von Inserenten) im Anzeigenarchiv: 12 Monate nach Ablauf der Anzeige;</LI>
+        <LI>Server-Logdateien: 30 Tage.</LI>
       </UL>
-      {/* ERLEDIGT (Przeglad 3.9, uwaga 3): struktura wg prawnika; wartosci w [ ] = propozycje do akceptacji Daniela/kancelarii (pkt 5 listy); okres AML 5 lat i podatkowy do weryfikacji w zrodle. */}
+      {/* Okresy wpisane wg decyzji Daniela 25.09.2026 (wersja standardowa) - DO ZATWIERDZENIA PRAWNIE (AML 5 lat i okres podatkowy do weryfikacji w zrodle). UWAGA: CRM na origin/main NIE ma automatycznego usuwania/anonimizacji - sformulowanie jako limit ("nicht laenger als"), nie obietnica automatyzacji; zadania backlogu: _wspolne_pliki\retencja_danych_stan_i_backlog_2026_09_25.md. Przed publikacja wdrozyc joby albo wprowadzic reczna procedure (kwartalny przeglad). */}
 
       <H2>15. Ihre Rechte</H2>
       <P>Nach der DSGVO stehen Ihnen folgende Rechte zu:</P>
