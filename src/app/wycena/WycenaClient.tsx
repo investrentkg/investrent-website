@@ -2,6 +2,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { Calculator, CheckCircle, Phone } from 'lucide-react'
 import { submitLead } from '@/lib/api'
+import Breadcrumb from '@/components/Breadcrumb'
+import WycenaModal from '@/components/WycenaModal'
 import {
   CONDITIONS, EMPTY_FORM, OFFICE_PHONE, PROPERTY_TYPES,
   buildLeadNotes, buildPayload, fieldApplies, formatPLN, formatRange, isValidPhone,
@@ -36,7 +38,9 @@ function describedBy(id: string, hasHint: boolean, hasErr: boolean) {
   return [hasHint ? `${id}-hint` : '', hasErr ? `${id}-err` : ''].filter(Boolean).join(' ') || undefined
 }
 
-export default function WycenaClient() {
+export default function WycenaClient({ initialEnabled = true }: { initialEnabled?: boolean }) {
+  const [available, setAvailable] = useState(initialEnabled) // false = tryb sam numer (flaga albo 503)
+  const [modalOpen, setModalOpen] = useState(false)
   const [values, setValues] = useState<FormValues>(EMPTY_FORM)
   const [errors, setErrors] = useState<FormErrors>({})
   const [honeypot, setHoneypot] = useState('')
@@ -74,6 +78,7 @@ export default function WycenaClient() {
       setPhase('form')
       return
     }
+    if (res.kind === 'disabled') { setAvailable(false); setOutcome(null); setPhase('form'); return }
     setSubmittedValues(values)
     setOutcome(res)
     if (res.kind === 'range') trackValuation('wycena_estimate_success', { property_type: values.property_type })
@@ -87,10 +92,22 @@ export default function WycenaClient() {
   }
 
   return (
+    <>
+    <div style={{ background: 'linear-gradient(135deg, #0d2a5c, #1a4fa0)', padding: '32px 0 36px' }}>
+      <div className="container" style={{ maxWidth: 860 }}>
+        <Breadcrumb light={true} crumbs={[{ label: 'Strona główna', href: '/' }, { label: 'Wycena nieruchomości' }]} />
+        <h1 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 'clamp(26px, 5vw, 38px)', color: 'white', letterSpacing: '-1px', lineHeight: 1.15, marginBottom: 14 }}>
+          {available ? T.h1 : T.h1Off}
+        </h1>
+        <p style={{ color: 'rgba(255,255,255,.9)', fontSize: 16, lineHeight: 1.7, maxWidth: 620, margin: 0 }}>{available ? T.intro : T.introOff}</p>
+      </div>
+    </div>
     <div style={{ background: '#f8fafc', padding: '32px 0 64px' }}>
       <div className="container" style={{ maxWidth: 860, display: 'flex', flexDirection: 'column', gap: 24 }}>
 
-        {phase !== 'after' && (
+        {!available && <LeadPanel outcome={null} values={EMPTY_FORM} />}
+
+        {available && phase !== 'after' && (
           <form onSubmit={onSubmit} noValidate style={card} aria-labelledby="wy-form-title" aria-busy={phase === 'loading'}>
             <h2 id="wy-form-title" style={h2}>{T.formTitle}</h2>
             <p style={{ ...hint, marginTop: 0, marginBottom: 20 }}>{T.requiredNote}</p>
@@ -168,23 +185,31 @@ export default function WycenaClient() {
               <p role="status" aria-live="polite" style={{ ...hint, textAlign: 'center' }}>
                 {phase === 'loading' ? T.submitting : T.disclaimerTop}
               </p>
+              <p style={{ ...hint, textAlign: 'center', marginTop: 12 }}>
+                {T.callInstead}{' '}
+                <button type="button" onClick={() => setModalOpen(true)} style={{ background: 'none', border: 'none', padding: 0, font: 'inherit', color: '#1a4fa0', textDecoration: 'underline', cursor: 'pointer' }}>{T.callInsteadLink}</button>
+              </p>
             </div>
           </form>
         )}
 
-        {phase === 'after' && outcome && (
+        {available && phase === 'after' && outcome && (
           <div ref={resultRef} tabIndex={-1} style={{ outline: 'none', display: 'flex', flexDirection: 'column', gap: 24 }}>
             <OutcomePanel outcome={outcome} onAgain={reset} />
             <LeadPanel outcome={outcome} values={submittedValues} />
           </div>
         )}
 
-        <section style={{ padding: '0 4px' }} aria-labelledby="wy-how">
-          <h2 id="wy-how" style={{ ...h2, fontSize: 18 }}>{T.how.title}</h2>
-          {T.how.body.map(p => <p key={p} style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.75, margin: '0 0 10px' }}>{p}</p>)}
-        </section>
+        {available && (
+          <section style={{ padding: '0 4px' }} aria-labelledby="wy-how">
+            <h2 id="wy-how" style={{ ...h2, fontSize: 18 }}>{T.how.title}</h2>
+            {T.how.body.map(p => <p key={p} style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.75, margin: '0 0 10px' }}>{p}</p>)}
+          </section>
+        )}
       </div>
     </div>
+    <WycenaModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+    </>
   )
 }
 
@@ -242,14 +267,14 @@ function OutcomePanel({ outcome, onAgain }: { outcome: EstimateOutcome; onAgain:
   )
 }
 
-function LeadPanel({ outcome, values }: { outcome: EstimateOutcome; values: FormValues }) {
+function LeadPanel({ outcome, values }: { outcome: EstimateOutcome | null; values: FormValues }) {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [consent, setConsent] = useState(false) // NIEZAZNACZONA domyslnie
   const [errs, setErrs] = useState<{ phone?: string; consent?: string }>({})
   const [state, setState] = useState<'idle' | 'sending' | 'ok' | 'fail'>('idle')
   const inFlight = useRef(false)
-  const withNumbers = outcome.kind === 'range'
+  const withNumbers = outcome?.kind === 'range'
 
   async function send(e: React.FormEvent) {
     e.preventDefault()
@@ -271,7 +296,7 @@ function LeadPanel({ outcome, values }: { outcome: EstimateOutcome; values: Form
         preferred_city: values.city.trim(),
         notes: buildLeadNotes(values, outcome, readUtm(window.location.search), T.lead.consent),
       })
-      if (r?.ok) { setState('ok'); trackValuation('wycena_lead', { mode: outcome.kind }) } else setState('fail')
+      if (r?.ok) { setState('ok'); trackValuation('wycena_lead', { mode: outcome?.kind ?? 'none' }) } else setState('fail')
     } catch {
       setState('fail')
     } finally {

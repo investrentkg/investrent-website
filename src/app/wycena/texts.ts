@@ -7,7 +7,13 @@ export const T = {
   metaTitle: 'Wycena mieszkania Kołobrzeg — sprawdź orientacyjną cenę online',
   metaDescription:
     'Ile jest warte moje mieszkanie w Kołobrzegu? Podaj kilka danych i zobacz orientacyjne widełki ceny oraz cenę za m². To szacunek, nie operat rzeczoznawcy. Bez podawania numeru telefonu.',
+  metaDescriptionOff:
+    'Wycena mieszkania w Kołobrzegu: zostaw numer telefonu, a agent InvestRent przygotuje wycenę indywidualnie i oddzwoni. Bez zobowiązań.',
   h1: 'Wycena mieszkania w Kołobrzegu online',
+  h1Off: 'Wycena mieszkania w Kołobrzegu — przygotuje ją agent',
+  introOff: 'Kalkulator online jest chwilowo niedostępny. Zostaw numer telefonu — agent przygotuje wycenę Twojej nieruchomości indywidualnie i oddzwoni. Bez zobowiązań.',
+  callInstead: 'Wolisz, żebyśmy zadzwonili?',
+  callInsteadLink: 'Zostaw sam numer',
   intro: 'Ile jest warte Twoje mieszkanie, dom lub działka? Podaj kilka danych, a pokażemy orientacyjne widełki ceny. Nie musisz zostawiać numeru telefonu.',
   disclaimerTop: 'To szacunek orientacyjny, nie operat rzeczoznawcy majątkowego.',
 

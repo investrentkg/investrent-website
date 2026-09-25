@@ -61,5 +61,5 @@ test('telefon i UTM', () => {
 })
 test('notatka leada: dane, wynik, zgoda, UTM', () => {
   const n = buildLeadNotes(ok, { kind: 'range', range: { low: 400000, high: 480000 }, pricePerM2: null, comparables: null, quality: null, disclaimer: null, message: null }, 'utm_source=meta', 'TRESC ZGODY')
-  assert.match(n, /Mieszkanie, Kołobrzeg/); assert.match(n, /52,5 m²/); assert.match(n, /Zgoda na kontakt telefoniczny: TAK/); assert.match(n, /TRESC ZGODY/); assert.match(n, /utm_source=meta/)
+  assert.match(n, /Źródło: kalkulator wyceny \(z wynikiem: tak\)/); assert.match(n, /Mieszkanie, Kołobrzeg/); assert.match(n, /52,5 m²/); assert.match(n, /Zgoda na kontakt telefoniczny: TAK/); assert.match(n, /TRESC ZGODY/); assert.match(n, /utm_source=meta/)
 })

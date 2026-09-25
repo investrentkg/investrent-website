@@ -235,8 +235,8 @@ export function readUtm(search: string): string {
 
 export function buildLeadNotes(v: FormValues, o: EstimateOutcome | null, utm: string, consentText: string): string {
   return [
-    'Kalkulator wyceny /wycena — prośba o raport i kontakt.',
-    `Dane: ${describeInput(v)}.`,
+    `Źródło: kalkulator wyceny (z wynikiem: ${o?.kind === 'range' ? 'tak' : 'nie'}) — strona /wycena.`,
+    v.property_type ? `Dane: ${describeInput(v)}.` : '',
     describeOutcome(o),
     `Zgoda na kontakt telefoniczny: TAK (wersja ${CONSENT_VERSION}). Treść: ${consentText}`,
     utm ? `UTM: ${utm}` : '',

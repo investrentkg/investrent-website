@@ -32,7 +32,7 @@ export default function WycenaModal({ isOpen, onClose }: Props) {
     setSendFailed(false)
     setStatus('loading')
     try {
-      const r = await submitLead({ full_name: name || 'Właściciel', phone: phone.trim(), source: 'wycena_modal', client_type: 'seller', notes: 'Bezpłatna wycena — popup strony głównej' })
+      const r = await submitLead({ full_name: name || 'Właściciel', phone: phone.trim(), source: 'wycena_modal', client_type: 'seller', notes: 'Źródło: prośba o rozmowę (okienko „Zamów rozmowę”, bez kalkulatora).' })
       setSendFailed(!r?.ok)
       setStatus(r?.ok ? 'ok' : 'error')
     } catch {
