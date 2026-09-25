@@ -8,7 +8,7 @@
 
 export const ESTIMATE_TIMEOUT_MS = 45000 // wycena uruchamia silnik AI - dluzej niz zwykly lead
 // Numer biura - ta sama wartosc co LEAD_FALLBACK_PHONE (leadSubmit.ts).
-export const OFFICE_PHONE = '+48 731 554 341'
+export const OFFICE_PHONE = '+48\u00A0731\u00A0554\u00A0341'
 
 export type PropertyType = 'mieszkanie' | 'dom' | 'dzialka'
 export type Condition = 'do_remontu' | 'dobry' | 'po_remoncie' | 'deweloperski'
@@ -75,7 +75,7 @@ export function validateForm(v: FormValues): FormErrors {
   const area = parseNum(v.area_m2)
   if (!v.area_m2.trim() || !Number.isFinite(area)) e.area_m2 = 'Podaj powierzchnię w metrach kwadratowych.'
   else if (area < 8 || area > (v.property_type === 'dzialka' ? 1000000 : 2000)) {
-    e.area_m2 = v.property_type === 'dzialka' ? 'Podaj powierzchnię od 8 do 1 000 000 m².' : 'Podaj powierzchnię od 8 do 2000 m².'
+    e.area_m2 = v.property_type === 'dzialka' ? 'Podaj powierzchnię od 8 do 1\u00A0000\u00A0000\u00A0m².' : 'Podaj powierzchnię od 8 do 2000 m².'
   }
 
   if (fieldApplies(v.property_type, 'rooms') && v.rooms.trim()) {
@@ -84,7 +84,7 @@ export function validateForm(v: FormValues): FormErrors {
   }
   if (fieldApplies(v.property_type, 'floor') && v.floor.trim()) {
     const f = parseNum(v.floor)
-    if (!Number.isInteger(f) || f < -1 || f > 40) e.floor = 'Podaj piętro od -1 (suterena) do 40; parter to 0.'
+    if (!Number.isInteger(f) || f < -1 || f > 40) e.floor = 'Podaj piętro od -1 do 40 (parter to 0, suterena to -1).'
   }
   return e
 }

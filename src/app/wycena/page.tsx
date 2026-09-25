@@ -13,7 +13,7 @@ import type { Metadata } from 'next'
 const CALC_ENABLED = process.env.NEXT_PUBLIC_VALUATION_ENABLED !== 'false'
 
 export const metadata: Metadata = {
-  title: T.metaTitle,
+  title: { absolute: T.metaTitle }, // bez doklejania marki (layout ma szablon)
   description: CALC_ENABLED ? T.metaDescription : T.metaDescriptionOff,
   alternates: { canonical: 'https://www.investrent.com.pl/wycena' },
   openGraph: { title: T.metaTitle, description: CALC_ENABLED ? T.metaDescription : T.metaDescriptionOff, url: 'https://www.investrent.com.pl/wycena', type: 'website', locale: 'pl_PL' },

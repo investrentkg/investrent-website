@@ -21,7 +21,7 @@ const hint: React.CSSProperties = { fontSize: 13, color: '#475569', marginTop: 4
 const errStyle: React.CSSProperties = { fontSize: 13, color: '#b91c1c', marginTop: 4, fontWeight: 600 }
 const h2: React.CSSProperties = { fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 22, color: '#0d2a5c', margin: '0 0 8px', lineHeight: 1.25 }
 
-const phoneHref = `tel:${OFFICE_PHONE.replace(/\s/g, '')}`
+const phoneHref = 'tel:+48731554341'
 
 function Field({ id, text, hintText, error, children }: { id: string; text: string; hintText?: string; error?: string; children: React.ReactNode }) {
   return (
@@ -74,7 +74,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
     inFlight.current = false
     if (res.kind === 'invalid') {
       // blad walidacji po stronie serwera - zostajemy w formularzu
-      setErrors({ area_m2: res.message ?? T.errors.invalid })
+      setErrors({ area_m2: res.message ?? `${T.errors.invalid} ${OFFICE_PHONE}` })
       setPhase('form')
       return
     }
@@ -254,14 +254,13 @@ function OutcomePanel({ outcome, onAgain }: { outcome: EstimateOutcome; onAgain:
     )
   }
   const text =
-    outcome.kind === 'disabled' ? T.errors.disabled(OFFICE_PHONE)
-    : outcome.kind === 'rate_limited' ? T.errors.rateLimited(OFFICE_PHONE, outcome.retryAfterSeconds ? Math.max(1, Math.ceil(outcome.retryAfterSeconds / 60)) : null)
-    : outcome.kind === 'error' && (outcome.reason === 'network' || outcome.reason === 'timeout') ? T.errors.network(OFFICE_PHONE)
-    : T.errors.server(OFFICE_PHONE)
+    outcome.kind === 'disabled' ? T.errors.disabled
+    : outcome.kind === 'rate_limited' ? T.errors.rateLimited
+    : outcome.kind === 'error' && (outcome.reason === 'network' || outcome.reason === 'timeout') ? T.errors.network
+    : T.errors.server
   return (
     <section style={card} role="alert">
-      <p style={{ color: '#374151', fontSize: 15, lineHeight: 1.7, margin: 0 }}>{text}</p>
-      <p style={{ margin: '12px 0 0' }}><PhoneLink /></p>
+      <p style={{ color: '#374151', fontSize: 15, lineHeight: 1.7, margin: 0 }}>{text} <PhoneLink /></p>
       {outcome.kind !== 'disabled' && <button type="button" className="wy-btn wy-btn-secondary" style={{ marginTop: 16 }} onClick={onAgain}>{T.result.again}</button>}
     </section>
   )
@@ -343,7 +342,7 @@ function LeadPanel({ outcome, values }: { outcome: EstimateOutcome | null; value
         {errs.consent && <div id="wy-consent-err" role="alert" style={{ ...errStyle, marginLeft: 34 }}>{errs.consent}</div>}
       </div>
 
-      {state === 'fail' && <p role="alert" style={{ ...errStyle, marginTop: 16 }}>{T.errors.leadFail(OFFICE_PHONE)}</p>}
+      {state === 'fail' && <p role="alert" style={{ ...errStyle, marginTop: 16 }}>{T.errors.leadFail} <PhoneLink /></p>}
 
       <div style={{ marginTop: 20 }}>
         <button type="submit" className="wy-btn" disabled={state === 'sending'}>
