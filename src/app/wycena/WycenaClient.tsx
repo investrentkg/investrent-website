@@ -7,8 +7,8 @@ import WycenaModal from '@/components/WycenaModal'
 import Turnstile from './Turnstile'
 import {
   CONDITIONS, EMPTY_FORM, OFFICE_PHONE, PROPERTY_TYPES,
-  buildLeadNotes, buildPayload, fieldApplies, formatPLN, formatRange, isValidPhone,
-  readUtm, requestEstimate, trackValuation, validateForm,
+  buildLeadNotes, buildPayload, fieldApplies, formatPLN, formatRange, isOutOfScope, isValidPhone,
+  readUtm, requestEstimate, submittedTooFast, trackValuation, validateForm,
   type EstimateOutcome, type FormErrors, type FormValues,
 } from '@/lib/valuation'
 import { T } from './texts'
@@ -46,6 +46,8 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
   const [tsToken, setTsToken] = useState<string | null>(null)
   const [tsReset, setTsReset] = useState(0)
   const [tsNotice, setTsNotice] = useState<'pending' | null>(null)
+  const [tooFast, setTooFast] = useState(false) // zbyt szybkie wyslanie (prog czasowy) - neutralny komunikat
+  const loadedAt = useRef(Date.now())
   const [values, setValues] = useState<FormValues>(EMPTY_FORM)
   const [errors, setErrors] = useState<FormErrors>({})
   const [honeypot, setHoneypot] = useState('')
@@ -66,6 +68,9 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (inFlight.current) return // blokada podwojnego wyslania
+    // Minimalny czas od zaladowania strony (odsiew najprostszych botow). Tylko front, ta sama odpowiedz co przy zwyklym bledzie.
+    if (submittedTooFast(loadedAt.current, Date.now())) { setTooFast(true); return }
+    setTooFast(false)
     const errs = validateForm(values)
     setErrors(errs)
     if (Object.keys(errs).length) {
@@ -182,6 +187,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
               )}
             </div>
 
+            {tooFast && <p role="alert" style={{ ...errStyle, marginTop: 16 }}>{T.errors.tryAgain}</p>}
             {Object.keys(errors).some(k => errors[k as keyof FormErrors]) && (
               <p role="alert" style={{ ...errStyle, marginTop: 16 }}>{T.formErrorSummary}</p>
             )}
@@ -210,7 +216,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
 
         {available && phase === 'after' && outcome && (
           <div ref={resultRef} tabIndex={-1} style={{ outline: 'none', display: 'flex', flexDirection: 'column', gap: 24 }}>
-            <OutcomePanel outcome={outcome} onAgain={reset} />
+            <OutcomePanel outcome={outcome} scoped={!isOutOfScope(submittedValues)} onAgain={reset} />
             <LeadPanel outcome={outcome} values={submittedValues} />
           </div>
         )}
@@ -232,7 +238,7 @@ function PhoneLink() {
   return <a href={phoneHref} style={{ color: '#0d2a5c', fontWeight: 700 }}>{OFFICE_PHONE}</a>
 }
 
-function OutcomePanel({ outcome, onAgain }: { outcome: EstimateOutcome; onAgain: () => void }) {
+function OutcomePanel({ outcome, scoped, onAgain }: { outcome: EstimateOutcome; scoped: boolean; onAgain: () => void }) {
   if (outcome.kind === 'range') {
     return (
       <section style={card} aria-labelledby="wy-res-title">
@@ -251,7 +257,7 @@ function OutcomePanel({ outcome, onAgain }: { outcome: EstimateOutcome; onAgain:
         </div>
         {outcome.message && <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '0 0 8px' }}>{outcome.message}</p>}
         {outcome.comparables && <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '0 0 8px' }}>{T.result.comparables(outcome.comparables.min, outcome.comparables.max)}</p>}
-        {outcome.quality && <p style={{ color: '#374151', fontSize: 14.5, margin: '0 0 8px' }}>{T.result.qualityLabel}: <strong>{outcome.quality}</strong></p>}
+        <p style={{ color: '#374151', fontSize: 14.5, margin: '0 0 8px' }}>{T.result.scopeNote}</p>
         <p style={{ color: '#7c2d12', background: '#fff7ed', border: '1px solid #fed7aa', borderRadius: 10, padding: '10px 14px', fontSize: 14, lineHeight: 1.6, margin: '12px 0 0' }}>
           <strong>{outcome.disclaimer ?? T.result.disclaimerFallback}</strong>
         </p>
@@ -262,8 +268,8 @@ function OutcomePanel({ outcome, onAgain }: { outcome: EstimateOutcome; onAgain:
   if (outcome.kind === 'no_numbers') {
     return (
       <section style={card} aria-labelledby="wy-res-title">
-        <h2 id="wy-res-title" style={h2}>{T.result.noNumbersTitle}</h2>
-        <p style={{ color: '#374151', fontSize: 15, lineHeight: 1.7, margin: 0 }}>{outcome.message ?? T.result.noNumbersBody}</p>
+        <h2 id="wy-res-title" style={h2}>{scoped ? T.result.noNumbersTitle : T.result.outOfScopeTitle}</h2>
+        <p style={{ color: '#374151', fontSize: 15, lineHeight: 1.7, margin: 0 }}>{scoped ? T.result.noNumbersBody : T.result.outOfScopeBody}</p>
         <button type="button" className="wy-btn wy-btn-secondary" style={{ marginTop: 16 }} onClick={onAgain}>{T.result.again}</button>
       </section>
     )
@@ -309,7 +315,7 @@ function LeadPanel({ outcome, values }: { outcome: EstimateOutcome | null; value
         source: 'wycena_modal',
         client_type: 'seller',
         preferred_city: values.city.trim(),
-        notes: buildLeadNotes(values, outcome, readUtm(window.location.search), { callText: T.lead.consentCall, marketing, marketingText: T.lead.consentMarketing }),
+        notes: buildLeadNotes(values, outcome, readUtm(window.location.search), { marketing }),
       })
       if (r?.ok) { setState('ok'); trackValuation('wycena_lead', { mode: outcome?.kind ?? 'none' }) } else setState('fail')
     } catch {

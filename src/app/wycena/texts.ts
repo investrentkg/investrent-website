@@ -14,21 +14,21 @@ export const T = {
     'Wycena mieszkania w Kołobrzegu: zostaw numer telefonu, a agent InvestRent przygotuje wycenę indywidualnie i zadzwoni. Bez zobowiązań.',
   h1: 'Bezpłatna wycena mieszkania w Kołobrzegu online',
   h1Off: 'Wycena mieszkania w Kołobrzegu — przygotuje ją agent',
-  intro: 'Ile jest warte Twoje mieszkanie w Kołobrzegu? Podaj kilka danych, a pokażemy orientacyjne widełki ceny. Możesz też sprawdzić dom lub działkę. Nie musisz podawać numeru telefonu.',
+  intro: 'Ile jest warte Twoje mieszkanie w Kołobrzegu? Podaj kilka danych, a pokażemy orientacyjne widełki ceny. Widełki online liczymy dla mieszkań w Kołobrzegu, z wyjątkiem Śródmieścia. W pozostałych przypadkach (dom, działka, inna miejscowość) wycenę przygotuje agent. Nie musisz podawać numeru telefonu.',
   introOff: 'Kalkulator online jest chwilowo niedostępny. Zostaw numer telefonu — agent przygotuje wycenę Twojej nieruchomości indywidualnie i zadzwoni. Bez zobowiązań.',
   callInstead: 'Wolisz, żebyśmy zadzwonili?',
   callInsteadLink: 'Zostaw sam numer',
   disclaimerTop: 'Wynik jest orientacyjny – to nie operat szacunkowy rzeczoznawcy majątkowego.',
 
   formTitle: 'Dane nieruchomości',
-  requiredNote: 'Pola z gwiazdką (*) są wymagane. Pozostałe możesz pominąć, ale pomagają zawęzić widełki.',
+  requiredNote: 'Pola z gwiazdką (*) są wymagane. Dla mieszkania w Kołobrzegu wymagana jest także dzielnica lub osiedle. Pozostałe pola możesz pominąć, ale pomagają zawęzić widełki.',
   fields: {
     property_type: 'Rodzaj nieruchomości',
     property_type_placeholder: 'Wybierz…',
     city: 'Miejscowość',
-    city_hint: 'Domyślnie Kołobrzeg. Możesz wpisać inną miejscowość.',
-    district: 'Dzielnica lub osiedle (opcjonalnie)',
-    district_hint: 'Np. Podczele, Radzikowo, dzielnica uzdrowiskowa.',
+    city_hint: 'Domyślnie Kołobrzeg. Dla innych miejscowości wycenę przygotuje agent.',
+    district: 'Dzielnica lub osiedle',
+    district_hint: 'Bez dzielnicy nie policzymy widełek dla mieszkania w Kołobrzegu. Np. Podczele, Radzikowo. Dla Śródmieścia widełek nie podajemy — wycenę przygotuje agent.',
     area_m2: 'Powierzchnia (m²)',
     rooms: 'Liczba pokoi (opcjonalnie)',
     floor: 'Piętro (opcjonalnie)',
@@ -42,16 +42,21 @@ export const T = {
 
   result: {
     title: 'Orientacyjne widełki ceny',
-    priceLabel: 'Szacowana cena',
+    priceLabel: 'Orientacyjny zakres ceny',
     perM2Label: 'Cena za m²',
     comparables: (min: number, max: number) =>
       `Do szacunku wykorzystaliśmy od ${min} do ${max} porównywalnych nieruchomości z okolicy.`,
-    qualityLabel: 'Pewność szacunku',
+    scopeNote: 'Orientacyjny zakres — nie wycena rzeczoznawcy.',
     disclaimerFallback:
       'To wycena orientacyjna, a nie operat szacunkowy rzeczoznawcy majątkowego. Cena, jaką uzyskasz, zależy m.in. od stanu technicznego, standardu wykończenia, widoku z okien i sytuacji na rynku.',
-    noNumbersTitle: 'Za mało danych, żeby podać widełki ceny',
+    // Poza zakresem liczb online (dom, działka, inna miejscowość, Śródmieście) - to reguła, nie brak danych.
+    outOfScopeTitle: 'Tę nieruchomość wyceni agent',
+    outOfScopeBody:
+      'Widełki online liczymy tylko dla mieszkań w Kołobrzegu, poza Śródmieściem. Dla domów, działek, Śródmieścia i innych miejscowości wycenę przygotowuje agent indywidualnie. Zostaw numer telefonu – zadzwonimy.',
+    // W zakresie, ale silnik nie ma dość porównań.
+    noNumbersTitle: 'Nie mamy dość danych, żeby podać widełki',
     noNumbersBody:
-      'W okolicy tej nieruchomości mamy za mało porównywalnych ofert i transakcji, żeby rzetelnie wyznaczyć widełki. Jeśli chcesz, zostaw numer telefonu – agent przygotuje wycenę indywidualnie.',
+      'Dla tej nieruchomości mamy za mało porównywalnych ofert i transakcji, żeby rzetelnie wyznaczyć widełki. Agent przygotuje wycenę indywidualnie – zostaw numer telefonu.',
     again: 'Wyceń inną nieruchomość',
   },
 
@@ -91,7 +96,9 @@ export const T = {
     server: 'Coś poszło nie tak po naszej stronie. Spróbuj ponownie za chwilę. Możesz też zostawić numer poniżej lub zadzwonić:',
     turnstilePending: 'Weryfikacja antyspamowa jeszcze się ładuje. Poczekaj chwilę i spróbuj ponownie.',
     invalid: 'Nie udało się przetworzyć części danych. Sprawdź wartości w formularzu i spróbuj ponownie. Jeśli to nie pomoże, zadzwoń:',
-    leadFail: 'Nie udało się wysłać numeru. Spróbuj ponownie lub zadzwoń:',
+    // Zbyt szybkie wysłanie formularza (próg czasowy) - neutralny komunikat, bez ujawniania mechanizmu.
+    tryAgain: 'Nie udało się wysłać zapytania. Spróbuj ponownie za chwilę.',
+    leadFail:'Nie udało się wysłać numeru. Spróbuj ponownie lub zadzwoń:',
   },
 
   how: {

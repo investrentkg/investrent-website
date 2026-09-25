@@ -3,10 +3,10 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import {
   validateForm, buildPayload, interpretResponse, requestEstimate, buildLeadNotes,
-  isValidPhone, readUtm, EMPTY_FORM, fieldApplies,
+  isValidPhone, readUtm, EMPTY_FORM, fieldApplies, isOutOfScope, submittedTooFast, buildConsentMarker, CONSENT_VERSION, NOTES_MAX,
 } from './valuation.ts'
 
-const ok = { ...EMPTY_FORM, property_type: 'mieszkanie', area_m2: '52,5', rooms: '3', floor: '2', condition: 'dobry' }
+const ok = { ...EMPTY_FORM, property_type: 'mieszkanie', district: 'Podczele', area_m2: '52,5', rooms: '3', floor: '2', condition: 'dobry' }
 const json = (body, status = 200) => async () => new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } })
 
 test('walidacja: pusty formularz -> brak typu i powierzchni, miasto domyslnie Kolobrzeg', () => {
@@ -62,7 +62,34 @@ test('telefon i UTM', () => {
   assert.ok(isValidPhone('731 554 341')); assert.ok(isValidPhone('+48731554341')); assert.ok(!isValidPhone('12345'))
   assert.equal(readUtm('?utm_source=meta&utm_campaign=wycena&x=1'), 'utm_source=meta utm_campaign=wycena')
 })
-test('notatka leada: dane, wynik, zgoda, UTM', () => {
-  const n = buildLeadNotes(ok, { kind: 'range', range: { low: 400000, high: 480000 }, pricePerM2: null, comparables: null, quality: null, disclaimer: null, message: null }, 'utm_source=meta', { callText: 'TRESC ZGODY', marketing: false, marketingText: 'MKT' })
-  assert.match(n, /Źródło: kalkulator wyceny \(z wynikiem: tak\)/); assert.match(n, /Mieszkanie, Kołobrzeg/); assert.match(n, /52,5 m²/); assert.match(n, /Zgoda 1 \(telefon w sprawie wyceny, wymagana\): TAK/); assert.match(n, /Zgoda 2 .*: NIE/); assert.doesNotMatch(n, /MKT/); assert.match(n, /TRESC ZGODY/); assert.match(n, /utm_source=meta/)
+const rangeOut = { kind: 'range', range: { low: 400000, high: 480000 }, pricePerM2: null, comparables: null, quality: null, disclaimer: null, message: null }
+test('notatka leada: dane, wynik, znacznik zgody, UTM (zgoda bez pelnych tekstow)', () => {
+  const n = buildLeadNotes(ok, rangeOut, 'utm_source=meta', { marketing: false, at: '2026-09-25T10:00:00.000Z' })
+  assert.ok(n.startsWith('[Zgoda-kalkulator] wersja=wycena-2026-09-25-v2; czas=2026-09-25T10:00:00.000Z; kontakt=tak; marketing=nie'))
+  assert.ok(n.includes('Źródło: kalkulator wyceny (z wynikiem: tak)')); assert.ok(n.includes('Mieszkanie, Kołobrzeg (Podczele)')); assert.ok(n.includes('52,5 m²')); assert.ok(n.includes('utm_source=meta'))
+  assert.equal(buildConsentMarker({ marketing: true }).includes('marketing=tak'), true)
+  assert.ok(CONSENT_VERSION.endsWith('-v2') && !CONSENT_VERSION.includes('DO-PRAWNIKA'))
+})
+test('notatka leada: z zgoda marketingowa i dlugim UTM miesci sie w limicie 500 znakow backendu, znacznik zgody nieuciety', () => {
+  const longUtm = ['utm_source','utm_medium','utm_campaign','utm_content','utm_term'].map(k => k + '=' + 'x'.repeat(80)).join(' ')
+  const n = buildLeadNotes({ ...ok, district: 'Radzikowo-Osiedle Nadmorskie' }, rangeOut, longUtm, { marketing: true, at: '2026-09-25T10:00:00.000Z' })
+  assert.ok(n.length <= NOTES_MAX && NOTES_MAX < 500, 'dlugosc ' + n.length)
+  assert.ok(n.startsWith('[Zgoda-kalkulator] wersja=wycena-2026-09-25-v2; czas=2026-09-25T10:00:00.000Z; kontakt=tak; marketing=tak'))
+  const clean = String(n).slice(0, 500).replace(/[<>]/g, '') // jak backend: clean(notes)
+  assert.equal(clean, n)
+})
+test('zakres liczb: dom, dzialka, inna miejscowosc, Srodmiescie = poza zakresem; mieszkanie Kolobrzeg z dzielnica = w zakresie', () => {
+  assert.equal(isOutOfScope(ok), false)
+  assert.equal(isOutOfScope({ ...ok, property_type: 'dom' }), true); assert.equal(isOutOfScope({ ...ok, property_type: 'dzialka' }), true)
+  assert.equal(isOutOfScope({ ...ok, city: 'Koszalin' }), true)
+  assert.equal(isOutOfScope({ ...ok, district: 'Śródmieście' }), true); assert.equal(isOutOfScope({ ...ok, district: 'Stare Miasto' }), true)
+  assert.equal(isOutOfScope({ ...ok, city: 'kolobrzeg' }), false)
+})
+test('walidacja: mieszkanie w Kolobrzegu bez dzielnicy = blad z wyjasnieniem; dom i inne miasto bez dzielnicy OK', () => {
+  assert.match(validateForm({ ...ok, district: '' }).district, /bez niej nie policzymy/)
+  assert.equal(validateForm({ ...ok, property_type: 'dom', district: '' }).district, undefined)
+  assert.equal(validateForm({ ...ok, city: 'Koszalin', district: '' }).district, undefined)
+})
+test('minimalny czas wypelnienia: < 3 s od zaladowania = za szybko', () => {
+  assert.equal(submittedTooFast(1000, 2500), true); assert.equal(submittedTooFast(1000, 4000), false); assert.equal(submittedTooFast(1000, 4000, 5000), true)
 })

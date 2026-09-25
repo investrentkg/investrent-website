@@ -64,6 +64,25 @@ export function fieldApplies(type: FormValues['property_type'], field: 'rooms' |
   return true
 }
 
+// Zakres liczb online = lustro regul backendu (canAttemptNumbers): mieszkanie w Kolobrzegu z PODANA dzielnica, bez Srodmiescia.
+// Backend jest zrodlem prawdy; ta kopia sluzy tylko do trafnych komunikatow (nie do decyzji o liczbach).
+export const foldText = (t: string) => t.trim().toLowerCase().replace(/ł/g, 'l').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\s+/g, ' ')
+const BLOCKED_DISTRICT = [/srodmiesc/, /centrum/, /stare miasto/]
+export function isKolobrzeg(city: string): boolean { return foldText(city) === 'kolobrzeg' }
+export function districtIsBlocked(district: string): boolean { return BLOCKED_DISTRICT.some(re => re.test(foldText(district))) }
+// true = to zapytanie jest POZA zakresem liczb online (dom, dzialka, inna miejscowosc, Srodmiescie) - odmienny komunikat niz "za malo danych".
+export function isOutOfScope(v: Pick<FormValues, 'property_type' | 'city' | 'district'>): boolean {
+  if (v.property_type !== 'mieszkanie') return true
+  if (!isKolobrzeg(v.city)) return true
+  return !!v.district.trim() && districtIsBlocked(v.district)
+}
+
+// Minimalny czas od zaladowania strony do wyslania formularza (odsiew najprostszych botow). Tylko front; backend tego nie egzekwuje.
+export const MIN_FILL_MS = 3000
+export function submittedTooFast(loadedAt: number, now: number, minMs: number = MIN_FILL_MS): boolean {
+  return now - loadedAt < minMs
+}
+
 export function validateForm(v: FormValues): FormErrors {
   const e: FormErrors = {}
   if (!v.property_type) e.property_type = 'Wybierz rodzaj nieruchomości.'
@@ -71,6 +90,9 @@ export function validateForm(v: FormValues): FormErrors {
   if (city.length < 2) e.city = 'Podaj miejscowość.'
   else if (city.length > 80) e.city = 'Nazwa miejscowości jest za długa.'
   if (v.district.trim().length > 80) e.district = 'Nazwa dzielnicy jest za długa.'
+  else if (v.property_type === 'mieszkanie' && isKolobrzeg(city) && !v.district.trim()) {
+    e.district = 'Podaj dzielnicę lub osiedle — bez niej nie policzymy widełek. Jeśli nie znasz nazwy, zostaw sam numer: agent wyceni mieszkanie indywidualnie.'
+  }
 
   const area = parseNum(v.area_m2)
   if (!v.area_m2.trim() || !Number.isFinite(area)) e.area_m2 = 'Podaj powierzchnię w metrach kwadratowych.'
@@ -194,7 +216,11 @@ export function formatRange(r: Range): string {
 }
 
 // ── Notatka do leada (pole notes w /api/public/leads) ──
-export const CONSENT_VERSION = 'wycena-2026-09-25-v1-DO-PRAWNIKA'
+// Wersja tekstow zgod i klauzuli (texts.ts: consentCall, consentMarketing, consentInfoPrefix). v2 = wersja OCZEKUJACA:
+// publikacja na produkcji wymaga zatwierdzenia tresci (Krytyk + przeglad AI; kancelaria nieangazowana wg decyzji Daniela 25.09); kazda zmiana tych tekstow = nowy numer wersji.
+// Pelne brzmienie danej wersji jest wersjonowane w repo (git) - do leada zapisujemy TYLKO znacznik (limit backendu: 500 znakow).
+export const CONSENT_VERSION = 'wycena-2026-09-25-v2'
+export const NOTES_MAX = 490 // backend /api/public/leads zapisuje clean(notes) = pierwsze 500 znakow (odrzuca > 1000)
 
 export function describeInput(v: FormValues): string {
   const type = PROPERTY_TYPES.find(t => t.value === v.property_type)?.label ?? v.property_type
@@ -234,17 +260,34 @@ export function readUtm(search: string): string {
   } catch { return '' }
 }
 
-export type ConsentRecord = { callText: string; marketing: boolean; marketingText: string }
+export type ConsentRecord = { marketing: boolean; at?: string }
 
+// Znacznik dowodu zgody. Styl jak [Meta-zgoda] (pary klucz=wartosc oddzielone "; "), ale osobny prefiks "[Zgoda-kalkulator]":
+// NIE pasuje do parsera zgod CRM (wzorzec "[Zgoda]" / "[Wypisanie]" w consentRules.ts) ani do blokady looksLikeConsentNote, wiec nie udaje wpisu podpisanego serwerem.
+// UWAGA: endpoint publiczny nie podpisuje wpisow (podpis HMAC ma tylko serwer); wartosc dowodowa = wersja tekstu w repo + czas zapisu notatki po stronie CRM.
+export function buildConsentMarker(c: ConsentRecord): string {
+  return `[Zgoda-kalkulator] wersja=${CONSENT_VERSION}; czas=${c.at ?? new Date().toISOString()}; kontakt=tak; marketing=${c.marketing ? 'tak' : 'nie'}`
+}
+
+// Notatka musi zmiescic sie w NOTES_MAX (backend obcina po 500 znakach). Kolejnosc = priorytet: znacznik zgody PIERWSZY, UTM ostatni
+// (UTM jest obcinany; zgoda nigdy).
 export function buildLeadNotes(v: FormValues, o: EstimateOutcome | null, utm: string, c: ConsentRecord): string {
-  return [
+  const lines = [
+    buildConsentMarker(c),
     `Źródło: kalkulator wyceny (z wynikiem: ${o?.kind === 'range' ? 'tak' : 'nie'}) — strona /wycena.`,
     v.property_type ? `Dane: ${describeInput(v)}.` : '',
     describeOutcome(o),
-    `Zgoda 1 (telefon w sprawie wyceny, wymagana): TAK (wersja ${CONSENT_VERSION}). Treść: ${c.callText}`,
-    `Zgoda 2 (marketing telefon/SMS, opcjonalna): ${c.marketing ? 'TAK' : 'NIE'} (wersja ${CONSENT_VERSION}).${c.marketing ? ` Treść: ${c.marketingText}` : ''}`,
     utm ? `UTM: ${utm}` : '',
-  ].filter(Boolean).join('\n')
+  ].filter(Boolean)
+  let out = ''
+  for (const l of lines) {
+    const next = out ? `${out}\n${l}` : l
+    if (next.length <= NOTES_MAX) { out = next; continue }
+    const room = NOTES_MAX - out.length - 1
+    if (room > 20) out += `\n${l.slice(0, room)}`
+    break
+  }
+  return out
 }
 
 // ── GA4: tylko zdarzenia i parametry nieosobowe ──
