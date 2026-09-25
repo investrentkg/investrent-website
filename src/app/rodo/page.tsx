@@ -3,6 +3,7 @@ import Footer from '@/components/Footer'
 import FloatingWA from '@/components/FloatingWA'
 import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
+import { H2, H3, P, UL, LI, Ph } from '@/components/de/LegalShell'
 import { getOffice } from '@/lib/api'
 import type { Metadata } from 'next'
 
@@ -11,6 +12,14 @@ import type { Metadata } from 'next'
 // Tresc PRZENIESIONA 1:1 ze starej strony (investrent.com.pl/rodo, platforma
 // Virgo) - to nie jest wymyslona tresc, tylko realne dane firmy (NIP itd.)
 // ktore juz tam byly opublikowane.
+//
+// AKTUALIZACJA 25.09.2026 (przeglad prawny, uwaga 25): dopisano dostawcow (Vercel,
+// Railway, Supabase, Brevo, Anthropic, Cloudflare, Meta, Google), kalkulator wyceny
+// AI, Cloudflare Turnstile, zgody per kanal, kontakt handlowy, transfery, okresy
+// przechowywania, art. 21 ust. 4, klauzule wersji jezykowej. Fakty MUSZA byc zgodne
+// z /de/datenschutz (wersja wiazaca dla uzytkownikow z DE) - zmieniac obie wersje
+// razem. Widoczne placeholdery (Ph) = tylko dane od Daniela / okresy do decyzji prawnika.
+// Dane spolki z odpisu KRS/VIES z 25.09.2026 - do weryfikacji przed publikacja.
 
 export const metadata: Metadata = {
   title: 'Polityka prywatności (RODO)',
@@ -39,6 +48,8 @@ const FALLBACK_OFFICE = {
   website: null, working_hours: null,
 }
 
+const link = { color: '#1a4fa0' }
+
 export default async function RodoPage() {
   const officeData = await getOffice()
   const office = officeData ?? FALLBACK_OFFICE
@@ -59,31 +70,58 @@ export default async function RodoPage() {
         <div style={{ background: 'white', padding: '48px 0 64px' }}>
           <div className="container" style={{ maxWidth: 780 }}>
             <div style={{ fontSize: 14.5, color: '#374151', lineHeight: 1.85 }}>
-              <p style={{ marginBottom: 20 }}>
+              <P>
                 Informacja dotycząca przetwarzania danych osobowych (RODO). W Investrent sp. z o.o. priorytetem jest ochrona Państwa prywatności i danych osobowych. Poniżej przedstawiamy najważniejsze informacje dotyczące przetwarzania danych osobowych zgodnie z Rozporządzeniem Parlamentu Europejskiego i Rady (UE) 2016/679 z dnia 27 kwietnia 2016 r. w sprawie ochrony osób fizycznych w związku z przetwarzaniem danych osobowych (RODO).
-              </p>
+              </P>
 
-              <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 19, color: '#0d2a5c', marginTop: 32, marginBottom: 10 }}>Administrator danych osobowych</h2>
-              <p style={{ marginBottom: 20 }}>
-                Administratorem Państwa danych osobowych jest Investrent sp. z o.o. z siedzibą w Kołobrzegu, przy ul. Ratuszowej 12/1 lok. 3, NIP: 671 185 85 59.
-              </p>
+              <H2>Administrator danych osobowych</H2>
+              <P>
+                Administratorem Państwa danych osobowych jest Investrent sp. z o.o. (INVESTRENT SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ) z siedzibą w Kołobrzegu, przy ul. Ratuszowej 12/1 lok. 3, 78-100 Kołobrzeg, wpisana do rejestru przedsiębiorców Krajowego Rejestru Sądowego pod numerem KRS 0001069797, NIP: 671 185 85 59, REGON: 526973936.
+                {/* Dane z odpisu KRS/VIES z 25.09.2026 — do weryfikacji przed publikacją */}
+              </P>
+              <P>
+                Kontakt w sprawach ochrony danych: <a href="mailto:biuro@investrent.com.pl" style={link}>biuro@investrent.com.pl</a>, tel. +48 731 554 341. Inspektor ochrony danych nie został powołany, ponieważ nie ma takiego ustawowego obowiązku.
+                {/* Wariant, gdy Daniel powola IOD: "Inspektorem ochrony danych jest [imie i nazwisko], kontakt: [e-mail]." (spojnie z /de/datenschutz sekcja 1). */}
+              </P>
 
-              <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 19, color: '#0d2a5c', marginTop: 32, marginBottom: 10 }}>Cel i podstawa prawna przetwarzania danych</h2>
-              <p style={{ marginBottom: 10 }}>Państwa dane osobowe są przetwarzane w celu:</p>
-              <ul style={{ paddingLeft: 20, marginBottom: 20 }}>
-                <li style={{ marginBottom: 8 }}>Realizacji usług związanych z obrotem nieruchomościami, zgodnie z zawartą umową (art. 6 ust. 1 lit. b RODO).</li>
-                <li style={{ marginBottom: 8 }}>Spełnienia obowiązków prawnych ciążących na Administratorze (art. 6 ust. 1 lit. c RODO).</li>
-                <li style={{ marginBottom: 8 }}>Realizacji prawnie uzasadnionych interesów Administratora, takich jak dochodzenie roszczeń lub obrona przed roszczeniami (art. 6 ust. 1 lit. f RODO).</li>
-                <li>Przesyłania informacji handlowych i marketingowych, na podstawie udzielonej zgody (art. 6 ust. 1 lit. a RODO).</li>
-              </ul>
+              <H2>Cel i podstawa prawna przetwarzania danych</H2>
+              <P>Państwa dane osobowe są przetwarzane w celu:</P>
+              <UL>
+                <LI>Realizacji usług związanych z obrotem nieruchomościami, zgodnie z zawartą umową lub w celu podjęcia działań przed jej zawarciem na Państwa żądanie (art. 6 ust. 1 lit. b RODO).</LI>
+                <LI>Spełnienia obowiązków prawnych ciążących na Administratorze, w szczególności wynikających z przepisów podatkowych i rachunkowych oraz przepisów o przeciwdziałaniu praniu pieniędzy (art. 6 ust. 1 lit. c RODO).</LI>
+                <LI>Realizacji prawnie uzasadnionych interesów Administratora, takich jak dochodzenie roszczeń lub obrona przed roszczeniami oraz ochrona przed nadużyciami i zautomatyzowanymi wejściami (art. 6 ust. 1 lit. f RODO).</LI>
+                <LI>Przesyłania informacji handlowych i marketingowych, na podstawie udzielonej zgody (art. 6 ust. 1 lit. a RODO).</LI>
+              </UL>
 
-              <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 19, color: '#0d2a5c', marginTop: 32, marginBottom: 10 }}>Odbiorcy danych</h2>
-              <p style={{ marginBottom: 10 }}>Państwa dane osobowe mogą być przekazywane:</p>
-              <ul style={{ paddingLeft: 20, marginBottom: 20 }}>
-                <li style={{ marginBottom: 8 }}>Podmiotom współpracującym z Administratorem w zakresie świadczenia usług nieruchomościowych.</li>
-                <li style={{ marginBottom: 8 }}>Podmiotom przetwarzającym dane osobowe na zlecenie Administratora, np. dostawcom usług IT, kancelariom prawnym, firmom księgowym, przy czym takie podmioty przetwarzają dane na podstawie umowy z Administratorem i wyłącznie zgodnie z jego poleceniami.</li>
-                <li>Organom uprawnionym do otrzymania danych na podstawie przepisów prawa.</li>
-              </ul>
+              <H2>Hosting i techniczne udostępnianie strony</H2>
+              <P>
+                Strona jest hostowana u Vercel Inc. (USA). Przy każdym wejściu na stronę dostawca hostingu przetwarza niezbędne dane techniczne połączenia (adres IP, data i godzina, odwiedzana podstrona, typ przeglądarki), aby dostarczyć stronę i zapewnić jej bezpieczeństwo (art. 6 ust. 1 lit. f RODO – prawnie uzasadniony interes w bezpiecznym i stabilnym działaniu strony). Dane te są przechowywane w dziennikach serwera przez <Ph>[30]</Ph> dni. Interfejs API naszego systemu CRM działa na Railway Corp., a baza danych na Supabase Inc.; lokalizacja serwerów: <Ph>[region, np. UE (Frankfurt/Irlandia) – do potwierdzenia]</Ph>. Z dostawcami zawarto umowy powierzenia przetwarzania danych (art. 28 RODO). Informacje o przekazywaniu danych do państw trzecich znajdują się w części „Przekazywanie danych do państw trzecich”.
+              </P>
+              <H3>Treści osadzone od podmiotów trzecich</H3>
+              <P>
+                Na wybranych podstronach osadzamy treści podmiotów trzecich: na stronach „Kontakt” i „O nas” mapę Google Maps (Google Ireland Limited), a na stronach ofert – jeśli dla oferty dodano wideo – filmy z YouTube (Google Ireland Limited) lub Vimeo. Podczas ładowania tych treści Państwa adres IP jest przekazywany danemu dostawcy, który może ponadto zapisywać lub odczytywać informacje na Państwa urządzeniu. Używane przez nas czcionki są serwowane z naszego własnego serwera. My sami nie stosujemy na stronie własnych plików cookies do celów analitycznych ani reklamowych.
+              </P>
+
+              <H2>Zapytania z formularzy, prośby o kontakt i czat na stronie</H2>
+              <P>
+                Gdy kontaktują się Państwo z nami przez formularz na stronie (np. formularz kontaktowy, prośba o telefon, zapytanie o ofertę) lub czat, przetwarzamy wpisane dane (np. imię i nazwisko, numer telefonu, adres e-mail, treść wiadomości, odniesienie do oferty), aby obsłużyć zapytanie i się z Państwem skontaktować. Podstawą jest art. 6 ust. 1 lit. b RODO (działania przed zawarciem umowy) lub art. 6 ust. 1 lit. f RODO (obsługa zapytań). Dane zapisujemy w wewnętrznym systemie CRM; dostęp mają wyłącznie upoważnieni pracownicy Investrent sp. z o.o. oraz – w zakresie niezbędnym dla zapytania – odbiorcy wskazani w części „Odbiorcy danych”. Czat na stronie jest formularzem wiadomości: wiadomość obsługują nasi pracownicy, nie działa tam chatbot AI.
+              </P>
+
+              <H2>Wycena nieruchomości (kalkulator wspierany przez AI)</H2>
+              <P>
+                Gdy korzystają Państwo z kalkulatora wyceny, przetwarzamy wpisane dane nieruchomości (miejscowość lub adres, rodzaj, powierzchnia, liczba pokoi, piętro, stan). Do obliczenia szacunku przekazujemy te dane – bez Państwa danych kontaktowych – do Anthropic, PBC (USA), który działa jako nasz podmiot przetwarzający (art. 28 RODO) na podstawie umowy powierzenia i standardowych klauzul umownych. Zgodnie z warunkami umownymi przekazane dane nie są wykorzystywane do trenowania modeli AI. Podstawą obliczenia jest art. 6 ust. 1 lit. b RODO (realizacja Państwa żądania). W celu ochrony przed nadużyciami i ograniczania liczby zapytań przechowujemy krótkotrwale Państwa adres IP (art. 6 ust. 1 lit. f RODO). Jeśli dodatkowo zostawią Państwo numer telefonu, aby konsultant do Państwa oddzwonił, przetwarzamy imię, numer telefonu, dane nieruchomości i wynik w naszym systemie CRM (art. 6 ust. 1 lit. b RODO – oddzwonienie w sprawie wyceny; w zakresie dalszego marketingu art. 6 ust. 1 lit. a RODO na podstawie odrębnie udzielonej zgody).
+              </P>
+              <P>
+                Przy prośbie o oddzwonienie w kalkulatorze dostępne są dwa oddzielne pola wyboru, które zaznaczają Państwo samodzielnie: (1) zgoda na telefon w sprawie wyceny nieruchomości – wymagana, abyśmy mogli zadzwonić pod podany numer; (2) zgoda na marketing bezpośredni przez telefon i SMS – oferty pośrednictwa i inne oferty Investrent sp. z o.o. – dobrowolna, niezaznaczona domyślnie i niewymagana do skorzystania z kalkulatora ani do oddzwonienia w sprawie wyceny (art. 6 ust. 1 lit. a RODO; art. 398 Prawa komunikacji elektronicznej). Obie zgody mogą Państwo w każdej chwili cofnąć (patrz „Prawa osób, których dane dotyczą”). Datę, treść i źródło zgód zapisujemy w celu wykazania ich udzielenia (art. 7 ust. 1 RODO).
+              </P>
+              <P>
+                Wynik jest wyraźnie orientacyjny; nie stanowi operatu szacunkowego ani wyceny w rozumieniu przepisów. Nie podejmujemy decyzji opartych wyłącznie na zautomatyzowanym przetwarzaniu w rozumieniu art. 22 RODO, wywołujących wobec Państwa skutki prawne lub w podobny sposób istotnie na Państwa wpływających: z wyniku nie wynikają zawarcie umowy, ustalenie ceny ani odmowa; dalszą obsługę zawsze prowadzą nasi pracownicy.
+              </P>
+
+              <H2>Ochrona przed automatycznymi wejściami (Cloudflare Turnstile)</H2>
+              <P>
+                Na stronie kalkulatora wyceny chronimy formularz przed spamem i automatycznymi wejściami (botami) za pomocą usługi „Cloudflare Turnstile” firmy Cloudflare, Inc., 101 Townsend St, San Francisco, CA 94107, USA. Skrypt Turnstile jest pobierany z serwerów Cloudflare (challenges.cloudflare.com) dopiero po wejściu na stronę kalkulatora; na pozostałych podstronach nie jest ładowany. Usługa działa w tle i staje się widoczna dla Państwa tylko wtedy, gdy Cloudflare wymaga interakcji. Do Cloudflare przekazywane są dane techniczne (w szczególności adres IP, informacje o przeglądarce i urządzeniu, cechy interakcji) i tam analizowane w celu sprawdzenia, czy zapytanie pochodzi od człowieka. Wynik weryfikacji (token) jest przesyłany wraz z zapytaniem do naszego systemu i tam weryfikowany w Cloudflare. My sami nie ustawiamy w tym celu plików cookies. Podstawą jest art. 6 ust. 1 lit. f RODO (prawnie uzasadniony interes w bezpieczeństwie systemów i ochronie przed nadużyciami). Przekazanie do USA opiera się na decyzji wykonawczej Komisji Europejskiej z 10 lipca 2023 r. (EU-US Data Privacy Framework), o ile Cloudflare jest certyfikowany, a pomocniczo na standardowych klauzulach umownych (art. 46 ust. 2 lit. c RODO).
+              </P>
 
               {/* NAPRAWA (audyt prawny, Daniel 30.07.2026): brakujacy element wymagany
                   przez art. 13 ust. 2 lit. e RODO - czy podanie danych jest wymogiem
@@ -93,52 +131,102 @@ export default async function RodoPage() {
                   leads_retrieval - recenzenci Meta konkretnie sprawdzaja czy polityka
                   prywatnosci jawnie opisuje obsluge danych z formularzy kontaktowych
                   Facebook/Instagram (Instant Forms), tego wczesniej brakowalo). */}
-              <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 19, color: '#0d2a5c', marginTop: 32, marginBottom: 10 }}>Dane z formularzy kontaktowych Facebook i Instagram</h2>
-              <p style={{ marginBottom: 20 }}>
-                W ramach kampanii reklamowych prowadzonych na Facebooku i Instagramie korzystamy z formularzy kontaktowych (Instant Forms) udostępnianych przez Meta. Gdy wypełnią Państwo taki formularz, przekazane dane (imię i nazwisko, numer telefonu, adres e-mail oraz ewentualne odpowiedzi na pytania kwalifikujące) są automatycznie pobierane z systemów Meta do naszego wewnętrznego systemu CRM za pomocą oficjalnego interfejsu API Meta (Graph API), wyłącznie w celu skontaktowania się z Państwem w sprawie oferty nieruchomości, którą byli Państwo zainteresowani. Dostęp do tych danych w naszym systemie CRM mają wyłącznie upoważnieni pracownicy i współpracownicy Investrent sp. z o.o. Dane te podlegają tym samym zasadom przechowywania, ochrony i prawom osób, których dane dotyczą, opisanym w pozostałych częściach niniejszej polityki.
-              </p>
+              <H2>Dane z formularzy kontaktowych Facebook i Instagram</H2>
+              <P>
+                W ramach kampanii reklamowych prowadzonych na Facebooku i Instagramie korzystamy z formularzy kontaktowych (Instant Forms) udostępnianych przez Meta. Gdy wypełnią Państwo taki formularz, przekazane dane (imię i nazwisko, numer telefonu, adres e-mail oraz ewentualne odpowiedzi na pytania kwalifikujące) trafiają najpierw do Meta Platforms Ireland Limited, Merrion Road, Dublin 4, Irlandia (i ewentualnie innych podmiotów Meta), a stamtąd są automatycznie pobierane do naszego wewnętrznego systemu CRM za pomocą oficjalnego interfejsu API Meta (Graph API), wyłącznie w celu skontaktowania się z Państwem w sprawie oferty nieruchomości, którą byli Państwo zainteresowani. Dostęp do tych danych w naszym systemie CRM mają wyłącznie upoważnieni pracownicy Investrent sp. z o.o. oraz – w zakresie niezbędnym dla zapytania – odbiorcy wskazani w części „Odbiorcy danych”. Dane te podlegają tym samym zasadom przechowywania, ochrony i prawom osób, których dane dotyczą, opisanym w pozostałych częściach niniejszej polityki.
+              </P>
+              <P>
+                Podstawą obsługi Państwa zapytania jest art. 6 ust. 1 lit. b RODO. Na marketing przez telefon, e-mail lub komunikator (np. WhatsApp) prosimy o odrębną, wyraźną zgodę (art. 6 ust. 1 lit. a RODO), którą udzielają Państwo w formularzu przez oddzielne, aktywne zaznaczenie pola dla danego kanału; jest ona dobrowolna i niewymagana do obsługi zapytania. Datę, treść i źródło zgody zapisujemy, aby móc wykazać jej udzielenie (art. 7 ust. 1 RODO). Zgodę można w każdej chwili cofnąć ze skutkiem na przyszłość. Meta udostępnia nam dane zebrane w formularzu do pobrania i w tym zakresie przetwarza je jako nasz podmiot przetwarzający, zgodnie z warunkami przetwarzania danych Meta; przy wyświetlaniu reklam Meta przetwarza dane we własnym imieniu lub na podstawie Controller Addendum (<a href="https://www.facebook.com/legal/controller_addendum" style={link} target="_blank" rel="noopener noreferrer">facebook.com/legal/controller_addendum</a>). Obowiązują informacje o prywatności Meta (<a href="https://www.facebook.com/privacy/policy" style={link} target="_blank" rel="noopener noreferrer">facebook.com/privacy/policy</a>).
+              </P>
+
+              <H2>Kontakt handlowy przez telefon, e-mail i komunikatory</H2>
+              <P>
+                W celach marketingowych kontaktujemy się z Państwem przez telefon, e-mail lub komunikator (np. WhatsApp) tylko wtedy, gdy uprzednio wyraźnie wyrazili Państwo zgodę na dany kanał komunikacji. Wiadomości marketingowe e-mail wysyłamy w procedurze double opt-in. Oddzwonienie lub odpowiedź, o które wyraźnie Państwo prosili w konkretnym zapytaniu, odbywa się na podstawie art. 6 ust. 1 lit. b RODO. Zgodę można w każdej chwili cofnąć; po cofnięciu nie otrzymają Państwo już marketingu tym kanałem.
+              </P>
 
               {/* NOWE (20.09.2026, przygotowanie do weryfikacji OAuth Google dla
                   zakresow Business Profile/Kalendarz/Analytics/Search Console -
                   Google wymaga jawnego opisu wykorzystania danych z jego API oraz
                   odwolania do Google API Services User Data Policy z klauzula
                   Limited Use, dokladnie ten sam wzorzec co sekcja Meta powyzej. */}
-              <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 19, color: '#0d2a5c', marginTop: 32, marginBottom: 10 }}>Korzystanie z danych Google (Google API Services)</h2>
-              <p style={{ marginBottom: 20 }}>
+              <H2>Korzystanie z danych Google (Google API Services)</H2>
+              <P>
                 Nasz wewnętrzny system CRM łączy się, wyłącznie za Państwa zgodą wyrażoną przy logowaniu przez konto Google, z wybranymi usługami Google w celu obsługi wizytówki firmowej Investrent sp. z o.o. Korzystamy z danych udostępnionych przez Google API w następującym zakresie: odczyt i publikacja treści wizytówki Google Business Profile (w tym opinie klientów i odpowiedzi na nie, posty, informacje o firmie), odczyt i zapis wydarzeń w Kalendarzu Google powiązanym z kontem firmowym oraz odczyt statystyk Google Analytics i Google Search Console. Dane te są wykorzystywane wyłącznie do świadczenia i ulepszania funkcji CRM widocznych dla upoważnionych pracowników i współpracowników Investrent sp. z o.o. i nie są przekazywane podmiotom trzecim ani wykorzystywane do celów reklamowych. Korzystanie i przekazywanie przez Investrent sp. z o.o. informacji uzyskanych z API Google innym aplikacjom podlega Google API Services User Data Policy, w tym wymogom Limited Use.
-              </p>
+              </P>
 
-              <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 19, color: '#0d2a5c', marginTop: 32, marginBottom: 10 }}>Dobrowolność podania danych</h2>
-              <p style={{ marginBottom: 20 }}>
-                Podanie danych osobowych jest dobrowolne, jednak niezbędne do skontaktowania się z Państwem, przygotowania oferty lub zawarcia i realizacji umowy pośrednictwa w obrocie nieruchomościami. Niepodanie danych może uniemożliwić realizację tych celów.
-              </p>
+              <H2>Odbiorcy danych</H2>
+              <P>Państwa dane osobowe mogą być przekazywane:</P>
+              <UL>
+                <LI>Partnerom współpracującym w obrocie nieruchomościami (np. deweloperom lub sprzedającym daną nieruchomość, innym pośrednikom i notariuszom), o ile jest to niezbędne do obsługi Państwa sprawy i wyrazili Państwo na to zgodę lub jest to konieczne do realizacji Państwa zapytania.</LI>
+                <LI>Podmiotom przetwarzającym dane osobowe na zlecenie Administratora, np. dostawcom usług IT – na podstawie umowy z Administratorem i wyłącznie zgodnie z jego poleceniami.</LI>
+                <LI>Kancelariom prawnym, doradcom podatkowym i firmom księgowym, które w zależności od charakteru zlecenia działają jako podmioty przetwarzające lub – gdy działają samodzielnie w ramach obowiązków zawodowych – jako odrębni administratorzy.</LI>
+                <LI>Organom uprawnionym do otrzymania danych na podstawie przepisów prawa (np. w ramach obowiązków dotyczących przeciwdziałania praniu pieniędzy).</LI>
+              </UL>
+              <P>Do dostawców, z których korzystamy, należą w szczególności:</P>
+              <UL>
+                <LI>Vercel Inc. (USA) – hosting strony;</LI>
+                <LI>Railway Corp. (USA) – działanie interfejsu API systemu CRM;</LI>
+                <LI>Supabase Inc. – baza danych i przechowywanie danych (lokalizacja serwerów – patrz „Hosting i techniczne udostępnianie strony”);</LI>
+                <LI>Brevo (Sendinblue SAS, Francja) – wysyłka wiadomości e-mail;</LI>
+                <LI>Anthropic, PBC (USA) – dostawca AI dla kalkulatora wyceny i przetwarzania tekstów;</LI>
+                <LI>Cloudflare, Inc. (USA) – ochrona przed automatycznymi wejściami (Turnstile);</LI>
+                <LI>Meta Platforms Ireland Limited (Irlandia) – formularze kontaktowe na Facebooku/Instagramie;</LI>
+                <LI>Google Ireland Limited (Irlandia) – usługi Google (mapy, wideo, API – patrz wyżej).</LI>
+              </UL>
+              {/* Lista dostawcow = jedno zrodlo prawdy z /de/datenschutz (sekcja 10). Zmieniac obie wersje razem. Daniel: potwierdzic, czy Brevo jest faktycznie uzywane (jesli nie - usunac w obu). */}
 
-              <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 19, color: '#0d2a5c', marginTop: 32, marginBottom: 10 }}>Zautomatyzowane podejmowanie decyzji</h2>
-              <p style={{ marginBottom: 20 }}>
-                Administrator nie podejmuje wobec Państwa decyzji w sposób zautomatyzowany, w tym nie stosuje profilowania w rozumieniu RODO.
-              </p>
+              <H2>Przekazywanie danych do państw trzecich</H2>
+              <P>
+                Niektórzy z wymienionych dostawców mają siedzibę w USA lub przetwarzają tam dane. Przekazanie do USA opieramy na decyzji wykonawczej Komisji Europejskiej (EU-US Data Privacy Framework), o ile dany odbiorca jest certyfikowany, a w pozostałych przypadkach na standardowych klauzulach umownych Komisji Europejskiej (art. 46 ust. 2 lit. c RODO). Dotyczy to w szczególności Vercel, Railway, Supabase, Anthropic, Cloudflare, Google i Meta. Kopię zabezpieczeń otrzymają Państwo na żądanie, kontaktując się z nami pod podanymi danymi.
+              </P>
 
-              <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 19, color: '#0d2a5c', marginTop: 32, marginBottom: 10 }}>Prawa osób, których dane dotyczą</h2>
-              <p style={{ marginBottom: 10 }}>Zgodnie z RODO przysługuje Państwu:</p>
-              <ul style={{ paddingLeft: 20, marginBottom: 20 }}>
-                <li style={{ marginBottom: 8 }}>Prawo dostępu do swoich danych oraz otrzymania ich kopii.</li>
-                <li style={{ marginBottom: 8 }}>Prawo do sprostowania (poprawiania) swoich danych.</li>
-                <li style={{ marginBottom: 8 }}>Prawo do usunięcia danych, ograniczenia przetwarzania danych.</li>
-                <li style={{ marginBottom: 8 }}>Prawo do wniesienia sprzeciwu wobec przetwarzania danych.</li>
-                <li style={{ marginBottom: 8 }}>Prawo do przenoszenia danych.</li>
-                <li style={{ marginBottom: 8 }}>Prawo do cofnięcia zgody na przetwarzanie danych w dowolnym momencie, bez wpływu na zgodność z prawem przetwarzania, którego dokonano na podstawie zgody przed jej cofnięciem.</li>
-                <li>Prawo do wniesienia skargi do organu nadzorczego – Prezesa Urzędu Ochrony Danych Osobowych.</li>
-              </ul>
+              <H2>Dobrowolność podania danych</H2>
+              <P>
+                Podanie danych osobowych jest dobrowolne, jednak niezbędne do skontaktowania się z Państwem, przygotowania oferty lub zawarcia i realizacji umowy pośrednictwa w obrocie nieruchomościami. Niepodanie danych może uniemożliwić realizację tych celów. Zgody na marketing są zawsze dobrowolne.
+              </P>
 
-              <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 19, color: '#0d2a5c', marginTop: 32, marginBottom: 10 }}>Okres przechowywania danych</h2>
-              <p style={{ marginBottom: 20 }}>
-                Państwa dane osobowe będą przechowywane przez okres niezbędny do realizacji celów przetwarzania, a po tym czasie przez okres oraz w zakresie wymaganym przez przepisy prawa lub dla zabezpieczenia ewentualnych roszczeń.
-              </p>
+              <H2>Zautomatyzowane podejmowanie decyzji</H2>
+              <P>
+                Administrator nie podejmuje wobec Państwa decyzji w sposób zautomatyzowany, w tym nie stosuje profilowania w rozumieniu RODO. Informacje o kalkulatorze wyceny – patrz część „Wycena nieruchomości”.
+              </P>
 
-              <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 19, color: '#0d2a5c', marginTop: 32, marginBottom: 10 }}>Kontakt</h2>
-              <p>
-                W sprawach związanych z przetwarzaniem danych osobowych mogą Państwo skontaktować się z nami pisemnie na adres naszej siedziby: Investrent sp. z o.o., ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg, lub mailowo pod adresem: <a href="mailto:biuro@investrent.com.pl" style={{ color: '#1a4fa0' }}>biuro@investrent.com.pl</a>.
-              </p>
+              <H2>Prawa osób, których dane dotyczą</H2>
+              <P>Zgodnie z RODO przysługuje Państwu:</P>
+              <UL>
+                <LI>Prawo dostępu do swoich danych oraz otrzymania ich kopii.</LI>
+                <LI>Prawo do sprostowania (poprawiania) swoich danych.</LI>
+                <LI>Prawo do usunięcia danych, ograniczenia przetwarzania danych.</LI>
+                <LI>Prawo do wniesienia sprzeciwu wobec przetwarzania danych.</LI>
+                <LI>Prawo do przenoszenia danych.</LI>
+                <LI>Prawo do cofnięcia zgody na przetwarzanie danych w dowolnym momencie, bez wpływu na zgodność z prawem przetwarzania, którego dokonano na podstawie zgody przed jej cofnięciem.</LI>
+                <LI>Prawo do wniesienia skargi do organu nadzorczego – Prezesa Urzędu Ochrony Danych Osobowych (ul. Stawki 2, 00-193 Warszawa, uodo.gov.pl).</LI>
+              </UL>
+              <H3>Prawo sprzeciwu – zwrócenie uwagi</H3>
+              <P>
+                Mają Państwo prawo w dowolnym momencie wnieść sprzeciw z przyczyn związanych z Państwa szczególną sytuacją wobec przetwarzania danych osobowych opartego na art. 6 ust. 1 lit. f RODO (art. 21 ust. 1 RODO). Jeżeli dane osobowe są przetwarzane na potrzeby marketingu bezpośredniego, mają Państwo prawo w dowolnym momencie, bez podawania przyczyn, wnieść sprzeciw wobec przetwarzania dotyczących Państwa danych na potrzeby takiego marketingu (art. 21 ust. 2 RODO). Wystarczy sprzeciw przesłany e-mailem na adres <a href="mailto:biuro@investrent.com.pl" style={link}>biuro@investrent.com.pl</a>.
+              </P>
+
+              <H2>Okres przechowywania danych</H2>
+              <P>
+                Państwa dane osobowe będą przechowywane przez okres niezbędny do realizacji celów przetwarzania, a po tym czasie przez okres oraz w zakresie wymaganym przez przepisy prawa lub dla zabezpieczenia ewentualnych roszczeń. W szczególności:
+              </P>
+              <UL>
+                <LI>zapytania i dane kontaktowe bez zawarcia umowy (poszukiwania, prośby o kontakt, zapytania o wycenę): do <Ph>[OKRES PRZECHOWYWANIA — propozycja 12 miesięcy, PRAWNIK]</Ph> od ostatniego kontaktu, w razie cofnięcia zgody lub sprzeciwu – krócej;</LI>
+                <LI>dowód udzielonych zgód: do upływu terminu przedawnienia ewentualnych roszczeń, nie dłużej niż <Ph>[3]</Ph> lata od końca roku, w którym zgodę cofnięto lub zakończono przetwarzanie;</LI>
+                <LI>dane umowne: przez czas trwania umowy, a następnie przez <Ph>[5]</Ph> lat od końca roku kalendarzowego, w którym powstał obowiązek podatkowy i rachunkowy; w razie potrzeby dłużej dla ochrony roszczeń (przedawnienie według polskiego prawa cywilnego, do <Ph>[6]</Ph> lat);</LI>
+                <LI>dane zbierane na podstawie przepisów o przeciwdziałaniu praniu pieniędzy: <Ph>[5]</Ph> lat od zakończenia stosunków gospodarczych;</LI>
+                <LI>dzienniki serwera: <Ph>[30]</Ph> dni.</LI>
+              </UL>
+
+              <H2>Zmiany i wersje językowe</H2>
+              <P>
+                Aktualizujemy niniejszą politykę, gdy zmienia się sposób przetwarzania lub stan prawny. Stan na: <Ph>[DD.MM.RRRR]</Ph>. Dla użytkowników korzystających ze strony w języku niemieckim wiążąca jest wersja niemiecka (<a href="/de/datenschutz" style={link}>/de/datenschutz</a>); niniejsza wersja polska obowiązuje użytkowników korzystających ze strony w języku polskim. Obie wersje opisują te same czynności przetwarzania.
+              </P>
+
+              <H2>Kontakt</H2>
+              <P last>
+                W sprawach związanych z przetwarzaniem danych osobowych mogą Państwo skontaktować się z nami pisemnie na adres naszej siedziby: Investrent sp. z o.o., ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg, lub mailowo pod adresem: <a href="mailto:biuro@investrent.com.pl" style={link}>biuro@investrent.com.pl</a>.
+              </P>
             </div>
           </div>
         </div>

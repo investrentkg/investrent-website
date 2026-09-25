@@ -2,8 +2,11 @@ import type { Metadata } from 'next'
 import LegalShell, { H2, P, Ph } from '@/components/de/LegalShell'
 
 // Impressum (Anbieterkennzeichnung, § 5 DDG - dawniej § 5 TMG) dla odbiorcow z
-// Niemiec. Dane z repo/stopki: nazwa, adres, telefon, e-mail, NIP. Reszta =
-// placeholdery do uzupelnienia. STATUS: PROJEKT DO PRZEGLADU PRAWNIKA.
+// Niemiec. Po przegladzie prawnym z 25.09.2026 (uwagi 5-7, 19-22): teksty prawnika
+// wdrozone, dane spolki z odpisu KRS/VIES z 25.09.2026 (_wspolne_pliki\dane_spolki_do_impressum_2026_09_25.md).
+// Placeholdery (zolte) = WYLACZNIE dane od Daniela: sad rejestrowy, imiona i nazwiska
+// zarzadu, polisa OC (ubezpieczyciel/adres/zasieg), osoba odpowiedzialna za tresci (§ 18 MStV).
+// STATUS: PROJEKT DO PRZEGLADU PRAWNIKA.
 
 export const metadata: Metadata = {
   title: 'Impressum',
@@ -19,17 +22,18 @@ export default function ImpressumPage() {
     <LegalShell title="Impressum">
       <H2>Angaben gemäß § 5 DDG</H2>
       <P>
-        Investrent sp. z o.o.<br />
+        Investrent sp. z o.o. (INVESTRENT SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ)<br />
         ul. Ratuszowa 12/1 lok. 3<br />
         78-100 Kołobrzeg (Kolberg)<br />
         Polen
-        {/* PRAWNIK: Anschrift laut Website/Footer; "12/1 lok. 3" ggf. mit KRS-Auszug abgleichen (interner Vermerk: koennte doppelt sein). */}
+        {/* Dane z odpisu KRS/VIES z 25.09.2026 — do weryfikacji przed publikacja */}
+        {/* ERLEDIGT: adres "12/1 lok. 3" jest poprawny wg KRS (nr domu 12, lokal 1 lok. 3) - to nie jest dublowanie. Nazwa handlowa wobec DE ("Invest Rent Nieruchomosci" vs "Investrent sp. z o.o.") - decyzja Daniela (pkt 14); tu uzyta pelna firma zgodna z KRS. */}
       </P>
       <P>
         Rechtsform: Gesellschaft mit beschränkter Haftung nach polnischem Recht (spółka z ograniczoną odpowiedzialnością)
       </P>
       <P>
-        Vertretungsberechtigte(r) Geschäftsführer / Vorstand (zarząd): <Ph>[ZARZĄD / GESCHÄFTSFÜHRER: imię i nazwisko — PRAWNIK]</Ph>
+        Vertretungsberechtigt: Vorstand (zarząd), jedes der zwei Vorstandsmitglieder ist einzelvertretungsberechtigt: <Ph>[Vor- und Nachname der beiden Vorstandsmitglieder]</Ph>
       </P>
 
       <H2>Kontakt</H2>
@@ -41,36 +45,39 @@ export default function ImpressumPage() {
 
       <H2>Registereintrag</H2>
       <P>
-        Eingetragen im Handelsregister (Krajowy Rejestr Sądowy, KRS): <Ph>[KRS: …]</Ph><br />
-        Registergericht: <Ph>[SĄD REJESTROWY: … — PRAWNIK]</Ph><br />
-        REGON: <Ph>[REGON: …]</Ph><br />
-        Stammkapital: <Ph>[KAPITAŁ ZAKŁADOWY: … — PRAWNIK, wenn angegeben, dann das gezeichnete und eingezahlte Kapital]</Ph>
-        {/* PRAWNIK: Bei Kapitalgesellschaften mit Angabe zum Kapital muss angegeben werden, ob es eingezahlt ist (§ 5 Abs. 1 Nr. 4 DDG analog / § 35a GmbHG); nach polnischem Recht evtl. abweichend - bitte pruefen. */}
+        Eingetragen im Handelsregister (Krajowy Rejestr Sądowy, KRS): KRS-Nummer 0001069797<br />
+        Registergericht: <Ph>[Registergericht – laut KRS-Auszug bestätigen, z. B. Sąd Rejonowy w Koszalinie, IX Wydział Gospodarczy KRS]</Ph><br />
+        REGON: 526973936<br />
+        Stammkapital: 5.000,00 PLN (eingezahlt)
+        {/* Dane z odpisu KRS/VIES z 25.09.2026 — do weryfikacji przed publikacja */}
+        {/* PRAWNIK (uwaga 5): kapital 5 000 PLN wg KRS; "eingezahlt" - w sp. z o.o. kapital pokrywa sie wkladami wniesionymi przed rejestracja; kancelaria potwierdza brzmienie (§ 5 DDG / dyrektywa 2009/101/WE - przy podaniu kapitalu nalezy podac, ile wplacono). */}
       </P>
 
       <H2>Steuernummern</H2>
       <P>
-        Steueridentifikationsnummer (NIP): 671 185 85 59<br />
-        Umsatzsteuer-Identifikationsnummer nach § 27a UStG (USt-IdNr.): <Ph>[USt-IdNr.: … — PRAWNIK: z. B. PL6711858559, nur angeben, wenn als VAT-UE registriert]</Ph>
-        {/* PRAWNIK: NIP stammt aus /rodo. USt-IdNr. nur eintragen, wenn tatsaechlich VAT-UE registriert (Format PL + NIP); sonst Zeile streichen. */}
+        Steuernummer (NIP): 671 185 85 59<br />
+        Umsatzsteuer-Identifikationsnummer (VAT-UE): PL6711858559
+        {/* Dane z odpisu KRS/VIES z 25.09.2026 — do weryfikacji przed publikacja */}
+        {/* ERLEDIGT (Przeglad 3.12, uwaga 21): numer polski VAT-UE (PL+NIP); VIES potwierdza aktywny VAT-UE (25.09.2026). Odwolanie do "§ 27a UStG" usuniete (dotyczy niemieckiego numeru). */}
       </P>
 
       <H2>Berufsrechtliche Angaben</H2>
       <P>
-        Berufsbezeichnung: Immobilienmakler (pośrednik w obrocie nieruchomościami), verliehen in der Republik Polen. Zuständige Aufsichts-/Registerbehörde: <Ph>[PRAWNIK: potwierdzić – organ/rejestr, numer licencji jeśli dotyczy]</Ph><br />
-        Berufshaftpflichtversicherung: <Ph>[UBEZPIECZENIE OC — PRAWNIK: ubezpieczyciel, adres, zakres terytorialny]</Ph>
-        {/* PRAWNIK: (1) Polen: Ubezpieczenie OC pośrednika ist gesetzlich vorgeschrieben (Ustawa o gospodarce nieruchomościami) - Angaben zu Versicherer und geografischem Geltungsbereich (§ 2 Abs. 1 Nr. 11 DL-InfoV, gilt fuer Dienstleistungen in DE) pruefen. (2) Ist eine deutsche Erlaubnis nach § 34c GewO noetig, wenn Immobilien in DE vermittelt werden? Hier wohl nur PL-Objekte - bitte klaeren. */}
+        Tätigkeit: Vermittlung von Immobilien (Immobilienmakler nach polnischem Recht, pośrednik w obrocie nieruchomościami). Eine behördliche Erlaubnis oder Registrierung ist für diese Tätigkeit in Polen nicht erforderlich; eine Aufsichtsbehörde im Sinne des § 5 Abs. 1 Nr. 4 DDG besteht daher nicht. Unsere Tätigkeit bezieht sich auf Immobilien in der Republik Polen und wird von Polen aus erbracht.<br />
+        Berufshaftpflichtversicherung (nach polnischem Recht vorgeschrieben): <Ph>[Versicherer], [Anschrift des Versicherers]</Ph>. Räumlicher Geltungsbereich: <Ph>[z. B. Republik Polen / Europäische Union – laut Police bestätigen]</Ph>.
+        {/* ERLEDIGT (Przeglad 3.11, uwaga 6-7): "verliehen"/organ nadzorczy/licencja zastapione tekstem prawnika (licencja posrednika zniesiona 1.01.2014). Daniel: dane ubezpieczyciela OC i zasieg terytorialny (czy obejmuje klientow z DE). PRAWNIK: § 34c GewO (uwaga 22) - decyzja/opinia kancelarii; zdanie "dotyczy nieruchomosci w RP, swiadczona z Polski" zgodne z zaleceniem ostroznosciowym (b). */}
       </P>
 
       <H2>Verantwortlich für den Inhalt</H2>
       <P>
-        Verantwortlich für journalistisch-redaktionelle Inhalte (§ 18 Abs. 2 MStV): <Ph>[NAME UND ANSCHRIFT — PRAWNIK: entfällt ggf., wenn keine journalistisch-redaktionellen Inhalte (z. B. Blog)]</Ph>
+        Verantwortlich für redaktionelle Inhalte (§ 18 Abs. 2 MStV): <Ph>[Vor- und Nachname], Anschrift wie oben – entfällt, wenn auf der deutschen Version keine redaktionellen Inhalte veröffentlicht werden</Ph>
+        {/* PRAWNIK (uwaga 20): pole potrzebne tylko jesli po niemiecku sa tresci redakcyjne (blog jest obecnie tylko po polsku) - decyzja Daniela (pkt 8 listy): wskazac osobe albo usunac sekcje. */}
       </P>
 
       <H2>Verbraucherstreitbeilegung</H2>
       <P>
         Wir sind weder bereit noch verpflichtet, an einem Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen (§ 36 VSBG).
-        {/* PRAWNIK: Formulierung bestaetigen (Bereitschaft ja/nein). Die EU-OS-Plattform (ODR) wurde zum 20.07.2025 eingestellt; alter Hinweis daher entfernt. */}
+        {/* OK (uwaga 19): platforma ODR UE zlikwidowana 20.07.2025 - stary link usuniety prawidlowo; "weder bereit noch verpflichtet" dopuszczalne. Zmiana na "bereit" = decyzja biznesowa. */}
       </P>
 
       <H2>Haftung für Inhalte und Links</H2>
