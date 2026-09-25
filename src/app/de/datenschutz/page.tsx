@@ -44,7 +44,8 @@ export default function DatenschutzPage() {
         {/* ERLEDIGT (Przeglad 3.1): tekst prawnika wdrozony; KRS/REGON/NIP/adres z odpisu KRS (zapis "12/1 lok. 3" jest poprawny). Sad rejestrowy wpisany wg decyzji Daniela 25.09.2026 (Amtsgericht Koszalin, IX. Wirtschaftsabteilung) - DO WERYFIKACJI z pelnym odpisem KRS. */}
       </P>
       <P>
-        Vertreten durch den Vorstand (zarząd); jedes Mitglied des Vorstands ist einzelvertretungsberechtigt: <Ph>[Vor- und Nachname der beiden Vorstandsmitglieder]</Ph>
+        Vertreten durch den Vorstand (zarząd); die beiden Vorstandsmitglieder Daniel Kamiński und Dawid Sadownik sind jeweils einzelvertretungsberechtigt.
+        {/* Zarzad wg decyzji Daniela 25.09.2026 (odpis KRS: reprezentacja jednoosobowa) - do weryfikacji z odpisem */}
       </P>
       <P>
         Kontakt in Datenschutzangelegenheiten: <a href="mailto:biuro@investrent.com.pl" style={link}>biuro@investrent.com.pl</a>, Telefon +48 731 554 341.
@@ -152,7 +153,7 @@ export default function DatenschutzPage() {
 
       <H3>Weitere Dienstleister im internen CRM</H3>
       <P>
-        OpenAI wandelt Sprachaufnahmen, die Mitarbeitende an den Sprachassistenten des CRM richten, in Text um; die Aufnahmen können dabei genannte Namen und Telefonnummern von Kunden enthalten. Replicate bearbeitet Objektfotos (Entfernung von Wasserzeichen) und erzeugt automatische Untertitel für Videos unserer Mitarbeitenden. Über die Gemini API von Google werden Objektplakate aus Objektfotos erstellt; dabei werden Name und Telefonnummer der betreuenden Mitarbeitenden übermittelt. Apify und Bright Data rufen für uns öffentlich zugängliche Immobilienanzeigen von Portalen ab. Zu personenbezogenen Daten aus solchen Anzeigen (Art. 14 DSGVO) siehe die polnische Fassung unter <a href="/rodo" style={link}>/rodo</a>. Telefonnummern aus solchen Anzeigen verwenden wir nicht für unaufgeforderte Kontaktaufnahmen <Ph>[DO POTWIERDZENIA: Daniel]</Ph>. Rechtsgrundlage ist jeweils Art. 6 Abs. 1 lit. f DSGVO; mit den Anbietern werden Auftragsverarbeitungsverträge geschlossen <Ph>[DO POTWIERDZENIA: DPA OpenAI, Replicate, Google, Apify, Bright Data]</Ph>.
+        OpenAI wandelt Sprachaufnahmen, die Mitarbeitende an den Sprachassistenten des CRM richten, in Text um; die Aufnahmen können dabei genannte Namen und Telefonnummern von Kunden enthalten. Replicate bearbeitet Objektfotos (Entfernung von Wasserzeichen) und erzeugt automatische Untertitel für Videos unserer Mitarbeitenden. Über die Gemini API von Google werden Objektplakate aus Objektfotos erstellt; dabei werden Name und Telefonnummer der betreuenden Mitarbeitenden übermittelt. Apify und Bright Data rufen für uns öffentlich zugängliche Immobilienanzeigen von Portalen ab. Zu personenbezogenen Daten aus solchen Anzeigen (Art. 14 DSGVO) siehe die polnische Fassung unter <a href="/rodo" style={link}>/rodo</a>. Telefonnummern aus solchen Anzeigen verwenden wir nicht für unaufgeforderte Kontaktaufnahmen. Rechtsgrundlage ist jeweils Art. 6 Abs. 1 lit. f DSGVO; mit den Anbietern werden Auftragsverarbeitungsverträge geschlossen <Ph>[DO POTWIERDZENIA: DPA OpenAI, Replicate, Google, Apify, Bright Data]</Ph>.
         {/* Fakty (kod investrent-crm origin/main 25.09.2026): voice.ts:33 - audio do api.openai.com/v1/audio/transcriptions (whisper-1); lamaWatermarkRemoval.ts, reelAutocaption.ts - Replicate (zdjecia ofert, wideo rolek); geminiPosterGenerator.ts - zdjecia + imie i telefon opiekuna oferty; apify.scraper.ts, homeStaging.ts, photoWatermarkRemoval.ts - Apify (scraping, obrobka zdjec). Nie zgadywano zakresu: tam, gdzie brak dowodu - DO POTWIERDZENIA. */}
       </P>
 
