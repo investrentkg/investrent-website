@@ -65,16 +65,16 @@ test('telefon i UTM', () => {
 const rangeOut = { kind: 'range', range: { low: 400000, high: 480000 }, pricePerM2: null, comparables: null, quality: null, disclaimer: null, message: null }
 test('notatka leada: dane, wynik, znacznik zgody, UTM (zgoda bez pelnych tekstow)', () => {
   const n = buildLeadNotes(ok, rangeOut, 'utm_source=meta', { marketingPhone: false, marketingSms: false, at: '2026-09-25T10:00:00.000Z' })
-  assert.ok(n.startsWith('[Zgoda-kalkulator] kanał=telefon-wycena; czas=2026-09-25T10:00:00.000Z; wersja=wycena-2026-09-25-v5'))
+  assert.ok(n.startsWith('[Zgoda-kalkulator] kanał=telefon-wycena; czas=2026-09-25T10:00:00.000Z; wersja=wycena-2026-09-25-v6'))
   assert.ok(n.includes('Źródło: kalkulator wyceny (z wynikiem: tak)')); assert.ok(n.includes('Mieszkanie, Kołobrzeg (Podczele)')); assert.ok(n.includes('52,5 m²')); assert.ok(n.includes('utm_source=meta'))
   assert.equal(buildConsentMarker({ marketingPhone: true, marketingSms: false }).includes('marketing-telefon'), true)
-  assert.ok(CONSENT_VERSION.endsWith('-v5') && !CONSENT_VERSION.includes('DO-PRAWNIKA'))
+  assert.ok(CONSENT_VERSION.endsWith('-v6') && !CONSENT_VERSION.includes('DO-PRAWNIKA'))
 })
 test('notatka leada: z zgoda marketingowa i dlugim UTM miesci sie w limicie 500 znakow backendu, znacznik zgody nieuciety', () => {
   const longUtm = ['utm_source','utm_medium','utm_campaign','utm_content','utm_term'].map(k => k + '=' + 'x'.repeat(80)).join(' ')
   const n = buildLeadNotes({ ...ok, district: 'Radzikowo-Osiedle Nadmorskie' }, rangeOut, longUtm, { marketingPhone: true, marketingSms: true, at: '2026-09-25T10:00:00.000Z' })
   assert.ok(n.length <= NOTES_MAX && NOTES_MAX < 500, 'dlugosc ' + n.length)
-  assert.ok(n.startsWith('[Zgoda-kalkulator] kanał=telefon-wycena,marketing-telefon,marketing-sms; czas=2026-09-25T10:00:00.000Z; wersja=wycena-2026-09-25-v5'))
+  assert.ok(n.startsWith('[Zgoda-kalkulator] kanał=telefon-wycena,marketing-telefon,marketing-sms; czas=2026-09-25T10:00:00.000Z; wersja=wycena-2026-09-25-v6'))
   const clean = String(n).slice(0, 500).replace(/[<>]/g, '') // jak backend: clean(notes)
   assert.equal(clean, n)
 })
@@ -103,7 +103,7 @@ test('znacznik zgody: pola kanał/czas/wersja czytelne dla redakcji retencji (ka
 })
 test('teksty: liczba porownan (przedzial i "min lub wiecej" gdy max == min)', async () => {
   const { T } = await import('../app/wycena/texts.ts')
-  assert.equal(T.result.comparables(20, 49), 'Do szacunku wykorzystaliśmy od 20 do 49 porównywalnych nieruchomości z okolicy.')
+  assert.equal(T.result.comparables(20, 49), 'Do szacunku wykorzystaliśmy co najmniej 20 porównywalnych nieruchomości z okolicy.')
   assert.equal(T.result.comparables(50, 50), 'Do szacunku wykorzystaliśmy co najmniej 50 porównywalnych nieruchomości z okolicy.')
 })
 test('zgody rozdzielone: telefon i SMS niezaleznie w znaczniku; brak marketingu = tylko telefon-wycena', () => {
@@ -111,13 +111,20 @@ test('zgody rozdzielone: telefon i SMS niezaleznie w znaczniku; brak marketingu 
   assert.ok(buildConsentMarker({ marketingPhone: false, marketingSms: false, at: 'X' }).includes('kanał=telefon-wycena;'))
 })
 test('komunikat limitu: czas ponowienia z retry_after_seconds backendu (okno 1 h albo 24 h)', () => {
-  assert.equal(formatRetryAfter(30), 'za minutę'); assert.equal(formatRetryAfter(1800), 'za około 30 min')
-  assert.equal(formatRetryAfter(7200), 'za około 2 h'); assert.equal(formatRetryAfter(86400), 'jutro')
-  assert.ok(formatRetryAfter(null).includes('24 godzin'))
+  assert.equal(formatRetryAfter(30), 'minutę'); assert.equal(formatRetryAfter(1800), '30 min')
+  assert.equal(formatRetryAfter(7200), '2 h'); assert.equal(formatRetryAfter(200000), '24 h')
+  assert.equal(formatRetryAfter(null), '24 h')
 })
 test('teksty: brak realnego numeru w komunikatach i jedno okreslenie zgody na telefon', async () => {
   const { T } = await import('../app/wycena/texts.ts')
   const all = JSON.stringify(T)
   assert.ok(!all.includes('600 100 200')); assert.ok(!all.includes('zgodę na kontakt'))
-  assert.ok(T.errors.rateLimited('za około 2 h').includes('za około 2 h'))
+  assert.ok(T.errors.rateLimited('2 h').includes('za około 2 h'))
+})
+test('teksty v6: art. 17 ust. 3 lit. e, skrot numeru w "Jak liczymy", brak niepotwierdzonych liczb i twierdzenia o SCC dla wszystkich', async () => {
+  const { T } = await import('../app/wycena/texts.ts')
+  const all = JSON.stringify(T).replace(/\u00a0/gi, ' ')
+  assert.ok(all.includes('art. 17 ust. 3 lit. e RODO')); assert.ok(all.includes('skrót numeru telefonu (kod')); assert.ok(!all.includes('do 30'))
+  assert.ok(all.includes('Przekazanie danych do Cloudflare i Google opiera się na Data Privacy Framework')); assert.ok(!all.includes('standardowych klauzulach umownych'))
+  assert.ok(T.lead.bodyFallback.startsWith('Zaznacz zgodę na telefon w sprawie wyceny'))
 })

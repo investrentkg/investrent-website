@@ -216,10 +216,10 @@ export function formatRange(r: Range): string {
 }
 
 // ── Notatka do leada (pole notes w /api/public/leads) ──
-// Wersja tekstow zgod i klauzuli (texts.ts: consentCall, consentMarketing, consentInfoPrefix). v5 = wersja OCZEKUJACA (v2-v4 zastapione przed publikacja po recenzjach Krytyka):
+// Wersja tekstow zgod i klauzuli (texts.ts: consentCall, consentMarketing, consentInfoPrefix). v6 = wersja OCZEKUJACA (v2-v5 zastapione przed publikacja po recenzjach Krytyka):
 // publikacja na produkcji wymaga zatwierdzenia tresci (Krytyk + przeglad AI; kancelaria nieangazowana wg decyzji Daniela 25.09); kazda zmiana tych tekstow = nowy numer wersji.
 // Pelne brzmienie danej wersji jest wersjonowane w repo (git) - do leada zapisujemy TYLKO znacznik (limit backendu: 500 znakow).
-export const CONSENT_VERSION = 'wycena-2026-09-25-v5'
+export const CONSENT_VERSION = 'wycena-2026-09-25-v6'
 export const NOTES_MAX = 490 // backend /api/public/leads zapisuje clean(notes) = pierwsze 500 znakow (odrzuca > 1000)
 
 export function describeInput(v: FormValues): string {
@@ -264,11 +264,11 @@ export type ConsentRecord = { marketingPhone: boolean; marketingSms: boolean; at
 
 // Kiedy mozna ponowic po 429: backend zwraca retry_after_seconds z faktycznego okna (30 zapytan/h albo 3 wyceny/24 h na IP).
 export function formatRetryAfter(seconds: number | null): string {
-  if (seconds == null || !Number.isFinite(seconds) || seconds <= 0) return 'później (limit zapytań obowiązuje do 24 godzin)'
-  if (seconds < 90) return 'za minutę'
-  if (seconds < 3600) return `za około ${Math.ceil(seconds / 60)} min`
-  if (seconds < 86400) return `za około ${Math.ceil(seconds / 3600)} h`
-  return 'jutro'
+  // Zwraca fraze po "za okolo": "minutę" / "N min" / "N h" (zaokraglone w gore, maks. 24 h).
+  if (seconds == null || !Number.isFinite(seconds) || seconds <= 0) return '24 h'
+  if (seconds < 60) return 'minutę'
+  if (seconds < 3600) return `${Math.ceil(seconds / 60)} min`
+  return `${Math.min(24, Math.ceil(seconds / 3600))} h`
 }
 
 // Znacznik dowodu zgody. Styl jak [Meta-zgoda] (pary klucz=wartosc oddzielone "; "), ale osobny prefiks "[Zgoda-kalkulator]":
