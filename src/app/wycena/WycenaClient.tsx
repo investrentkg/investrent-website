@@ -4,6 +4,7 @@ import { Calculator, CheckCircle, Phone } from 'lucide-react'
 import { submitLead } from '@/lib/api'
 import Breadcrumb from '@/components/Breadcrumb'
 import WycenaModal from '@/components/WycenaModal'
+import Turnstile from './Turnstile'
 import {
   CONDITIONS, EMPTY_FORM, OFFICE_PHONE, PROPERTY_TYPES,
   buildLeadNotes, buildPayload, fieldApplies, formatPLN, formatRange, isValidPhone,
@@ -13,6 +14,7 @@ import {
 import { T } from './texts'
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://investrent-crm-production.up.railway.app'
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ''
 const ESTIMATE_URL = `${API}/api/public/valuation/estimate`
 
 const card: React.CSSProperties = { background: 'white', borderRadius: 20, padding: 'clamp(20px, 4vw, 32px)', boxShadow: '0 8px 32px rgba(13,42,92,.08)', border: '1px solid #e2e8f0' }
@@ -41,6 +43,9 @@ function describedBy(id: string, hasHint: boolean, hasErr: boolean) {
 export default function WycenaClient({ initialEnabled = true }: { initialEnabled?: boolean }) {
   const [available, setAvailable] = useState(initialEnabled) // false = tryb sam numer (flaga albo 503)
   const [modalOpen, setModalOpen] = useState(false)
+  const [tsToken, setTsToken] = useState<string | null>(null)
+  const [tsReset, setTsReset] = useState(0)
+  const [tsNotice, setTsNotice] = useState<'pending' | null>(null)
   const [values, setValues] = useState<FormValues>(EMPTY_FORM)
   const [errors, setErrors] = useState<FormErrors>({})
   const [honeypot, setHoneypot] = useState('')
@@ -68,10 +73,13 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
       if (first) document.getElementById(`wy-${first}`)?.focus()
       return
     }
+    if (TURNSTILE_SITE_KEY && !tsToken) { setTsNotice('pending'); return }
+    setTsNotice(null)
     inFlight.current = true
     setPhase('loading')
-    const res = await requestEstimate(ESTIMATE_URL, buildPayload(values, honeypot))
+    const res = await requestEstimate(ESTIMATE_URL, buildPayload(values, honeypot, tsToken))
     inFlight.current = false
+    if (TURNSTILE_SITE_KEY) { setTsToken(null); setTsReset(n => n + 1) } // token jest jednorazowy
     if (res.kind === 'invalid') {
       // blad walidacji po stronie serwera - zostajemy w formularzu
       setErrors({ area_m2: res.message ?? `${T.errors.invalid} ${OFFICE_PHONE}` })
@@ -176,6 +184,13 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
 
             {Object.keys(errors).some(k => errors[k as keyof FormErrors]) && (
               <p role="alert" style={{ ...errStyle, marginTop: 16 }}>{T.formErrorSummary}</p>
+            )}
+
+            {available && TURNSTILE_SITE_KEY && (
+              <div style={{ marginTop: 16 }}>
+                <Turnstile siteKey={TURNSTILE_SITE_KEY} resetKey={tsReset} onToken={t => { setTsToken(t); if (t) setTsNotice(null) }} onFail={() => setAvailable(false)} />
+                {tsNotice === 'pending' && <p role="alert" style={errStyle}>{T.errors.turnstilePending}</p>}
+              </div>
             )}
 
             <div style={{ marginTop: 24 }}>

@@ -69,7 +69,7 @@ export const T = {
       'Wyrażam zgodę na kontakt telefoniczny ze strony Investrent sp. z o.o. z siedzibą w Kołobrzegu, [adres z KRS, kod pocztowy], w sprawie wyceny mojej nieruchomości, w tym na przedstawienie oferty pośrednictwa w jej sprzedaży lub wynajmie. Zgodę mogę w każdej chwili cofnąć, pisząc na [e-mail biura] lub dzwoniąc pod +48 731 554 341. Cofnięcie zgody nie wpływa na zgodność z prawem kontaktu sprzed jej cofnięcia.',
     // PRAWNIK: przed włączeniem — dane administratora, okres przechowywania, odbiorcy (hosting/CRM, Cloudflare Turnstile).
     consentInfoPrefix:
-      'Administratorem Twoich danych (numer telefonu, imię, dane nieruchomości i wynik szacunku) jest Investrent sp. z o.o., [adres]. Przetwarzamy je, aby skontaktować się z Tobą w sprawie wyceny, przez [okres – do ustalenia]. Masz prawo dostępu do danych, ich sprostowania, usunięcia, ograniczenia przetwarzania, przenoszenia oraz wniesienia skargi do Prezesa UODO. Więcej informacji znajdziesz w ',
+      'Administratorem Twoich danych (numer telefonu, imię, dane nieruchomości i wynik szacunku) jest Investrent sp. z o.o., [adres]. Przetwarzamy je, aby skontaktować się z Tobą w sprawie wyceny, przez [okres – do ustalenia]. Formularz kalkulatora chroni przed nadużyciami usługa Cloudflare Turnstile (Cloudflare, Inc.), która może przetwarzać dane techniczne przeglądarki i adres IP. Masz prawo dostępu do danych, ich sprostowania, usunięcia, ograniczenia przetwarzania, przenoszenia oraz wniesienia skargi do Prezesa UODO. Więcej informacji znajdziesz w ',
     consentInfoLink: 'polityce prywatności',
     consentInfoSuffix: '.',
     submit: 'Proszę o kontakt',
@@ -86,6 +86,7 @@ export const T = {
     rateLimited: 'Wykonano już kilka wycen w krótkim czasie. Spróbuj ponownie za około godzinę. Możesz też zostawić numer poniżej lub zadzwonić:',
     network: 'Nie udało się połączyć z kalkulatorem. Spróbuj ponownie za chwilę, a jeśli problem się powtórzy, sprawdź połączenie z internetem. Możesz też zostawić numer poniżej lub zadzwonić:',
     server: 'Coś poszło nie tak po naszej stronie. Spróbuj ponownie za chwilę. Możesz też zostawić numer poniżej lub zadzwonić:',
+    turnstilePending: 'Weryfikacja antyspamowa jeszcze się ładuje. Poczekaj chwilę i spróbuj ponownie.',
     invalid: 'Nie udało się przetworzyć części danych. Sprawdź wartości w formularzu i spróbuj ponownie. Jeśli to nie pomoże, zadzwoń:',
     leadFail: 'Nie udało się wysłać numeru. Spróbuj ponownie lub zadzwoń:',
   },

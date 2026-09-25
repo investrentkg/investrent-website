@@ -89,13 +89,14 @@ export function validateForm(v: FormValues): FormErrors {
   return e
 }
 
-export function buildPayload(v: FormValues, honeypot = ''): EstimatePayload {
+export function buildPayload(v: FormValues, honeypot = '', turnstileToken?: string | null): EstimatePayload {
   const p: EstimatePayload = {
     property_type: v.property_type as PropertyType,
     city: v.city.trim(),
     area_m2: parseNum(v.area_m2),
     website: honeypot,
   }
+  if (turnstileToken) p.turnstile_token = turnstileToken
   if (v.district.trim()) p.district = v.district.trim()
   if (fieldApplies(v.property_type, 'rooms') && v.rooms.trim()) p.rooms = parseNum(v.rooms)
   if (fieldApplies(v.property_type, 'floor') && v.floor.trim()) p.floor = parseNum(v.floor)

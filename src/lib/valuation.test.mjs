@@ -27,6 +27,9 @@ test('payload: liczby, honeypot pusty, dzialka bez pokoi/pietra/stanu', () => {
   assert.equal(d.rooms, undefined); assert.equal(d.floor, undefined); assert.equal(d.condition, undefined)
   assert.equal(fieldApplies('dom', 'floor'), false)
 })
+test('payload: turnstile_token dolaczany tylko gdy jest', () => {
+  assert.equal(buildPayload(ok, '', 'tok').turnstile_token, 'tok'); assert.equal('turnstile_token' in buildPayload(ok), false)
+})
 test('odpowiedz: range', () => {
   const r = interpretResponse(200, { ok: true, mode: 'range', range: { low: 400000, high: 480000 }, price_per_m2: { low: 8000, high: 9500 }, comparables: { min: 10, max: 19 }, quality: 'srednia', disclaimer: 'x', message: 'm' })
   assert.equal(r.kind, 'range'); assert.equal(r.range.low, 400000); assert.equal(r.pricePerM2.high, 9500)
