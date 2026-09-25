@@ -6,6 +6,7 @@ import { submitLead } from '@/lib/api'
 import { formatPhoneDisplay } from '@/lib/phone'
 import MortgageMiniCalculator from '@/components/MortgageMiniCalculator'
 import Link from 'next/link'
+import PrivacyNote from '@/components/PrivacyNote'
 import MapEmbed, { ConsentGate } from '@/components/ConsentEmbed'
 
 interface OfferDetail {
@@ -312,7 +313,7 @@ function ContactForm({ refNumber }: { refNumber: string }) {
           {status === 'loading' ? 'Wysyłanie…' : '📩 Wyślij zapytanie — odpiszemy do 60 min'}
         </button>
         {status === 'error' && <p style={{ color: '#dc2626', fontSize: 12, textAlign: 'center' as const }}>Błąd — spróbuj ponownie</p>}
-        <p style={{ fontSize: 10, color: '#9ca3af', textAlign: 'center' as const }}>Dane chronione zgodnie z RODO · Bez zobowiązań</p>
+        <PrivacyNote />
       </div>
     </div>
   )

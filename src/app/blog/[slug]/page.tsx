@@ -13,6 +13,7 @@ import { getPublicBlogPost, getOffice } from '@/lib/api'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import ReactMarkdown from 'react-markdown'
+import Image from 'next/image'
 
 const FALLBACK_OFFICE = { name: 'InvestRent', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
 const BASE_URL = 'https://www.investrent.com.pl'
@@ -79,7 +80,11 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           {post.cover_image_url && (
             <div style={{ marginBottom: 32 }}>
               <div style={{ borderRadius: 14, overflow: 'hidden' }}>
-                <img src={post.cover_image_url} alt={post.title} style={{ width: '100%', display: 'block' }} />
+                {/* Prywatnosc (25.09.2026): okladki z Unsplash przez next/image (bez laczenia przegladarki z Unsplash). */}
+                {post.cover_image_url.startsWith('https://images.unsplash.com/')
+                  ? <Image src={post.cover_image_url} alt={post.title} width={1200} height={630} sizes="(max-width: 800px) 100vw, 780px" style={{ width: '100%', height: 'auto', display: 'block' }} />
+                  // eslint-disable-next-line @next/next/no-img-element
+                  : <img src={post.cover_image_url} alt={post.title} style={{ width: '100%', display: 'block' }} />}
               </div>
               {/* NOWE (16.08) - wymog licencyjny Unsplash API Guidelines:
                   kazde uzyte zdjecie musi byc widocznie podpisane autorem

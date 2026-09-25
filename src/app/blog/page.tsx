@@ -26,6 +26,10 @@ export const metadata: Metadata = {
 
 const FALLBACK_OFFICE = { name: 'InvestRent', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
 
+// Okladki z Unsplash ida przez optymalizator next/image (serwer Vercel pobiera obraz),
+// pozostale zrodla (nasz Supabase Storage) bez zmian - przeglad prawny runda 2 (25.09.2026).
+const isUnsplash = (u: string) => u.startsWith('https://images.unsplash.com/')
+
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' })
 }
@@ -58,7 +62,7 @@ export default async function BlogPage() {
                   <article style={{ background: 'white', borderRadius: 14, border: '1px solid #e5e7eb', overflow: 'hidden', height: '100%' }}>
                     <div style={{ height: 190, overflow: 'hidden', background: '#f0f4ff', position: 'relative' }}>
                       {post.cover_image_url
-                        ? <Image src={post.cover_image_url} alt={post.title} fill unoptimized
+                        ? <Image src={post.cover_image_url} alt={post.title} fill unoptimized={!isUnsplash(post.cover_image_url)}
                             sizes="(max-width: 768px) 100vw, 400px" loading="lazy" style={{ objectFit: 'cover' }} />
                         : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 40 }}>📝</div>}
                     </div>

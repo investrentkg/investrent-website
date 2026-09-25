@@ -5,6 +5,7 @@ import { submitLead } from '@/lib/api'
 import { formatPhoneDisplay } from '@/lib/phone'
 import SuccessBadge from '@/components/SuccessBadge'
 import MapEmbed from '@/components/ConsentEmbed'
+import PrivacyNote from '@/components/PrivacyNote'
 import type { Office } from '@/types'
 
 const TOPICS = [
@@ -153,9 +154,7 @@ export default function Contact({ office }: { office: Office | null }) {
                 {status === 'error' && (
                   <p className="text-red-500 text-[12px] text-center">Błąd wysyłania. Spróbuj ponownie lub zadzwoń.</p>
                 )}
-                <p className="text-[10px] text-slate-400 text-center mt-1">
-                  Dane chronione zgodnie z RODO · Nie wysyłamy spamu · Kontakt bez zobowiązań
-                </p>
+                <PrivacyNote style={{ marginTop: 4 }} />
               </form>
             )}
           </div>

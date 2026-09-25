@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { MessageCircle, X, Send, ChevronDown } from 'lucide-react'
 import { submitLead } from '@/lib/api'
+import PrivacyNote from '@/components/PrivacyNote'
 
 export default function ChatWidget() {
   const [open, setOpen]         = useState(false)
@@ -160,9 +161,7 @@ export default function ChatWidget() {
                     {status === 'loading' ? 'Wysyłanie…' : 'Wyślij wiadomość'}
                   </button>
                 </div>
-                <p style={{ color: '#94a3b8', fontSize: 10, textAlign: 'center' as const, margin: '10px 0 0' }}>
-                  🔒 RODO · Bez zobowiązań
-                </p>
+                <PrivacyNote color="#94a3b8" style={{ marginTop: 10 }} />
               </>
             )}
           </div>
