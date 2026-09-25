@@ -216,10 +216,10 @@ export function formatRange(r: Range): string {
 }
 
 // ── Notatka do leada (pole notes w /api/public/leads) ──
-// Wersja tekstow zgod i klauzuli (texts.ts: consentCall, consentMarketing, consentInfoPrefix). v3 = wersja OCZEKUJACA (v2: pierwsza wersja po Krytyku 6/10 zastapiona przed publikacja):
+// Wersja tekstow zgod i klauzuli (texts.ts: consentCall, consentMarketing, consentInfoPrefix). v4 = wersja OCZEKUJACA (v2/v3 zastapione przed publikacja po recenzjach Krytyka):
 // publikacja na produkcji wymaga zatwierdzenia tresci (Krytyk + przeglad AI; kancelaria nieangazowana wg decyzji Daniela 25.09); kazda zmiana tych tekstow = nowy numer wersji.
 // Pelne brzmienie danej wersji jest wersjonowane w repo (git) - do leada zapisujemy TYLKO znacznik (limit backendu: 500 znakow).
-export const CONSENT_VERSION = 'wycena-2026-09-25-v3'
+export const CONSENT_VERSION = 'wycena-2026-09-25-v4'
 export const NOTES_MAX = 490 // backend /api/public/leads zapisuje clean(notes) = pierwsze 500 znakow (odrzuca > 1000)
 
 export function describeInput(v: FormValues): string {
@@ -266,7 +266,7 @@ export type ConsentRecord = { marketing: boolean; at?: string }
 // NIE pasuje do parsera zgod CRM (wzorzec "[Zgoda]" / "[Wypisanie]" w consentRules.ts) ani do blokady looksLikeConsentNote, wiec nie udaje wpisu podpisanego serwerem.
 // UWAGA: endpoint publiczny nie podpisuje wpisow (podpis HMAC ma tylko serwer); wartosc dowodowa = wersja tekstu w repo + czas zapisu notatki po stronie CRM.
 export function buildConsentMarker(c: ConsentRecord): string {
-  return `[Zgoda-kalkulator] wersja=${CONSENT_VERSION}; czas=${c.at ?? new Date().toISOString()}; kontakt=tak; marketing=${c.marketing ? 'tak' : 'nie'}`
+  return `[Zgoda-kalkulator] kanał=${c.marketing ? 'telefon-wycena,telefon-sms-marketing' : 'telefon-wycena'}; czas=${c.at ?? new Date().toISOString()}; wersja=${CONSENT_VERSION}`
 }
 
 // Notatka musi zmiescic sie w NOTES_MAX (backend obcina po 500 znakach). Kolejnosc = priorytet: znacznik zgody PIERWSZY, UTM ostatni
