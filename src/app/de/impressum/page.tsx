@@ -46,9 +46,10 @@ export default function ImpressumPage() {
       <H2>Registereintrag</H2>
       <P>
         Eingetragen im Handelsregister (Krajowy Rejestr Sądowy, KRS): KRS-Nummer 0001069797<br />
-        Registergericht: <Ph>[Registergericht – laut KRS-Auszug bestätigen, z. B. Sąd Rejonowy w Koszalinie, IX Wydział Gospodarczy KRS]</Ph><br />
+        Registergericht: Amtsgericht Koszalin (Sąd Rejonowy w Koszalinie), IX. Wirtschaftsabteilung des Landesgerichtsregisters (Krajowy Rejestr Sądowy)<br />
         REGON: 526973936<br />
         Stammkapital: 5.000,00 PLN (eingezahlt)
+        {/* Sad rejestrowy: decyzja Daniela 25.09.2026 (Amtsgericht Koszalin, IX Wydzial Gospodarczy KRS) - do weryfikacji z pelnym odpisem KRS przed publikacja */}
         {/* Dane z odpisu KRS/VIES z 25.09.2026 — do weryfikacji przed publikacja */}
         {/* PRAWNIK (uwaga 5): kapital 5 000 PLN wg KRS; "eingezahlt" - w sp. z o.o. kapital pokrywa sie wkladami wniesionymi przed rejestracja; kancelaria potwierdza brzmienie (§ 5 DDG / dyrektywa 2009/101/WE - przy podaniu kapitalu nalezy podac, ile wplacono). */}
       </P>
@@ -63,7 +64,7 @@ export default function ImpressumPage() {
 
       <H2>Berufsrechtliche Angaben</H2>
       <P>
-        Tätigkeit: Vermittlung von Immobilien (Immobilienmakler nach polnischem Recht, pośrednik w obrocie nieruchomościami). Eine behördliche Erlaubnis oder Registrierung ist für diese Tätigkeit in Polen nicht erforderlich; eine Aufsichtsbehörde im Sinne des § 5 Abs. 1 Nr. 4 DDG besteht daher nicht. Unsere Tätigkeit bezieht sich auf Immobilien in der Republik Polen und wird von Polen aus erbracht.<br />
+        Tätigkeit: Vermittlung von Immobilien (Immobilienmakler nach polnischem Recht, pośrednik w obrocie nieruchomościami). Eine behördliche Erlaubnis oder Registrierung ist für diese Tätigkeit in Polen nicht erforderlich; eine Aufsichtsbehörde im Sinne des § 5 Abs. 1 Nr. 4 DDG besteht daher nicht. Unsere Tätigkeit bezieht sich auf Immobilien in der Republik Polen und wird von Polen aus erbracht. Wir kontaktieren Interessenten nur auf deren Anfrage bzw. mit deren Einwilligung und führen keine Kaltakquise durch.<br />
         Berufshaftpflichtversicherung (nach polnischem Recht vorgeschrieben): <Ph>[Versicherer], [Anschrift des Versicherers]</Ph>. Räumlicher Geltungsbereich: <Ph>[z. B. Republik Polen / Europäische Union – laut Police bestätigen]</Ph>.
         {/* ERLEDIGT (Przeglad 3.11, uwaga 6-7): "verliehen"/organ nadzorczy/licencja zastapione tekstem prawnika (licencja posrednika zniesiona 1.01.2014). Daniel: dane ubezpieczyciela OC i zasieg terytorialny (czy obejmuje klientow z DE). PRAWNIK: § 34c GewO (uwaga 22) - decyzja/opinia kancelarii; zdanie "dotyczy nieruchomosci w RP, swiadczona z Polski" zgodne z zaleceniem ostroznosciowym (b). */}
       </P>
