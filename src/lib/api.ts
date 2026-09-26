@@ -157,6 +157,8 @@ export async function submitLead(payload: {
   source?: string
   client_type?: string
   preferred_city?: string
+  hp_field?: string // honeypot (backend: niepusty = bot)
+  turnstile_token?: string
 }) {
   // Nigdy nie rzuca (timeout 15 s, siec, odpowiedz nie-JSON) - zwraca { ok, reason? }.
   // Wywolujacy sprawdzaja tylko r?.ok, wiec dla nich nic sie nie zmienia poza tym,

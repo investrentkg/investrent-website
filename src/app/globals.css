@@ -613,3 +613,7 @@ html, body {
 .wy-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
 @media (min-width: 640px) { .wy-grid { grid-template-columns: 1fr 1fr; } }
 .wy-hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+/* v12: link/przycisk "Zostaw numer telefonu" i podsumowania <details> - cel dotyku min. 44 px */
+.wy-linkbtn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; padding: 0 6px; background: none; border: none; font: inherit; color: #1a4fa0; text-decoration: underline; cursor: pointer; }
+.wy-details > summary { display: flex; align-items: center; min-height: 44px; cursor: pointer; color: #1a4fa0; font-weight: 600; text-decoration: underline; }
+.wy-details[open] > summary { margin-bottom: 8px; }

@@ -57,6 +57,8 @@ export default function Turnstile({ siteKey, resetKey, onToken, onFail }: {
         'timeout-callback': () => cb.current.onToken(null),
         'error-callback': () => { cb.current.onToken(null); cb.current.onFail() },
       })
+      // v12: ukryte pole odpowiedzi (cf-turnstile-response) nie jest elementem interfejsu - poza drzewem dostepnosci; sam widzet (gdy wymaga interakcji) zostaje dostepny
+      box.current.querySelectorAll('input[name="cf-turnstile-response"]').forEach(el => el.setAttribute('aria-hidden', 'true'))
     }).catch(() => { if (!cancelled) cb.current.onFail() })
     return () => {
       cancelled = true

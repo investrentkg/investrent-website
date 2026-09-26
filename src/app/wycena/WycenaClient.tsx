@@ -7,7 +7,7 @@ import WycenaModal from '@/components/WycenaModal'
 import Turnstile from './Turnstile'
 import {
   CONDITIONS, EMPTY_FORM, OFFICE_PHONE, PROPERTY_TYPES,
-  buildLeadNotes, buildPayload, isKolobrzeg, fieldApplies, formatPLN, formatRange, formatRetryAfter, isOutOfScope, isValidPhone,
+  buildLeadRequest, buildPayload, isKolobrzeg, fieldApplies, formatPLN, formatRange, formatRetryAfter, isOutOfScope, isValidPhone,
   readUtm, requestEstimate, submittedTooFast, trackValuation, validateForm,
   type EstimateOutcome, type FormErrors, type FormValues,
 } from '@/lib/valuation'
@@ -212,9 +212,10 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
               <p role="status" aria-live="polite" style={{ ...hint, textAlign: 'center' }}>
                 {phase === 'loading' ? T.submitting : T.disclaimerTop}
               </p>
+              <p style={{ ...hint, marginTop: 8 }}>{T.disclaimerMore}</p>
               <p style={{ ...hint, textAlign: 'center', marginTop: 12 }}>
                 {T.callInstead}{' '}
-                <button type="button" onClick={() => setModalOpen(true)} style={{ background: 'none', border: 'none', padding: 0, font: 'inherit', color: '#1a4fa0', textDecoration: 'underline', cursor: 'pointer' }}>{T.callInsteadLink}</button>
+                <button type="button" className="wy-linkbtn" onClick={() => setModalOpen(true)}>{T.callInsteadLink}</button>
               </p>
             </div>
           </form>
@@ -230,7 +231,11 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
         {available && (
           <section style={{ padding: '0 4px' }} aria-labelledby="wy-how">
             <h2 id="wy-how" style={{ ...h2, fontSize: 18 }}>{T.how.title}</h2>
-            {T.how.body.map(p => <p key={p} style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.75, margin: '0 0 10px' }}>{p}</p>)}
+            <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.75, margin: '0 0 10px' }}>{T.how.body[0]}</p>
+            <details className="wy-details">
+              <summary>{T.how.moreSummary}</summary>
+              {T.how.body.slice(1).map(p => <p key={p} style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.75, margin: '0 0 10px' }}>{p}</p>)}
+            </details>
           </section>
         )}
       </div>
@@ -299,6 +304,11 @@ function LeadPanel({ outcome, values }: { outcome: EstimateOutcome | null; value
   const [consent, setConsent] = useState(false) // zgoda 1 (wymagana) - NIEZAZNACZONA domyslnie
   const [errs, setErrs] = useState<{ phone?: string; consent?: string }>({})
   const [state, setState] = useState<'idle' | 'sending' | 'ok' | 'fail'>('idle')
+  const [hp, setHp] = useState('') // honeypot (hp_field): w UI zawsze puste
+  const [tsToken, setTsToken] = useState<string | null>(null)
+  const [tsReset, setTsReset] = useState(0)
+  const [tsNotice, setTsNotice] = useState(false)
+  const [tsFailed, setTsFailed] = useState(false)
   const inFlight = useRef(false)
   const withNumbers = outcome?.kind === 'range'
 
@@ -311,22 +321,19 @@ function LeadPanel({ outcome, values }: { outcome: EstimateOutcome | null; value
     setErrs(next)
     if (next.phone) { document.getElementById('wy-phone')?.focus(); return }
     if (next.consent) { document.getElementById('wy-consent')?.focus(); return }
+    // Token Turnstile wymagany, gdy widget jest wlaczony: bez tokena NIE wysylamy po cichu - komunikat z prosba o ponowienie.
+    if (TURNSTILE_SITE_KEY && !tsToken) { if (tsFailed) setState('fail'); else setTsNotice(true); return }
+    setTsNotice(false)
     inFlight.current = true
     setState('sending')
     try {
-      const r = await submitLead({
-        full_name: name.trim() || 'Właściciel',
-        phone: phone.trim(),
-        source: 'wycena_modal',
-        client_type: 'seller',
-        preferred_city: values.city.trim(),
-        notes: buildLeadNotes(values, outcome, readUtm(window.location.search), {}),
-      })
+      const r = await submitLead(buildLeadRequest({ name, phone, values, outcome, utm: readUtm(window.location.search), turnstileToken: tsToken, honeypot: hp }))
       if (r?.ok) { setState('ok'); trackValuation('wycena_lead', { mode: outcome?.kind ?? 'none' }) } else setState('fail')
     } catch {
       setState('fail')
     } finally {
       inFlight.current = false
+      if (TURNSTILE_SITE_KEY) { setTsToken(null); setTsReset(n => n + 1) } // token jest jednorazowy
     }
   }
 
@@ -367,15 +374,33 @@ function LeadPanel({ outcome, values }: { outcome: EstimateOutcome | null; value
           {errs.consent && <div id="wy-consent-err" role="alert" style={{ ...errStyle, marginLeft: 34 }}>{errs.consent}</div>}
         </div>
         <div id="wy-consent-hint" style={hint}>
+          <p style={{ margin: '0 0 8px' }}>{T.lead.consentShort}</p>
+          <details className="wy-details">
+            <summary>{T.lead.consentInfoSummary}</summary>
           {T.lead.consentInfo.map(c => (
             <div key={c.h} style={{ margin: '0 0 8px', ...('highlight' in c && c.highlight ? { border: '1px solid #bfdbfe', background: '#eff6ff', borderRadius: 8, padding: '8px 10px' } : {}) }}>
               <p style={{ margin: 0 }}><strong>{c.h}</strong> {c.t}</p>
               {'items' in c && c.items && <ul style={{ margin: '4px 0 0', paddingLeft: 18 }}>{c.items.map(i => <li key={i} style={{ marginBottom: 3 }}>{i}</li>)}</ul>}
             </div>
           ))}
-          <p style={{ margin: 0 }}>{T.lead.consentInfoMore}<a href="/rodo" target="_blank" rel="noopener noreferrer" style={{ color: '#1a4fa0', textDecoration: 'underline' }}>{T.lead.consentInfoLink}</a>{T.lead.consentInfoSuffix}</p>
+          </details>
+          <p style={{ margin: '8px 0 0' }}>{T.lead.consentInfoMore}<a href="/rodo" target="_blank" rel="noopener noreferrer" style={{ color: '#1a4fa0', textDecoration: 'underline' }}>{T.lead.consentInfoLink}</a>{T.lead.consentInfoSuffix}</p>
         </div>
       </div>
+
+      {/* Honeypot: ukryte pole, czlowiek go nie widzi ani nie dotyka */}
+      <div className="wy-hp" aria-hidden="true">
+        <label>Nie wypełniaj tego pola
+          <input type="text" name="hp_field" tabIndex={-1} autoComplete="off" value={hp} onChange={e => setHp(e.target.value)} />
+        </label>
+      </div>
+
+      {TURNSTILE_SITE_KEY && (
+        <div style={{ marginTop: 16 }}>
+          <Turnstile siteKey={TURNSTILE_SITE_KEY} resetKey={tsReset} onToken={t => { setTsToken(t); if (t) { setTsNotice(false); setTsFailed(false) } }} onFail={() => setTsFailed(true)} />
+          {tsNotice && <p role="alert" style={errStyle}>{T.errors.turnstilePending}</p>}
+        </div>
+      )}
 
       {state === 'fail' && <p role="alert" style={{ ...errStyle, marginTop: 16 }}>{T.errors.leadFail} <PhoneLink /></p>}
 

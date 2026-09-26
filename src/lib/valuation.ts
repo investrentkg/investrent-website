@@ -224,10 +224,10 @@ export function formatRange(r: Range): string {
 }
 
 // ── Notatka do leada (pole notes w /api/public/leads) ──
-// Wersja tekstow zgod i klauzuli (texts.ts: consentCall, consentMarketing, consentInfoPrefix). v11 = wersja OCZEKUJACA (v2-v10 zastapione przed publikacja po recenzjach Krytyka):
+// Wersja tekstow zgod i klauzuli (texts.ts: consentCall, consentMarketing, consentInfoPrefix). v12 = wersja OCZEKUJACA (v2-v11 zastapione przed publikacja po recenzjach Krytyka):
 // publikacja na produkcji wymaga zatwierdzenia tresci (Krytyk + przeglad AI; kancelaria nieangazowana wg decyzji Daniela 25.09); kazda zmiana tych tekstow = nowy numer wersji.
 // Pelne brzmienie danej wersji jest wersjonowane w repo (git) - do leada zapisujemy TYLKO znacznik (limit backendu: 500 znakow).
-export const CONSENT_VERSION = 'wycena-2026-09-26-v11'
+export const CONSENT_VERSION = 'wycena-2026-09-27-v12'
 export const NOTES_MAX = 490 // backend /api/public/leads zapisuje clean(notes) = pierwsze 500 znakow (odrzuca > 1000)
 
 export function describeInput(v: FormValues): string {
@@ -306,6 +306,24 @@ export function buildLeadNotes(v: FormValues, o: EstimateOutcome | null, utm: st
     break
   }
   return out
+}
+
+// v12: zrodlo leada z formularza numeru NA /wycena. Backend (retencja joba "calculator" przy CALCULATOR_SOURCES_NARROW=true) liczy
+// wylacznie 'wycena_lp'. Okienko "Zamow rozmowe" (WycenaModal, Hero, Contact itd.) zostaje 'wycena_modal' - nie uzywac tej stalej poza /wycena.
+export const CALCULATOR_LEAD_SOURCE = 'wycena_lp'
+
+// v12: honeypot `hp_field` (backend #555: niepusty = bot) zawsze wysylany, w UI pusty; `turnstile_token` dolaczany, gdy widget go wydal (gdy nie wydal - komponent nie wysyla leada).
+export function buildLeadRequest(input: { name: string; phone: string; values: FormValues; outcome: EstimateOutcome | null; utm: string; turnstileToken?: string | null; honeypot?: string }) {
+  return {
+    full_name: input.name.trim() || 'Właściciel',
+    phone: input.phone.trim(),
+    source: CALCULATOR_LEAD_SOURCE,
+    client_type: 'seller',
+    preferred_city: input.values.city.trim(),
+    notes: buildLeadNotes(input.values, input.outcome, input.utm, {}),
+    hp_field: input.honeypot ?? '',
+    ...(input.turnstileToken ? { turnstile_token: input.turnstileToken } : {}),
+  }
 }
 
 // ── GA4: tylko zdarzenia i parametry nieosobowe ──
