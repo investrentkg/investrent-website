@@ -292,7 +292,7 @@ test('teksty v11.8 (decyzje Daniela 26.09): T-k lista nie dzwonimy, T-c2 rozmowa
   const items = T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]).join(' ').split(sp).join(' ')
   const how = T.how.body.join(' ').split(sp).join(' ')
   assert.ok(items.includes('lista osób, do których nie dzwonimy: jeśli cofniesz zgodę na telefon albo poinformujesz nas, że numer podała inna osoba, zachowamy sam numer telefonu (wraz z datą i powodem) na tej liście, wyłącznie po to, żeby nie zadzwonić do Ciebie ponownie'))
-  assert.ok(items.includes('numer na liście osób, do których nie dzwonimy: 3 lata albo do zgłoszenia sprzeciwu; usuniemy go z tej listy także na Twoją prośbę wysłaną e-mailem na biuro@investrent.com.pl'))
+  assert.ok(items.includes('numer na liście osób, do których nie dzwonimy: 3 lata albo do zgłoszenia sprzeciwu; na Twoją prośbę (e-mail na biuro@investrent.com.pl) lub po sprzeciwie usuwamy numer z listy niezwłocznie'))
   assert.ok(items.includes('(telefonicznej lub osobistej)') && how.includes('(telefonicznej lub osobistej)'))
   assert.ok(items.includes('Po cofnięciu zgody nie zadzwonimy do Ciebie w sprawie wyceny i niezwłocznie, najpóźniej w ciągu miesiąca, usuniemy Twoje dane z naszego systemu; zachowamy tylko sam numer telefonu na liście osób, do których nie dzwonimy, oraz dane potrzebne z innego powodu, np. z powodu umowy.'))
   assert.ok(items.includes('każda kolejna taka rozmowa odnawia te 12 miesięcy') && how.includes('każda kolejna taka rozmowa odnawia te 12 miesięcy'))
