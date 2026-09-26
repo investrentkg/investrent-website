@@ -1,6 +1,5 @@
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
-import FloatingWA from '@/components/FloatingWA'
 import SocialSidebar from '@/components/SocialSidebar'
 import Contact from '@/components/Contact'
 import Breadcrumb from '@/components/Breadcrumb'
@@ -48,7 +47,6 @@ export default async function KontaktPage() {
         <Contact office={office} />
       </main>
       <Footer office={office} />
-      <FloatingWA />
 
       <SocialSidebar office={office} />
     </>

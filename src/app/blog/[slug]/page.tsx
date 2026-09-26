@@ -6,7 +6,6 @@ export const revalidate = 300
 
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
-import FloatingWA from '@/components/FloatingWA'
 import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
 import { getPublicBlogPost, getOffice } from '@/lib/api'
@@ -101,7 +100,6 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         </article>
       </main>
       <Footer office={office} />
-      <FloatingWA />
       <SocialSidebar office={office} />
     </>
   )
