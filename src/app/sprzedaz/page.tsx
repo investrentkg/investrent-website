@@ -75,7 +75,7 @@ export default async function SprzedazPage() {
               {cms.intro_paragraph || 'Zajmujemy się wszystkim — od bezpłatnej wyceny, przez profesjonalne zdjęcia i ekspozycję na portalach, aż po dokumentację po-sprzedażową.'}
             </p>
             <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' as const }}>
-              <a href="#kontakt-sprzedaz" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'white', color: '#92400e', fontWeight: 800, fontSize: 15, padding: '14px 32px', borderRadius: 12, textDecoration: 'none' }}>
+              <a href="/wycena" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'white', color: '#92400e', fontWeight: 800, fontSize: 15, padding: '14px 32px', borderRadius: 12, textDecoration: 'none' }}>
                 Chcę bezpłatną wycenę <ArrowRight size={17} />
               </a>
               <a href="tel:+48731554341" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,.2)', color: 'white', fontWeight: 700, fontSize: 14, padding: '14px 24px', borderRadius: 12, textDecoration: 'none' }}>
