@@ -2,7 +2,7 @@ import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
-import { H2, H3, P, UL, LI, Ph } from '@/components/de/LegalShell'
+import { H2, H3, P, UL, LI, Ph } from '@/components/legal/LegalShell'
 import { getOffice } from '@/lib/api'
 import type { Metadata } from 'next'
 
@@ -243,7 +243,7 @@ export default async function RodoPage() {
 
               <H2>Zmiany i wersje językowe</H2>
               <P>
-                Aktualizujemy niniejszą politykę, gdy zmienia się sposób przetwarzania lub stan prawny. Stan na: <Ph>[DD.MM.RRRR]</Ph>. Dla użytkowników korzystających ze strony w języku niemieckim wiążąca jest wersja niemiecka (<a href="/de/datenschutz" style={link}>/de/datenschutz</a>); niniejsza wersja polska obowiązuje użytkowników korzystających ze strony w języku polskim. Obie wersje opisują te same czynności przetwarzania.
+                Aktualizujemy niniejszą politykę, gdy zmienia się sposób przetwarzania lub stan prawny. Stan na: <Ph>[DD.MM.RRRR]</Ph>.
               </P>
 
               <H2>Kontakt</H2>
