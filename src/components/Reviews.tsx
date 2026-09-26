@@ -42,14 +42,11 @@ function Avatar({ author, avatar }: { author: string; avatar: string | null }) {
   const initials = author.split(' ').map((w: string) => w[0]).join('').slice(0,2).toUpperCase()
   const colors = ['#1a4fa0','#0d2a5c','#059669','#d97706','#7c3aed','#dc2626']
   const bg = colors[author.charCodeAt(0) % colors.length]
-  if (avatar) {
-    return (
-      <img src={avatar} alt={author}
-        style={{ width: 44, height: 44, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }}
-        onError={(e: any) => { e.target.style.display='none' }}
-      />
-    )
-  }
+  // Prywatnosc (25.09.2026, przeglad prawny runda 2): zdjecie profilowe autora opinii
+  // NIE jest ladowane z zewnetrznej domeny Google (ujawnialoby IP odwiedzajacego bez
+  // zgody) - zawsze pokazujemy kolko z inicjalami. Parametr `avatar` zostaje w typie
+  // (dane z API), ale nie jest uzywany.
+  void avatar
   return (
     <div style={{ width: 44, height: 44, borderRadius: '50%', background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 800, fontSize: 15, flexShrink: 0 }}>
       {initials}

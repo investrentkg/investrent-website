@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Search, Phone } from 'lucide-react'
 import SuccessBadge from '@/components/SuccessBadge'
 import { submitLead } from '@/lib/api'
+import PrivacyNote from '@/components/PrivacyNote'
 
 export default function HeroWidget() {
   const [tab, setTab]           = useState<'search'|'sell'>('search')
@@ -111,7 +112,7 @@ export default function HeroWidget() {
                 <Phone size={15}/> {status === 'loading' ? 'Wysyłanie…' : 'Chcę bezpłatną wycenę'}
               </button>
               {status === 'error' && <p style={{ color: '#fca5a5', fontSize: 12, textAlign: 'center' as const, margin: 0 }}>Błąd — spróbuj ponownie</p>}
-              <p style={{ color: 'rgba(255,255,255,.3)', fontSize: 10, textAlign: 'center' as const, margin: 0 }}>Dane chronione zgodnie z RODO · Bez zobowiązań</p>
+              <PrivacyNote color="rgba(255,255,255,.55)" linkColor="rgba(255,255,255,.8)" />
             </>
           )}
         </div>
