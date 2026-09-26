@@ -28,7 +28,7 @@ export const INVESTRENT_CONFIG: CalculatorConfig = {
     'Darłowo', 'Wałcz', 'Szczecinek', 'Choszczno', 'Myślibórz', 'Pyrzyce', 'Barlinek', 'Gryfino', 'Nowogard',
     'Trzebiatów', 'Międzyzdroje', 'Wolin', 'Kamień Pomorski', 'Dziwnów', 'Świdwin', 'Połczyn-Zdrój', 'Drawsko Pomorskie',
     'Złocieniec', 'Czaplinek', 'Łobez', 'Resko', 'Chojna', 'Dębno', 'Sławno', 'Sianów', 'Mielno', 'Karlino',
-    'Ustronie Morskie', 'Sarbinowo', 'Dźwirzyno', 'Grzybowo', 'Zieleniewo', 'Podczele', 'Bogucino', 'Budzistowo',
+    'Ustronie Morskie', 'Sarbinowo', 'Dźwirzyno', 'Grzybowo', 'Zieleniewo', 'Bogucino', 'Budzistowo',
     'Rewal', 'Pobierowo', 'Niechorze', 'Pogorzelica', 'Mrzeżyno', 'Łukęcin', 'Międzywodzie', 'Unieście',
     'Darłówko', 'Jarosławiec', 'Ustka', 'Dąbki', 'Kołczewo', 'Rusinowo', 'Mielenko', 'Kukinia',
     'Kobylanka', 'Bezrzecze', 'Mierzyn', 'Skolwin', 'Dobra Szczecińska', 'Kołbaskowo',

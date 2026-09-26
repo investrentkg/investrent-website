@@ -192,7 +192,7 @@ test('teksty v11.3: T-i (kolejne zgloszenie nie wydluza 24 mies.), T-j (logi dos
   const last = T.how.body[T.how.body.length - 1].split(sp).join(' ')
   assert.ok(items.includes('kolejne zgłoszenie z tego numeru tych 24 miesięcy nie wydłuża')); assert.ok(last.includes('kolejne zgłoszenie z tego numeru tych 24 miesięcy nie wydłuża'))
   assert.ok(!items.includes('ponowne zgłoszenie tego terminu nie odnawia'))
-  assert.ok(items.includes('Railway) może przechowywać dzienniki żądań, w tym adres IP, do 30 dni')); assert.ok(!items.includes('kilkudziesięciu dni'))
+  assert.ok(items.includes('Railway) może przechowywać dzienniki żądań, w tym Twój adres IP, do 30 dni')); assert.ok(!items.includes('kilkudziesięciu dni'))
   assert.ok(items.includes('dzwoniąc do biura (+48 731 554 341)'))
 })
 test('teksty v11.3 (DPA Railway 26.09): Railway w transferze wg umowy powierzenia (bez niepotwierdzonego mechanizmu), wyjatek 30 dni logow Railway od "okolo 24 godzin", brak zdan o Vercel/Brevo/Google/Anthropic jako zabezpieczonych', async () => {
@@ -200,7 +200,7 @@ test('teksty v11.3 (DPA Railway 26.09): Railway w transferze wg umowy powierzeni
   const sp = String.fromCharCode(160)
   const items = T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]).join(' ').split(sp).join(' ')
   const how = T.how.body.join(' ').split(sp).join(' ')
-  assert.ok(items.includes('a do Railway na umowie powierzenia przetwarzania danych z 26.09.2026, zgodnie z którą przekazanie następuje na podstawie Data Privacy Framework (w zakresie, w jakim odbiorca jest certyfikowany) albo standardowych klauzul umownych UE (SCC)'))
+  assert.ok(items.includes('do Railway na umowie powierzenia z 26.09.2026, zgodnie z którą przekazanie następuje na podstawie Data Privacy Framework (w zakresie, w jakim odbiorca jest certyfikowany) albo standardowych klauzul umownych UE (SCC)'))
   assert.ok(items.includes('około 24 godzin')); assert.ok(items.includes('do 30 dni')); assert.ok(how.includes('do 30 dni'))
   assert.ok(!items.includes('Vercel opiera się')); assert.ok(!items.includes('standardowych klauzulach umownych zatwierdzonych'))
   assert.ok(items.includes('Przekazanie danych do Cloudflare i Google opiera się na Data Privacy Framework'))
@@ -211,4 +211,27 @@ test('teksty v11.3 (Brevo ustalone): Sendinblue SAS (Francja) jako procesor wg u
   const items = T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]).join(' ').split(sp).join(' ')
   assert.ok(items.includes('Brevo, czyli Sendinblue SAS z siedzibą we Francji, na podstawie umowy powierzenia będącej częścią regulaminu usługi'))
   assert.ok(!items.includes('Brevo opiera się')); assert.ok(!items.includes('Brevo i Google'))
+})
+
+test('teksty v11.4: T-m (Railway 30 dni pierwsze), T-l (bez kopii DPF, bez Vercel/Brevo), T-o/T-n, doneBody, Anthropic SCC, Podczele tylko jako dzielnica', async () => {
+  const { T } = await import('../app/wycena/texts.ts')
+  const { CITY_LIST, canonicalCity } = await import('./localities.ts')
+  const sp = String.fromCharCode(160)
+  const items = T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]).join(' ').split(sp).join(' ')
+  const how = T.how.body.join(' ').split(sp).join(' ')
+  // T-m: dluzszy okres (Railway do 30 dni) przed 24 h w aplikacji, w klauzuli i w "Jak liczymy"
+  assert.ok(items.indexOf('do 30 dni') < items.indexOf('około 24 godzin')); assert.ok(how.indexOf('do 30 dni') < how.indexOf('około 24 godzin'))
+  // T-l: bez "kopii dokumentu ... Data Privacy Framework", DPF nie jest dokumentem; kopia tylko dla SCC; Anthropic SCC, brak Vercel/Brevo jako zabezpieczonych
+  assert.ok(!items.includes('Kopię dokumentu')); assert.ok(items.includes('jeśli to standardowe klauzule umowne, prześlemy ich kopię'))
+  assert.ok(items.includes('a do Anthropic na standardowych klauzulach umownych UE (SCC) zawartych w jego umowie powierzenia'))
+  assert.ok(items.includes('Cloudflare i Google opiera się na Data Privacy Framework (w przypadku Google także na zaakceptowanej umowie powierzenia przetwarzania danych)'))
+  assert.ok(!items.includes('Vercel opiera się')); assert.ok(!items.includes('Supabase opiera się')); assert.ok(!items.includes('Brevo opiera się'))
+  // T-o, T-n
+  assert.ok(T.intro.includes('wybranych dzielnicach Kołobrzegu (lista w formularzu)')); assert.ok(!T.intro.includes('z wyjątkiem Śródmieścia'))
+  assert.ok(T.result.outOfScopeBody.includes('wybranych dzielnicach Kołobrzegu (lista w formularzu)'))
+  assert.ok(T.fields.district_hint.includes('także pozycji „Centrum” i „Stare Miasto”'))
+  // doneBody bez obietnicy wyniku
+  assert.equal(T.lead.doneBody, 'Agent skontaktuje się z Tobą telefonicznie w godzinach pracy biura.')
+  // Podczele: dzielnica Kolobrzegu, nie osobna miejscowosc
+  assert.ok(!CITY_LIST.includes('Podczele')); assert.equal(canonicalCity('Podczele'), null)
 })
