@@ -160,7 +160,7 @@ test('teksty v11.2: okres z numerem (T-f: umowa przed pulapem, kontakt = rozmowa
   assert.ok(iUmowa >= 0 && iPulap >= 0, 'wyjatek umowy i pulap jako osobne punkty (T-t, v11.6)')
   assert.ok(items.includes('ostatniej rozmowie z Tobą (telefonicznej lub osobistej) lub Twojej wiadomości w sprawie wyceny')); assert.ok(items.includes('tych 24 miesięcy nie wydłuża'))
   assert.ok(items.includes('nieodebrane próby kontaktu z naszej strony tych okresów nie wydłużają'))
-  assert.ok(items.includes('dowód zgody na telefon w sprawie wyceny (wersja zgody, kanał, czas): wygasa razem ze zgłoszeniem.'))
+  assert.ok(items.includes('dowód zgody na telefon w sprawie wyceny (wersja zgody, kanał, czas): wygasa razem ze zgłoszeniem;'))
   assert.ok(last.indexOf('Wyjątki: umowa') > last.indexOf('najpóźniej 24 miesiące')); assert.ok(last.includes('Nieodebrane próby kontaktu z naszej strony okresów nie wydłużają'))
   assert.ok(items.includes('przedział powierzchni co 10 m², miejscowość i dzielnica z listy'))
   assert.ok(items.includes('Nie podejmujemy wobec Ciebie decyzji opartych wyłącznie na zautomatyzowanym przetwarzaniu'))
