@@ -30,7 +30,14 @@ export const metadata: Metadata = {
   // domeny przez Google. follow:true zeby linki WYCHODZACE z tej strony
   // (np. do strony glownej) nadal przekazywaly wartosc.
   robots: { index: false, follow: true },
-  alternates: { canonical: 'https://www.investrent.com.pl/rodo' },
+  // hreflang: niemiecka wersja (dodane 25.09.2026)
+  alternates: {
+    canonical: 'https://www.investrent.com.pl/rodo',
+    languages: {
+      pl: 'https://www.investrent.com.pl/rodo',
+      de: 'https://www.investrent.com.pl/de/datenschutz',
+    },
+  },
 }
 
 const FALLBACK_OFFICE = {
@@ -236,7 +243,7 @@ export default async function RodoPage() {
 
               <H2>Zmiany i wersje językowe</H2>
               <P>
-                Aktualizujemy niniejszą politykę, gdy zmienia się sposób przetwarzania lub stan prawny. Stan na: <Ph>[DD.MM.RRRR]</Ph>.
+                Aktualizujemy niniejszą politykę, gdy zmienia się sposób przetwarzania lub stan prawny. Stan na: <Ph>[DD.MM.RRRR]</Ph>. Dla użytkowników korzystających ze strony w języku niemieckim wiążąca jest wersja niemiecka (<a href="/de/datenschutz" style={link}>/de/datenschutz</a>); niniejsza wersja polska obowiązuje użytkowników korzystających ze strony w języku polskim. Obie wersje opisują te same czynności przetwarzania.
               </P>
 
               <H2>Kontakt</H2>
