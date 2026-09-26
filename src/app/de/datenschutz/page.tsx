@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import LegalShell, { H2, H3, P, UL, LI, Ph } from '@/components/de/LegalShell'
+import LegalShell, { H2, H3, P, UL, LI, Ph } from '@/components/legal/LegalShell'
 
 // Niemieckie tlumaczenie polskiej polityki prywatnosci (/rodo) + uzupelnienia
 // dla odbiorcow z Niemiec (kalkulator wyceny AI, Cloudflare Turnstile, formularze

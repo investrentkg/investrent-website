@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import LegalShell, { H2, P, Ph } from '@/components/de/LegalShell'
+import LegalShell, { H2, P, Ph } from '@/components/legal/LegalShell'
 
 // Impressum (Anbieterkennzeichnung, § 5 DDG - dawniej § 5 TMG) dla odbiorcow z
 // Niemiec. Po przegladzie prawnym z 25.09.2026 (uwagi 5-7, 19-22): teksty prawnika
