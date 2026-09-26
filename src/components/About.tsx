@@ -1,6 +1,7 @@
 "use client"
 import { useState, useEffect } from 'react'
 import { MapPin, ShieldCheck, Clock, Star } from 'lucide-react'
+import Image from 'next/image'
 import ScrollReveal from '@/components/ScrollReveal'
 
 const POINTS = [
@@ -34,11 +35,18 @@ export default function About() {
           {/* Zdjęcie */}
           <ScrollReveal>
           <div style={{ borderRadius: 18, overflow: 'hidden', position: 'relative' }}>
-            <img
-              src={IMG}
-              alt="Biuro nieruchomości InvestRent w Kołobrzegu"
-              style={{ width: '100%', height: isDesktop ? 500 : 280, objectFit: 'cover', display: 'block' }}
-            />
+            {/* Prywatnosc (25.09.2026): zdjecie Unsplash idzie przez optymalizator next/image
+                (pobiera je serwer Vercel) - przegladarka odwiedzajacego nie laczy sie z
+                images.unsplash.com. Lokalna kopia w /public = odlozona (wymaga zgody na pobranie pliku). */}
+            <div style={{ position: 'relative', width: '100%', height: isDesktop ? 500 : 280 }}>
+              <Image
+                src={IMG}
+                alt="Biuro nieruchomości InvestRent w Kołobrzegu"
+                fill
+                sizes="(max-width: 768px) 100vw, 600px"
+                style={{ objectFit: 'cover' }}
+              />
+            </div>
             <ScrollReveal delay={280} style={{ position: 'absolute', bottom: 24, left: 24 }}>
             <div style={{
               background: 'white', borderRadius: 12, padding: '16px 20px',
