@@ -18,6 +18,8 @@ export interface CalculatorConfig {
   districtsSource: string
   /** Data ostatniego przegladu listy dzielnic przez biuro; null = nieprzegladana. */
   districtsReviewedAt: string | null
+  /** Aliasy pisowni miejscowosci: klucz = nazwa po fold, wartosc = nazwa kanoniczna ze slownika (np. bogucin -> Bogucino). */
+  cityAliases?: Record<string, string>
 }
 
 export const INVESTRENT_CONFIG: CalculatorConfig = {
@@ -40,8 +42,10 @@ export const INVESTRENT_CONFIG: CalculatorConfig = {
   restrictedDistrictPatterns: ['srodmiesc', 'centrum', 'stare miasto'],
   otherCity: 'Inna lokalizacja',
   otherDistrict: 'Inna dzielnica',
-  districtsSource: 'portal_listings_archive.address_district (miasto Kołobrzeg, >= 8 ogłoszeń, odczyt 26.09.2026) + BLOCKED_DISTRICT_PATTERNS backendu (publicValuationRules.ts); brak przeglądu biura; docelowo rejestr urzędowy (TERYT/SIMC lub wykaz osiedli w BIP miasta)',
-  districtsReviewedAt: null,
+  districtsSource: 'portal_listings_archive.address_district (miasto Kołobrzeg, >= 8 ogłoszeń, odczyt 26.09.2026) + BLOCKED_DISTRICT_PATTERNS backendu (publicValuationRules.ts); przegląd listy: decyzja Daniela, biuro (26.09.2026): Grzybowo, Bogucino, Budzistowo, Zieleniewo i Dźwirzyno to osobne miejscowości (nie dzielnice Kołobrzegu); docelowo rejestr urzędowy (TERYT/SIMC lub wykaz osiedli w BIP miasta)',
+  districtsReviewedAt: '2026-09-26',
+  // Decyzja biura 26.09.2026: te 5 miejscowosci klient wybiera jako MIEJSCOWOSC, nigdy jako dzielnice Kolobrzegu. "Bogucin" -> forma urzedowa Bogucino.
+  cityAliases: { bogucin: 'Bogucino' },
 }
 
 /** Aktywna konfiguracja (dzis stala InvestRent; docelowo z konfiguracji tenanta). */
@@ -57,14 +61,16 @@ export const KOLOBRZEG_DISTRICTS: string[] = INVESTRENT_CONFIG.districts
 export const fold = (t: string): string =>
   t.trim().toLowerCase().replace(/ł/g, 'l').normalize('NFD').replace(/[̀-ͯ]/g, '').split(/\s+/).join(' ')
 
-function canonical(list: string[], extra: string, value: string): string | null {
-  const f = fold(value)
+function canonical(list: string[], extra: string, value: string, aliases?: Record<string, string>): string | null {
+  let f = fold(value)
   if (!f) return null
   if (f === fold(extra)) return extra
+  const alias = aliases?.[f]
+  if (alias) f = fold(alias)
   return list.find(x => fold(x) === f) ?? null
 }
 /** Nazwa z diakrytykami ze slownika albo "Inna lokalizacja"; null = spoza slownika. */
-export const canonicalCity = (v: string): string | null => canonical(CALCULATOR_CONFIG.cities, CALCULATOR_CONFIG.otherCity, v)
+export const canonicalCity = (v: string): string | null => canonical(CALCULATOR_CONFIG.cities, CALCULATOR_CONFIG.otherCity, v, CALCULATOR_CONFIG.cityAliases)
 /** Nazwa dzielnicy ze slownika albo "Inna dzielnica"; null = spoza slownika. */
 export const canonicalDistrict = (v: string): string | null => canonical(CALCULATOR_CONFIG.districts, CALCULATOR_CONFIG.otherDistrict, v)
 /** Czy miejscowosc to miasto domowe biura (dla ktorego liczymy widelki online). */

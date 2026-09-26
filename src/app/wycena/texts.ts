@@ -26,7 +26,7 @@ export const T = {
     property_type: 'Rodzaj nieruchomości',
     property_type_placeholder: 'Wybierz…',
     city: 'Miejscowość',
-    city_hint: 'Domyślnie Kołobrzeg; możesz zacząć pisać nazwę. Osiedla Kołobrzegu (np. Podczele) wskażesz niżej, w polu „Dzielnica lub osiedle”. Dla innej miejscowości wybierz „Inna lokalizacja”.',
+    city_hint: 'Domyślnie Kołobrzeg; możesz zacząć pisać nazwę. Osiedla Kołobrzegu (np. Podczele) wskażesz niżej, w polu „Dzielnica lub osiedle”. Grzybowo, Bogucino, Budzistowo, Zieleniewo i Dźwirzyno to osobne miejscowości — wybierz je tutaj (widełek online dla nich nie podajemy, agent sprawdzi, czy może przygotować wycenę). Dla innej miejscowości wybierz „Inna lokalizacja”.',
     district: 'Dzielnica lub osiedle',
     district_placeholder: 'Wybierz z listy…',
     district_hint: 'Dla mieszkania w Kołobrzegu wybierz dzielnicę lub osiedle z listy. Dla Śródmieścia (także pozycji „Centrum” i „Stare Miasto”) oraz dla „Inna dzielnica” widełek online nie podajemy — agent sprawdzi, czy może przygotować wycenę.',

@@ -5,7 +5,7 @@ import {
   validateForm, buildPayload, interpretResponse, requestEstimate, buildLeadNotes,
   isValidPhone, readUtm, EMPTY_FORM, fieldApplies, isOutOfScope, submittedTooFast, buildConsentMarker, formatRetryAfter,  CONSENT_VERSION, NOTES_MAX,
 } from './valuation.ts'
-import { OTHER_CITY, OTHER_DISTRICT, canonicalCity, canonicalDistrict, INVESTRENT_CONFIG, CALCULATOR_CONFIG, isHomeCity, isRestrictedDistrict } from './localities.ts'
+import { OTHER_CITY, OTHER_DISTRICT, canonicalCity, canonicalDistrict, INVESTRENT_CONFIG, CALCULATOR_CONFIG, isHomeCity, isRestrictedDistrict, fold } from './localities.ts'
 import fs from 'node:fs'
 const bp = buildPayload
 
@@ -170,8 +170,16 @@ test('konfiguracja per biuro (SaaS): miasto domowe, slowniki i wylaczone dzielni
   assert.equal(CALCULATOR_CONFIG, INVESTRENT_CONFIG)
   assert.equal(isHomeCity('kolobrzeg'), true); assert.equal(isHomeCity('Koszalin'), false)
   assert.equal(isRestrictedDistrict('Śródmieście'), true); assert.equal(isRestrictedDistrict('Centrum'), true); assert.equal(isRestrictedDistrict('Podczele'), false)
-  assert.ok(INVESTRENT_CONFIG.districtsSource.includes('portal_listings_archive')); assert.equal(INVESTRENT_CONFIG.districtsReviewedAt, null)
+  assert.ok(INVESTRENT_CONFIG.districtsSource.includes('portal_listings_archive')); assert.equal(INVESTRENT_CONFIG.districtsReviewedAt, '2026-09-26'); assert.ok(INVESTRENT_CONFIG.districtsSource.includes('decyzja Daniela, biuro'))
   assert.ok(!INVESTRENT_CONFIG.districts.includes('Dzielnica Uzdrowiskowa'), 'nazwy tylko z danych, nie z pamieci')
+})
+test('decyzja biura 26.09: Grzybowo/Bogucino/Budzistowo/Zieleniewo/Dzwirzyno to MIEJSCOWOSCI (nie dzielnice Kolobrzegu); brak widelek online (tylko wycena agenta)', () => {
+  for (const c of ['Grzybowo', 'Bogucino', 'Budzistowo', 'Zieleniewo', 'Dźwirzyno']) {
+    assert.equal(canonicalCity(c), c); assert.ok(INVESTRENT_CONFIG.cities.includes(c)); assert.equal(canonicalDistrict(c), null, c + ' nie jest dzielnica')
+    assert.equal(isHomeCity(c), false); assert.equal(isOutOfScope({ ...ok, city: c, district: 'Inna dzielnica' }), true)
+  }
+  assert.equal(canonicalCity('dzwirzyno'), 'Dźwirzyno'); assert.equal(canonicalCity('Bogucin'), 'Bogucino')
+  assert.ok(!INVESTRENT_CONFIG.districts.some(d => ['grzybowo', 'bogucino', 'budzistowo', 'zieleniewo', 'dzwirzyno'].includes(fold(d))))
 })
 test('Srodmiescie i "Inna dzielnica" nie daja widelek online (tylko wycena agenta); dzielnica z listy poza Srodmiesciem tak', () => {
   assert.equal(isOutOfScope({ ...ok, district: 'Śródmieście' }), true); assert.equal(isOutOfScope({ ...ok, district: 'Inna dzielnica' }), true)
@@ -181,7 +189,7 @@ test('test kontraktowy slownikow front/backend: front == wspolny plik slowniki_k
   const url = new URL('../../../../_wspolne_pliki/slowniki_kalkulatora_2026_09_26.json', import.meta.url)
   if (!fs.existsSync(url)) { t.skip('brak wspolnego pliku slownikow (uruchamiane poza repozytorium projektu)'); return }
   const shared = JSON.parse(fs.readFileSync(url, 'utf8'))
-  for (const k of ['homeCity', 'cities', 'districts', 'restrictedDistrictPatterns', 'otherCity', 'otherDistrict', 'districtsSource', 'districtsReviewedAt']) {
+  for (const k of ['homeCity', 'cities', 'districts', 'restrictedDistrictPatterns', 'otherCity', 'otherDistrict', 'districtsSource', 'districtsReviewedAt', 'cityAliases']) {
     assert.deepEqual(shared[k], INVESTRENT_CONFIG[k], 'rozjazd slownika front/plik wspolny: ' + k)
   }
 })
@@ -245,7 +253,7 @@ test('teksty v11.5: T-l2 (lista, Supabase UE), T-r, T-q, T-s, consentCall 3 drog
   assert.ok(items.includes('Vercel (hosting strony): Data Privacy Framework oraz umowa powierzenia przetwarzania danych;')); assert.ok(!/Vercel[^.;]*(SCC|klauzul)/.test(items))
   assert.ok(items.includes('zadanie oddzwonienia z imieniem, bez numeru telefonu'))
   assert.ok(!items.includes('zadanie oddzwonienia z imieniem i numerem'))
-  assert.equal(T.fields.city_hint, 'Domyślnie Kołobrzeg; możesz zacząć pisać nazwę. Osiedla Kołobrzegu (np. Podczele) wskażesz niżej, w polu „Dzielnica lub osiedle”. Dla innej miejscowości wybierz „Inna lokalizacja”.')
+  assert.equal(T.fields.city_hint, 'Domyślnie Kołobrzeg; możesz zacząć pisać nazwę. Osiedla Kołobrzegu (np. Podczele) wskażesz niżej, w polu „Dzielnica lub osiedle”. Grzybowo, Bogucino, Budzistowo, Zieleniewo i Dźwirzyno to osobne miejscowości — wybierz je tutaj (widełek online dla nich nie podajemy, agent sprawdzi, czy może przygotować wycenę). Dla innej miejscowości wybierz „Inna lokalizacja”.')
   assert.ok(T.fields.district_hint.endsWith('agent sprawdzi, czy może przygotować wycenę.'))
   assert.ok(T.metaDescription.length <= 160, 'metaDescription do 160 znakow'); assert.ok(!T.metaDescription.includes('Podaj kilka danych'))
   assert.ok(T.lead.consentCall.includes('pisząc na biuro@investrent.com.pl, dzwoniąc do biura lub mówiąc o tym podczas rozmowy'))
