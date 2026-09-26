@@ -129,7 +129,7 @@ test('teksty v11: zadnego marketingu, skrotu numeru ani "3 lat" w tekstach publi
   assert.ok(T.lead.consentCallRequired.includes('wymagana'))
   const items = T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]).join(' ')
   assert.ok(items.includes('dowód zgody na telefon w sprawie wyceny (wersja zgody, kanał, czas): wygasa razem ze zgłoszeniem'))
-  assert.ok(items.includes('Zgodę możesz cofnąć e-mailem (biuro@investrent.com.pl) albo w rozmowie z pracownikiem biura'))
+  assert.ok(items.includes('Zgodę możesz cofnąć e-mailem (biuro@investrent.com.pl), dzwoniąc do biura'))
   assert.ok(items.includes('dowód zgody na telefon w sprawie wyceny, adres IP'))
   assert.ok(T.errors.rateLimited('2 h').includes('za około 2 h')); assert.ok(!all.includes('do 24'))
   assert.ok(all.includes('Przekazanie danych do Cloudflare i Google opiera się na Data Privacy Framework'))
@@ -158,7 +158,7 @@ test('teksty v11.2: okres z numerem (T-f: umowa przed pulapem, kontakt = rozmowa
   const last = T.how.body[T.how.body.length - 1].split(sp).join(' ')
   const iUmowa = items.indexOf('jeśli dojdzie do umowy'), iPulap = items.indexOf('najpóźniej 24 miesiące po pierwszym zgłoszeniu')
   assert.ok(iUmowa >= 0 && iPulap > iUmowa, 'wyjatek umowy przed pulapem')
-  assert.ok(items.includes('ostatniej rozmowie z Tobą lub Twojej wiadomości w sprawie wyceny')); assert.ok(items.includes('ponowne zgłoszenie tego terminu nie odnawia'))
+  assert.ok(items.includes('ostatniej rozmowie z Tobą lub Twojej wiadomości w sprawie wyceny')); assert.ok(items.includes('tych 24 miesięcy nie wydłuża'))
   assert.ok(items.includes('Nieodebrane próby kontaktu z naszej strony tych okresów nie wydłużają'))
   assert.ok(items.includes('dowód zgody na telefon w sprawie wyceny (wersja zgody, kanał, czas): wygasa razem ze zgłoszeniem.'))
   assert.ok(last.indexOf('jeśli dojdzie do umowy') < last.indexOf('najpóźniej 24 miesiące')); assert.ok(last.includes('nieodebrane próby kontaktu z naszej strony okresów nie wydłużają'))
@@ -184,4 +184,14 @@ test('test kontraktowy slownikow front/backend: front == wspolny plik slowniki_k
   for (const k of ['homeCity', 'cities', 'districts', 'restrictedDistrictPatterns', 'otherCity', 'otherDistrict', 'districtsSource', 'districtsReviewedAt']) {
     assert.deepEqual(shared[k], INVESTRENT_CONFIG[k], 'rozjazd slownika front/plik wspolny: ' + k)
   }
+})
+test('teksty v11.3: T-i (kolejne zgloszenie nie wydluza 24 mies.), T-j (logi dostawcow bez liczb), telefon biura jako droga cofniecia', async () => {
+  const { T } = await import('../app/wycena/texts.ts')
+  const sp = String.fromCharCode(160)
+  const items = T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]).join(' ').split(sp).join(' ')
+  const last = T.how.body[T.how.body.length - 1].split(sp).join(' ')
+  assert.ok(items.includes('kolejne zgłoszenie z tego numeru tych 24 miesięcy nie wydłuża')); assert.ok(last.includes('kolejne zgłoszenie z tego numeru tych 24 miesięcy nie wydłuża'))
+  assert.ok(!items.includes('ponowne zgłoszenie tego terminu nie odnawia'))
+  assert.ok(items.includes('według własnych zasad i okresów;')); assert.ok(!items.includes('kilkudziesięciu dni'))
+  assert.ok(items.includes('dzwoniąc do biura (+48 731 554 341)'))
 })
