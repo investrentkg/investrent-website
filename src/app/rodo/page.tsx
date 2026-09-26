@@ -2,7 +2,7 @@ import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
-import { H2, H3, P, UL, LI, Ph } from '@/components/legal/LegalShell'
+import { H2, H3, P, UL, LI } from '@/components/legal/LegalShell'
 import { getOffice } from '@/lib/api'
 import type { Metadata } from 'next'
 
@@ -17,8 +17,13 @@ import type { Metadata } from 'next'
 // AI, Cloudflare Turnstile, zgody per kanal, kontakt handlowy, transfery, okresy
 // przechowywania, art. 21 ust. 4, klauzule wersji jezykowej. Fakty MUSZA byc zgodne
 // z /de/datenschutz (wersja wiazaca dla uzytkownikow z DE) - zmieniac obie wersje
-// razem. Widoczne placeholdery (Ph) = tylko dane od Daniela / okresy do decyzji prawnika.
+// razem.
+// FINALNY TEKST (26.09.2026): usuniete wszystkie placeholdery; tekst opisuje wylacznie to, co
+// dziala albo jest warunkiem startu kalkulatora (bez obietnic ponad praktyke).
 // Dane spolki z odpisu KRS/VIES z 25.09.2026 - do weryfikacji przed publikacja.
+
+// STAN NA (jedno miejsce): data ma byc zaktualizowana w dniu faktycznego wdrozenia na produkcje.
+const POLICY_DATE = '26.09.2026'
 
 export const metadata: Metadata = {
   title: 'Polityka prywatności (RODO)',
@@ -68,7 +73,7 @@ export default async function RodoPage() {
 
               <H2>Administrator danych osobowych</H2>
               <P>
-                Administratorem Państwa danych osobowych jest Investrent sp. z o.o. (INVESTRENT SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ) z siedzibą w Kołobrzegu, przy ul. Ratuszowej 12/1 lok. 3, 78-100 Kołobrzeg, wpisana do rejestru przedsiębiorców Krajowego Rejestru Sądowego pod numerem KRS 0001069797, NIP: 671 185 85 59, REGON: 526973936.
+                Administratorem Państwa danych osobowych jest Investrent sp. z o.o. (INVESTRENT SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ) z siedzibą w Kołobrzegu, przy ul. Ratuszowej 12/1 lok. 3, 78-100 Kołobrzeg, wpisana do rejestru przedsiębiorców Krajowego Rejestru Sądowego pod numerem KRS 0001069797, NIP: 671 185 85 59, REGON: 526973936. Działamy pod marką InvestRent.
                 {/* Dane z odpisu KRS/VIES z 25.09.2026 — do weryfikacji przed publikacją */}
               </P>
               <P>
@@ -80,6 +85,8 @@ export default async function RodoPage() {
               <P>Państwa dane osobowe są przetwarzane w celu:</P>
               <UL>
                 <LI>Realizacji usług związanych z obrotem nieruchomościami, zgodnie z zawartą umową lub w celu podjęcia działań przed jej zawarciem na Państwa żądanie (art. 6 ust. 1 lit. b RODO).</LI>
+                <LI>Obliczenia szacunku wyceny w kalkulatorze (art. 6 ust. 1 lit. b RODO), telefonu w sprawie wyceny (art. 6 ust. 1 lit. a RODO – zgoda), rozmów o współpracy na Państwa prośbę i umowy (art. 6 ust. 1 lit. b RODO) oraz zabezpieczenia formularza i limitu zapytań (art. 6 ust. 1 lit. f RODO).</LI>
+                <LI>Kontaktu z osobami, które opublikowały ogłoszenie o nieruchomości na portalu, w sprawie ogłoszonej nieruchomości (art. 6 ust. 1 lit. f RODO; patrz część „Osoby, które ogłaszają nieruchomość na portalach”).</LI>
                 <LI>Spełnienia obowiązków prawnych ciążących na Administratorze, w szczególności wynikających z przepisów podatkowych i rachunkowych oraz przepisów o przeciwdziałaniu praniu pieniędzy (art. 6 ust. 1 lit. c RODO).</LI>
                 <LI>Realizacji prawnie uzasadnionych interesów Administratora, takich jak dochodzenie roszczeń lub obrona przed roszczeniami oraz ochrona przed nadużyciami i zautomatyzowanymi wejściami (art. 6 ust. 1 lit. f RODO).</LI>
                 <LI>Przesyłania informacji handlowych i marketingowych, na podstawie udzielonej zgody (art. 6 ust. 1 lit. a RODO).</LI>
@@ -87,7 +94,7 @@ export default async function RodoPage() {
 
               <H2>Hosting i techniczne udostępnianie strony</H2>
               <P>
-                Strona jest hostowana u Vercel Inc. (USA). Przy każdym wejściu na stronę dostawca hostingu przetwarza niezbędne dane techniczne połączenia (adres IP, data i godzina, odwiedzana podstrona, typ przeglądarki), aby dostarczyć stronę i zapewnić jej bezpieczeństwo (art. 6 ust. 1 lit. f RODO – prawnie uzasadniony interes w bezpiecznym i stabilnym działaniu strony). Dane te są przechowywane w dziennikach serwera przez <Ph>[30]</Ph> dni. Interfejs API naszego systemu CRM działa na Railway Corp., a baza danych na Supabase Inc.; baza danych znajduje się w regionie UE Irlandia (Supabase, eu-west-1), API działa w regionie UE Holandia (Railway, europe-west4), a funkcje strony działają u Vercel we Frankfurcie (fra1); treści statyczne są dostarczane przez sieć Vercel. Z dostawcami zawarto umowy powierzenia przetwarzania danych (art. 28 RODO) <Ph>[DO POTWIERDZENIA: podpisane DPA z Vercel, Railway, Supabase]</Ph>. Informacje o przekazywaniu danych do państw trzecich znajdują się w części „Przekazywanie danych do państw trzecich”.
+                Strona jest hostowana u Vercel Inc. (USA). Przy każdym wejściu na stronę dostawca hostingu przetwarza niezbędne dane techniczne połączenia (adres IP, data i godzina, odwiedzana podstrona, typ przeglądarki), aby dostarczyć stronę i zapewnić jej bezpieczeństwo (art. 6 ust. 1 lit. f RODO – prawnie uzasadniony interes w bezpiecznym i stabilnym działaniu strony). Dostawca hostingu strony (Vercel) przechowuje takie dzienniki według własnych zasad i okresów; dzienniki żądań do interfejsu API naszego systemu przechowuje Railway do 30 dni, a w samej naszej aplikacji adres IP wykorzystujemy krótkotrwale, dla limitu zapytań kalkulatora. Interfejs API naszego systemu CRM działa na Railway Corp., a baza danych na Supabase Inc.; baza danych znajduje się w regionie UE Irlandia (Supabase, eu-west-1), API działa w regionie UE Holandia (Railway, europe-west4), a funkcje strony działają u Vercel we Frankfurcie (fra1); treści statyczne są dostarczane przez sieć Vercel. Z Vercel, Railway i Supabase obowiązują umowy powierzenia przetwarzania danych (art. 28 RODO), czyli umowy, na mocy których dostawca przetwarza dane wyłącznie na nasze polecenie. Informacje o przekazywaniu danych do państw trzecich znajdują się w części „Przekazywanie danych do państw trzecich”.
               </P>
               <H3>Treści osadzone od podmiotów trzecich (dwuklik)</H3>
               <P>
@@ -104,11 +111,21 @@ export default async function RodoPage() {
 
               <H2>Wycena nieruchomości (kalkulator wspierany przez AI)</H2>
               <P>
-                Gdy korzystają Państwo z kalkulatora wyceny, przetwarzamy wpisane dane nieruchomości (miejscowość lub adres, rodzaj, powierzchnia, liczba pokoi, piętro, stan). Do obliczenia szacunku przekazujemy te dane – bez Państwa danych kontaktowych – do Anthropic, PBC (USA), który działa jako nasz podmiot przetwarzający (art. 28 RODO) na podstawie umowy powierzenia i standardowych klauzul umownych. Zgodnie z warunkami umownymi przekazane dane nie są wykorzystywane do trenowania modeli AI <Ph>[DO POTWIERDZENIA: DPA/SCC i wyłączenie treningu – Anthropic]</Ph>. Podstawą obliczenia jest art. 6 ust. 1 lit. b RODO (realizacja Państwa żądania). W celu ochrony przed nadużyciami i ograniczania liczby zapytań przechowujemy krótkotrwale Państwa adres IP (art. 6 ust. 1 lit. f RODO). Jeśli dodatkowo zostawią Państwo numer telefonu, aby konsultant do Państwa oddzwonił, przetwarzamy imię, numer telefonu, dane nieruchomości i wynik w naszym systemie CRM (art. 6 ust. 1 lit. b RODO – oddzwonienie w sprawie wyceny; w zakresie dalszego marketingu art. 6 ust. 1 lit. a RODO na podstawie odrębnie udzielonej zgody).
+                Gdy korzystają Państwo z kalkulatora wyceny, przetwarzamy wpisane dane nieruchomości (miejscowość i dzielnica wybierane z listy, rodzaj, powierzchnia, liczba pokoi, piętro, stan). Do obliczenia szacunku korzystamy z usługi sztucznej inteligencji dostawcy Anthropic, PBC (USA), na warunkach korzystania z jego interfejsu API; przekazujemy tam dane nieruchomości, bez Państwa danych kontaktowych i adresu IP. Zgodnie z warunkami API dostawcy dane przekazane przez API nie są domyślnie wykorzystywane do trenowania jego modeli, a dostawca usuwa dane wejściowe i wyniki przekazane przez API w ciągu 30 dni, z wyjątkami przewidzianymi w tych warunkach. Dane rynkowe w kalkulatorze publicznym pobieramy od Cenogram (Arena Paweł Nguyen, Warszawa, Polska; rejestr cen transakcyjnych); do Cenogram trafiają parametry nieruchomości (rodzaj, miejscowość, dzielnica, powierzchnia), bez danych kontaktowych i adresu IP. Podstawą obliczenia jest art. 6 ust. 1 lit. b RODO (realizacja Państwa żądania). W celu ochrony przed nadużyciami i ograniczania liczby zapytań wykorzystujemy adres IP krótkotrwale; dzienniki żądań Railway mogą zawierać adres IP do 30 dni, a Vercel i Cloudflare przetwarzają go w swoich dziennikach według własnych zasad (art. 6 ust. 1 lit. f RODO). Jeśli dodatkowo zostawią Państwo numer telefonu, aby konsultant do Państwa oddzwonił, przetwarzamy imię, numer telefonu, dane nieruchomości i wynik w naszym systemie CRM (art. 6 ust. 1 lit. a RODO – zgoda na telefon w sprawie wyceny).
               </P>
               <P>
-                {/* OPIS KALKULATORA I DWOCH POL ZGODY OBOWIAZUJE PO WDROZENIU PR #21 (/wycena + backend; na origin/main CRM 25.09.2026 brak endpointu /api/public/valuation/estimate). */}
-                Kalkulator wyceny jest dostępny obecnie tylko w języku polskim. Przy prośbie o oddzwonienie w kalkulatorze dostępne są dwa oddzielne pola wyboru, które zaznaczają Państwo samodzielnie: (1) zgoda na telefon w sprawie wyceny nieruchomości – wymagana, abyśmy mogli zadzwonić pod podany numer; (2) zgoda na marketing bezpośredni przez telefon i SMS – oferty pośrednictwa i inne oferty Investrent sp. z o.o. – dobrowolna, niezaznaczona domyślnie i niewymagana do skorzystania z kalkulatora ani do oddzwonienia w sprawie wyceny (art. 6 ust. 1 lit. a RODO; art. 398 Prawa komunikacji elektronicznej). Obie zgody mogą Państwo w każdej chwili cofnąć (patrz „Prawa osób, których dane dotyczą”). Datę, treść i źródło zgód zapisujemy w celu wykazania ich udzielenia (art. 7 ust. 1 RODO).
+                Kalkulator wyceny jest dostępny obecnie tylko w języku polskim. Przy prośbie o oddzwonienie w kalkulatorze jest jedno pole wyboru, które zaznaczają Państwo samodzielnie (niezaznaczone domyślnie):
+              </P>
+              <UL>
+                <LI>Zgoda na telefon w sprawie wyceny nieruchomości (art. 6 ust. 1 lit. a RODO) jest wymagana, abyśmy mogli zadzwonić pod podany numer. Obejmuje wyłącznie kontakt telefoniczny, nie SMS, komunikatory ani e-mail z naszej inicjatywy.</LI>
+                <LI>Kalkulator nie zbiera zgody na marketing.</LI>
+                <LI>Przyjmujemy cofnięcie zgody pod adresem <a href="mailto:biuro@investrent.com.pl" style={link}>biuro@investrent.com.pl</a>. Po cofnięciu nie zadzwonimy do Państwa w sprawie wyceny.</LI>
+                <LI>Zapisujemy dowód zgody: wersję zgody, kanał (telefon w sprawie wyceny) i czas (art. 6 ust. 1 lit. f RODO w związku z art. 7 ust. 1 RODO).</LI>
+                <LI>Jeśli sami poproszą Państwo o rozmowy o współpracy albo dojdzie do zawarcia umowy, przetwarzamy dane w tym celu na podstawie art. 6 ust. 1 lit. b RODO (działania na Państwa żądanie przed zawarciem umowy i jej wykonanie), a w zakresie wynikającym z przepisów także art. 6 ust. 1 lit. c RODO.</LI>
+              </UL>
+              <H3>Lista osób, do których nie dzwonimy</H3>
+              <P>
+                Jeżeli cofną Państwo zgodę na telefon w sprawie wyceny albo poinformują nas Państwo, że numer podała inna osoba, możemy zachować sam numer telefonu (z datą i powodem) na liście osób, do których nie dzwonimy, wyłącznie po to, żeby nie zadzwonić do Państwa ponownie (art. 6 ust. 1 lit. f RODO). Lista nie służy do innych celów, w szczególności do marketingu. Numer z listy przechowujemy nie dłużej, niż jest to konieczne do tego celu; przysługuje Państwu wobec tego przetwarzania prawo sprzeciwu (art. 21 RODO).
               </P>
               <P>
                 Wynik jest wyraźnie orientacyjny; nie stanowi operatu szacunkowego ani wyceny w rozumieniu przepisów. Nie podejmujemy decyzji opartych wyłącznie na zautomatyzowanym przetwarzaniu w rozumieniu art. 22 RODO, wywołujących wobec Państwa skutki prawne lub w podobny sposób istotnie na Państwa wpływających: z wyniku nie wynikają zawarcie umowy, ustalenie ceny ani odmowa; dalszą obsługę zawsze prowadzą nasi pracownicy.
@@ -116,7 +133,7 @@ export default async function RodoPage() {
 
               <H2>Ochrona przed automatycznymi wejściami (Cloudflare Turnstile)</H2>
               <P>
-                Na stronie kalkulatora wyceny chronimy formularz przed spamem i automatycznymi wejściami (botami) za pomocą usługi „Cloudflare Turnstile” firmy Cloudflare, Inc., 101 Townsend St, San Francisco, CA 94107, USA. Skrypt Turnstile jest pobierany z serwerów Cloudflare (challenges.cloudflare.com) dopiero po wejściu na stronę kalkulatora; na pozostałych podstronach nie jest ładowany. Usługa działa w tle i staje się widoczna dla Państwa tylko wtedy, gdy Cloudflare wymaga interakcji. Do Cloudflare przekazywane są dane techniczne (w szczególności adres IP, informacje o przeglądarce i urządzeniu, cechy interakcji) i tam analizowane w celu sprawdzenia, czy zapytanie pochodzi od człowieka. Wynik weryfikacji (token) jest przesyłany wraz z zapytaniem do naszego systemu i tam weryfikowany w Cloudflare. My sami nie ustawiamy w tym celu plików cookies; czy Cloudflare zapisuje coś na urządzeniu w ramach weryfikacji <Ph>[DO POTWIERDZENIA: dokumentacja Cloudflare Turnstile]</Ph>. Podstawą jest art. 6 ust. 1 lit. f RODO (prawnie uzasadniony interes w bezpieczeństwie systemów i ochronie przed nadużyciami). Przekazanie do USA opiera się na decyzji wykonawczej Komisji Europejskiej z 10 lipca 2023 r. (EU-US Data Privacy Framework), o ile Cloudflare jest certyfikowany, a pomocniczo na standardowych klauzulach umownych (art. 46 ust. 2 lit. c RODO).
+                Na stronie kalkulatora wyceny chronimy formularz przed spamem i automatycznymi wejściami (botami) za pomocą usługi „Cloudflare Turnstile” firmy Cloudflare, Inc., 101 Townsend St, San Francisco, CA 94107, USA. Skrypt Turnstile jest pobierany z serwerów Cloudflare (challenges.cloudflare.com) dopiero po wejściu na stronę kalkulatora; na pozostałych podstronach nie jest ładowany. Usługa działa w tle i staje się widoczna dla Państwa tylko wtedy, gdy Cloudflare wymaga interakcji. Do Cloudflare przekazywane są dane techniczne (w szczególności adres IP, informacje o przeglądarce i urządzeniu, cechy interakcji) i tam analizowane w celu sprawdzenia, czy zapytanie pochodzi od człowieka. Wynik weryfikacji (token) jest przesyłany wraz z zapytaniem do naszego systemu i tam weryfikowany w Cloudflare. My sami nie ustawiamy w tym celu plików cookies. Według dokumentacji dostawcy Turnstile przetwarza dane potrzebne do weryfikacji i nie odczytuje treści wpisywanych w formularzu; o ewentualnym zapisywaniu informacji na urządzeniu w ramach weryfikacji informuje Cloudflare w swoich zasadach. Podstawą jest art. 6 ust. 1 lit. f RODO (prawnie uzasadniony interes w bezpieczeństwie systemów i ochronie przed nadużyciami). Przekazanie do USA opiera się na standardowych klauzulach umownych Komisji Europejskiej zawartych w umowie dostawcy (art. 46 ust. 2 lit. c RODO) oraz, w okresach, gdy certyfikacja Cloudflare jest aktywna, na decyzji wykonawczej Komisji Europejskiej z 10 lipca 2023 r. (EU-US Data Privacy Framework).
               </P>
 
               {/* NAPRAWA (audyt prawny, Daniel 30.07.2026): brakujacy element wymagany
@@ -137,7 +154,7 @@ export default async function RodoPage() {
 
               <H2>Kontakt handlowy przez e-mail, telefon i komunikatory</H2>
               <P>
-                W celach marketingowych kontaktujemy się z Państwem tylko wtedy, gdy uprzednio wyraźnie wyrazili Państwo zgodę na dany kanał: e-mailem – na podstawie opcjonalnego pola w formularzu (patrz część o formularzach Facebook i Instagram), a telefonicznie i SMS-em wyłącznie wtedy, gdy w kalkulatorze wyceny samodzielnie zaznaczą Państwo opcjonalne pole zgody na marketing telefoniczny i SMS (patrz część „Wycena nieruchomości”). Marketingu przez komunikator (np. WhatsApp) nie prowadzimy; jeśli piszą Państwo do nas sami przez WhatsApp, odpowiadamy na konkretne zapytanie (art. 6 ust. 1 lit. b RODO). Oddzwonienie lub odpowiedź, o które wyraźnie Państwo prosili w konkretnym zapytaniu, odbywa się na podstawie art. 6 ust. 1 lit. b RODO. Zgodę można w każdej chwili cofnąć; po cofnięciu nie otrzymają Państwo już marketingu tym kanałem.
+                W celach marketingowych kontaktujemy się z Państwem e-mailem tylko wtedy, gdy uprzednio wyraźnie wyrazili Państwo zgodę w opcjonalnym polu formularza (patrz część o formularzach Facebook i Instagram). Kalkulator wyceny nie zbiera zgód marketingowych i nie służy do marketingu; telefon do osoby, która zostawiła numer w kalkulatorze, dotyczy wyłącznie jej wyceny nieruchomości. Kontakty z osobami, które ogłaszają nieruchomości na portalach, opisujemy w części „Osoby, które ogłaszają nieruchomość na portalach”. Marketingu przez komunikator (np. WhatsApp) nie prowadzimy; jeśli piszą Państwo do nas sami przez WhatsApp, odpowiadamy na konkretne zapytanie (art. 6 ust. 1 lit. b RODO). Odpowiedź lub oddzwonienie, o które wyraźnie Państwo prosili w konkretnym zapytaniu (poza oddzwonieniem po kalkulatorze wyceny, które opiera się na zgodzie), odbywa się na podstawie art. 6 ust. 1 lit. b RODO. Zgodę na marketing e-mail można cofnąć w każdej chwili, pisząc na adres biuro@investrent.com.pl; po cofnięciu nie otrzymają Państwo już marketingu tym kanałem.
               </P>
 
               {/* NOWE (20.09.2026, przygotowanie do weryfikacji OAuth Google dla
@@ -163,37 +180,65 @@ export default async function RodoPage() {
                 <LI>Vercel Inc. (USA) – hosting strony;</LI>
                 <LI>Railway Corp. (USA) – działanie interfejsu API systemu CRM;</LI>
                 <LI>Supabase Inc. – baza danych i przechowywanie danych (lokalizacja serwerów – patrz „Hosting i techniczne udostępnianie strony”);</LI>
-                <LI>Brevo (Sendinblue SAS, Francja) – wysyłka wiadomości e-mail (powiadomienia dla naszych pracowników, np. o nowych zapytaniach, oraz wiadomości do klientów);</LI>
-                <LI>Anthropic, PBC (USA) – dostawca AI dla kalkulatora wyceny i przetwarzania tekstów;</LI>
+                <LI>Brevo (Sendinblue SAS, Francja) – wysyłka wiadomości e-mail (powiadomienia dla naszych pracowników o zgłoszeniach, w tym imię, numer telefonu i treść zgłoszenia, oraz wiadomości do klientów);</LI>
+                <LI>Anthropic, PBC (USA) – dostawca AI dla kalkulatora wyceny (bez danych kontaktowych i adresu IP z kalkulatora) i przetwarzania tekstów;</LI>
+                <LI>Cenogram (Arena Paweł Nguyen, Polska) – dane rynkowe do kalkulatora wyceny (parametry nieruchomości, bez danych kontaktowych);</LI>
                 <LI>OpenAI (USA) – zamiana nagrań głosowych pracowników na tekst (asystent głosowy w CRM);</LI>
                 <LI>Replicate (USA) – obróbka zdjęć ofert i automatyczne napisy do wideo naszych pracowników;</LI>
                 <LI>Google (Gemini API, Google Ireland Limited lub Google LLC) – tworzenie plakatów ofert;</LI>
                 <LI>Apify i Bright Data – pobieranie publicznie dostępnych ogłoszeń nieruchomości z portali oraz usługi obróbki zdjęć ofert;</LI>
                 <LI>Cloudflare, Inc. (USA) – ochrona przed automatycznymi wejściami (Turnstile, tylko na stronie kalkulatora);</LI>
                 <LI>Meta Platforms Ireland Limited (Irlandia) – formularze kontaktowe na Facebooku/Instagramie;</LI>
-                <LI>Google Ireland Limited (Irlandia) – usługi Google (mapy, wideo, API – patrz wyżej).</LI>
+                <LI>Google Ireland Limited (Irlandia) – usługi Google (mapy, wideo, API – patrz wyżej), w tym Kalendarz Google pracowników biura, jeśli pracownik połączył go z naszym systemem: tworzymy w nim zadanie oddzwonienia z imieniem osoby i odnośnikiem do jej karty w naszym systemie.</LI>
               </UL>
-              {/* Lista dostawcow = jedno zrodlo prawdy z /de/datenschutz (sekcja 10). Zmieniac obie wersje razem. Daniel: potwierdzic, czy Brevo jest faktycznie uzywane (jesli nie - usunac w obu). */}
+              {/* Lista dostawcow = jedno zrodlo prawdy z /de/datenschutz (sekcja 10). Zmieniac obie wersje razem. Brevo potwierdzone jako uzywane (od 13.09.2026). */}
 
               <H3>Wsparcie AI w wewnętrznym systemie CRM</H3>
               <P>
-                Nasi pracownicy korzystają w wewnętrznym systemie CRM z funkcji AI firmy Anthropic, PBC (USA), np. do analizy notatek z rozmów, podpowiadania pasujących ofert, streszczeń stanu kontaktu, sprawdzania projektów umów i asystenta głosowego. Do Anthropic mogą być przy tym przekazywane treści Państwa zapytania, np. imię i nazwisko, kryteria poszukiwań, notatki z rozmów oraz – przy sprawdzaniu projektu umowy – dane stron umowy i nieruchomości zawarte w projekcie (art. 6 ust. 1 lit. b i f RODO). Anthropic działa jako podmiot przetwarzający. Wyniki służą wyłącznie wsparciu pracowników; decyzje podejmują ludzie.
+                Nasi pracownicy korzystają w wewnętrznym systemie CRM z funkcji AI firmy Anthropic, PBC (USA), np. do analizy notatek z rozmów, podpowiadania pasujących ofert, streszczeń stanu kontaktu, sprawdzania projektów umów i asystenta głosowego. Do Anthropic mogą być przy tym przekazywane treści Państwa zapytania, np. kryteria poszukiwań, notatki z rozmów (z zamaskowanymi numerami PESEL, dokumentów tożsamości i kont) oraz – przy sprawdzaniu projektu umowy – dane stron umowy i nieruchomości zawarte w projekcie (art. 6 ust. 1 lit. b i f RODO). Anthropic przetwarza te dane w naszym imieniu, na warunkach korzystania z interfejsu API dostawcy. Wyniki służą wyłącznie wsparciu pracowników; decyzje podejmują ludzie.
               </P>
 
               <H3>Pozostali dostawcy w wewnętrznym systemie CRM</H3>
               <P>
-                OpenAI zamienia na tekst nagrania głosowe, które pracownicy kierują do asystenta głosowego CRM; nagrania mogą zawierać wypowiedziane imiona i numery telefonów klientów. Replicate obrabia zdjęcia ofert (usuwanie znaków wodnych) i generuje automatyczne napisy do wideo naszych pracowników. Przez Gemini API Google tworzone są plakaty ofert ze zdjęć; przekazywane są przy tym imię, nazwisko i telefon opiekuna oferty (pracownika). Apify i Bright Data pobierają dla nas publicznie dostępne ogłoszenia nieruchomości z portali (patrz „Dane z publicznych ogłoszeń”). Podstawą jest każdorazowo art. 6 ust. 1 lit. f RODO; z dostawcami zawieramy umowy powierzenia <Ph>[DO POTWIERDZENIA: DPA OpenAI, Replicate, Google, Apify, Bright Data]</Ph>.
+                OpenAI zamienia na tekst nagrania głosowe, które pracownicy kierują do asystenta głosowego CRM; nagrania mogą zawierać wypowiedziane imiona i numery telefonów klientów. Replicate obrabia zdjęcia ofert (usuwanie znaków wodnych) i generuje automatyczne napisy do wideo naszych pracowników. Przez Gemini API Google tworzone są plakaty ofert ze zdjęć ofert. Apify i Bright Data pobierają dla nas publicznie dostępne ogłoszenia nieruchomości z portali (patrz „Dane z publicznych ogłoszeń”). Podstawą jest każdorazowo art. 6 ust. 1 lit. f RODO. Z OpenAI i Apify obowiązują umowy powierzenia przetwarzania danych będące częścią warunków korzystania z ich usług.
               </P>
 
-              {/* Klauzula art. 14 RODO (runda 2, pkt 3.3): przeglad prawny NIE podal gotowego tekstu - brzmienie ponizej oparte na faktach z kodu CRM (portalArchive.ts: archiwum ogloszen z seller_phone; commissionAlerts.ts: alert gdy numer wlasciciela pojawia sie w nowym ogloszeniu; portalVerification.ts: dopasowanie do numerow naszych agentow). DO ZATWIERDZENIA PRZEZ KANCELARIE (pytanie 5). Uzycie tych numerow do kontaktu handlowego = osobna decyzja prawna (art. 398 PKE) - nie deklarujemy go. */}
+              {/* Klauzula art. 14 RODO. Fakty z kodu CRM (portalArchive.ts: archiwum ogloszen z seller_phone; commissionAlerts.ts: alert gdy numer wlasciciela pojawia sie w nowym ogloszeniu; portalVerification.ts: dopasowanie do numerow naszych agentow) oraz decyzja Daniela 26.09.2026: "Czasem dzwonimy do sprzedajacych". RYZYKO PRAWNE do Krytyka/prawnika: kontakt telefoniczny z osobami prywatnymi z ogloszen (prawo telekomunikacyjne, UOKiK, RODO). To NIE jest zgoda marketingowa. */}
               <H2>Dane z publicznych ogłoszeń (informacja z art. 14 RODO)</H2>
               <P>
-                Jeżeli Państwa dane osobowe znalazły się w publicznie dostępnym ogłoszeniu o nieruchomości na portalu ogłoszeniowym (m.in. Otodom, OLX, Facebook Marketplace), a nie otrzymaliśmy ich bezpośrednio od Państwa, informujemy: Administratorem jest Investrent sp. z o.o. (dane kontaktowe wyżej). Źródłem danych są publiczne ogłoszenia, które pobieramy za pośrednictwem dostawców Apify i Bright Data. Przetwarzamy kategorie danych zawarte w ogłoszeniu, w szczególności numer telefonu ogłaszającego, jego rodzaj (osoba prywatna lub biuro), treść i dane ogłoszenia (adres nieruchomości, cena, opis). Cele: analiza rynku i wycena nieruchomości, weryfikacja i porównywanie ofert oraz ochrona prawnie uzasadnionych interesów Administratora, w tym wykrywanie ponownego wystawienia tej samej nieruchomości przez osobę związaną umową z naszym biurem (art. 6 ust. 1 lit. f RODO). Dane przechowujemy <Ph>[DO POTWIERDZENIA: okres przechowywania archiwum ogłoszeń]</Ph>. Odbiorcami są dostawcy wymienieni wyżej (hosting, baza danych, Apify, Bright Data). Przysługują Państwu prawa opisane w części „Prawa osób, których dane dotyczą”, w tym prawo sprzeciwu (art. 21 RODO) oraz skargi do Prezesa UODO. Ze względu na charakter źródła (publiczne ogłoszenia) informacja jest udzielana przez publikację niniejszej klauzuli (art. 14 ust. 5 lit. b RODO). Numerów telefonów z ogłoszeń nie wykorzystujemy do marketingu bezpośredniego <Ph>[DO POTWIERDZENIA z Danielem i kancelarią: faktyczne użycie numerów z ogłoszeń]</Ph>.
+                Jeżeli Państwa dane osobowe znalazły się w publicznie dostępnym ogłoszeniu o nieruchomości na portalu ogłoszeniowym (m.in. Otodom, OLX, Facebook Marketplace), a nie otrzymaliśmy ich bezpośrednio od Państwa, informujemy: Administratorem jest Investrent sp. z o.o. (dane kontaktowe wyżej). Źródłem danych są publiczne ogłoszenia, które pobieramy za pośrednictwem dostawców Apify i Bright Data. Przetwarzamy kategorie danych zawarte w ogłoszeniu, w szczególności numer telefonu ogłaszającego, czasem jego imię, jego rodzaj (osoba prywatna lub biuro), treść i dane ogłoszenia (adres nieruchomości, cena, opis). Cele: analiza rynku i wycena nieruchomości, weryfikacja i porównywanie ofert oraz ochrona prawnie uzasadnionych interesów Administratora, w tym wykrywanie ponownego wystawienia tej samej nieruchomości przez osobę związaną umową z naszym biurem (art. 6 ust. 1 lit. f RODO). Numer telefonu z ogłoszenia przechowujemy nie dłużej, niż jest to konieczne do celów opisanych w tej części; pozostałe dane ogłoszenia (adres nieruchomości, cena, opis), niezawierające numeru telefonu, przechowujemy dłużej dla statystyk rynku i wycen. Odbiorcami są dostawcy wymienieni wyżej (hosting, baza danych, Apify, Bright Data). Przysługują Państwu prawa opisane w części „Prawa osób, których dane dotyczą”, w tym prawo sprzeciwu (art. 21 RODO) oraz skargi do Prezesa UODO.
               </P>
+
+              {/* RYZYKO PRAWNE do Krytyka/prawnika: kontakt telefoniczny z osobami prywatnymi z ogloszen (prawo telekomunikacyjne/PKE, UOKiK, RODO, regulaminy portali). Decyzja Daniela 26.09.2026: "Czasem dzwonimy do sprzedajacych". To NIE jest zgoda marketingowa. Warunki tekstu: (1) skrypt pierwszej rozmowy zawiera informacje z art. 14 ust. 3 RODO (plik _wspolne_pliki/informacja_art14_pierwszy_kontakt_sprzedajacy_2026_09_26.md); (2) LIA dla tej czynnosci (backlog). */}
+              <H2>Osoby, które ogłaszają nieruchomość na portalach</H2>
+              <P>
+                Przeglądamy ogłoszenia sprzedaży nieruchomości na portalach ogłoszeniowych. Z ogłoszenia bierzemy dane nieruchomości i dane kontaktowe osoby, która je wystawiła, zwykle numer telefonu, czasem imię. Czasem dzwonimy do osób, które wystawiły ogłoszenie, aby zapytać o ogłoszoną nieruchomość i o możliwość współpracy z naszym biurem. Nie jest to kontakt oparty na zgodzie marketingowej.
+              </P>
+              <UL>
+                <LI>Źródło danych: publicznie dostępne ogłoszenie na portalu, pobierane za pośrednictwem Apify i Bright Data.</LI>
+                <LI>Podstawa prawna: art. 6 ust. 1 lit. f RODO. Nasz prawnie uzasadniony interes to nawiązanie kontaktu z osobami, które same zaoferowały nieruchomość do sprzedaży, w związku z prowadzoną działalnością pośrednictwa w obrocie nieruchomościami.</LI>
+                <LI>Informacja przy pierwszym kontakcie: podczas pierwszej rozmowy mówimy, kim jesteśmy i skąd mamy numer, a o szczegółach odsyłamy do niniejszej polityki. W pozostałych przypadkach, gdy nie kontaktujemy się z ogłaszającym, informację przekazujemy przez publikację tej części polityki (art. 14 ust. 5 lit. b RODO).</LI>
+                <LI>Odbiorcy: dostawcy wymienieni w części „Odbiorcy danych” (w szczególności hosting, baza danych, Apify i Bright Data) oraz upoważnieni pracownicy biura.</LI>
+                <LI>Sprzeciw: mogą Państwo w każdej chwili sprzeciwić się takiemu kontaktowi i takiemu przetwarzaniu danych (art. 21 RODO), mówiąc o tym podczas rozmowy albo pisząc na adres <a href="mailto:biuro@investrent.com.pl" style={link}>biuro@investrent.com.pl</a>. Uwzględnimy sprzeciw i nie będziemy się z Państwem w tej sprawie kontaktować.</LI>
+                <LI>Okres przechowywania numeru: nie dłużej, niż jest to konieczne do celów opisanych w tej części.</LI>
+              </UL>
 
               <H2>Przekazywanie danych do państw trzecich</H2>
               <P>
-                Niektórzy z wymienionych dostawców mają siedzibę w USA lub przetwarzają tam dane. Przekazanie do USA opieramy na decyzji wykonawczej Komisji Europejskiej (EU-US Data Privacy Framework), o ile dany odbiorca jest certyfikowany, a w pozostałych przypadkach na standardowych klauzulach umownych Komisji Europejskiej (art. 46 ust. 2 lit. c RODO). Dotyczy to w szczególności Vercel, Railway, Supabase, Anthropic, OpenAI, Replicate, Cloudflare, Google i Meta (o ile mają siedzibę w USA lub przetwarzają tam dane). Kopię zabezpieczeń otrzymają Państwo na żądanie, kontaktując się z nami pod podanymi danymi.
+                Niektórzy z wymienionych dostawców mają siedzibę w USA lub mogą przetwarzać dane poza Europejskim Obszarem Gospodarczym. Zabezpieczenia, które możemy wskazać:
+              </P>
+              <UL>
+                <LI>Cloudflare: standardowe klauzule umowne UE zawarte w umowie dostawcy; korzysta on też z ram ochrony danych UE-USA (Data Privacy Framework), o ile jego certyfikacja jest w danym czasie aktywna;</LI>
+                <LI>Vercel: Data Privacy Framework oraz umowa powierzenia przetwarzania danych;</LI>
+                <LI>Railway: umowa powierzenia przetwarzania danych; mechanizm przekazania wskażemy na Państwa wniosek;</LI>
+                <LI>Supabase: dane przechowywane w regionie UE (Irlandia);</LI>
+                <LI>Anthropic: zabezpieczenie wskazane w warunkach API dostawcy; szczegóły na Państwa wniosek;</LI>
+                <LI>OpenAI: mechanizm wskazany w warunkach przetwarzania danych dostawcy;</LI>
+                <LI>Google (dla kont w naszej domenie): Data Privacy Framework, a w razie jego braku standardowe klauzule umowne UE;</LI>
+                <LI>Brevo (Sendinblue SAS, Francja), Apify (Czechy) i Cenogram (Polska) mają siedzibę w UE.</LI>
+              </UL>
+              <P>
+                Dane przekazujemy także pozostałym dostawcom wymienionym w części „Odbiorcy danych” (m.in. Replicate, Gemini API Google, Bright Data); opisujemy ich rolę i cel, a zabezpieczenie zastosowane wobec danego dostawcy wskażemy na Państwa wniosek (biuro@investrent.com.pl) i, jeśli to standardowe klauzule umowne, prześlemy ich kopię. Zasady przekazywania danych przez Meta opisano w części o formularzach Facebook i Instagram.
               </P>
 
               <H2>Dobrowolność podania danych</H2>
@@ -214,12 +259,12 @@ export default async function RodoPage() {
                 <LI>Prawo do usunięcia danych, ograniczenia przetwarzania danych.</LI>
                 <LI>Prawo do wniesienia sprzeciwu wobec przetwarzania danych.</LI>
                 <LI>Prawo do przenoszenia danych.</LI>
-                <LI>Prawo do cofnięcia zgody na przetwarzanie danych w dowolnym momencie, bez wpływu na zgodność z prawem przetwarzania, którego dokonano na podstawie zgody przed jej cofnięciem.</LI>
+                <LI>Prawo do cofnięcia zgody na przetwarzanie danych w dowolnym momencie, bez wpływu na zgodność z prawem przetwarzania, którego dokonano na podstawie zgody przed jej cofnięciem. Cofnięcie przyjmujemy pod adresem <a href="mailto:biuro@investrent.com.pl" style={link}>biuro@investrent.com.pl</a>. Po cofnięciu zgody na telefon w sprawie wyceny nie zadzwonimy do Państwa w sprawie wyceny.</LI>
                 <LI>Prawo do wniesienia skargi do organu nadzorczego – Prezesa Urzędu Ochrony Danych Osobowych (ul. Stawki 2, 00-193 Warszawa, uodo.gov.pl).</LI>
               </UL>
               <H3>Prawo sprzeciwu – zwrócenie uwagi</H3>
               <P>
-                Mają Państwo prawo w dowolnym momencie wnieść sprzeciw z przyczyn związanych z Państwa szczególną sytuacją wobec przetwarzania danych osobowych opartego na art. 6 ust. 1 lit. f RODO (art. 21 ust. 1 RODO). Jeżeli dane osobowe są przetwarzane na potrzeby marketingu bezpośredniego, mają Państwo prawo w dowolnym momencie, bez podawania przyczyn, wnieść sprzeciw wobec przetwarzania dotyczących Państwa danych na potrzeby takiego marketingu (art. 21 ust. 2 RODO). Wystarczy sprzeciw przesłany e-mailem na adres <a href="mailto:biuro@investrent.com.pl" style={link}>biuro@investrent.com.pl</a>.
+                Mają Państwo prawo w dowolnym momencie wnieść sprzeciw z przyczyn związanych z Państwa szczególną sytuacją wobec przetwarzania danych osobowych opartego na art. 6 ust. 1 lit. f RODO (art. 21 ust. 1 RODO). Jeżeli dane osobowe są przetwarzane na potrzeby marketingu bezpośredniego, mają Państwo prawo w dowolnym momencie, bez podawania przyczyn, wnieść sprzeciw wobec przetwarzania dotyczących Państwa danych na potrzeby takiego marketingu (art. 21 ust. 2 RODO). Sprzeciw dotyczy m.in. dowodu zgody na telefon w sprawie wyceny, adresu IP, listy osób, do których nie dzwonimy, oraz kontaktu z osobami, które wystawiły ogłoszenie (art. 6 ust. 1 lit. f RODO); w przypadku kontaktu telefonicznego z ogłoszeń wystarczy powiedzieć o tym podczas rozmowy; w pozostałych przypadkach wystarczy sprzeciw przesłany e-mailem na adres <a href="mailto:biuro@investrent.com.pl" style={link}>biuro@investrent.com.pl</a>.
               </P>
 
               <H2>Okres przechowywania danych</H2>
@@ -227,16 +272,27 @@ export default async function RodoPage() {
                 Państwa dane osobowe będą przechowywane przez okres niezbędny do realizacji celów przetwarzania, a po tym czasie przez okres oraz w zakresie wymaganym przez przepisy prawa lub dla zabezpieczenia ewentualnych roszczeń. W szczególności:
               </P>
               <UL>
-                <LI>zapytania i dane kontaktowe bez zawarcia umowy (poszukiwania, prośby o kontakt, zapytania o wycenę): do <Ph>[OKRES PRZECHOWYWANIA — propozycja 12 miesięcy, PRAWNIK]</Ph> od ostatniego kontaktu, w razie cofnięcia zgody lub sprzeciwu – krócej;</LI>
-                <LI>dowód udzielonych zgód: do upływu terminu przedawnienia ewentualnych roszczeń, nie dłużej niż <Ph>[3]</Ph> lata od końca roku, w którym zgodę cofnięto lub zakończono przetwarzanie;</LI>
-                <LI>dane umowne: przez czas trwania umowy, a następnie przez <Ph>[5]</Ph> lat od końca roku kalendarzowego, w którym powstał obowiązek podatkowy i rachunkowy; w razie potrzeby dłużej dla ochrony roszczeń (przedawnienie według polskiego prawa cywilnego, do <Ph>[6]</Ph> lat);</LI>
-                <LI>dane zbierane na podstawie przepisów o przeciwdziałaniu praniu pieniędzy: <Ph>[5]</Ph> lat od zakończenia stosunków gospodarczych;</LI>
-                <LI>dzienniki serwera: <Ph>[30]</Ph> dni.</LI>
+                <LI>zapytania i dane kontaktowe z formularzy na stronie (poza kalkulatorem wyceny) i z formularzy Facebook i Instagram, gdy nie doszło do zawarcia umowy: nie dłużej, niż jest to konieczne do obsługi zapytania, w razie cofnięcia zgody lub sprzeciwu – krócej;</LI>
+                <LI>dowód zgody na marketing e-mail udzielonej w formularzach Facebook i Instagram: przez czas potrzebny do wykazania, że zgoda została udzielona, i do obrony przed roszczeniami, nie dłużej niż 3 lata od końca roku, w którym zgodę cofnięto lub zakończono przetwarzanie;</LI>
+                <LI>dane umowne: przez czas trwania umowy, a następnie przez okres wymagany przepisami podatkowymi i rachunkowymi (5 lat od końca roku kalendarzowego, w którym powstał obowiązek podatkowy i rachunkowy); w razie toczących się sporów do ich zakończenia;</LI>
+                <LI>dane zbierane na podstawie przepisów o przeciwdziałaniu praniu pieniędzy: 5 lat od zakończenia stosunków gospodarczych;</LI>
+                <LI>dzienniki techniczne: dzienniki żądań do interfejsu API (Railway) do 30 dni; adres IP w naszej aplikacji tylko krótkotrwale, dla limitu zapytań; dzienniki hostingu strony (Vercel) i ochrony formularza (Cloudflare) według zasad tych dostawców.</LI>
+              </UL>
+              <H3>Okresy dla kalkulatora wyceny</H3>
+              <P>Dla zapytań w kalkulatorze wyceny obowiązują odrębne okresy (nie stosuje się ich do pozostałych formularzy):</P>
+              <UL>
+                <LI>zapytanie bez numeru telefonu: dane nieruchomości i wynik zapisujemy bez danych kontaktowych i adresu IP; po 12 miesiącach od dnia zapytania usuwamy szczegółowy opis wyceny, a zostaje statystyka (typ, przedział powierzchni co 10 m², miejscowość i dzielnica z listy, stan, widełki ceny, data), która nie zawiera Państwa danych kontaktowych ani adresu IP;</LI>
+                <LI>zapytanie z numerem telefonu, zwykle: usuwamy je 12 miesięcy po ostatniej rozmowie z Państwem lub Państwa wiadomości w sprawie wyceny; jeśli do rozmowy lub wiadomości nie doszło, 12 miesięcy od zgłoszenia;</LI>
+                <LI>zapytanie z numerem telefonu, najpóźniej: 24 miesiące po pierwszym zgłoszeniu z tego numeru (kolejne zgłoszenie z tego numeru tych 24 miesięcy nie wydłuża);</LI>
+                <LI>wyjątki: jeśli dojdzie do umowy, dane związane z umową przechowujemy tak długo, jak wymagają tego przepisy; jeśli sami Państwo poproszą o rozmowy o współpracy, Państwa numer i dane z tych rozmów przechowujemy najdłużej 12 miesięcy od ostatniej takiej rozmowy (każda kolejna taka rozmowa odnawia te 12 miesięcy);</LI>
+                <LI>nieodebrane próby kontaktu z naszej strony oraz same notatki pracowników tych okresów nie wydłużają;</LI>
+                <LI>dowód zgody na telefon w sprawie wyceny (wersja zgody, kanał, czas): usuwamy razem ze zgłoszeniem;</LI>
+                <LI>numer na liście osób, do których nie dzwonimy: nie dłużej, niż jest to konieczne, aby nie zadzwonić do Państwa ponownie.</LI>
               </UL>
 
               <H2>Zmiany i wersje językowe</H2>
               <P>
-                Aktualizujemy niniejszą politykę, gdy zmienia się sposób przetwarzania lub stan prawny. Stan na: <Ph>[DD.MM.RRRR]</Ph>.
+                Aktualizujemy niniejszą politykę, gdy zmienia się sposób przetwarzania lub stan prawny. Stan na: {POLICY_DATE}.
               </P>
 
               <H2>Kontakt</H2>
