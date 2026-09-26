@@ -6,12 +6,13 @@ import Breadcrumb from '@/components/Breadcrumb'
 import WycenaModal from '@/components/WycenaModal'
 import Turnstile from './Turnstile'
 import {
-  CITY_MAX, CONDITIONS, DISTRICT_MAX, EMPTY_FORM, OFFICE_PHONE, PROPERTY_TYPES,
-  buildLeadNotes, buildPayload, fieldApplies, formatPLN, formatRange, formatRetryAfter, isOutOfScope, isValidPhone,
+  CONDITIONS, EMPTY_FORM, OFFICE_PHONE, PROPERTY_TYPES,
+  buildLeadNotes, buildPayload, isKolobrzeg, fieldApplies, formatPLN, formatRange, formatRetryAfter, isOutOfScope, isValidPhone,
   readUtm, requestEstimate, submittedTooFast, trackValuation, validateForm,
   type EstimateOutcome, type FormErrors, type FormValues,
 } from '@/lib/valuation'
 import { T } from './texts'
+import { CITY_LIST, KOLOBRZEG_DISTRICTS, OTHER_CITY, OTHER_DISTRICT } from '@/lib/localities'
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://investrent-crm-production.up.railway.app'
 const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ''
@@ -149,16 +150,21 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
               </Field>
 
               <Field id="wy-city" text={`${T.fields.city} *`} hintText={T.fields.city_hint} error={errors.city}>
-                <input id="wy-city" className="wy-field" type="text" maxLength={CITY_MAX} autoComplete="address-level2" required aria-required="true"
+                <input id="wy-city" className="wy-field" type="text" list="wy-city-list" autoComplete="off" required aria-required="true"
                   value={values.city} aria-invalid={!!errors.city} aria-describedby={describedBy('wy-city', true, !!errors.city)}
                   onChange={e => set('city', e.target.value)} />
+                <datalist id="wy-city-list">{[...CITY_LIST, OTHER_CITY].map(c => <option key={c} value={c} />)}</datalist>
               </Field>
 
-              <Field id="wy-district" text={T.fields.district} hintText={T.fields.district_hint} error={errors.district}>
-                <input id="wy-district" className="wy-field" type="text" maxLength={DISTRICT_MAX} autoComplete="off"
-                  value={values.district} aria-invalid={!!errors.district} aria-describedby={describedBy('wy-district', true, !!errors.district)}
-                  onChange={e => set('district', e.target.value)} />
-              </Field>
+              {isKolobrzeg(values.city) && (
+                <Field id="wy-district" text={T.fields.district} hintText={T.fields.district_hint} error={errors.district}>
+                  <select id="wy-district" className="wy-field" value={values.district} aria-invalid={!!errors.district}
+                    aria-describedby={describedBy('wy-district', true, !!errors.district)} onChange={e => set('district', e.target.value)}>
+                    <option value="">{T.fields.district_placeholder}</option>
+                    {[...KOLOBRZEG_DISTRICTS, OTHER_DISTRICT].map(d => <option key={d} value={d}>{d}</option>)}
+                  </select>
+                </Field>
+              )}
 
               {fieldApplies(values.property_type, 'rooms') && (
                 <Field id="wy-rooms" text={T.fields.rooms} error={errors.rooms}>

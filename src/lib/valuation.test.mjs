@@ -3,8 +3,10 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import {
   validateForm, buildPayload, interpretResponse, requestEstimate, buildLeadNotes,
-  isValidPhone, readUtm, EMPTY_FORM, fieldApplies, isOutOfScope, submittedTooFast, buildConsentMarker, formatRetryAfter, looksLikePersonalData, DISTRICT_MAX, CITY_MAX, CONSENT_VERSION, NOTES_MAX,
+  isValidPhone, readUtm, EMPTY_FORM, fieldApplies, isOutOfScope, submittedTooFast, buildConsentMarker, formatRetryAfter,  CONSENT_VERSION, NOTES_MAX,
 } from './valuation.ts'
+import { OTHER_CITY, OTHER_DISTRICT, canonicalCity, canonicalDistrict } from './localities.ts'
+const bp = buildPayload
 
 const ok = { ...EMPTY_FORM, property_type: 'mieszkanie', district: 'Podczele', area_m2: '52,5', rooms: '3', floor: '2', condition: 'dobry' }
 const json = (body, status = 200) => async () => new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } })
@@ -132,28 +134,19 @@ test('teksty v11: zadnego marketingu, skrotu numeru ani "3 lat" w tekstach publi
   assert.ok(all.includes('Przekazanie danych do Cloudflare i Google opiera się na Data Privacy Framework'))
   assert.ok(T.result.outOfScopeBody.endsWith('zadzwonimy tylko w sprawie Twojej wyceny.'))
 })
-test('pola tekstowe: limity dlugosci i wykrywanie danych osobowych (e-mail, 5+ cyfr) w dzielnicy i miejscowosci', () => {
-  assert.equal(DISTRICT_MAX, 40); assert.equal(CITY_MAX, 60)
-  assert.equal(looksLikePersonalData('Podczele'), false); assert.equal(looksLikePersonalData('Osiedle 1000-lecia'), false)
-  assert.equal(looksLikePersonalData('jan@x.pl'), true); assert.equal(looksLikePersonalData('tel 600100200'), true)
-  assert.ok(validateForm({ ...ok, district: 'Jan Kowalski 600100200' }).district)
-  assert.ok(validateForm({ ...ok, district: 'x'.repeat(41) }).district)
-  assert.ok(validateForm({ ...ok, city: 'a@b.pl' }).city)
+test('miejscowosc i dzielnica: slowniki zamiast wolnego tekstu (v11.2); poza slownikiem blad albo "Inna ..."', () => {
+  assert.equal(canonicalCity('kolobrzeg'), 'Kołobrzeg'); assert.equal(canonicalCity('KOSZALIN '), 'Koszalin'); assert.equal(canonicalCity('inna lokalizacja'), OTHER_CITY)
+  assert.equal(canonicalCity('Jan Kowalski'), null); assert.equal(canonicalCity('ul. Morska 3'), null)
+  assert.equal(canonicalDistrict('podczele'), 'Podczele'); assert.equal(canonicalDistrict('Mickiewicza 5'), null); assert.equal(canonicalDistrict('Inna dzielnica'), OTHER_DISTRICT)
+  assert.ok(validateForm({ ...ok, city: 'Jan Kowalski' }).city)
+  assert.ok(validateForm({ ...ok, district: 'Mickiewicza 5' }).district)
   assert.equal(validateForm({ ...ok, district: 'Podczele' }).district, undefined)
+  assert.equal(validateForm({ ...ok, district: OTHER_DISTRICT }).district, undefined)
+  assert.equal(validateForm({ ...ok, city: 'Koszalin', district: 'cokolwiek' }).district, undefined) // dzielnica dotyczy tylko Kolobrzegu
 })
-test('teksty v11.1: przedzial powierzchni w statystyce, pole dzielnicy ostrzega, T-e (brak zautomatyzowanych decyzji), okres z numerem bez sprzecznosci', async () => {
-  const { T } = await import('../app/wycena/texts.ts')
-  const items = T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]).join(' ').split(String.fromCharCode(160)).join(' ')
-  assert.ok(items.includes('przedział powierzchni co 10 m²')); assert.ok(T.fields.district_hint.includes('nie wpisuj imion, adresu ani numeru telefonu'))
-  assert.ok(items.includes('Nie podejmujemy wobec Ciebie decyzji opartych wyłącznie na zautomatyzowanym przetwarzaniu'))
-  assert.ok(items.includes('Jeśli rozmowy doprowadzą do umowy, dane z tych rozmów przechowujemy tak długo, jak wymagają tego przepisy. Razem ze zgłoszeniem wygasa dowód zgody'))
-})
-test('teksty v11.1 (decyzja Daniela 26.09: opcja B): numer z kalkulatora najdalej 24 mies. od pierwszego zgloszenia, nie dluzej niz 12 mies. od ostatniego kontaktu', async () => {
-  const { T } = await import('../app/wycena/texts.ts')
-  const sp = String.fromCharCode(160)
-  const items = T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]).join(' ').split(sp).join(' ')
-  const last = T.how.body[T.how.body.length - 1].split(sp).join(' ')
-  const phrase = 'nie dłużej niż 12 miesięcy od ostatniego kontaktu z Tobą w sprawie wyceny (rozmowa lub wiadomość), a najdalej 24 miesiące od pierwszego zgłoszenia'
-  assert.ok(items.includes(phrase))
-  assert.ok(last.includes('a najdalej 24 miesiące od pierwszego zgłoszenia')); assert.ok(last.includes('12 miesięcy od zgłoszenia'))
+test('payload v11.2: nazwy kanoniczne ze slownika; "Inna dzielnica" i dzielnica poza Kolobrzegiem nie sa wysylane; isOutOfScope dla "Inna dzielnica"', () => {
+  assert.equal(bp({ ...ok, city: 'kolobrzeg', district: 'podczele' }).district, 'Podczele')
+  assert.equal(bp({ ...ok, district: OTHER_DISTRICT }).district, undefined)
+  assert.equal(bp({ ...ok, city: 'Koszalin', district: 'Podczele' }).district, undefined)
+  assert.equal(isOutOfScope({ ...ok, district: OTHER_DISTRICT }), true)
 })

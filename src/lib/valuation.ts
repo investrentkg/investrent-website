@@ -6,6 +6,8 @@
 // 429/503/400 -> zwykly wynik z polem kind), zadnych danych osobowych w GA4.
 // Kontrakt backendu (budowany rownolegle) - patrz opis PR.
 
+import { canonicalCity, canonicalDistrict, OTHER_DISTRICT } from './localities.ts'
+
 export const ESTIMATE_TIMEOUT_MS = 45000 // wycena uruchamia silnik AI - dluzej niz zwykly lead
 // Numer biura - ta sama wartosc co LEAD_FALLBACK_PHONE (leadSubmit.ts).
 export const OFFICE_PHONE = '+48\u00A0731\u00A0554\u00A0341'
@@ -74,6 +76,7 @@ export function districtIsBlocked(district: string): boolean { return BLOCKED_DI
 export function isOutOfScope(v: Pick<FormValues, 'property_type' | 'city' | 'district'>): boolean {
   if (v.property_type !== 'mieszkanie') return true
   if (!isKolobrzeg(v.city)) return true
+  if (canonicalDistrict(v.district) === OTHER_DISTRICT) return true // dzielnica spoza slownika: bez widelek online
   return !!v.district.trim() && districtIsBlocked(v.district)
 }
 
@@ -83,26 +86,20 @@ export function submittedTooFast(loadedAt: number, now: number, minMs: number = 
   return now - loadedAt < minMs
 }
 
-// Pola tekstowe (miejscowosc, dzielnica) trafiaja do promptu AI i do statystyki: krotkie, bez danych osobowych (e-mail, numer, adres).
-export const DISTRICT_MAX = 40
-export const CITY_MAX = 60
-export const PERSONAL_DATA_ERROR = 'Wpisz tylko nazwę, bez adresu, imion ani numerów (e-mail i numery telefonu wpisz dopiero w kroku kontaktu).'
-export function looksLikePersonalData(t: string): boolean {
-  const digits = t.split('').filter(c => c >= '0' && c <= '9').length
-  return t.includes('@') || digits >= 5
-}
+// Miejscowosc i dzielnica: slowniki (lib/localities.ts), NIE wolny tekst (v11.2): trafiaja do promptu AI i do statystyki po 12 mies.
+export const CITY_ERROR = 'Wybierz miejscowość z listy albo „Inna lokalizacja”.'
+export const DISTRICT_ERROR = 'Wybierz dzielnicę z listy albo „Inna dzielnica”.'
 
 export function validateForm(v: FormValues): FormErrors {
   const e: FormErrors = {}
   if (!v.property_type) e.property_type = 'Wybierz rodzaj nieruchomości.'
   const city = v.city.trim()
   if (city.length < 2) e.city = 'Podaj miejscowość.'
-  else if (looksLikePersonalData(city)) e.city = PERSONAL_DATA_ERROR
+  else if (!canonicalCity(city)) e.city = CITY_ERROR
   else if (city.length > 80) e.city = 'Nazwa miejscowości jest za długa.'
-  if (v.district.trim().length > DISTRICT_MAX) e.district = 'Nazwa dzielnicy jest za długa.'
-  else if (looksLikePersonalData(v.district)) e.district = PERSONAL_DATA_ERROR
+  if (isKolobrzeg(city) && v.district.trim() && !canonicalDistrict(v.district)) e.district = DISTRICT_ERROR
   else if (v.property_type === 'mieszkanie' && isKolobrzeg(city) && !v.district.trim()) {
-    e.district = 'Podaj dzielnicę lub osiedle — bez niej nie policzymy widełek. Jeśli nie znasz nazwy, możesz zostawić sam numer telefonu i zaznaczyć zgodę na telefon w sprawie wyceny, a agent przygotuje wycenę indywidualnie.'
+    e.district = 'Wybierz dzielnicę z listy — bez niej nie policzymy widełek. Jeśli nie znasz nazwy, wybierz „Inna dzielnica” albo zostaw numer telefonu i zaznacz zgodę na telefon w sprawie wyceny, a agent przygotuje wycenę indywidualnie.'
   }
 
   const area = parseNum(v.area_m2)
@@ -125,12 +122,13 @@ export function validateForm(v: FormValues): FormErrors {
 export function buildPayload(v: FormValues, honeypot = '', turnstileToken?: string | null): EstimatePayload {
   const p: EstimatePayload = {
     property_type: v.property_type as PropertyType,
-    city: v.city.trim(),
+    city: canonicalCity(v.city) ?? v.city.trim(),
     area_m2: parseNum(v.area_m2),
     website: honeypot,
   }
   if (turnstileToken) p.turnstile_token = turnstileToken
-  if (v.district.trim()) p.district = v.district.trim()
+  const dist = isKolobrzeg(v.city) ? canonicalDistrict(v.district) : null
+  if (dist && dist !== OTHER_DISTRICT) p.district = dist
   if (fieldApplies(v.property_type, 'rooms') && v.rooms.trim()) p.rooms = parseNum(v.rooms)
   if (fieldApplies(v.property_type, 'floor') && v.floor.trim()) p.floor = parseNum(v.floor)
   if (fieldApplies(v.property_type, 'condition') && v.condition) p.condition = v.condition
