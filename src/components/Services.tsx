@@ -11,7 +11,7 @@ const SERVICES = [
   {
     icon: DollarSign, title: 'Sprzedaż nieruchomości',
     desc: 'Profesjonalne zdjęcia, ekspozycja na wszystkich portalach, aktywna sprzedaż. Sprzedajemy szybko i za dobrą cenę.',
-    link: 'Bezpłatna wycena', linkIcon: Award, href: '/sprzedaz',
+    link: 'Bezpłatna wycena', linkIcon: Award, href: '/wycena',
     bg: 'bg-amber-50', border: 'border-amber-200', iconBg: 'bg-gold', color: 'text-amber-600',
   },
   {
