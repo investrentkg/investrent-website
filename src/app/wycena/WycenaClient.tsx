@@ -6,7 +6,7 @@ import Breadcrumb from '@/components/Breadcrumb'
 import WycenaModal from '@/components/WycenaModal'
 import Turnstile from './Turnstile'
 import {
-  CONDITIONS, EMPTY_FORM, OFFICE_PHONE, PROPERTY_TYPES,
+  CITY_MAX, CONDITIONS, DISTRICT_MAX, EMPTY_FORM, OFFICE_PHONE, PROPERTY_TYPES,
   buildLeadNotes, buildPayload, fieldApplies, formatPLN, formatRange, formatRetryAfter, isOutOfScope, isValidPhone,
   readUtm, requestEstimate, submittedTooFast, trackValuation, validateForm,
   type EstimateOutcome, type FormErrors, type FormValues,
@@ -149,13 +149,13 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
               </Field>
 
               <Field id="wy-city" text={`${T.fields.city} *`} hintText={T.fields.city_hint} error={errors.city}>
-                <input id="wy-city" className="wy-field" type="text" autoComplete="address-level2" required aria-required="true"
+                <input id="wy-city" className="wy-field" type="text" maxLength={CITY_MAX} autoComplete="address-level2" required aria-required="true"
                   value={values.city} aria-invalid={!!errors.city} aria-describedby={describedBy('wy-city', true, !!errors.city)}
                   onChange={e => set('city', e.target.value)} />
               </Field>
 
               <Field id="wy-district" text={T.fields.district} hintText={T.fields.district_hint} error={errors.district}>
-                <input id="wy-district" className="wy-field" type="text" autoComplete="off"
+                <input id="wy-district" className="wy-field" type="text" maxLength={DISTRICT_MAX} autoComplete="off"
                   value={values.district} aria-invalid={!!errors.district} aria-describedby={describedBy('wy-district', true, !!errors.district)}
                   onChange={e => set('district', e.target.value)} />
               </Field>

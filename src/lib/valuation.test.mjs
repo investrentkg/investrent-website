@@ -3,7 +3,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import {
   validateForm, buildPayload, interpretResponse, requestEstimate, buildLeadNotes,
-  isValidPhone, readUtm, EMPTY_FORM, fieldApplies, isOutOfScope, submittedTooFast, buildConsentMarker, formatRetryAfter, CONSENT_VERSION, NOTES_MAX,
+  isValidPhone, readUtm, EMPTY_FORM, fieldApplies, isOutOfScope, submittedTooFast, buildConsentMarker, formatRetryAfter, looksLikePersonalData, DISTRICT_MAX, CITY_MAX, CONSENT_VERSION, NOTES_MAX,
 } from './valuation.ts'
 
 const ok = { ...EMPTY_FORM, property_type: 'mieszkanie', district: 'Podczele', area_m2: '52,5', rooms: '3', floor: '2', condition: 'dobry' }
@@ -125,10 +125,26 @@ test('teksty v11: zadnego marketingu, skrotu numeru ani "3 lat" w tekstach publi
   assert.ok(T.lead.consentCall.includes('wyłącznie w sprawie wyceny mojej nieruchomości')); assert.ok(T.lead.consentCall.includes('mówiąc o tym podczas rozmowy'))
   assert.ok(T.lead.consentCallRequired.includes('wymagana'))
   const items = T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]).join(' ')
-  assert.ok(items.includes('razem ze zgłoszeniem wygasa dowód zgody na telefon w sprawie wyceny (wersja zgody, kanał, czas)'))
+  assert.ok(items.includes('azem ze zgłoszeniem wygasa dowód zgody na telefon w sprawie wyceny (wersja zgody, kanał, czas)'))
   assert.ok(items.includes('Zgodę możesz cofnąć e-mailem (biuro@investrent.com.pl) albo w rozmowie z pracownikiem biura'))
   assert.ok(items.includes('dowód zgody na telefon w sprawie wyceny, adres IP'))
   assert.ok(T.errors.rateLimited('2 h').includes('za około 2 h')); assert.ok(!all.includes('do 24'))
   assert.ok(all.includes('Przekazanie danych do Cloudflare i Google opiera się na Data Privacy Framework'))
   assert.ok(T.result.outOfScopeBody.endsWith('zadzwonimy tylko w sprawie Twojej wyceny.'))
+})
+test('pola tekstowe: limity dlugosci i wykrywanie danych osobowych (e-mail, 5+ cyfr) w dzielnicy i miejscowosci', () => {
+  assert.equal(DISTRICT_MAX, 40); assert.equal(CITY_MAX, 60)
+  assert.equal(looksLikePersonalData('Podczele'), false); assert.equal(looksLikePersonalData('Osiedle 1000-lecia'), false)
+  assert.equal(looksLikePersonalData('jan@x.pl'), true); assert.equal(looksLikePersonalData('tel 600100200'), true)
+  assert.ok(validateForm({ ...ok, district: 'Jan Kowalski 600100200' }).district)
+  assert.ok(validateForm({ ...ok, district: 'x'.repeat(41) }).district)
+  assert.ok(validateForm({ ...ok, city: 'a@b.pl' }).city)
+  assert.equal(validateForm({ ...ok, district: 'Podczele' }).district, undefined)
+})
+test('teksty v11.1: przedzial powierzchni w statystyce, pole dzielnicy ostrzega, T-e (brak zautomatyzowanych decyzji), okres z numerem bez sprzecznosci', async () => {
+  const { T } = await import('../app/wycena/texts.ts')
+  const items = T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]).join(' ').split(String.fromCharCode(160)).join(' ')
+  assert.ok(items.includes('przedział powierzchni co 10 m²')); assert.ok(T.fields.district_hint.includes('nie wpisuj imion, adresu ani numeru telefonu'))
+  assert.ok(items.includes('Nie podejmujemy wobec Ciebie decyzji opartych wyłącznie na zautomatyzowanym przetwarzaniu'))
+  assert.ok(items.includes('Jeśli rozmowy doprowadzą do umowy, dane z tych rozmów przechowujemy tak długo, jak wymagają tego przepisy. Razem ze zgłoszeniem wygasa dowód zgody'))
 })
