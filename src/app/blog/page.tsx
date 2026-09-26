@@ -6,7 +6,6 @@ export const dynamic = 'force-dynamic'
 
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
-import FloatingWA from '@/components/FloatingWA'
 import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
 import { getPublicBlogPosts, getOffice } from '@/lib/api'
@@ -75,7 +74,6 @@ export default async function BlogPage() {
         </div>
       </main>
       <Footer office={office} />
-      <FloatingWA />
       <SocialSidebar office={office} />
     </>
   )

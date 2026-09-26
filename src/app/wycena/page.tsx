@@ -1,6 +1,5 @@
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
-import FloatingWA from '@/components/FloatingWA'
 import { getOffice } from '@/lib/api'
 import WycenaClient from './WycenaClient'
 import { T } from './texts'
@@ -42,7 +41,6 @@ export default async function WycenaPage() {
         <WycenaClient initialEnabled={CALC_ENABLED} />
       </main>
       <Footer office={office} />
-      <FloatingWA />
     </>
   )
 }
