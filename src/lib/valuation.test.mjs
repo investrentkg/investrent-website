@@ -148,3 +148,12 @@ test('teksty v11.1: przedzial powierzchni w statystyce, pole dzielnicy ostrzega,
   assert.ok(items.includes('Nie podejmujemy wobec Ciebie decyzji opartych wyłącznie na zautomatyzowanym przetwarzaniu'))
   assert.ok(items.includes('Jeśli rozmowy doprowadzą do umowy, dane z tych rozmów przechowujemy tak długo, jak wymagają tego przepisy. Razem ze zgłoszeniem wygasa dowód zgody'))
 })
+test('teksty v11.1 (decyzja Daniela 26.09: opcja B): numer z kalkulatora najdalej 24 mies. od pierwszego zgloszenia, nie dluzej niz 12 mies. od ostatniego kontaktu', async () => {
+  const { T } = await import('../app/wycena/texts.ts')
+  const sp = String.fromCharCode(160)
+  const items = T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]).join(' ').split(sp).join(' ')
+  const last = T.how.body[T.how.body.length - 1].split(sp).join(' ')
+  const phrase = 'nie dłużej niż 12 miesięcy od ostatniego kontaktu z Tobą w sprawie wyceny (rozmowa lub wiadomość), a najdalej 24 miesiące od pierwszego zgłoszenia'
+  assert.ok(items.includes(phrase))
+  assert.ok(last.includes('a najdalej 24 miesiące od pierwszego zgłoszenia')); assert.ok(last.includes('12 miesięcy od zgłoszenia'))
+})
