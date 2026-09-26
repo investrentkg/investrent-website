@@ -5,7 +5,8 @@ import {
   validateForm, buildPayload, interpretResponse, requestEstimate, buildLeadNotes,
   isValidPhone, readUtm, EMPTY_FORM, fieldApplies, isOutOfScope, submittedTooFast, buildConsentMarker, formatRetryAfter,  CONSENT_VERSION, NOTES_MAX,
 } from './valuation.ts'
-import { OTHER_CITY, OTHER_DISTRICT, canonicalCity, canonicalDistrict } from './localities.ts'
+import { OTHER_CITY, OTHER_DISTRICT, canonicalCity, canonicalDistrict, INVESTRENT_CONFIG, CALCULATOR_CONFIG, isHomeCity, isRestrictedDistrict } from './localities.ts'
+import fs from 'node:fs'
 const bp = buildPayload
 
 const ok = { ...EMPTY_FORM, property_type: 'mieszkanie', district: 'Podczele', area_m2: '52,5', rooms: '3', floor: '2', condition: 'dobry' }
@@ -88,7 +89,7 @@ test('zakres liczb: dom, dzialka, inna miejscowosc, Srodmiescie = poza zakresem;
   assert.equal(isOutOfScope({ ...ok, city: 'kolobrzeg' }), false)
 })
 test('walidacja: mieszkanie w Kolobrzegu bez dzielnicy = blad z wyjasnieniem; dom i inne miasto bez dzielnicy OK', () => {
-  assert.match(validateForm({ ...ok, district: '' }).district, /bez niej nie policzymy/)
+  assert.match(validateForm({ ...ok, district: '' }).district, /Wybierz dzielnicę lub osiedle z listy/)
   assert.equal(validateForm({ ...ok, property_type: 'dom', district: '' }).district, undefined)
   assert.equal(validateForm({ ...ok, city: 'Koszalin', district: '' }).district, undefined)
 })
@@ -164,4 +165,23 @@ test('teksty v11.2: okres z numerem (T-f: umowa przed pulapem, kontakt = rozmowa
   assert.ok(items.includes('przedział powierzchni co 10 m², miejscowość i dzielnica z listy'))
   assert.ok(items.includes('Nie podejmujemy wobec Ciebie decyzji opartych wyłącznie na zautomatyzowanym przetwarzaniu'))
   assert.equal(T.lead.titleRange, 'Chcesz omówić wynik z agentem?'); assert.ok(!/mapą|raport/i.test(T.lead.bodyRange)); assert.ok(T.lead.bodyRange.includes('przygotuje wycenę indywidualną'))
+})
+test('konfiguracja per biuro (SaaS): miasto domowe, slowniki i wylaczone dzielnice z konfiguracji; zrodlo i data przegladu listy dzielnic jawne', () => {
+  assert.equal(CALCULATOR_CONFIG, INVESTRENT_CONFIG)
+  assert.equal(isHomeCity('kolobrzeg'), true); assert.equal(isHomeCity('Koszalin'), false)
+  assert.equal(isRestrictedDistrict('Śródmieście'), true); assert.equal(isRestrictedDistrict('Centrum'), true); assert.equal(isRestrictedDistrict('Podczele'), false)
+  assert.ok(INVESTRENT_CONFIG.districtsSource.includes('portal_listings_archive')); assert.equal(INVESTRENT_CONFIG.districtsReviewedAt, null)
+  assert.ok(!INVESTRENT_CONFIG.districts.includes('Dzielnica Uzdrowiskowa'), 'nazwy tylko z danych, nie z pamieci')
+})
+test('Srodmiescie i "Inna dzielnica" nie daja widelek online (tylko wycena agenta); dzielnica z listy poza Srodmiesciem tak', () => {
+  assert.equal(isOutOfScope({ ...ok, district: 'Śródmieście' }), true); assert.equal(isOutOfScope({ ...ok, district: 'Inna dzielnica' }), true)
+  assert.equal(isOutOfScope({ ...ok, district: 'Zachodnia' }), false)
+})
+test('test kontraktowy slownikow front/backend: front == wspolny plik slowniki_kalkulatora_2026_09_26.json (kontrakt sekcja 13.11)', t => {
+  const url = new URL('../../../../_wspolne_pliki/slowniki_kalkulatora_2026_09_26.json', import.meta.url)
+  if (!fs.existsSync(url)) { t.skip('brak wspolnego pliku slownikow (uruchamiane poza repozytorium projektu)'); return }
+  const shared = JSON.parse(fs.readFileSync(url, 'utf8'))
+  for (const k of ['homeCity', 'cities', 'districts', 'restrictedDistrictPatterns', 'otherCity', 'otherDistrict', 'districtsSource', 'districtsReviewedAt']) {
+    assert.deepEqual(shared[k], INVESTRENT_CONFIG[k], 'rozjazd slownika front/plik wspolny: ' + k)
+  }
 })

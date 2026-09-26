@@ -6,7 +6,7 @@
 // 429/503/400 -> zwykly wynik z polem kind), zadnych danych osobowych w GA4.
 // Kontrakt backendu (budowany rownolegle) - patrz opis PR.
 
-import { canonicalCity, canonicalDistrict, OTHER_DISTRICT } from './localities.ts'
+import { CALCULATOR_CONFIG, canonicalCity, canonicalDistrict, isHomeCity, isRestrictedDistrict } from './localities.ts'
 
 export const ESTIMATE_TIMEOUT_MS = 45000 // wycena uruchamia silnik AI - dluzej niz zwykly lead
 // Numer biura - ta sama wartosc co LEAD_FALLBACK_PHONE (leadSubmit.ts).
@@ -66,17 +66,16 @@ export function fieldApplies(type: FormValues['property_type'], field: 'rooms' |
   return true
 }
 
-// Zakres liczb online = lustro regul backendu (canAttemptNumbers): mieszkanie w Kolobrzegu z PODANA dzielnica, bez Srodmiescia.
-// Backend jest zrodlem prawdy; ta kopia sluzy tylko do trafnych komunikatow (nie do decyzji o liczbach).
-export const foldText = (t: string) => t.trim().toLowerCase().replace(/ł/g, 'l').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\s+/g, ' ')
-const BLOCKED_DISTRICT = [/srodmiesc/, /centrum/, /stare miasto/]
-export function isKolobrzeg(city: string): boolean { return foldText(city) === 'kolobrzeg' }
-export function districtIsBlocked(district: string): boolean { return BLOCKED_DISTRICT.some(re => re.test(foldText(district))) }
+// Zakres liczb online = lustro regul backendu (canAttemptNumbers): mieszkanie w miescie domowym biura z PODANA dzielnica, bez dzielnic
+// wylaczonych. Miasto domowe, slowniki i wylaczone dzielnice pochodza z KONFIGURACJI biura (lib/localities.ts, CalculatorConfig),
+// nie sa na sztywno w kodzie (SaaS). Backend jest zrodlem prawdy; ta kopia sluzy tylko do trafnych komunikatow.
+export const isKolobrzeg = (city: string): boolean => isHomeCity(city) // nazwa historyczna: "miasto domowe biura" (dzis Kolobrzeg)
+export const districtIsBlocked = (district: string): boolean => isRestrictedDistrict(district)
 // true = to zapytanie jest POZA zakresem liczb online (dom, dzialka, inna miejscowosc, Srodmiescie) - odmienny komunikat niz "za malo danych".
 export function isOutOfScope(v: Pick<FormValues, 'property_type' | 'city' | 'district'>): boolean {
   if (v.property_type !== 'mieszkanie') return true
   if (!isKolobrzeg(v.city)) return true
-  if (canonicalDistrict(v.district) === OTHER_DISTRICT) return true // dzielnica spoza slownika: bez widelek online
+  if (canonicalDistrict(v.district) === CALCULATOR_CONFIG.otherDistrict) return true // dzielnica spoza slownika: bez widelek online
   return !!v.district.trim() && districtIsBlocked(v.district)
 }
 
@@ -99,7 +98,7 @@ export function validateForm(v: FormValues): FormErrors {
   else if (city.length > 80) e.city = 'Nazwa miejscowości jest za długa.'
   if (isKolobrzeg(city) && v.district.trim() && !canonicalDistrict(v.district)) e.district = DISTRICT_ERROR
   else if (v.property_type === 'mieszkanie' && isKolobrzeg(city) && !v.district.trim()) {
-    e.district = 'Wybierz dzielnicę z listy — bez niej nie policzymy widełek. Jeśli nie znasz nazwy, wybierz „Inna dzielnica” albo zostaw numer telefonu i zaznacz zgodę na telefon w sprawie wyceny, a agent przygotuje wycenę indywidualnie.'
+    e.district = 'Wybierz dzielnicę lub osiedle z listy. Jeśli nie ma jej na liście, wybierz „Inna dzielnica” (widełek online wtedy nie podajemy, wycenę przygotuje agent) albo zostaw numer telefonu i zaznacz zgodę na telefon w sprawie wyceny.'
   }
 
   const area = parseNum(v.area_m2)
@@ -128,7 +127,7 @@ export function buildPayload(v: FormValues, honeypot = '', turnstileToken?: stri
   }
   if (turnstileToken) p.turnstile_token = turnstileToken
   const dist = isKolobrzeg(v.city) ? canonicalDistrict(v.district) : null
-  if (dist && dist !== OTHER_DISTRICT) p.district = dist
+  if (dist && dist !== CALCULATOR_CONFIG.otherDistrict) p.district = dist
   if (fieldApplies(v.property_type, 'rooms') && v.rooms.trim()) p.rooms = parseNum(v.rooms)
   if (fieldApplies(v.property_type, 'floor') && v.floor.trim()) p.floor = parseNum(v.floor)
   if (fieldApplies(v.property_type, 'condition') && v.condition) p.condition = v.condition

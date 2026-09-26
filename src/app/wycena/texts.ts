@@ -29,7 +29,7 @@ export const T = {
     city_hint: 'Domyślnie Kołobrzeg. Wybierz miejscowość z listy (możesz zacząć pisać); dla innej wybierz „Inna lokalizacja” i po wysłaniu formularza możesz zostawić numer telefonu — agent sprawdzi, czy może przygotować wycenę.',
     district: 'Dzielnica lub osiedle',
     district_placeholder: 'Wybierz z listy…',
-    district_hint: 'Bez dzielnicy z listy nie policzymy widełek dla mieszkania w Kołobrzegu. Dla Śródmieścia widełek nie podajemy — wycenę przygotuje agent. Nie znasz nazwy? Wybierz „Inna dzielnica”.',
+    district_hint: 'Dla mieszkania w Kołobrzegu wybierz dzielnicę lub osiedle z listy. Dla Śródmieścia i dla pozycji „Inna dzielnica” widełek online nie podajemy — wycenę przygotuje agent.',
     area_m2: 'Powierzchnia (m²)',
     rooms: 'Liczba pokoi (opcjonalnie)',
     floor: 'Piętro (opcjonalnie)',
