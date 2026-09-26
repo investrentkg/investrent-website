@@ -286,7 +286,7 @@ test('teksty v11.7: [4] jako lista odbiorcow (T-u) + osobny punkt zabezpieczen; 
   assert.ok(!/Cenogram[^;]*(SCC|klauzul)/.test(zab.items.join(' ')), 'Cenogram (Polska) poza lista zabezpieczen transferu')
 })
 
-test('teksty v11.8 (decyzje Daniela 26.09): T-k lista "nie dzwonimy", T-c'' rozmowa telefoniczna lub osobista, T-c'2 usuniecie danych po cofnieciu, odnawianie wyjatku', async () => {
+test('teksty v11.8 (decyzje Daniela 26.09): T-k lista nie dzwonimy, T-c2 rozmowa telefoniczna lub osobista, usuniecie danych po cofnieciu, odnawianie wyjatku wspolpracy', async () => {
   const { T } = await import('../app/wycena/texts.ts')
   const sp = String.fromCharCode(160)
   const items = T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]).join(' ').split(sp).join(' ')
