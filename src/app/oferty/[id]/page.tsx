@@ -6,7 +6,6 @@ export const revalidate = 60
 
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
-import FloatingWA from '@/components/FloatingWA'
 import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
 import OfferDetailClient from './OfferDetailClient'
@@ -274,7 +273,6 @@ export default async function OfferPage({ params, searchParams }: { params: { id
           </div>
         </main>
         <Footer office={office} />
-        <FloatingWA />
         <SocialSidebar office={office} />
       </>
     )
@@ -317,7 +315,6 @@ export default async function OfferPage({ params, searchParams }: { params: { id
         <OfferDetailClient offer={offer} />
       </main>
       <Footer office={office} />
-      <FloatingWA />
 
       <SocialSidebar office={office} />
     </>
