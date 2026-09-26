@@ -451,35 +451,74 @@ html, body {
   .cta-pulse, .cta-pulse-navy, .cta-pulse-limited { animation: none; }
 }
 
-/* NAPRAWA (audyt wizualny, batch 5, POPRAWKA po weryfikacji na żywo 07.09.2026):
-   pływające przyciski WhatsApp/chat (FloatingWA.tsx, ChatWidget.tsx) mają bottom:24
-   na sztywno, co na mobile nachodzi na typowe treści przy dole ekranu - dolny rząd
-   statystyk hero na stronie głównej oraz pasek miniatur zdjęć na stronie oferty.
-   Pierwsza poprawka (88px) okazała się NIEWYSTARCZAJĄCA - zmierzone na żywo na
-   375x812 nakładanie się rzędu "TRANSAKCJI" i przycisku WhatsApp mimo marginesu
-   (rect przycisku 676-724px, rząd statystyk 689-726px, ~35px realnego nachodzenia).
-   Podniesione do 148px z dodatkowym zapasem. Od md (768px) wracają do bottom:24/92. */
-/* NAPRAWA (audyt Safari/iOS): env(safe-area-inset-bottom) dodane teraz, gdy
-   viewport-fit=cover jest wreszcie ustawione (patrz layout.tsx) - wcześniej
-   ten sam dodatek nie miałby żadnego efektu na Safari iOS. calc() z 0px jako
-   bazą jest neutralny na przeglądarkach bez wsparcia dla env(). */
-.floating-btn-bottom { bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
-.floating-panel-bottom { bottom: calc(92px + env(safe-area-inset-bottom, 0px)); }
-@media (max-width: 767px) {
-  .floating-btn-bottom { bottom: calc(148px + env(safe-area-inset-bottom, 0px)); }
-  .floating-panel-bottom { bottom: calc(156px + env(safe-area-inset-bottom, 0px)); }
+/* ── Launcher kontaktu (ChatWidget.tsx): JEDEN przycisk 52 px w prawym dolnym rogu,
+   menu WhatsApp / Napisz do nas / Zadzwoń. Zastępuje dwa osobne pływające przyciski
+   (WhatsApp + czat), które na telefonie zasłaniały treść. Zmienna --fab-bottom pozwala
+   podstronie z dolnym paskiem CTA podnieść launcher bez zmian globalnych.
+   Tylko transform/opacity, brak transition:all, brak pulsowania. ── */
+.lnch-fab, .lnch-item, .lnch-teaser {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
-/* NAPRAWA (audyt SEO/mobile 09.09.2026): przycisk WhatsApp (position:fixed,
-   FloatingWA.tsx) na waskich ekranach nakladal sie POZIOMO na przyciski CTA
-   w Hero ("Chcę sprzedać") oraz na kontrolki galerii zdjec na stronie oferty
-   - potwierdzone zrzutami ekranu na 375px. Zamiast przesuwac tresc strony
-   (kruche, roznie na kazdej podstronie), zwezamy sam przycisk WA do samej
-   ikony na mobile - jego prawa krawedz zostaje w tym samym miejscu
-   (right:90), lewa cofa sie, wiec przestaje zachodzic na elementy po lewej.
-   Standardowy wzorzec (pelna pigulka na desktopie, FAB-ikona na mobile). */
-@media (max-width: 767px) {
-  .wa-floating-btn { width: 52px; height: 52px; padding: 0 !important; justify-content: center; }
-  .wa-floating-btn .wa-label { display: none; }
+.lnch-root {
+  position: fixed; right: 16px; z-index: 9998;
+  bottom: calc(var(--fab-bottom, 16px) + env(safe-area-inset-bottom, 0px));
+  display: flex; flex-direction: column; align-items: flex-end; gap: 12px;
+  transition: transform .2s ease-out, opacity .2s ease-out;
+}
+.lnch-root[data-hidden="true"] { transform: translateY(calc(100% + 32px)); opacity: 0; pointer-events: none; }
+.lnch-row { display: flex; align-items: center; gap: 8px; }
+.lnch-fab {
+  width: 52px; height: 52px; border-radius: 50%; border: none; cursor: pointer; color: #fff;
+  background: linear-gradient(135deg, #1a4fa0, #0d2a5c);
+  box-shadow: 0 4px 20px rgba(13,42,92,.4);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform .15s ease-out;
+}
+.lnch-fab:active { transform: scale(.94); }
+.lnch-fab:focus-visible, .lnch-item:focus-visible, .lnch-teaser:focus-visible, .lnch-close:focus-visible {
+  outline: 3px solid #f5a623; outline-offset: 2px;
+}
+.lnch-teaser {
+  height: 44px; padding: 0 16px; border-radius: 22px; border: none; cursor: pointer;
+  background: #fff; color: #0d2a5c; font: 700 13px/1 inherit; font-family: inherit;
+  box-shadow: 0 4px 16px rgba(0,0,0,.18); white-space: nowrap;
+  animation: lnchFade .2s ease-out;
+}
+.lnch-menu {
+  list-style: none; margin: 0; padding: 8px; min-width: 220px;
+  background: #fff; border-radius: 16px; box-shadow: 0 16px 48px rgba(0,0,0,.22);
+  animation: lnchUp .2s ease-out;
+}
+.lnch-item {
+  display: flex; align-items: center; gap: 12px; width: 100%; min-height: 48px; padding: 0 12px;
+  border: none; background: none; border-radius: 10px; cursor: pointer;
+  color: #0d2a5c; font: 600 15px/1.2 inherit; font-family: inherit; text-decoration: none;
+  transition: transform .15s ease-out;
+}
+.lnch-item:active { transform: scale(.97); background: #f1f5f9; }
+.lnch-ico { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex: none; background: #0d2a5c; color: #fff; }
+.lnch-ico.wa { background: #25D366; }
+.lnch-scrim { position: fixed; inset: 0; z-index: 9996; background: rgba(9,30,64,.28); animation: lnchFade .2s ease-out; }
+.lnch-bubble {
+  position: fixed; right: 16px; z-index: 9997; max-width: 240px; background: #fff; border-radius: 16px;
+  padding: 12px 16px; box-shadow: 0 8px 32px rgba(0,0,0,.15); border: 1px solid rgba(26,79,160,.12);
+  bottom: calc(var(--fab-bottom, 16px) + 52px + 14px + env(safe-area-inset-bottom, 0px));
+  animation: lnchFade .2s ease-out;
+}
+.lnch-panel {
+  position: fixed; right: 16px; z-index: 9997; width: min(320px, calc(100vw - 32px)); background: #fff;
+  border-radius: 20px; box-shadow: 0 16px 64px rgba(0,0,0,.18); border: 1px solid rgba(26,79,160,.1);
+  overflow: hidden; max-height: calc(100dvh - 100px);
+  bottom: calc(var(--fab-bottom, 16px) + 52px + 12px + env(safe-area-inset-bottom, 0px));
+  overflow-y: auto; animation: lnchUp .2s ease-out;
+}
+@keyframes lnchFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes lnchUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) {
+  .lnch-root, .lnch-fab, .lnch-item { transition: opacity .2s linear; }
+  .lnch-root[data-hidden="true"] { transform: none; }
+  .lnch-menu, .lnch-panel { animation: lnchFade .2s linear; }
 }
 
 /* ── Moment sukcesu po wysłaniu formularza - znaczek "rysuje się" + delikatne wjechanie ── */

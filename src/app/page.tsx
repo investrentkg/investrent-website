@@ -22,7 +22,6 @@ import Team          from '@/components/Team'
 import Contact       from '@/components/Contact'
 import Footer        from '@/components/Footer'
 import MortgageCalcSection from '@/components/MortgageCalcSection'
-import FloatingWA    from '@/components/FloatingWA'
 import SocialSidebar from '@/components/SocialSidebar'
 import type { Office } from '@/types'
 
@@ -103,7 +102,6 @@ export default async function Home() {
         <MortgageCalcSection />
       </main>
       <Footer        office={office} />
-      <FloatingWA />
 
       <SocialSidebar office={office} />
     </>
