@@ -2,11 +2,22 @@ import type { Metadata } from 'next'
 import LegalShell, { H2, P, Ph } from '@/components/legal/LegalShell'
 
 // Impressum (Anbieterkennzeichnung, § 5 DDG - dawniej § 5 TMG) dla odbiorcow z
-// Niemiec. Po przegladzie prawnym z 25.09.2026 (uwagi 5-7, 19-22): teksty prawnika
-// wdrozone, dane spolki z odpisu KRS/VIES z 25.09.2026 (_wspolne_pliki\dane_spolki_do_impressum_2026_09_25.md).
-// Placeholdery (zolte) = WYLACZNIE dane od Daniela: sad rejestrowy, imiona i nazwiska
-// zarzadu, polisa OC (ubezpieczyciel/adres/zasieg), osoba odpowiedzialna za tresci (§ 18 MStV).
-// STATUS: PROJEKT DO PRZEGLADU PRAWNIKA.
+// Niemiec. Po przegladzie prawnym z 25.09.2026 (uwagi 5-7, 19-22, runda 2 w
+// _wspolne_pliki\przeglad_prawny_de_runda2_2026_09_25.md) i po finalnych odpowiedziach
+// Daniela z 27.09.2026: sad rejestrowy, zarzad i OC sa juz WYPELNIONE ponizej.
+// Sekcja § 18 MStV zostala USUNIETA decyzja Daniela (kampania reklamowa, brak
+// dedykowanych tresci redakcyjnych po niemiecku - patrz komentarz przy dawnej sekcji).
+//
+// WAZNA DECYZJA BIZNESOWA (27.09.2026, do wiadomosci kazdego, kto edytuje ta strone):
+// § 34c GewO (czy oferowanie posrednictwa zdalnie z Polski kupujacym z Niemiec wymaga
+// niemieckiego zezwolenia) NIE zostalo potwierdzone opinia kancelarii z kompetencja
+// niemiecka - Agent Prawnik oznaczyl to jako pytanie wymagajace takiej opinii (przeglad
+// 25.09.2026, pytanie 2 do kancelarii). Daniel zdecydowal 27.09.2026 ruszyc bez tej
+// opinii, na podstawie wlasnej obserwacji rynku ("wiele biur robi marketing na klientow
+// niemieckich bez dodatkowych pozwolen"), NIE na podstawie formalnej opinii prawnej.
+// To ryzyko ZAAKCEPTOWANE PRZEZ WLASCICIELA FIRMY, swiadomie i wprost, nie pominiete.
+// Srodki ostroznosci utrzymane w tekscie ponizej: brak spotkan/targow w Niemczech,
+// dzialalnosc opisana jako "swiadczona z Polski, dotyczy nieruchomosci w Polsce".
 
 export const metadata: Metadata = {
   title: 'Impressum',
@@ -22,18 +33,19 @@ export default function ImpressumPage() {
     <LegalShell title="Impressum">
       <H2>Angaben gemäß § 5 DDG</H2>
       <P>
-        Investrent sp. z o.o. (INVESTRENT SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ)<br />
+        Investrent sp. z o.o. (INVESTRENT SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ), Handelsname: InvestRent<br />
         ul. Ratuszowa 12/1 lok. 3<br />
         78-100 Kołobrzeg (Kolberg)<br />
         Polen
         {/* Dane z odpisu KRS/VIES z 25.09.2026 — do weryfikacji przed publikacja */}
-        {/* ERLEDIGT: adres "12/1 lok. 3" jest poprawny wg KRS (nr domu 12, lokal 1 lok. 3) - to nie jest dublowanie. Nazwa handlowa wobec DE ("Invest Rent Nieruchomosci" vs "Investrent sp. z o.o.") - decyzja Daniela (pkt 14); tu uzyta pelna firma zgodna z KRS. */}
+        {/* ERLEDIGT: adres "12/1 lok. 3" jest poprawny wg KRS (nr domu 12, lokal 1 lok. 3) - to nie jest dublowanie. Nazwa handlowa "InvestRent" dodana obok pelnej firmy zgodnie z decyzja Daniela 27.09.2026 (marka w komunikacji, pelna nazwa prawna tam gdzie wymagana). */}
       </P>
       <P>
         Rechtsform: Gesellschaft mit beschränkter Haftung nach polnischem Recht (spółka z ograniczoną odpowiedzialnością)
       </P>
       <P>
-        Vertretungsberechtigt: Vorstand (zarząd), jedes der zwei Vorstandsmitglieder ist einzelvertretungsberechtigt: <Ph>[Vor- und Nachname der beiden Vorstandsmitglieder]</Ph>
+        Vertretungsberechtigt: Vorstand (zarząd), jedes der zwei Vorstandsmitglieder ist einzelvertretungsberechtigt: Daniel Kamiński, Dawid Sadownik.
+        {/* ZAMKNIETE 27.09.2026: imiona zarzadu potwierdzone przez Daniela. */}
       </P>
 
       <H2>Kontakt</H2>
@@ -46,10 +58,10 @@ export default function ImpressumPage() {
       <H2>Registereintrag</H2>
       <P>
         Eingetragen im Handelsregister (Krajowy Rejestr Sądowy, KRS): KRS-Nummer 0001069797<br />
-        Registergericht: <Ph>[Registergericht – laut KRS-Auszug bestätigen, z. B. Sąd Rejonowy w Koszalinie, IX Wydział Gospodarczy KRS]</Ph><br />
+        Registergericht: Sąd Rejonowy w Koszalinie, IX Wydział Gospodarczy Krajowego Rejestru Sądowego (Amtsgericht Koszalin, IX. Wirtschaftsabteilung des Landesgerichtsregisters)<br />
         REGON: 526973936<br />
         Stammkapital: 5.000,00 PLN (eingezahlt)
-        {/* Dane z odpisu KRS/VIES z 25.09.2026 — do weryfikacji przed publikacja */}
+        {/* Dane z odpisu KRS/VIES z 25.09.2026. Sad rejestrowy potwierdzony przez Daniela 27.09.2026 - do zweryfikowania z pelnym odpisem KRS przy publikacji. */}
         {/* PRAWNIK (uwaga 5): kapital 5 000 PLN wg KRS; "eingezahlt" - w sp. z o.o. kapital pokrywa sie wkladami wniesionymi przed rejestracja; kancelaria potwierdza brzmienie (§ 5 DDG / dyrektywa 2009/101/WE - przy podaniu kapitalu nalezy podac, ile wplacono). */}
       </P>
 
@@ -63,15 +75,10 @@ export default function ImpressumPage() {
 
       <H2>Berufsrechtliche Angaben</H2>
       <P>
-        Tätigkeit: Vermittlung von Immobilien (Immobilienmakler nach polnischem Recht, pośrednik w obrocie nieruchomościami). Eine behördliche Erlaubnis oder Registrierung ist für diese Tätigkeit in Polen nicht erforderlich; eine Aufsichtsbehörde im Sinne des § 5 Abs. 1 Nr. 4 DDG besteht daher nicht. Unsere Tätigkeit bezieht sich auf Immobilien in der Republik Polen und wird von Polen aus erbracht.<br />
-        Berufshaftpflichtversicherung (nach polnischem Recht vorgeschrieben): <Ph>[Versicherer], [Anschrift des Versicherers]</Ph>. Räumlicher Geltungsbereich: <Ph>[z. B. Republik Polen / Europäische Union – laut Police bestätigen]</Ph>.
-        {/* ERLEDIGT (Przeglad 3.11, uwaga 6-7): "verliehen"/organ nadzorczy/licencja zastapione tekstem prawnika (licencja posrednika zniesiona 1.01.2014). Daniel: dane ubezpieczyciela OC i zasieg terytorialny (czy obejmuje klientow z DE). PRAWNIK: § 34c GewO (uwaga 22) - decyzja/opinia kancelarii; zdanie "dotyczy nieruchomosci w RP, swiadczona z Polski" zgodne z zaleceniem ostroznosciowym (b). */}
-      </P>
-
-      <H2>Verantwortlich für den Inhalt</H2>
-      <P>
-        Verantwortlich für redaktionelle Inhalte (§ 18 Abs. 2 MStV): <Ph>[Vor- und Nachname], Anschrift wie oben – entfällt, wenn auf der deutschen Version keine redaktionellen Inhalte veröffentlicht werden</Ph>
-        {/* PRAWNIK (uwaga 20): pole potrzebne tylko jesli po niemiecku sa tresci redakcyjne (blog jest obecnie tylko po polsku) - decyzja Daniela (pkt 8 listy): wskazac osobe albo usunac sekcje. */}
+        Tätigkeit: Vermittlung von Immobilien (Immobilienmakler nach polnischem Recht, pośrednik w obrocie nieruchomościami). Eine behördliche Erlaubnis oder Registrierung ist für diese Tätigkeit in Polen nicht erforderlich; eine Aufsichtsbehörde im Sinne des § 5 Abs. 1 Nr. 4 DDG besteht daher nicht. Unsere Tätigkeit bezieht sich ausschließlich auf Immobilien in der Republik Polen und wird von Polen aus erbracht; wir unterhalten keine Niederlassung, kein Personal und keine regelmäßigen Präsenzveranstaltungen (Messen, Vorträge, Besichtigungstermine vor Ort) in Deutschland.<br />
+        Berufshaftpflichtversicherung (nach polnischem Recht vorgeschrieben): PZU SA, Rondo Ignacego Daszyńskiego 4, 00-843 Warszawa (Versicherungssumme: 25.000 EUR je Schadenfall und insgesamt). Räumlicher Geltungsbereich: Republik Polen.
+        {/* ERLEDIGT (Przeglad 3.11, uwaga 6-7): "verliehen"/organ nadzorczy/licencja zastapione tekstem prawnika (licencja posrednika zniesiona 1.01.2014). OC: PZU SA, suma 25 000 EUR, zasieg Polska (decyzja Daniela 25.09.2026: dzialamy tylko w Polsce - zgodne z zasada nadrzedna z 27.09.2026 nizej). */}
+        {/* DECYZJA BIZNESOWA 27.09.2026 (§ 34c GewO, patrz komentarz na gorze pliku): zdanie o braku dzialalnosci fizycznej w Niemczech to swiadomy srodek ostroznosci przyjety przez Daniela BEZ formalnej opinii kancelarii niemieckiej - Agent Prawnik zaznaczyl to ryzyko wprost (pytanie 2 do kancelarii z przegladu 25.09.2026), Daniel zdecydowal ruszyc kampanie na podstawie wlasnej obserwacji rynku. */}
       </P>
 
       <H2>Verbraucherstreitbeilegung</H2>
