@@ -36,13 +36,17 @@ export const INVESTRENT_CONFIG: CalculatorConfig = {
     'Kobylanka', 'Bezrzecze', 'Mierzyn', 'Skolwin', 'Dobra Szczecińska', 'Kołbaskowo',
   ],
   // Nazwy WYLACZNIE z danych/polityki (nie z pamieci): ogloszenia w portal_listings_archive (address_district, miasto Kolobrzeg,
-  // >= 8 ogloszen, odczyt 26.09.2026: Podczele, Radzikowo, Zachodnia, Srodmiescie, "Kolobrzeg Centrum") oraz BLOCKED_DISTRICT_PATTERNS
-  // backendu (srodmiesc, centrum, stare miasto). Lista jest CZESCIOWA; brak na liscie = "Inna dzielnica".
+  // >= 8 ogloszen, odczyt 26.09.2026: Podczele, Radzikowo, Zachodnia, Srodmiescie, "Kolobrzeg Centrum"). Lista jest CZESCIOWA;
+  // brak na liscie = "Inna dzielnica" (nadal dopuszczona do widelek online dla miasta domowego - patrz locationAllowsNumbers backendu).
   districts: ['Śródmieście', 'Centrum', 'Stare Miasto', 'Podczele', 'Radzikowo', 'Zachodnia'],
-  restrictedDistrictPatterns: ['srodmiesc', 'centrum', 'stare miasto'],
+  // ZMIANA 27.09.2026 (decyzja Daniela, "musimy miec to rozszerzone... nie do pomyslenia zeby na tak mala miejscowosc jak
+  // Kolobrzeg dac trzy dzielnice na krzyz"): wczesniej wykluczone Srodmiescie/Centrum/Stare Miasto (backtest 24.09 pokazal
+  // slaba trafnosc widelek tam) sa teraz DOPUSZCZONE - lustro zmiany backendu (publicValuationRules.ts PR #570, usuniecie
+  // BLOCKED_DISTRICT_PATTERNS). Ryzyko nizszej precyzji swiadomie zaakceptowane przez biuro.
+  restrictedDistrictPatterns: [],
   otherCity: 'Inna lokalizacja',
   otherDistrict: 'Inna dzielnica',
-  districtsSource: 'portal_listings_archive.address_district (miasto Kołobrzeg, >= 8 ogłoszeń, odczyt 26.09.2026) + BLOCKED_DISTRICT_PATTERNS backendu (publicValuationRules.ts); przegląd listy: decyzja Daniela, biuro (26.09.2026): Grzybowo, Bogucino, Budzistowo, Zieleniewo i Dźwirzyno to osobne miejscowości (nie dzielnice Kołobrzegu); docelowo rejestr urzędowy (TERYT/SIMC lub wykaz osiedli w BIP miasta)',
+  districtsSource: 'portal_listings_archive.address_district (miasto Kołobrzeg, >= 8 ogłoszeń, odczyt 26.09.2026); przegląd listy: decyzja Daniela, biuro (26.09.2026): Grzybowo, Bogucino, Budzistowo, Zieleniewo i Dźwirzyno to osobne miejscowości (nie dzielnice Kołobrzegu); docelowo rejestr urzędowy (TERYT/SIMC lub wykaz osiedli w BIP miasta)',
   districtsReviewedAt: '2026-09-26',
   // Decyzja biura 26.09.2026: te 5 miejscowosci klient wybiera jako MIEJSCOWOSC, nigdy jako dzielnice Kolobrzegu. "Bogucin" -> forma urzedowa Bogucino.
   cityAliases: { bogucin: 'Bogucino' },
