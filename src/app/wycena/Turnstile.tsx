@@ -12,6 +12,7 @@ type TurnstileApi = {
   render: (el: HTMLElement, opts: Record<string, unknown>) => string
   reset: (id?: string) => void
   remove: (id?: string) => void
+  execute: (id?: string) => void
 }
 declare global { interface Window { turnstile?: TurnstileApi } }
 
@@ -51,14 +52,28 @@ export default function Turnstile({ siteKey, resetKey, onToken, onFail }: {
       widgetId.current = window.turnstile.render(box.current, {
         sitekey: siteKey,
         appearance: 'interaction-only',
+        // NAPRAWA (27.09, test na zywo w przegladarce - klikniecie "Pokaz orientacyjna wycene"
+        // nie robilo NIC, zero zadan sieciowych): domyslnie (execution: 'render', wartosc
+        // domyslna gdy pominieta) Cloudflare NIE uruchamia weryfikacji dopoki kontener widgetu
+        // nie wejdzie w viewport (wewnetrzny IntersectionObserver skryptu Turnstile) - a widget
+        // jest umieszczony NISKO w dlugim formularzu, ponizej wielu pol. Potwierdzone empirycznie:
+        // na swiezo zaladowanej stronie, bez przewiniecia do widgetu, po 8 s zero iframe'ow i
+        // cf-turnstile-response.value pozostawal pusty na zawsze; dopiero przewiniecie widgetu
+        // do widoku uruchamialo faktyczne zadanie do challenges.cloudflare.com/cdn-cgi/... .
+        // "execution: 'execute'" wylacza to opoznienie - render() tylko tworzy widget, a
+        // execute() ponizej odpala weryfikacje OD RAZU, niezaleznie od scrolla, wiec token jest
+        // zwykle gotowy zanim uzytkownik dojdzie do przycisku (a jesli Cloudflare uzna ze
+        // interakcja jest potrzebna, widget i tak pokaze sie od razu zamiast czekac w nieskonczonosc).
+        execution: 'execute',
         language: 'pl',
         callback: (t: string) => cb.current.onToken(t),
-        'expired-callback': () => { cb.current.onToken(null); try { window.turnstile?.reset(widgetId.current ?? undefined) } catch { /* noop */ } },
+        'expired-callback': () => { cb.current.onToken(null); try { window.turnstile?.reset(widgetId.current ?? undefined); window.turnstile?.execute(widgetId.current ?? undefined) } catch { /* noop */ } },
         'timeout-callback': () => cb.current.onToken(null),
         'error-callback': () => { cb.current.onToken(null); cb.current.onFail() },
       })
       // v12: ukryte pole odpowiedzi (cf-turnstile-response) nie jest elementem interfejsu - poza drzewem dostepnosci; sam widzet (gdy wymaga interakcji) zostaje dostepny
       box.current.querySelectorAll('input[name="cf-turnstile-response"]').forEach(el => el.setAttribute('aria-hidden', 'true'))
+      try { if (widgetId.current) window.turnstile.execute(widgetId.current) } catch { /* noop */ }
     }).catch(() => { if (!cancelled) cb.current.onFail() })
     return () => {
       cancelled = true
@@ -69,7 +84,10 @@ export default function Turnstile({ siteKey, resetKey, onToken, onFail }: {
 
   useEffect(() => {
     if (resetKey === 0) return
-    try { if (widgetId.current) window.turnstile?.reset(widgetId.current) } catch { /* noop */ }
+    // reset() sam nie uruchamia ponownej weryfikacji w trybie execution:'execute' -
+    // bez tego execute() token na kolejne wyslanie (np. ponowna wycena, krok z numerem
+    // telefonu) czekalby znowu na scroll/widocznosc, czyli ten sam blad co przy pierwszym uzyciu.
+    try { if (widgetId.current) { window.turnstile?.reset(widgetId.current); window.turnstile?.execute(widgetId.current) } } catch { /* noop */ }
   }, [resetKey])
 
   return <div ref={box} aria-label="Weryfikacja antyspamowa Cloudflare Turnstile" />
