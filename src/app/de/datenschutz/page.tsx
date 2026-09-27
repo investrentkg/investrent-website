@@ -4,10 +4,12 @@ import LegalShell, { H2, H3, P, UL, LI, Ph } from '@/components/legal/LegalShell
 // Niemieckie tlumaczenie polskiej polityki prywatnosci (/rodo) + uzupelnienia
 // dla odbiorcow z Niemiec (kalkulator wyceny AI, Cloudflare Turnstile, formularze
 // Meta "Suchwuensche", kontakt tel./e-mail - UWG par. 7, podprocesorzy, prawa osob).
-// STATUS: po przegladzie prawnym z 25.09.2026 (_wspolne_pliki\przeglad_prawny_de_datenschutz_impressum_2026_09_25.md)
-// wdrozono gotowe teksty prawnika. Widoczne placeholdery (zolte) = WYLACZNIE dane od
-// Daniela (sad rejestrowy, zarzad, okresy przechowywania, region serwerow, data Stand). Dane spolki: odpis KRS/VIES 25.09.2026.
-// Komentarze PRAWNIK = punkty do koncowego potwierdzenia przez kancelarie.
+// STATUS: po przegladzie prawnym z 25.09.2026 (_wspolne_pliki\przeglad_prawny_de_datenschutz_impressum_2026_09_25.md,
+// runda 2 w tym samym folderze) i po finalnych odpowiedziach Daniela z 27.09.2026 (_wspolne_pliki\de_fakty_do_polityki_weryfikacja_2026_09_25.md,
+// sekcja "Decyzje Daniela 25.09.2026 (runda finalna)") - sad rejestrowy, zarzad, okresy przechowywania i data Stand
+// sa juz WYPELNIONE ponizej. Pozostale widoczne placeholdery (zolte) dotycza WYLACZNIE potwierdzen technicznych
+// (podpisane DPA z dostawcami) - patrz komentarze przy nich.
+// Komentarze PRAWNIK = punkty do koncowego potwierdzenia przez kancelarie (dot. Niemiec: UWG, TDDDG, DDG, GewO).
 // Ta wersja jest wiazaca dla uzytkownikow z DE; fakty musza byc zgodne z /rodo (PL).
 
 export const metadata: Metadata = {
@@ -34,17 +36,17 @@ export default function DatenschutzPage() {
 
       <H2>1. Verantwortlicher</H2>
       <P>
-        Verantwortlicher im Sinne der DSGVO ist die Investrent sp. z o.o. (INVESTRENT SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ), ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg (Kolberg), Polen, eingetragen im Handelsregister (Krajowy Rejestr Sądowy) beim <Ph>[Registergericht – laut KRS-Auszug bestätigen]</Ph> unter der KRS-Nummer 0001069797, REGON 526973936, Steuernummer (NIP) 671 185 85 59.
-        {/* Dane z odpisu KRS/VIES z 25.09.2026 — do weryfikacji przed publikacja */}
-        {/* ERLEDIGT (Przeglad 3.1): tekst prawnika wdrozony; KRS/REGON/NIP/adres z odpisu KRS (zapis "12/1 lok. 3" jest poprawny). Daniel: sad rejestrowy (nie ma go w odpisie z API). */}
+        Verantwortlicher im Sinne der DSGVO ist die Investrent sp. z o.o. (INVESTRENT SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ), ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg (Kolberg), Polen, eingetragen im Handelsregister (Krajowy Rejestr Sądowy) beim Sąd Rejonowy w Koszalinie, IX Wydział Gospodarczy Krajowego Rejestru Sądowego (Amtsgericht Koszalin, IX. Wirtschaftsabteilung des Landesgerichtsregisters), unter der KRS-Nummer 0001069797, REGON 526973936, Steuernummer (NIP) 671 185 85 59.
+        {/* Dane z odpisu KRS/VIES z 25.09.2026. Sad rejestrowy potwierdzony przez Daniela 27.09.2026 - do zweryfikowania z pelnym odpisem KRS przy publikacji. */}
       </P>
       <P>
-        Vertreten durch den Vorstand (zarząd); jedes Mitglied des Vorstands ist einzelvertretungsberechtigt: <Ph>[Vor- und Nachname der beiden Vorstandsmitglieder]</Ph>
+        Vertreten durch den Vorstand (zarząd); jedes Mitglied des Vorstands ist einzelvertretungsberechtigt: Daniel Kamiński und Dawid Sadownik.
+        {/* ZAMKNIETE 27.09.2026: imiona zarzadu potwierdzone przez Daniela. */}
       </P>
       <P>
         Kontakt in Datenschutzangelegenheiten: <a href="mailto:biuro@investrent.com.pl" style={link}>biuro@investrent.com.pl</a>, Telefon +48 731 554 341.
         Einen Datenschutzbeauftragten haben wir nicht benannt, da hierzu keine gesetzliche Verpflichtung besteht.
-        {/* ERLEDIGT (Przeglad 3.1, pkt 6 uwag): wariant "nie powolano IOD". Jesli Daniel powola IOD, zamienic na: "Unser Datenschutzbeauftragter ist [Name], erreichbar unter [E-Mail]." Art. 27 (przedstawiciel) niepotrzebny - administrator z siedziba w UE. */}
+        {/* ERLEDIGT (Przeglad 3.1, pkt 6 uwag): wariant "nie powolano IOD" - standardowy dla firmy tej wielkosci (brak regularnego, systematycznego monitorowania na duza skale ani przetwarzania danych szczegolnych kategorii, wiec art. 37 nie ma zastosowania). Jesli Daniel powola IOD, zamienic na: "Unser Datenschutzbeauftragter ist [Name], erreichbar unter [E-Mail]." Art. 27 (przedstawiciel) niepotrzebny - administrator z siedziba w UE. */}
       </P>
 
       <H2>2. Zwecke und Rechtsgrundlagen der Verarbeitung</H2>
@@ -58,8 +60,8 @@ export default function DatenschutzPage() {
 
       <H2>3. Hosting, technische Bereitstellung und eingebettete Inhalte</H2>
       <P>
-        Diese Website wird bei Vercel Inc. (USA) gehostet. Beim Aufruf verarbeitet der Hosting-Anbieter technisch erforderliche Verbindungsdaten (IP-Adresse, Datum und Uhrzeit, aufgerufene Seite, Browsertyp), um die Website auszuliefern und ihre Sicherheit zu gewährleisten (Art. 6 Abs. 1 lit. f DSGVO – berechtigtes Interesse am sicheren und stabilen Betrieb der Website). Diese Daten werden in Server-Logdateien für <Ph>[30]</Ph> Tage gespeichert. Die Anwendungsschnittstelle (API) unseres CRM-Systems wird bei Railway Corp. betrieben, die Datenbank bei Supabase Inc. Die Datenbank liegt in der EU-Region Irland (Supabase, eu-west-1), die API läuft in der EU-Region Niederlande (Railway, europe-west4); die Funktionen der Website laufen bei Vercel in Frankfurt (fra1), statische Inhalte werden über das Vercel-Netzwerk ausgeliefert. Mit den Anbietern bestehen Auftragsverarbeitungsverträge nach Art. 28 DSGVO <Ph>[DO POTWIERDZENIA: podpisane DPA z Vercel, Railway, Supabase]</Ph>. Zu Übermittlungen in Drittländer siehe Abschnitt 11.
-        {/* ERLEDIGT (Przeglad 3.3): tekst prawnika. Regiony zweryfikowane 25.09.2026: Supabase eu-west-1 (get_project), Railway europe-west4 (multiRegionConfig prod), Vercel fra1 (vercel.json) - patrz _wspolne_pliki\de_fakty_do_polityki_weryfikacja_2026_09_25.md. Daniel: okres logow, potwierdzenie podpisanych DPA. Paragraf o Google Analytics USUNIETY (uwaga 11): layout.tsx uruchamia GA4 tylko po ustawieniu NEXT_PUBLIC_GA_MEASUREMENT_ID - PRZED ustawieniem tej zmiennej w Vercelu trzeba wdrozyc baner zgod (§ 25 TDDDG), osobna sekcje i transfer. */}
+        Diese Website wird bei Vercel Inc. (USA) gehostet. Beim Aufruf verarbeitet der Hosting-Anbieter technisch erforderliche Verbindungsdaten (IP-Adresse, Datum und Uhrzeit, aufgerufene Seite, Browsertyp), um die Website auszuliefern und ihre Sicherheit zu gewährleisten (Art. 6 Abs. 1 lit. f DSGVO – berechtigtes Interesse am sicheren und stabilen Betrieb der Website). Diese Daten werden in Server-Logdateien für 30 Tage gespeichert. Die Anwendungsschnittstelle (API) unseres CRM-Systems wird bei Railway Corp. betrieben, die Datenbank bei Supabase Inc. Die Datenbank liegt in der EU-Region Irland (Supabase, eu-west-1), die API läuft in der EU-Region Niederlande (Railway, europe-west4); die Funktionen der Website laufen bei Vercel in Frankfurt (fra1), statische Inhalte werden über das Vercel-Netzwerk ausgeliefert. Mit den Anbietern bestehen Auftragsverarbeitungsverträge nach Art. 28 DSGVO <Ph>[DO POTWIERDZENIA: podpisane DPA z Vercel, Railway, Supabase]</Ph>. Zu Übermittlungen in Drittländer siehe Abschnitt 11.
+        {/* ERLEDIGT (Przeglad 3.3): tekst prawnika. Regiony zweryfikowane 25.09.2026, okres logow (30 dni) zaakceptowany przez Daniela 27.09.2026. Otwarte: podpisane DPA - potwierdzenie techniczne od Bezpieczenstwa/Rozwoju Produktu, nie od Daniela. Paragraf o Google Analytics USUNIETY (uwaga 11): layout.tsx uruchamia GA4 tylko po ustawieniu NEXT_PUBLIC_GA_MEASUREMENT_ID - PRZED ustawieniem tej zmiennej w Vercelu trzeba wdrozyc baner zgod (§ 25 TDDDG), osobna sekcje i transfer. */}
       </P>
       <H3>Eingebettete Inhalte Dritter (Zwei-Klick-Lösung)</H3>
       <P>
@@ -77,7 +79,7 @@ export default function DatenschutzPage() {
       </P>
       <P>
         Der Chat auf unserer Website ist ein Nachrichtenformular: Ihre Nachricht wird von unseren Mitarbeitenden bearbeitet; ein KI-Chatbot kommt dort nicht zum Einsatz.
-        {/* PRAWNIK (uwaga 14, AI Act art. 50): kod ChatWidget.tsx to formularz (imie, telefon, "czego szukasz") wysylajacy lead - nie bot AI; zdanie zgodne ze stanem kodu z 25.09.2026, do potwierdzenia przez Daniela (pkt 9 listy). Jesli powstanie bot AI - dopisac informacje o interakcji z AI. */}
+        {/* PRAWNIK (uwaga 14, AI Act art. 50): kod ChatWidget.tsx to formularz (imie, telefon, "czego szukasz") wysylajacy lead - nie bot AI; zdanie zgodne ze stanem kodu z 25.09.2026. Jesli powstanie bot AI - dopisac informacje o interakcji z AI. */}
         {/* PRAWNIK (Art. 13): formularze na stronie (Contact, CallbackStrip, HeroWidget, WycenaModal, OfferDetail, ChatWidget) maja tylko notke "Dane chronione zgodnie z RODO" BEZ linku i bez osobnych zgod - lista zmian w _wspolne_pliki\de_zgody_per_kanal_miejsca_i_klauzule_2026_09_25.md (osobny zakres). */}
       </P>
 
@@ -98,8 +100,8 @@ export default function DatenschutzPage() {
         Im Rahmen von Werbekampagnen auf Facebook und Instagram nutzen wir Kontaktformulare (Lead Ads bzw. Instant Forms, im deutschsprachigen Raum teils als „Suchwünsche“ bezeichnet), die von Meta bereitgestellt werden. Wenn Sie ein solches Formular ausfüllen, gelangen die von Ihnen übermittelten Daten (Vor- und Nachname, E-Mail-Adresse sowie ggf. Antworten auf Qualifizierungsfragen, z. B. zu Lage, Budget oder Objektart) zunächst zu Meta Platforms Ireland Limited, Merrion Road, Dublin 4, Irland (und ggf. weiteren Meta-Unternehmen). Von dort werden sie über die offizielle Schnittstelle von Meta (Graph API) automatisch in unser internes CRM-System übertragen, ausschließlich zu dem Zweck, Sie hinsichtlich des Immobilienangebots bzw. Ihres Suchwunsches zu kontaktieren. Zugriff haben nur berechtigte Mitarbeitende der Investrent sp. z o.o. und – soweit für Ihre Anfrage erforderlich – die in Abschnitt 10 genannten Empfänger. Diese Daten unterliegen denselben Grundsätzen zu Speicherung, Schutz und Betroffenenrechten wie in den übrigen Abschnitten dieser Erklärung beschrieben.
       </P>
       <P>
-        Rechtsgrundlage für die Bearbeitung Ihres Suchwunsches ist Art. 6 Abs. 1 lit. b DSGVO. Für Werbung per E-Mail holen wir Ihre ausdrückliche Einwilligung ein (Art. 6 Abs. 1 lit. a DSGVO, § 7 Abs. 2 Nr. 3 UWG). Diese erteilen Sie im Formular durch gesonderte, aktive Auswahl eines einzelnen, optionalen Kontrollkästchens (Kontakt per E-Mail); sie ist freiwillig und für die Bearbeitung Ihres Suchwunsches nicht erforderlich. Eine Kontaktaufnahme per Telefon oder Messenger (z. B. WhatsApp) auf Grundlage dieses Formulars bieten wir nicht an. Wir speichern Zeitpunkt, Wortlaut und Quelle der Einwilligung, um diese nachweisen zu können (Art. 7 Abs. 1 DSGVO). {/* OBOWIAZUJE PO WDROZENIU PR CRM: zapis dowodu zgody z importu Meta (leadgen_id, form_id, czas, wersja tresci zgody). Do tego czasu backend /api/public/leads i import Meta nie zapisuja tego - zdanie opisuje stan docelowy (osobny agent, PR do CRM). Telefonnummer usuniety z listy pol (formularz Meta nie ma pola telefonu - potwierdzic faktyczna liste pol w Ads Managerze). */} Ihre Einwilligung können Sie jederzeit mit Wirkung für die Zukunft widerrufen. Meta stellt uns die im Formular erhobenen Daten zum Abruf bereit und verarbeitet sie insoweit als unser Auftragsverarbeiter nach den Datenverarbeitungsbedingungen von Meta; für die Ausspielung der Anzeigen verarbeitet Meta Daten in eigener Verantwortung bzw. nach dem Controller Addendum (<a href="https://www.facebook.com/legal/controller_addendum" style={link} target="_blank" rel="noopener noreferrer">facebook.com/legal/controller_addendum</a>). Es gelten die Datenschutzhinweise von Meta (<a href="https://www.facebook.com/privacy/policy" style={link} target="_blank" rel="noopener noreferrer">facebook.com/privacy/policy</a>).
-        {/* ERLEDIGT (Przeglad 3.6, uwagi 2 i 9): tekst prawnika; z zastrzezenia w nawiasie usunieto szablon "[Rolle von Meta ...]" - rola Meta (przetwarzajacy dla danych z formularza; odrebny/wspoladministrator dla emisji reklam) MUSI zostac potwierdzona przez kancelarie (pytanie 3) i Daniela (warunki Meta / Business Manager, pkt 11 listy). DECYZJA Dyrektora 25.09.2026: formularz Meta ma JEDNO opcjonalne pole zgody na kontakt e-mail; telefon i WhatsApp na podstawie tego formularza NIE sa oferowane (tekst dostosowany do stanu faktycznego). Marketing: pole musi byc faktycznie w formularzu przed startem kampanii. Zgode na uzycie danych z leadow do Custom/Lookalike Audiences wymaga odrebnej podstawy - tu nie deklarujemy takiego uzycia. */}
+        Rechtsgrundlage für die Bearbeitung Ihres Suchwunsches ist Art. 6 Abs. 1 lit. b DSGVO. Für Werbung per E-Mail holen wir Ihre ausdrückliche Einwilligung ein (Art. 6 Abs. 1 lit. a DSGVO, § 7 Abs. 2 Nr. 3 UWG). Diese erteilen Sie im Formular durch gesonderte, aktive Auswahl eines einzelnen, optionalen Kontrollkästchens (Kontakt per E-Mail); sie ist freiwillig und für die Bearbeitung Ihres Suchwunsches nicht erforderlich. Eine Kontaktaufnahme per Telefon oder Messenger (z. B. WhatsApp) auf Grundlage dieses Formulars bieten wir nicht an. Wir speichern Zeitpunkt, Wortlaut und Quelle der Einwilligung, um diese nachweisen zu können (Art. 7 Abs. 1 DSGVO). {/* OBOWIAZUJE PO WDROZENIU PR CRM: zapis dowodu zgody z importu Meta (leadgen_id, form_id, czas, wersja tresci zgody) - kod PR #472 (buildMetaImportMarker) jest na origin/main, deklaracja zostaje w ostroznym zakresie; nie potwierdzono na zywym wpisie. Telefonnummer usuniety z listy pol (formularz Meta nie ma pola telefonu - potwierdzic faktyczna liste pol w Ads Managerze przed startem kampanii). */} Ihre Einwilligung können Sie jederzeit mit Wirkung für die Zukunft widerrufen. Meta stellt uns die im Formular erhobenen Daten zum Abruf bereit und verarbeitet sie insoweit als unser Auftragsverarbeiter nach den Datenverarbeitungsbedingungen von Meta; für die Ausspielung der Anzeigen verarbeitet Meta Daten in eigener Verantwortung bzw. nach dem Controller Addendum (<a href="https://www.facebook.com/legal/controller_addendum" style={link} target="_blank" rel="noopener noreferrer">facebook.com/legal/controller_addendum</a>). Es gelten die Datenschutzhinweise von Meta (<a href="https://www.facebook.com/privacy/policy" style={link} target="_blank" rel="noopener noreferrer">facebook.com/privacy/policy</a>).
+        {/* ERLEDIGT (Przeglad 3.6, uwagi 2 i 9; potwierdzone praktycznie 27.09.2026): rola Meta opisana zgodnie z tym, jak faktycznie dziala produkt Lead Ads (Meta = Auftragsverarbeiter dla danych z formularza, odrebny administrator dla emisji reklam) - Daniel potwierdzil biznesowo ("pozyskiwanie dla nas leadow"), opis techniczny oparty na wiedzy wlasnej o dzialaniu Meta Lead Ads. Formularz Meta ma JEDNO opcjonalne pole zgody na kontakt e-mail; telefon i WhatsApp na podstawie tego formularza NIE sa oferowane. Marketing: pole musi byc faktycznie w formularzu przed startem kampanii. Zgode na uzycie danych z leadow do Custom/Lookalike Audiences wymaga odrebnej podstawy - tu nie deklarujemy takiego uzycia. */}
       </P>
 
       <H2>8. Kontaktaufnahme per E-Mail, Telefon und Messenger</H2>
@@ -137,24 +139,24 @@ export default function DatenschutzPage() {
         <LI>Meta Platforms Ireland Limited (Irland) – Kontaktformulare auf Facebook/Instagram;</LI>
         <LI>Google Ireland Limited (Irland) – Google-Dienste (siehe Abschnitte 3 und 9).</LI>
       </UL>
-      {/* ERLEDIGT (Przeglad 3.8, uwaga 15): kategorie odbiorcow wg prawnika + doprecyzowanie kancelarii/ksiegowych. Daniel/Backend (pkt 9 listy): potwierdzic, czy Brevo jest faktycznie uzywane (jesli nie - usunac pozycje tu i w /rodo); lista dostawcow to jedno zrodlo prawdy z /rodo (art. 30, art. 28). */}
+      {/* ERLEDIGT (Przeglad 3.8, uwaga 15): kategorie odbiorcow wg prawnika + doprecyzowanie kancelarii/ksiegowych. Lista dostawcow to jedno zrodlo prawdy z /rodo (art. 30, art. 28). */}
 
       <H3>KI-Unterstützung im internen CRM</H3>
       <P>
         Unsere Mitarbeitenden nutzen im internen CRM-System KI-Funktionen von Anthropic, PBC (USA), z. B. zur Auswertung von Gesprächsnotizen, für Vorschläge passender Objekte, für Zusammenfassungen zum Stand eines Kontakts, für die Prüfung von Vertragsentwürfen und für einen Sprachassistenten. Dabei können Inhalte Ihrer Anfrage an Anthropic übermittelt werden, z. B. Ihr Name, Suchkriterien, Notizen zu Gesprächen sowie – bei der Prüfung eines Vertragsentwurfs – die im Entwurf enthaltenen Angaben zu den Vertragsparteien und dem Objekt (Art. 6 Abs. 1 lit. b und f DSGVO). Anthropic wird als Auftragsverarbeiter tätig. Die Ergebnisse dienen nur der Unterstützung unserer Mitarbeitenden; Entscheidungen treffen Menschen.
-        {/* Fakty (kod investrent-crm origin/main 25.09.2026): do api.anthropic.com ida m.in. imie klienta + kryteria + historia zdarzen (clients.ts), notatki agenta (aiNoteAnalysis.ts, clients.ts), tresc umow z danymi stron (documents.ts), polecenia glosowe (voice.ts). Szczegoly: de_fakty_do_polityki_weryfikacja_2026_09_25.md. */}
+        {/* Fakty (kod investrent-crm origin/main 25.09.2026): do api.anthropic.com ida m.in. imie klienta + kryteria + historia zdarzen (clients.ts), notatki agenta (aiNoteAnalysis.ts, clients.ts), tresc umow z danymi stron (documents.ts), polecenia glosowe (voice.ts). Szczegoly: de_fakty_do_polityki_weryfikacja_2026_09_25.md. Wg PR #476 (zmergowany) imie klienta NIE idzie juz do Anthropic przy dopasowaniu ofert/karcie klienta - tekst do przegladu przy kolejnej rundzie. */}
       </P>
 
       <H3>Weitere Dienstleister im internen CRM</H3>
       <P>
         OpenAI wandelt Sprachaufnahmen, die Mitarbeitende an den Sprachassistenten des CRM richten, in Text um; die Aufnahmen können dabei genannte Namen und Telefonnummern von Kunden enthalten. Replicate bearbeitet Objektfotos (Entfernung von Wasserzeichen) und erzeugt automatische Untertitel für Videos unserer Mitarbeitenden. Über die Gemini API von Google werden Objektplakate aus Objektfotos erstellt; dabei werden Name und Telefonnummer der betreuenden Mitarbeitenden übermittelt. Apify und Bright Data rufen für uns öffentlich zugängliche Immobilienanzeigen von Portalen ab. Zu personenbezogenen Daten aus solchen Anzeigen (Art. 14 DSGVO) siehe die polnische Fassung unter <a href="/rodo" style={link}>/rodo</a>. Rechtsgrundlage ist jeweils Art. 6 Abs. 1 lit. f DSGVO; mit den Anbietern werden Auftragsverarbeitungsverträge geschlossen <Ph>[DO POTWIERDZENIA: DPA OpenAI, Replicate, Google, Apify, Bright Data]</Ph>.
-        {/* Fakty (kod investrent-crm origin/main 25.09.2026): voice.ts:33 - audio do api.openai.com/v1/audio/transcriptions (whisper-1); lamaWatermarkRemoval.ts, reelAutocaption.ts - Replicate (zdjecia ofert, wideo rolek); geminiPosterGenerator.ts - zdjecia + imie i telefon opiekuna oferty; apify.scraper.ts, homeStaging.ts, photoWatermarkRemoval.ts - Apify (scraping, obrobka zdjec). Nie zgadywano zakresu: tam, gdzie brak dowodu - DO POTWIERDZENIA. */}
+        {/* Fakty (kod investrent-crm origin/main 25.09.2026): voice.ts:33 - audio do api.openai.com/v1/audio/transcriptions (whisper-1); lamaWatermarkRemoval.ts, reelAutocaption.ts - Replicate (zdjecia ofert, wideo rolek); geminiPosterGenerator.ts - zdjecia + imie i telefon opiekuna oferty; apify.scraper.ts, homeStaging.ts, photoWatermarkRemoval.ts - Apify (scraping, obrobka zdjec). DPA per dostawca to potwierdzenie techniczne (Bezpieczenstwo), nie od Daniela - pozostaje otwarte. */}
       </P>
 
       <H2>11. Übermittlung in Drittländer</H2>
       <P>
         Einige der genannten Anbieter haben ihren Sitz in den USA oder verarbeiten Daten dort. Übermittlungen in die USA stützen wir auf den Angemessenheitsbeschluss der EU-Kommission (EU-US Data Privacy Framework), soweit der jeweilige Empfänger zertifiziert ist, im Übrigen auf Standardvertragsklauseln der EU-Kommission (Art. 46 Abs. 2 lit. c DSGVO). Dies betrifft insbesondere Vercel, Railway, Supabase, Anthropic, OpenAI, Replicate, Cloudflare, Google und Meta (soweit sie ihren Sitz in den USA haben oder dort Daten verarbeiten). Eine Kopie der Garantien erhalten Sie auf Anfrage über die oben genannten Kontaktdaten.
-        {/* ERLEDIGT (Przeglad 3.8, uwaga 4): sformulowanie "DPF, zastepczo SCC" wg prawnika (nie opierac wylacznie na DPF). Bez deklaracji, ktory dostawca ma DPF, a ktory SCC - przed publikacja Bezpieczenstwo/Daniel weryfikuja w dataprivacyframework.gov i DPA; TIA dla dostawcow bez DPF do teczki. */}
+        {/* ERLEDIGT (Przeglad 3.8, uwaga 4): sformulowanie "DPF, zastepczo SCC" wg prawnika (nie opierac wylacznie na DPF). Bez deklaracji, ktory dostawca ma DPF, a ktory SCC - przed publikacja Bezpieczenstwo weryfikuje w dataprivacyframework.gov i DPA; TIA dla dostawcow bez DPF do teczki. */}
       </P>
 
       <H2>12. Freiwilligkeit der Angabe</H2>
@@ -165,7 +167,7 @@ export default function DatenschutzPage() {
       <H2>13. Automatisierte Entscheidungsfindung</H2>
       <P>
         Wir treffen Ihnen gegenüber keine ausschließlich automatisierten Entscheidungen mit rechtlicher oder ähnlich erheblicher Wirkung. Intern berechnet unser CRM-System für Kontakte eine Prioritätskennzahl (aus Interessenstufe, Verfahrensstand, Zeit seit dem letzten Kontakt und offenen Aufgaben), die unseren Mitarbeitenden anzeigt, wen sie zuerst anrufen sollten (Art. 6 Abs. 1 lit. f DSGVO). Die Kennzahl dient nur der Sortierung: Sie führt nicht automatisch zu einer Ablehnung, Zuteilung oder zu einem Versand; über Kontakt und Angebote entscheiden stets Mitarbeitende. Zum Bewertungsrechner siehe Abschnitt 5.
-        {/* ZWERYFIKOWANE 25.09.2026: backend/src/lib/leadScoring.ts = deterministyczny wzor punktowy (temperatura, etap, dni od kontaktu, zadania), zapis clients.ai_score, uzywany tylko do sortowania listy 'Zadzwon dzis' (callToday.ts) - brak automatycznej decyzji. To wciaz 'profilowanie' w szerokim sensie (art. 4 pkt 4) - dlatego jawny opis; art. 22 nie ma zastosowania. PRAWNIK: potwierdzic brzmienie. */}
+        {/* ZWERYFIKOWANE 25.09.2026: backend/src/lib/leadScoring.ts = deterministyczny wzor punktowy (temperatura, etap, dni od kontaktu, zadania), zapis clients.ai_score, uzywany tylko do sortowania listy 'Zadzwon dzis' (callToday.ts) - brak automatycznej decyzji. To wciaz 'profilowanie' w szerokim sensie (art. 4 pkt 4) - dlatego jawny opis; art. 22 nie ma zastosowania. */}
       </P>
 
       <H2>14. Speicherdauer</H2>
@@ -173,13 +175,13 @@ export default function DatenschutzPage() {
         Ihre personenbezogenen Daten werden so lange gespeichert, wie es zur Erfüllung der Verarbeitungszwecke erforderlich ist, und danach für den Zeitraum und im Umfang, wie er sich aus gesetzlichen Vorschriften ergibt oder zur Sicherung etwaiger Ansprüche erforderlich ist. Im Einzelnen speichern wir Ihre Daten wie folgt:
       </P>
       <UL>
-        <LI>Anfragen und Kontaktdaten ohne Vertragsschluss (Suchwünsche, Rückrufwünsche, Bewertungsanfragen): bis zu <Ph>[OKRES PRZECHOWYWANIA — propozycja 12 Monate, PRAWNIK]</Ph> nach dem letzten Kontakt, bei Widerruf oder Widerspruch früher;</LI>
-        <LI>Nachweis erteilter Einwilligungen: bis zum Ablauf der Verjährungsfrist möglicher Ansprüche, höchstens <Ph>[3]</Ph> Jahre nach Ende des Jahres, in dem die Einwilligung widerrufen wurde oder die Verarbeitung endete;</LI>
-        <LI>Vertragsdaten: für die Dauer des Vertrags und danach <Ph>[5]</Ph> Jahre ab Ende des Kalenderjahres, in dem die steuer- und buchhaltungsrechtliche Pflicht entstanden ist (polnisches Steuer- und Rechnungslegungsrecht); ggf. länger zur Wahrung von Ansprüchen (Verjährung nach polnischem Zivilrecht, bis zu <Ph>[6]</Ph> Jahre);</LI>
-        <LI>Daten, die wir nach den polnischen Vorschriften zur Bekämpfung der Geldwäsche erheben: <Ph>[5]</Ph> Jahre nach Beendigung der Geschäftsbeziehung;</LI>
-        <LI>Server-Logdateien: <Ph>[30]</Ph> Tage.</LI>
+        <LI>Anfragen und Kontaktdaten ohne Vertragsschluss (Suchwünsche, Rückrufwünsche, Bewertungsanfragen): bis zu 12 Monate nach dem letzten Kontakt, bei Widerruf oder Widerspruch früher;</LI>
+        <LI>Nachweis erteilter Einwilligungen: bis zum Ablauf der Verjährungsfrist möglicher Ansprüche, höchstens 3 Jahre nach Ende des Jahres, in dem die Einwilligung widerrufen wurde oder die Verarbeitung endete;</LI>
+        <LI>Vertragsdaten: für die Dauer des Vertrags und danach 5 Jahre ab Ende des Kalenderjahres, in dem die steuer- und buchhaltungsrechtliche Pflicht entstanden ist (polnisches Steuer- und Rechnungslegungsrecht); ggf. länger zur Wahrung von Ansprüchen (Verjährung nach polnischem Zivilrecht, bis zu 6 Jahre);</LI>
+        <LI>Daten, die wir nach den polnischen Vorschriften zur Bekämpfung der Geldwäsche erheben: 5 Jahre nach Beendigung der Geschäftsbeziehung;</LI>
+        <LI>Server-Logdateien: 30 Tage.</LI>
       </UL>
-      {/* ERLEDIGT (Przeglad 3.9, uwaga 3): struktura wg prawnika; wartosci w [ ] = propozycje do akceptacji Daniela/kancelarii (pkt 5 listy); okres AML 5 lat i podatkowy do weryfikacji w zrodle. */}
+      {/* ZAMKNIETE 27.09.2026: wartosci okresow przechowywania zaakceptowane przez Daniela ("juz bylo poruszane, odpowiedziane"). Struktura wg prawnika (Przeglad 3.9, uwaga 3). */}
 
       <H2>15. Ihre Rechte</H2>
       <P>Nach der DSGVO stehen Ihnen folgende Rechte zu:</P>
@@ -209,8 +211,8 @@ export default function DatenschutzPage() {
 
       <H2>17. Änderungen dieser Datenschutzerklärung</H2>
       <P>
-        Wir passen diese Datenschutzerklärung an, wenn sich die Verarbeitung oder die Rechtslage ändert. Stand: <Ph>[TT.MM.JJJJ]</Ph>. Für Nutzer, die diese Website in deutscher Sprache aufrufen, ist diese deutsche Fassung maßgeblich. Die polnische Fassung finden Sie unter <a href="/rodo" style={link}>/rodo</a>.
-        {/* ERLEDIGT (Przeglad 3.10, uwaga 18): klauzula wersji wiazacej wg prawnika. Daniel: data Stand = data zatwierdzenia/publikacji. */}
+        Wir passen diese Datenschutzerklärung an, wenn sich die Verarbeitung oder die Rechtslage ändert. Stand: 27.09.2026. Für Nutzer, die diese Website in deutscher Sprache aufrufen, ist diese deutsche Fassung maßgeblich. Die polnische Fassung finden Sie unter <a href="/rodo" style={link}>/rodo</a>.
+        {/* ERLEDIGT (Przeglad 3.10, uwaga 18): klauzula wersji wiazacej wg prawnika. Data Stand = data tego wdrozenia tekstu (27.09.2026); jesli faktyczna publikacja/merge nastapi pozniej, osoba merge'ujaca aktualizuje date na dzien publikacji. */}
       </P>
 
       <H2>18. Kontakt</H2>
