@@ -125,17 +125,17 @@ test('teksty: brak realnego numeru w komunikatach i jedno okreslenie zgody na te
 test('teksty v11: zadnego marketingu, skrotu numeru ani "3 lat" w tekstach publicznych; jedna zgoda na telefon w sprawie wyceny', async () => {
   const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/wycena/texts.ts'); const RA = { items: RETENTION_A_ITEMS, how: RETENTION_A_HOW }
   const all = JSON.stringify(T)
-  for (const w of ['marketing','SMS','STOP','skrót numeru','HMAC','3 lata','art. 17']) assert.ok(!all.toLowerCase().includes(w.toLowerCase()), 'zakazana fraza: ' + w)
+  for (const w of ['marketing','SMS','STOP','skrót numeru','HMAC','3 lata','art. 17']) assert.ok(w === 'STOP' ? !/\bSTOP\b/i.test(all) : !all.toLowerCase().includes(w.toLowerCase()), 'zakazana fraza: ' + w) // 28.09 (Prawnik pkt 2): 'STOP' jako slowo-klucz, nie fragment wyrazu (np. 'stopniu ochrony')
   assert.equal(T.lead.consentMarketing, undefined); assert.equal(T.lead.consentMarketingOptional, undefined)
   const nb = x => x.split(String.fromCharCode(160)).join(' ') // v13: zgoda ma trzy drogi cofniecia (e-mail, telefon do biura, slowo do agenta); dawne asercje "tylko e-mail" odwrocone
   assert.ok(T.lead.consentCall.includes('wyłącznie w sprawie wyceny mojej nieruchomości')); assert.ok(nb(T.lead.consentCall).endsWith('Zgodę mogę cofnąć w każdej chwili: e-mailem (biuro@investrent.com.pl), telefonicznie (+48 731 554 341) lub mówiąc o tym agentowi podczas rozmowy.'))
   assert.ok(T.lead.consentCallRequired.includes('wymagana'))
   const items = [...T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]), ...RA.items].join(' ')
   assert.ok(items.split(String.fromCharCode(160)).join(' ').includes('Dowód zgody na telefon w sprawie wyceny (wersja zgody, sposób jej złożenia, data i godzina), bez danych kontaktowych: przechowujemy do 3 lat od końca roku, w którym cofniesz zgodę albo zakończymy przetwarzanie Twoich danych z kalkulatora')) // v14 (Prawnik runda 2): dowod zgody 3 lata od konca roku cofniecia/zakonczenia (dawniej: usuwany razem ze zgloszeniem)
-  assert.ok(nb(items).includes('Zgodę możesz cofnąć e-mailem (biuro@investrent.com.pl), telefonicznie (+48 731 554 341) albo mówiąc o tym agentowi podczas rozmowy; wystarczy powiedzieć, że nie chcesz, żebyśmy do Ciebie dzwonili. Po cofnięciu nie zadzwonimy do Ciebie w sprawie wyceny. Wnioski o pozostałe prawa wyślij na biuro@investrent.com.pl. Możesz też złożyć skargę do Prezesa Urzędu Ochrony Danych Osobowych. Podanie danych jest dobrowolne; bez numeru telefonu pokażemy wynik (jeśli liczymy go online), ale nie oddzwonimy.')) // v14: wnioski o pozostałe prawa tylko e-mailem (zgodnie z tekstem)
+  assert.ok(nb(items).includes('Zgodę możesz cofnąć e-mailem (biuro@investrent.com.pl), telefonicznie (+48 731 554 341) albo mówiąc o tym agentowi podczas rozmowy; wystarczy powiedzieć, że nie chcesz, żebyśmy do Ciebie dzwonili. Po cofnięciu zgody nie zadzwonimy do Ciebie w związku z tym zgłoszeniem, także w sprawie sprzedaży lub wynajmu; wyjątek to np. wykonanie zawartej już umowy. Twoje dane usuniemy z naszego systemu w ciągu 30 dni od cofnięcia. Zostanie tylko dowód Twojej zgody (bez danych kontaktowych) oraz dane potrzebne z innego powodu, np. wynikające z umowy. Wnioski o pozostałe prawa wyślij na biuro@investrent.com.pl. Możesz też złożyć skargę do Prezesa Urzędu Ochrony Danych Osobowych. Podanie danych jest dobrowolne; bez numeru telefonu pokażemy wynik (jeśli liczymy go online), ale nie oddzwonimy.')) // v14: wnioski o pozostałe prawa tylko e-mailem (zgodnie z tekstem)
   assert.ok(items.includes('dowód zgody na telefon w sprawie wyceny, adres IP'))
   assert.ok(T.errors.rateLimited('2 h').includes('za około 2 h')); assert.ok(!all.includes('około 24'), 'v13: "do 24 godzin" (pamiec serwera, skrot IP) jest teraz w tekstach, wycofane zostaje tylko "okolo 24"')
-  assert.ok(all.includes('Cloudflare: standardowe klauzule umowne UE zawarte w umowie dostawcy')); assert.ok(!all.includes('Cloudflare i Google (dla kont w naszej domenie)'))
+  assert.ok(all.includes('Vercel, Railway, Anthropic, Cloudflare i Google (kalendarz pracowników): na podstawie powyższych zabezpieczeń;')); assert.ok(!all.includes('Cloudflare i Google (dla kont w naszej domenie)'))
   assert.ok(T.result.outOfScopeBody.includes('zadzwonimy tylko w tej sprawie')) // v14
 })
 test('miejscowosc i dzielnica: slowniki zamiast wolnego tekstu (v11.2); poza slownikiem blad albo "Inna ..."', () => {
@@ -159,7 +159,7 @@ test('teksty v11.2: okres z numerem (T-f: umowa przed pulapem, kontakt = rozmowa
   const sp = String.fromCharCode(160)
   const items = [...T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]), ...RA.items].join(' ').split(sp).join(' ')
   const last = [...T.how.body, ...RA.how].slice(-3).join(' ').split(sp).join(' ')
-  const iUmowa = items.indexOf('Jeśli dojdzie do umowy'), iPulap = items.indexOf('Usuniemy te dane najpóźniej 24 miesiące po zgłoszeniu, chyba że zachodzi wyjątek z punktu (3)')
+  const iUmowa = items.indexOf('Jeśli dojdzie do umowy'), iPulap = items.indexOf('Usuniemy te dane najpóźniej 24 miesiące po zgłoszeniu, chyba że zachodzi wyjątek opisany w następnym punkcie')
   assert.ok(iUmowa >= 0 && iPulap >= 0, 'wyjatek umowy i pulap jako osobne punkty (T-t, v11.6)')
   assert.ok(items.includes('12 miesięcy po ostatnim kontakcie w sprawie wyceny (rozmowie lub wiadomości od Ciebie). Jeśli takiego kontaktu nie było, liczymy 12 miesięcy od zgłoszenia.')); assert.ok(!items.includes('kolejne zgłoszenie z tego numeru'), 'v13: szczegol dla prawnika (kolejne zgloszenie) wycofany z klauzuli')
   assert.ok(!/nieodebrane/i.test(items), 'v14: zdanie o nieodebranych probach wycofane (Krytyk)')
@@ -167,7 +167,7 @@ test('teksty v11.2: okres z numerem (T-f: umowa przed pulapem, kontakt = rozmowa
   assert.ok(last.indexOf('Wyjątek: jeśli dojdzie do umowy albo poprosisz nas o rozmowę na temat sprzedaży lub wynajmu') > last.indexOf('najpóźniej po 24 miesiącach od zgłoszenia') && last.includes('dane przechowujemy dłużej, jak opisano w pełnej informacji o danych'), 'v14 (Prawnik A i D): wyjatek od 24 mies. domkniety w obu warstwach'); assert.ok(RA.how.length === 1, 'v13: warstwa krotka = jeden akapit')
   assert.ok(items.includes('zostanie anonimowa statystyka (typ nieruchomości, przedział powierzchni, miejscowość i dzielnica z listy, stan, widełki ceny, data)'))
   assert.ok(items.includes('Nie podejmujemy wobec Ciebie decyzji opartych wyłącznie na zautomatyzowanym przetwarzaniu'))
-  assert.equal(T.lead.titleRange, 'Chcesz omówić wynik z agentem?'); assert.ok(!/mapą|raport/i.test(T.lead.bodyRange)); assert.ok(T.lead.bodyRange.includes('oszacuje cenę, bezpłatnie i bez zobowiązań') && T.lead.bodyRange.startsWith('Zdjęcia, szczegóły stanu i standardu mieszkania')) // v14: jedna formula agenta
+  assert.equal(T.lead.titleRange, 'Chcesz omówić wynik z agentem?'); assert.ok(!/mapą|raport/i.test(T.lead.bodyRange)); assert.ok(T.lead.bodyRange.includes('Jeśli chcesz szacunku od agenta, zostaw numer telefonu i zaznacz zgodę') && T.lead.bodyRange.includes('oszacuje cenę, bezpłatnie i bez zobowiązań') && T.lead.bodyRange.startsWith('Zdjęcia, szczegóły stanu i standardu mieszkania')) // v14: jedna formula agenta
 })
 test('konfiguracja per biuro (SaaS): miasto domowe, slowniki i wylaczone dzielnice z konfiguracji; zrodlo i data przegladu listy dzielnic jawne', () => {
   assert.equal(CALCULATOR_CONFIG, INVESTRENT_CONFIG)
@@ -216,10 +216,11 @@ test('teksty v11.3 (DPA Railway 26.09): Railway w transferze wg umowy powierzeni
   const sp = String.fromCharCode(160)
   const items = [...T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]), ...RA.items].join(' ').split(sp).join(' ')
   const how = [...T.how.body, ...RA.how].join(' ').split(sp).join(' ')
-  assert.ok(items.includes('Railway: umowa powierzenia; mechanizm przekazania (Data Privacy Framework albo standardowe klauzule umowne UE) wskażemy na wniosek')); assert.ok(!items.includes('26.09.2026'), 'v13: data umowy powierzenia usunieta z klauzuli (Krytyk pkt 11, Prawnik)')
+  assert.ok(items.includes('Vercel, Railway, Anthropic, Cloudflare i Google (kalendarz pracowników): na podstawie powyższych zabezpieczeń;')); // 28.09 (Prawnik pkt 2): jedna formula DPF/SCC dla wszystkich, bez mechanizmu per dostawca
+   assert.ok(!items.includes('26.09.2026'), 'v13: data umowy powierzenia usunieta z klauzuli (Krytyk pkt 11, Prawnik)')
   assert.ok(!items.includes('około 24 godzin') && !items.includes('krótkotrwale') && !how.includes('krótkotrwale') && items.includes('w pamięci serwera, do 24 godzin (limit zapytań); nie zapisujemy go w bazie danych') && !JSON.stringify(T).includes('w postaci skrótu')); assert.ok(items.includes('do 30 dni')); assert.ok(how.includes('dokładne miejsca i okresy podajemy w pełnej informacji o danych poniżej')) // v14: okresy IP tylko w pelnej informacji; decyzja Dyrektora: IP aplikacji BEZ "w postaci skrotu"; v13: "krotkotrwale" (nie okres) zastapione "do 24 godzin" (warunek publikacji: #505 na produkcji)
   assert.ok(!items.includes('Vercel opiera się')); assert.ok(!items.includes('standardowych klauzulach umownych zatwierdzonych'))
-  assert.ok(items.includes('Google: Data Privacy Framework, a w razie jego braku standardowe klauzule umowne UE'))
+  assert.ok(items.includes('Przekazanie opieramy na decyzji Komisji Europejskiej o odpowiednim stopniu ochrony (EU-US Data Privacy Framework, czyli unijno-amerykańskie porozumienie o ochronie danych), o ile odbiorca ma w danym czasie aktywną certyfikację, a w pozostałym zakresie na standardowych klauzulach umownych UE'))
 })
 test('teksty v11.3 (Brevo ustalone): Sendinblue SAS (Francja) jako procesor wg umowy w regulaminie, bez mechanizmu transferu do USA dla Brevo', async () => {
   const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/wycena/texts.ts'); const RA = { items: RETENTION_A_ITEMS, how: RETENTION_A_HOW }
@@ -238,9 +239,9 @@ test('teksty v11.4: T-m (Railway 30 dni pierwsze), T-l (bez kopii DPF, bez Verce
   // T-m (ZNACZENIE ZMIENIONE w v13): dawniej dluzszy okres (Railway 30 dni) PRZED 24 h w aplikacji; Prawnik (28.09) ustala kolejnosc baza -> pamiec serwera (24 h) -> Railway (30 dni) -> Vercel/Cloudflare, w klauzuli i w "Jak liczymy"
   assert.ok(items.indexOf('do 24 godzin') < items.indexOf('do 30 dni')); assert.ok(!how.includes('do 30 dni') && !how.includes('do 24 godzin'), 'v14: "Jak liczymy" bez okresow IP (prywatnosc krotko)')
   // T-l: bez "kopii dokumentu ... Data Privacy Framework", DPF nie jest dokumentem; kopia tylko dla SCC; Anthropic SCC, brak Vercel/Brevo jako zabezpieczonych
-  assert.ok(!items.includes('Kopię dokumentu')); assert.ok(items.includes('jeśli to standardowe klauzule umowne, prześlemy ich kopię'))
-  assert.ok(items.includes('Anthropic: zabezpieczenie wskazane w warunkach API dostawcy; szczegóły wskażemy na wniosek')); assert.ok(items.includes('wskażemy na wniosek;') && !items.includes('szczegóły na Twój wniosek'), 'v13: "na wniosek" ujednolicone dla Railway i Anthropic'); assert.ok(!/Anthropic[^;]*(umow[aeyię] powierzenia|DPA)/.test(items + T.how.body.join(' ')), 'v12: bez umowy/DPA z Anthropic')
-  assert.ok(items.includes('Cloudflare: standardowe klauzule umowne UE zawarte w umowie dostawcy; korzysta on też z ram ochrony danych UE-USA (Data Privacy Framework), o ile jego certyfikacja jest w danym czasie aktywna; Google: Data Privacy Framework, a w razie jego braku standardowe klauzule umowne UE'))
+  assert.ok(!items.includes('Kopię dokumentu')); assert.ok(items.includes('prześlemy kopię zabezpieczeń'))
+  assert.ok(!items.includes('Anthropic: zabezpieczenie wskazane w warunkach API dostawcy') && !items.includes('mechanizm przekazania'), '28.09 (Prawnik pkt 2): bez mechanizmu per dostawca'); assert.ok(!/Anthropic[^;]*(umow[aeyię] powierzenia|DPA)/.test(items + T.how.body.join(' ')), 'v12: bez umowy/DPA z Anthropic')
+  assert.ok(items.includes('Vercel, Railway, Anthropic, Cloudflare i Google (kalendarz pracowników): na podstawie powyższych zabezpieczeń;'))
   assert.ok(!items.includes('Vercel opiera się')); assert.ok(!items.includes('Supabase opiera się')); assert.ok(!items.includes('Brevo opiera się'))
   // T-o, T-n
   assert.ok(T.intro.includes('w Kołobrzegu i w wybranych miejscowościach regionu (lista w formularzu)')); assert.ok(!T.disclaimerMore.includes('z wyjątkiem Śródmieścia'))
@@ -258,8 +259,8 @@ test('teksty v11.5: T-l2 (lista, Supabase UE), T-r, T-q, T-s, consentCall 3 drog
   const sp = String.fromCharCode(160)
   const items = [...T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]), ...RA.items].join(' ').split(sp).join(' ')
   const how = [...T.how.body, ...RA.how].join(' ').split(sp).join(' ')
-  assert.ok(items.includes('Supabase (baza danych): dane przechowywane w regionie UE (Irlandia); umowa powierzenia zawiera standardowe klauzule umowne UE'))
-  assert.ok(items.includes('Vercel (hosting strony): Data Privacy Framework oraz umowa powierzenia przetwarzania danych;')); assert.ok(!/Vercel[^.;]*(SCC|klauzul)/.test(items))
+  assert.ok(items.includes('Supabase (baza danych): dane przechowywane w regionie UE (Irlandia); umowa o powierzeniu przetwarzania danych zawiera standardowe klauzule umowne UE'))
+  assert.ok(!items.includes('Vercel (hosting strony): Data Privacy Framework oraz umowa powierzenia przetwarzania danych;')); assert.ok(!/Vercel[^.;]*(SCC|klauzul)/.test(items))
   assert.ok(items.includes('zadanie oddzwonienia z imieniem i odnośnikiem do karty w naszym systemie')); assert.ok(!items.includes('bez numeru telefonu, z odnośnikiem'))
   assert.ok(!items.includes('zadanie oddzwonienia z imieniem i numerem'))
   assert.equal(T.fields.city_hint, 'Domyślnie Kołobrzeg; możesz zacząć pisać nazwę. Dzielnicę lub osiedle Kołobrzegu (np. Podczele) wybierzesz niżej, w polu „Dzielnica lub osiedle”. Grzybowo, Bogucino, Budzistowo, Zieleniewo i Dźwirzyno to osobne miejscowości: wybierz je tutaj. Jeśli Twojej miejscowości nie ma na liście, wybierz „Inna lokalizacja”: widełek online nie podamy, ale w województwie zachodniopomorskim cenę oszacuje agent, a poza nim sprawdzimy, czy możemy pomóc. Zostaw numer lub zadzwoń.')
@@ -280,7 +281,7 @@ test('teksty v11.6: cel [2] dla wspolpracy, Cenogram, Vercel w DPF, T-t (punkty)
   const how = [...T.how.body, ...RA.how].join(' ').split(sp).join(' ')
   assert.ok(items.includes('rozmowa o sprzedaży lub wynajmie Twojej nieruchomości z pomocą naszego biura, jeśli poprosisz o taką rozmowę — działania na Twoje żądanie przed zawarciem umowy (art. 6 ust. 1 lit. b RODO);') && items.includes('umowa, jeśli do niej dojdzie — wykonanie umowy (art. 6 ust. 1 lit. b RODO) oraz obowiązki prawne wynikające z przepisów, np. podatkowych (art. 6 ust. 1 lit. c RODO);'), 'v14: cel [2] rozbity na dwa punkty (rozmowa / umowa)')
   assert.ok(items.includes('oraz dane rynkowe: Cenogram (Polska); do obu trafiają wyłącznie dane nieruchomości')); assert.ok(how.includes('Anthropic) i dostawcy danych rynkowych (Cenogram)'))
-  assert.ok(items.includes('Vercel (hosting strony): Data Privacy Framework oraz umowa powierzenia przetwarzania danych;'))
+  assert.ok(items.includes('Vercel, Railway, Anthropic, Cloudflare i Google (kalendarz pracowników): na podstawie powyższych zabezpieczeń;'))
   assert.equal(T.h1, 'Orientacyjna wycena mieszkania w Kołobrzegu online'); assert.ok(!/bezpłatn/i.test(T.h1))
   assert.ok(T.result.outOfScopeBody.includes('cenę oszacuje agent, bezpłatnie i bez zobowiązań') && T.result.outOfScopeBody.includes('sprawdzimy, czy możemy pomóc'), 'v14: region = agent szacuje cene; poza wojewodztwem = sprawdzimy, czy mozemy pomoc')
   assert.ok(!how.includes('bez danych kontaktowych i adresu IP; nie zawierają'))
@@ -293,13 +294,13 @@ test('teksty v11.7: [4] jako lista odbiorcow (T-u) + osobny punkt zabezpieczen; 
   const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/wycena/texts.ts'); const RA = { items: RETENTION_A_ITEMS, how: RETENTION_A_HOW }
   const sp = String.fromCharCode(160)
   const secs = T.lead.consentInfo
-  const odb = secs.find(c => c.h === 'Komu przekazujemy dane.'), zab = secs.find(c => c.h === 'Zabezpieczenia przy przekazaniu poza EOG.')
-  assert.ok(odb && zab && odb.items.length === 7 && zab.items.length === 5)
+  const odb = secs.find(c => c.h === 'Komu przekazujemy dane.'), zab = secs.find(c => c.h === 'Zabezpieczenia przy przekazaniu poza Europejski Obszar Gospodarczy (EOG).')
+  assert.ok(odb && zab && odb.items.length === 7 && zab.items.length === 2)
   assert.ok(odb.items.some(i => i.startsWith('sztuczna inteligencja: Anthropic, oraz dane rynkowe: Cenogram (Polska)')))
   assert.ok(odb.t.length < 60, 'zdanie wprowadzajace krotkie')
   const cel = secs.find(c => c.h === 'Po co i na jakiej podstawie.').items.join(' ').split(sp).join(' ')
   assert.ok(cel.includes('obowiązki prawne wynikające z przepisów, np. podatkowych (art. 6 ust. 1 lit. c RODO)'))
-  assert.ok(zab.items[0].includes('ram ochrony danych UE-USA')); assert.ok(zab.items[1] === 'Vercel (hosting strony): Data Privacy Framework oraz umowa powierzenia przetwarzania danych;')
+  assert.ok(zab.items[0] === 'Vercel, Railway, Anthropic, Cloudflare i Google (kalendarz pracowników): na podstawie powyższych zabezpieczeń;'); assert.ok(zab.items[1] === 'Supabase (baza danych): dane przechowywane w regionie UE (Irlandia); umowa o powierzeniu przetwarzania danych zawiera standardowe klauzule umowne UE.')
   assert.ok(!zab.items.join(' ').includes('w zakresie, w jakim odbiorca jest certyfikowany'))
   assert.ok(!/Cenogram[^;]*(SCC|klauzul)/.test(zab.items.join(' ')), 'Cenogram (Polska) poza lista zabezpieczen transferu')
 })
@@ -312,7 +313,7 @@ test('teksty v11.8 (decyzje Daniela 26.09): T-k lista nie dzwonimy, T-c2 rozmowa
   assert.ok(!items.includes('lista osób, do których nie dzwonimy') && !items.includes('nie dzwonimy:'), 'v12: lista "nie dzwonimy" wycofana z klauzuli do potwierdzenia wdrozenia')
   assert.ok(!items.includes('3 lata') && !items.includes('numer na liście'))
   assert.ok(items.includes('ostatnim kontakcie w sprawie wyceny (rozmowie lub wiadomości od Ciebie)') && how.includes('Po 12 miesiącach od ostatniego kontaktu w sprawie wyceny')) // v14: "kontakt w sprawie wyceny" zamiast "rozmowa telefoniczna lub osobista"
-  assert.ok(items.includes('Po cofnięciu nie zadzwonimy do Ciebie w sprawie wyceny.') && !items.includes('najpóźniej w ciągu miesiąca') && !items.includes('usuniemy Twoje dane z naszego systemu'))
+  assert.ok(items.includes('Po cofnięciu zgody nie zadzwonimy do Ciebie w związku z tym zgłoszeniem, także w sprawie sprzedaży lub wynajmu; wyjątek to np. wykonanie zawartej już umowy. Twoje dane usuniemy z naszego systemu w ciągu 30 dni od cofnięcia. Zostanie tylko dowód Twojej zgody (bez danych kontaktowych) oraz dane potrzebne z innego powodu, np. wynikające z umowy.') && !items.includes('najpóźniej w ciągu miesiąca') && !items.includes('usuniemy Twoje dane z naszego systemu'))
   assert.ok(items.includes('przy samej rozmowie na temat sprzedaży lub wynajmu do 12 miesięcy po ostatniej takiej rozmowie') && how.includes('poprosisz nas o rozmowę na temat sprzedaży lub wynajmu'), 'v14: bez zdania o odnawianiu okresu')
 })
 
@@ -374,10 +375,10 @@ test('walidacja v14: komunikat braku dzielnicy wg tabeli', () => {
 test('teksty v14 (runda 5 Krytyka): etykiety wyniku bez "Orientacyjny", scopeNote i disclaimerFallback bez dublowania disclaimerTop, brak zdania "mają charakter orientacyjny"', async () => {
   const { T } = await import('../app/wycena/texts.ts')
   assert.equal(T.result.priceLabel, 'Zakres ceny'); assert.equal(T.result.perM2Label, 'Cena za m²')
-  assert.ok(T.result.scopeNote.includes('oraz kilku ogólnych danych z formularza. Nie widzimy zdjęć ani szczegółów stanu i standardu mieszkania') && !/operat/.test(T.result.scopeNote), 'zdanie o operacie zostaje tylko w disclaimerTop')
+  assert.ok(T.result.scopeNote.includes('oraz kilku ogólnych danych z formularza. Nie widzimy zdjęć ani szczegółów stanu i standardu mieszkania') && T.result.scopeNote.endsWith('może się wyraźnie różnić od widełek.') && !/operat/.test(T.result.scopeNote), 'zdanie o operacie zostaje tylko w disclaimerTop')
   assert.equal(T.result.disclaimerFallback, 'Cena, jaką uzyskasz, zależy m.in. od stanu technicznego, standardu wykończenia, widoku z okien i sytuacji na rynku.')
   assert.ok(!T.how.body.join(' ').includes('mają charakter orientacyjny')); assert.ok(T.how.body[1].startsWith('Widełki są zaokrąglone. Nie zastępują'))
-  assert.equal(T.disclaimerTop, 'Wynik jest orientacyjny, nie jest operatem szacunkowym rzeczoznawcy majątkowego ani ofertą. Liczymy go automatycznie z użyciem sztucznej inteligencji.') // v14 P6: dwa zdania, z "ani oferta" i informacja o AI
+  assert.equal(T.disclaimerTop, 'Wynik jest orientacyjny, nie jest operatem szacunkowym rzeczoznawcy majątkowego ani wiążącą ofertą ceny. Liczymy go automatycznie z użyciem sztucznej inteligencji.') // v14 P6 + Prawnik 28.09 (notatka 22): "ani wiążącą ofertą ceny"
 })
 test('panel wyniku v14: front NIE renderuje pol backendu outcome.message / outcome.disclaimer (tylko teksty z texts.ts); disclaimerTop zawsze przy wyniku; scopeNoteWider warunkowo; "Wyceń inną" jako link', () => {
   const src = fs.readFileSync(new URL('../app/wycena/WycenaClient.tsx', import.meta.url), 'utf8')
@@ -393,10 +394,10 @@ test('teksty v14 (runda 6): odeslanie do "Twoje prawa" NIE wchodzi bez F.1, sekc
   const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/wycena/texts.ts')
   const sp = String.fromCharCode(160); const norm = x => x.split(sp).join(' ')
   const clause = norm([...T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]), ...T.how.body].join(' '))
-  assert.ok(!clause.includes('stosujemy zasady z części'), 'wraca razem z F.1 (lista "nie dzwonimy")')
-  assert.ok(!/lista osób, do których nie dzwonimy|do 3 lat od cofnięcia zgody|w ciągu 30 dni od cofnięcia/.test(clause + JSON.stringify(T)), 'sekcja F NIE wklejona')
-  assert.ok(norm(T.lead.consentInfo.find(c => c.h === 'Twoje prawa.').t).includes('że nie chcesz, żebyśmy do Ciebie dzwonili. Po cofnięciu nie zadzwonimy do Ciebie w sprawie wyceny.'))
-  assert.ok(norm(RETENTION_A_ITEMS[1]).includes('Po upływie tego terminu usuniemy Twoje imię, numer telefonu, adres e-mail i notatki oraz treść zgłoszenia; zostanie wyłącznie anonimowa statystyka') && norm(RETENTION_A_HOW[0]).includes('usuniemy Twoje imię, numer telefonu, adres e-mail i notatki oraz treść zgłoszenia'), 'jednakowe zdanie o usuwaniu w ITEMS (2) i HOW')
+  assert.ok(clause.includes('Jeśli wcześniej cofniesz zgodę, usuniemy dane kontaktowe i pozostałe dane ze zgłoszenia w ciągu 30 dni od cofnięcia, z wyjątkami opisanymi w części „Twoje prawa”.'), '28.09 (Prawnik pkt 9 + notatka 22): P3 wraca razem z F.1 lekkim')
+  assert.ok(!/lista osób, do których nie dzwonimy|do 3 lat od cofnięcia zgody|do chwili, gdy poprosisz o usunięcie z listy/.test(clause + JSON.stringify(T)), 'F.2-F.4 i lista "nie dzwonimy" NIE wklejone (F.1 lekkie tak)')
+  assert.ok(norm(T.lead.consentInfo.find(c => c.h === 'Twoje prawa.').t).includes('że nie chcesz, żebyśmy do Ciebie dzwonili. Po cofnięciu zgody nie zadzwonimy do Ciebie w związku z tym zgłoszeniem, także w sprawie sprzedaży lub wynajmu; wyjątek to np. wykonanie zawartej już umowy. Twoje dane usuniemy z naszego systemu w ciągu 30 dni od cofnięcia. Zostanie tylko dowód Twojej zgody (bez danych kontaktowych) oraz dane potrzebne z innego powodu, np. wynikające z umowy.'))
+  assert.ok(norm(RETENTION_A_ITEMS[1]).includes('Po upływie tego terminu usuniemy Twoje imię, numer telefonu i notatki oraz treść zgłoszenia; zostanie wyłącznie anonimowa statystyka') && norm(RETENTION_A_HOW[0]).includes('usuniemy Twoje imię, numer telefonu i notatki oraz treść zgłoszenia') && !norm(RETENTION_A_ITEMS[1] + RETENTION_A_HOW[0]).includes('adres e-mail') && norm(RETENTION_A_ITEMS[1]).includes('dowód Twojej zgody (bez danych kontaktowych; jak długo, opisuje ostatni punkt tej listy)') && norm(RETENTION_A_HOW[0]).includes('dowód Twojej zgody (bez danych kontaktowych; jak długo, opisuje pełna informacja o danych)') && !/do 3 lat/.test(norm(RETENTION_A_ITEMS[1] + RETENTION_A_HOW[0])), 'jednakowe zdanie o usuwaniu w ITEMS (2) i HOW')
   assert.equal(RETENTION_A_ITEMS.length, 4)
   const doc = fs.readFileSync(new URL('./valuation.ts', import.meta.url), 'utf8') + fs.readFileSync(new URL('../app/wycena/texts.ts', import.meta.url), 'utf8')
   assert.ok(doc.includes('lead.bodyRange') && doc.includes('lead.bodyFallback') && doc.includes('P8'), 'zdania nad polem zgody wspoldefiniuja zakres zgody (wersja v13)')
@@ -415,10 +416,11 @@ test('teksty v14 (runda 7): przelacznik RETENTION_JOB_ACTIVE (czas zdan o usuwan
   assert.ok(!/usuwamy|Usuwamy|zostaje/.test(clause), 'brak "usuwamy"/"zostaje" w calej klauzuli i w Jak liczymy (false)')
   assert.ok(clause.includes('usuniemy szczegółowy opis wyceny, zostanie anonimowa statystyka') && clause.includes('Usuniemy te dane najpóźniej 24 miesiące po zgłoszeniu') && clause.includes('Zapytanie bez numeru usuniemy po 12 miesiącach (zostanie anonimowa statystyka)'))
   // wariant true = brzmienie terazniejsze; rozni sie od przyszlego WYLACZNIE czasem
-  const tense = x => x.replace(/usuniemy/g, 'usuwamy').replace(/Usuniemy/g, 'Usuwamy').replace(/zostanie/g, 'zostaje')
+  const P3 = 'Jeśli wcześniej cofniesz zgodę, usuniemy dane kontaktowe i pozostałe dane ze zgłoszenia w ciągu 30\u00A0dni od cofnięcia, z wyjątkami opisanymi w części „Twoje prawa”.' // zdanie P3 (procedura 30 dni) jest takie samo w obu wariantach
+  const tense = x => x.split(P3).join('@@P3@@').replace(/usuniemy/g, 'usuwamy').replace(/Usuniemy/g, 'Usuwamy').replace(/zostanie/g, 'zostaje').split('@@P3@@').join(P3)
   assert.deepEqual(m.RETENTION_A_ITEMS_PLANNED.map(tense), [...m.RETENTION_A_ITEMS_ACTIVE]); assert.deepEqual(m.RETENTION_A_HOW_PLANNED.map(tense), [...m.RETENTION_A_HOW_ACTIVE])
   const active = norm([...m.RETENTION_A_ITEMS_ACTIVE, ...m.RETENTION_A_HOW_ACTIVE].join(' '))
-  assert.ok(active.includes('Po 12 miesiącach usuwamy szczegółowy opis wyceny, zostaje anonimowa statystyka') && active.includes('Usuwamy te dane najpóźniej 24 miesiące po zgłoszeniu') && active.includes('Zapytanie bez numeru usuwamy po 12 miesiącach (zostaje anonimowa statystyka)') && !/usuniemy|zostanie/.test(active))
+  assert.ok(active.includes('Po 12 miesiącach usuwamy szczegółowy opis wyceny, zostaje anonimowa statystyka') && active.includes('Usuwamy te dane najpóźniej 24 miesiące po zgłoszeniu') && active.includes('Zapytanie bez numeru usuwamy po 12 miesiącach (zostaje anonimowa statystyka)') && !/usuniemy|zostanie/.test(active.split(norm(P3)).join('')))
   // przechowywanie bez zmian w obu wariantach
   for (const k of ['czekamy 12 miesięcy po ostatnim kontakcie', 'Przechowujemy je wtedy: przy umowie', 'przechowujemy do 3 lat od końca roku']) assert.ok(planned.includes(k) && active.includes(k), k)
   assert.equal(m.RETENTION_A_ITEMS_ACTIVE.length, 4); assert.equal(m.RETENTION_A_ITEMS_PLANNED.length, 4)
