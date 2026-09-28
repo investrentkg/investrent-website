@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { PhoneForwarded } from 'lucide-react'
 import { submitLead } from '@/lib/api'
+import PrivacyNote from '@/components/PrivacyNote'
 import SuccessBadge from '@/components/SuccessBadge'
 
 export default function CallbackStrip() {
@@ -64,6 +65,7 @@ export default function CallbackStrip() {
                   </svg>
                   WhatsApp
                 </a>
+                <PrivacyNote color="rgba(255,255,255,.75)" linkColor="white" style={{ flexBasis: '100%', textAlign: 'left' }} />
               </>
             )}
           </div>

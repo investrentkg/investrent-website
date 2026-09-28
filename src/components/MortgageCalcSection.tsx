@@ -1,6 +1,7 @@
 "use client"
 import { useState, useEffect, useCallback } from 'react'
 import { submitLead } from '@/lib/api'
+import PrivacyNote from '@/components/PrivacyNote'
 import LiveNumber from '@/components/LiveNumber'
 import ScrollReveal from '@/components/ScrollReveal'
 import SuccessBadge from '@/components/SuccessBadge'
@@ -158,6 +159,7 @@ export default function MortgageCalcSection() {
                   </button>
                 </div>
               )}
+              {leadStatus !== 'ok' && <PrivacyNote style={{ marginTop: 8 }} />}
             </div>
 
             <p style={{ fontSize: 10, color: '#9ca3af', textAlign: 'center' as const, marginTop: 12, lineHeight: 1.5 }}>

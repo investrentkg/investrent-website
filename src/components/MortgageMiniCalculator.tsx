@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { Calculator, Phone, CheckCircle2 } from 'lucide-react'
 import { submitLead } from '@/lib/api'
+import PrivacyNote from '@/components/PrivacyNote'
 
 // NAPRAWA (audyt webmasterski, Daniel 30.07.2026): ten mini-kalkulator mial
 // wczesniej sztywne oprocentowanie 7.5% i wlasny, inny tag zrodla leada
@@ -107,6 +108,7 @@ export default function MortgageMiniCalculator({ price, refNumber, offerId }: { 
         </button>
       </form>
       {error && <div style={{ fontSize: 11, color: '#dc2626', marginTop: 6 }}>{error}</div>}
+      <PrivacyNote size={10} style={{ marginTop: 6 }} />
 
       <a href="/kalkulator" style={{ display: 'block', textAlign: 'center' as const, fontSize: 11, color: '#1a4fa0', marginTop: 10, textDecoration: 'none' }}>
         Chcesz policzyć dokładniej? Otwórz pełny kalkulator →

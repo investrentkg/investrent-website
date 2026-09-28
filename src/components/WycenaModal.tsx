@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { X, Phone, CheckCircle, Home } from 'lucide-react'
 import { submitLead } from '@/lib/api'
+import PrivacyNote from '@/components/PrivacyNote'
 import { LEAD_ERROR_MESSAGE } from '@/lib/leadSubmit'
 
 interface Props { isOpen: boolean; onClose: () => void }
@@ -85,7 +86,7 @@ export default function WycenaModal({ isOpen, onClose }: Props) {
                 <Phone size={16} /> {status === 'loading' ? 'Wysyłanie…' : 'Zamów rozmowę — bezpłatnie'}
               </button>
               {status === 'error' && <p style={{ color: '#ef4444', fontSize: 13, textAlign: 'center' as const, margin: 0 }}>{sendFailed ? LEAD_ERROR_MESSAGE : 'Coś poszło nie tak — spróbuj ponownie'}</p>}
-              <p style={{ color: '#94a3b8', fontSize: 11, textAlign: 'center' as const, margin: 0 }}>🔒 Dane chronione zgodnie z RODO · Bez zobowiązań</p>
+              <PrivacyNote color="#94a3b8" size={11} />
             </div>
             <div style={{ display: 'flex', gap: 16, marginTop: 20, paddingTop: 16, borderTop: '1px solid #f1f5f9' }}>
               {[{ val: '0 zł', label: 'Wycena' }, { val: '60 min', label: 'Odpowiedź' }, { val: '150+', label: 'Transakcji' }].map(s => (
