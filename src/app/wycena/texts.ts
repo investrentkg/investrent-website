@@ -14,15 +14,15 @@ import { OFFICE_PHONE } from '../../lib/valuation.ts' // numer biura z jednego z
 export const RETENTION_VARIANT_A = true
 export const RETENTION_A_ITEMS = [
   'Zapytanie bez numeru telefonu: dane nieruchomości i wynik zapisujemy bez danych kontaktowych i bez adresu IP. Po 12\u00A0miesiącach usuwamy szczegółowy opis wyceny, zostaje anonimowa statystyka (typ nieruchomości, przedział powierzchni, miejscowość i dzielnica z listy, stan, widełki ceny, data).',
-  'Zapytanie z numerem telefonu: usuwamy z naszego systemu Twoje imię, numer i dane kontaktowe 12\u00A0miesięcy po ostatnim kontakcie w sprawie wyceny (Twojej rozmowie lub wiadomości), a jeśli go nie było, 12\u00A0miesięcy po zgłoszeniu. Nie później niż 24\u00A0miesiące po zgłoszeniu, chyba że zachodzi wyjątek z punktu (3).',
-  'Jeśli dojdzie do umowy albo poprosisz nas o rozmowę o sprzedaży lub wynajmie Twojej nieruchomości z pomocą naszego biura, dane z kalkulatora dołączamy do Twojej sprawy w biurze. Przechowujemy je wtedy: przy umowie tak długo, jak trwa umowa i jak wymagają tego przepisy; przy samej rozmowie o sprzedaży lub wynajmie do 12\u00A0miesięcy po ostatniej takiej rozmowie.',
+  'Zapytanie z numerem telefonu: usuwamy z naszego systemu Twoje imię, numer i dane kontaktowe 12\u00A0miesięcy po ostatnim kontakcie w sprawie wyceny (rozmowie lub wiadomości od Ciebie). Jeśli takiego kontaktu nie było, liczymy 12\u00A0miesięcy od zgłoszenia. Usuwamy je najpóźniej 24\u00A0miesiące po zgłoszeniu, chyba że zachodzi wyjątek z punktu (3).',
+  'Jeśli dojdzie do umowy albo poprosisz nas o rozmowę na temat sprzedaży lub wynajmu Twojej nieruchomości z pomocą naszego biura, dane z kalkulatora dołączamy do Twojej sprawy w biurze. Przechowujemy je wtedy: przy umowie tak długo, jak trwa umowa i jak wymagają tego przepisy; przy samej rozmowie na temat sprzedaży lub wynajmu do 12\u00A0miesięcy po ostatniej takiej rozmowie.',
   'Dowód zgody na telefon w sprawie wyceny (wersja zgody, kanał, czas): usuwamy razem ze zgłoszeniem.',
 ] as const
 export const RETENTION_B_ITEMS = [
   'zapytania z kalkulatora: nie dłużej, niż to konieczne do obsługi Twojej wyceny.',
 ] as const
 export const RETENTION_A_HOW = [
-  'Zapytanie bez numeru usuwamy po 12\u00A0miesiącach (zostaje anonimowa statystyka). Zapytanie z numerem usuwamy 12\u00A0miesięcy po ostatnim kontakcie w sprawie wyceny, a najpóźniej 24\u00A0miesiące po zgłoszeniu; wyjątek: umowa albo rozmowa o sprzedaży lub wynajmie Twojej nieruchomości z pomocą naszego biura, o którą poprosisz; wtedy dane przechowujemy dłużej, jak opisano wyżej. Zgodę na telefon możesz cofnąć e-mailem, telefonicznie lub w rozmowie z agentem.',
+  'Zapytanie bez numeru usuwamy po 12\u00A0miesiącach (zostaje anonimowa statystyka). Zapytanie z numerem usuwamy 12\u00A0miesięcy po ostatnim kontakcie w sprawie wyceny, a najpóźniej 24\u00A0miesiące po zgłoszeniu. Wyjątek: jeśli dojdzie do umowy albo poprosisz nas o rozmowę na temat sprzedaży lub wynajmu Twojej nieruchomości z pomocą naszego biura, dane przechowujemy dłużej, jak opisano w pełnej informacji o danych. Zgodę na telefon możesz cofnąć e-mailem, telefonicznie lub w rozmowie z agentem.',
 ] as const
 export const RETENTION_B_HOW = [
   'Jak długo: zapytania z kalkulatora przechowujemy nie dłużej, niż to konieczne do obsługi wyceny. Zgodę na telefon w sprawie wyceny możesz cofnąć e-mailem, telefonicznie lub w rozmowie z agentem. Szczegóły: polityka prywatności (RODO).',
@@ -68,16 +68,16 @@ export const T = {
 
   result: {
     title: 'Orientacyjne widełki ceny',
-    priceLabel: 'Orientacyjny zakres ceny',
-    perM2Label: 'Orientacyjna cena za m²',
+    priceLabel: 'Zakres ceny',
+    perM2Label: 'Cena za m²',
     // Jedna forma: dolna granica przedziału z backendu (15/20/50), bez odmiany zakresów i bez pozornej precyzji.
     comparables: (min: number, _max: number) =>
       `Do szacunku wykorzystaliśmy co najmniej ${min} ${min === 1 ? 'porównywalnej nieruchomości' : 'porównywalnych nieruchomości'} z Twojej miejscowości.`,
-    scopeNote: 'Widełki liczymy automatycznie z użyciem sztucznej inteligencji, na podstawie danych rynkowych (m.in. cen ofertowych z ogłoszeń i cen transakcyjnych). To nie jest operat szacunkowy ani wycena rzeczoznawcy. Cena, za którą faktycznie sprzedasz mieszkanie, może się od nich wyraźnie różnić.',
+    scopeNote: 'Widełki liczymy automatycznie z użyciem sztucznej inteligencji, na podstawie danych rynkowych (m.in. cen ofertowych z ogłoszeń i cen transakcyjnych) oraz kilku ogólnych danych z formularza. Nie widzimy zdjęć ani szczegółów stanu i standardu mieszkania, dlatego cena, za jaką je sprzedasz, może się wyraźnie różnić.',
     // v14: dopisek tylko przy miejscowosci innej niz miasto domowe (WycenaClient)
     scopeNoteWider: 'Dla Twojej miejscowości widełki są szersze, bo mamy tam mniej porównywalnych danych.',
     disclaimerFallback:
-      'Wynik jest orientacyjny i nie jest operatem szacunkowym. Cena, jaką uzyskasz, zależy m.in. od stanu technicznego, standardu wykończenia, widoku z okien i sytuacji na rynku.',
+      'Cena, jaką uzyskasz, zależy m.in. od stanu technicznego, standardu wykończenia, widoku z okien i sytuacji na rynku.',
     // Poza zakresem liczb online (dom, działka, miejscowość spoza listy) - to reguła, nie brak danych.
     outOfScopeTitle: 'Dla tej nieruchomości nie liczymy widełek online',
     outOfScopeBody:
@@ -91,7 +91,7 @@ export const T = {
 
   lead: {
     titleRange: 'Chcesz omówić wynik z agentem?',
-    bodyRange: 'Zostaw numer telefonu i zaznacz zgodę na telefon w sprawie wyceny. Agent zadzwoni, omówi z Tobą wynik i oszacuje cenę, bezpłatnie i bez zobowiązań.',
+    bodyRange: 'Zdjęcia, szczegóły stanu i standardu mieszkania oraz to, czy pochodzi ono z rynku pierwotnego, czy wtórnego, oceni agent po kontakcie. Jeśli chcesz, żeby to zrobił, zostaw numer telefonu i zaznacz zgodę na telefon w sprawie wyceny: agent zadzwoni, omówi z Tobą wynik i oszacuje cenę, bezpłatnie i bez zobowiązań.',
     titleFallback: 'Zostaw numer, a agent zadzwoni w sprawie wyceny',
     bodyFallback: 'Zaznacz zgodę na telefon w sprawie wyceny. Agent zadzwoni i powie, jak może pomóc: dla mieszkań, domów i działek w województwie zachodniopomorskim oszacuje cenę, bezpłatnie i bez zobowiązań. To nie jest operat.',
     name: 'Imię (opcjonalnie)',
@@ -117,7 +117,7 @@ export const T = {
       { h: 'Kto jest administratorem Twoich danych.', t: 'Administratorem jest INVESTRENT SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ, ul. Ratuszowa\u00A012/1\u00A0lok.\u00A03, 78-100 Kołobrzeg, KRS\u00A00001069797, NIP\u00A0671\u00A0185\u00A085\u00A059. Działamy pod marką InvestRent. Kontakt: biuro@investrent.com.pl.' },
       { h: 'Po co i na jakiej podstawie.', t: 'Wykorzystujemy Twoje dane w tych celach:', items: [
         'obliczenie i pokazanie szacunku — wykonanie Twojego żądania (art.\u00A06 ust.\u00A01 lit.\u00A0b RODO);',
-        'rozmowa o sprzedaży lub wynajmie Twojej nieruchomości z pomocą naszego biura, o którą sam(a) poprosisz — działania na Twoje żądanie przed zawarciem umowy (art. 6 ust. 1 lit. b RODO);',
+        'rozmowa o sprzedaży lub wynajmie Twojej nieruchomości z pomocą naszego biura, jeśli o nią poprosisz — działania na Twoje żądanie przed zawarciem umowy (art. 6 ust. 1 lit. b RODO);',
         'umowa, jeśli do niej dojdzie — wykonanie umowy (art. 6 ust. 1 lit. b RODO) oraz obowiązki prawne wynikające z przepisów, np. podatkowych (art. 6 ust. 1 lit. c RODO);',
         'telefon w sprawie wyceny — Twoja zgoda (art.\u00A06 ust.\u00A01 lit.\u00A0a RODO), jeśli podasz numer i zaznaczysz zgodę na telefon w sprawie wyceny;',
         'dowód udzielonej zgody na telefon w sprawie wyceny (wersja zgody, kanał, czas), aby wykazać jej udzielenie i bronić się przed roszczeniami — nasz prawnie uzasadniony interes (art.\u00A06 ust.\u00A01 lit.\u00A0f oraz art.\u00A07 ust.\u00A01 RODO);',
@@ -146,11 +146,11 @@ export const T = {
         'Adres IP, dostawcy hostingu strony (Vercel) i ochrony formularza (Cloudflare): w ich logach technicznych według ich zasad i okresów.',
         ...(RETENTION_VARIANT_A ? RETENTION_A_ITEMS : RETENTION_B_ITEMS),
       ] },
-      { h: 'Twoje prawa.', t: `Możesz żądać dostępu do danych, ich sprostowania, usunięcia, ograniczenia przetwarzania i przeniesienia oraz w każdej chwili cofnąć zgodę na telefon w sprawie wyceny (cofnięcie nie wpływa na zgodność z prawem tego, co zrobiliśmy wcześniej). Zgodę możesz cofnąć e-mailem (biuro@investrent.com.pl), telefonicznie (${OFFICE_PHONE}) albo mówiąc o tym pracownikowi biura podczas rozmowy; wystarczy powiedzieć, że nie chcesz, żebyśmy dzwonili. Po cofnięciu nie zadzwonimy do Ciebie w sprawie wyceny. Wnioski o pozostałe prawa wyślij na biuro@investrent.com.pl. Możesz też złożyć skargę do Prezesa Urzędu Ochrony Danych Osobowych. Podanie danych jest dobrowolne; bez numeru telefonu pokażemy wynik (jeśli liczymy go online), ale nie oddzwonimy.` },
+      { h: 'Twoje prawa.', t: `Możesz żądać dostępu do danych, ich sprostowania, usunięcia, ograniczenia przetwarzania i przeniesienia oraz w każdej chwili cofnąć zgodę na telefon w sprawie wyceny (cofnięcie nie wpływa na zgodność z prawem tego, co zrobiliśmy wcześniej). Zgodę możesz cofnąć e-mailem (biuro@investrent.com.pl), telefonicznie (${OFFICE_PHONE}) albo mówiąc o tym agentowi podczas rozmowy; wystarczy powiedzieć, że nie chcesz, żebyśmy dzwonili. Po cofnięciu nie zadzwonimy do Ciebie w sprawie wyceny. Wnioski o pozostałe prawa wyślij na biuro@investrent.com.pl. Możesz też złożyć skargę do Prezesa Urzędu Ochrony Danych Osobowych. Podanie danych jest dobrowolne; bez numeru telefonu pokażemy wynik (jeśli liczymy go online), ale nie oddzwonimy.` },
       { h: 'Prawo sprzeciwu.', highlight: true, t: 'Masz prawo w każdej chwili wnieść sprzeciw wobec przetwarzania Twoich danych opartego na naszym prawnie uzasadnionym interesie (dowód zgody na telefon w sprawie wyceny, adres IP; art.\u00A06 ust.\u00A01 lit.\u00A0f RODO), z przyczyn związanych z Twoją szczególną sytuacją (art.\u00A021 RODO). Napisz na biuro@investrent.com.pl lub powiedz o tym podczas rozmowy.' },
     ],
     // v12: krotkie streszczenie na wierzchu, pelna klauzula (consentInfo) w rozwijanym bloku
-    consentShort: 'Administratorem jest INVESTRENT sp. z o.o. (InvestRent). Numer (i imię, jeśli je podasz) zapisujemy w naszym systemie i przekazujemy pracownikom biura, żeby agent mógł do Ciebie zadzwonić w sprawie wyceny. Rozmowa o sprzedaży lub wynajmie to osobna sprawa: numeru do niej (i do innych celów) użyjemy tylko na Twoją prośbę. Zgodę cofniesz w każdej chwili, także telefonicznie lub w rozmowie z agentem. Pełna informacja o danych jest poniżej.',
+    consentShort: 'Administratorem jest INVESTRENT sp. z o.o. (InvestRent). Numer (i imię, jeśli je podasz) zapisujemy w naszym systemie i przekazujemy pracownikom biura, żeby agent mógł do Ciebie zadzwonić w sprawie wyceny. Rozmowa o sprzedaży lub wynajmie to osobna sprawa: numeru do niej (i do innych celów) użyjemy tylko na Twoją prośbę. Zgodę cofniesz w każdej chwili: e-mailem, telefonicznie lub w rozmowie z agentem. Pełna informacja o danych jest poniżej.',
     consentInfoSummary: 'Pełna informacja o przetwarzaniu danych (art. 13 RODO)',
     consentInfoMore: 'Szczegóły znajdziesz w ',
     consentInfoLink: 'polityce prywatności (RODO)',
@@ -184,7 +184,7 @@ export const T = {
     // v14 (28.09.2026, FINAL po rundzie 5 Krytyka): metoda osobno, prywatnosc krotko; punkt 7 = retencja (bez dubletu naglowka "Jak dlugo" i zdania o cofnieciu)
     body: [
       'Porównujemy dane Twojej nieruchomości z cenami transakcyjnymi i ofertowymi podobnych nieruchomości z Twojej okolicy. Szacunek liczymy automatycznie z użyciem sztucznej inteligencji, bez oględzin. Ceny ofertowe bywają wyższe od faktycznie zapłaconych. W mniejszych miejscowościach widełki są szersze, bo danych jest mniej.',
-      'Widełki są zaokrąglone i mają charakter orientacyjny. Nie zastępują operatu szacunkowego sporządzanego przez rzeczoznawcę majątkowego (np. do kredytu, sądu lub urzędu). Szacunek z kalkulatora do niczego Cię nie zobowiązuje. Szacunek agenta to rozmowa o Twojej nieruchomości; on także nie jest operatem szacunkowym.',
+      'Widełki są zaokrąglone. Nie zastępują operatu szacunkowego sporządzanego przez rzeczoznawcę majątkowego (np. do kredytu, sądu lub urzędu). Szacunek z kalkulatora do niczego Cię nie zobowiązuje. Szacunek agenta to rozmowa o Twojej nieruchomości; on także nie jest operatem szacunkowym.',
       'Do dostawcy sztucznej inteligencji (Anthropic) i dostawcy danych rynkowych (Cenogram) trafiają wyłącznie dane nieruchomości, bez Twoich danych kontaktowych i adresu IP.',
       'Bez numeru: w naszej bazie zapisujemy dane nieruchomości i wynik, bez danych kontaktowych i bez adresu IP.',
       'Z numerem: zapisujemy w naszym systemie także Twoje imię, numer, dane nieruchomości i wynik oraz dowód zgody na telefon (wersja zgody, kanał, czas). Imię trafia też e-mailem do pracowników biura, razem z odnośnikiem do zgłoszenia w naszym systemie; numeru w e-mailu nie ma. Do kalendarza Google pracownika (jeśli ma połączony kalendarz firmowy) trafia tylko imię i odnośnik do zgłoszenia w naszym systemie, bez numeru.',
