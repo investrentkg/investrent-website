@@ -164,7 +164,7 @@ test('teksty v11.2: okres z numerem (T-f: umowa przed pulapem, kontakt = rozmowa
   assert.ok(last.indexOf('Wyjątki: umowa') > last.indexOf('najpóźniej 24 miesiące')); assert.ok(last.includes('Nieodebrane próby kontaktu z naszej strony okresów nie wydłużają'))
   assert.ok(items.includes('przedział powierzchni co 10 m², miejscowość i dzielnica z listy'))
   assert.ok(items.includes('Nie podejmujemy wobec Ciebie decyzji opartych wyłącznie na zautomatyzowanym przetwarzaniu'))
-  assert.equal(T.lead.titleRange, 'Chcesz omówić wynik z agentem?'); assert.ok(!/mapą|raport/i.test(T.lead.bodyRange)); assert.ok(T.lead.bodyRange.includes('sprawdzi, czy może przygotować wycenę indywidualną'))
+  assert.equal(T.lead.titleRange, 'Chcesz omówić wynik z agentem?'); assert.ok(!/mapą|raport/i.test(T.lead.bodyRange)); assert.ok(T.lead.bodyRange.includes('powie, jak może przygotować wycenę indywidualną'))
 })
 test('konfiguracja per biuro (SaaS): miasto domowe, slowniki i wylaczone dzielnice z konfiguracji; zrodlo i data przegladu listy dzielnic jawne', () => {
   assert.equal(CALCULATOR_CONFIG, INVESTRENT_CONFIG)
@@ -235,9 +235,9 @@ test('teksty v11.4: T-m (Railway 30 dni pierwsze), T-l (bez kopii DPF, bez Verce
   assert.ok(items.includes('Cloudflare: standardowe klauzule umowne UE zawarte w umowie dostawcy; korzysta on też z ram ochrony danych UE-USA (Data Privacy Framework), o ile jego certyfikacja jest w danym czasie aktywna; Google: Data Privacy Framework, a w razie jego braku standardowe klauzule umowne UE'))
   assert.ok(!items.includes('Vercel opiera się')); assert.ok(!items.includes('Supabase opiera się')); assert.ok(!items.includes('Brevo opiera się'))
   // T-o, T-n
-  assert.ok(T.disclaimerMore.includes('wybranych dzielnicach Kołobrzegu (lista w formularzu)')); assert.ok(!T.disclaimerMore.includes('z wyjątkiem Śródmieścia'))
-  assert.ok(T.result.outOfScopeBody.includes('wybranych dzielnicach Kołobrzegu (lista w formularzu)'))
-  assert.ok(T.fields.district_hint.includes('także pozycji „Centrum” i „Stare Miasto”'))
+  assert.ok(T.disclaimerMore.includes('Kołobrzegu i wybranych miejscowościach regionu (lista w formularzu)')); assert.ok(!T.disclaimerMore.includes('z wyjątkiem Śródmieścia'))
+  assert.ok(T.result.outOfScopeBody.includes('Kołobrzegu i wybranych miejscowościach regionu (lista w formularzu)'))
+  assert.ok(!T.fields.district_hint.includes('Centrum') && T.fields.district_hint.includes('Inna dzielnica')) // 28.09: Srodmiescie/Centrum/Stare Miasto NIE sa juz wylaczone
   // doneBody bez obietnicy wyniku
   assert.equal(T.lead.doneBody, 'Agent skontaktuje się z Tobą telefonicznie w godzinach pracy biura.')
   // Podczele: dzielnica Kolobrzegu, nie osobna miejscowosc
@@ -253,8 +253,8 @@ test('teksty v11.5: T-l2 (lista, Supabase UE), T-r, T-q, T-s, consentCall 3 drog
   assert.ok(items.includes('Vercel (hosting strony): Data Privacy Framework oraz umowa powierzenia przetwarzania danych;')); assert.ok(!/Vercel[^.;]*(SCC|klauzul)/.test(items))
   assert.ok(items.includes('zadanie oddzwonienia z imieniem i odnośnikiem do karty w naszym systemie')); assert.ok(!items.includes('bez numeru telefonu, z odnośnikiem'))
   assert.ok(!items.includes('zadanie oddzwonienia z imieniem i numerem'))
-  assert.equal(T.fields.city_hint, 'Domyślnie Kołobrzeg; możesz zacząć pisać nazwę. Osiedla Kołobrzegu (np. Podczele) wskażesz niżej, w polu „Dzielnica lub osiedle”. Grzybowo, Bogucino, Budzistowo, Zieleniewo i Dźwirzyno to osobne miejscowości — wybierz je tutaj (widełek online dla nich nie podajemy, agent sprawdzi, czy może przygotować wycenę). Dla innej miejscowości wybierz „Inna lokalizacja”.')
-  assert.ok(T.fields.district_hint.endsWith('agent sprawdzi, czy może przygotować wycenę.'))
+  assert.equal(T.fields.city_hint, 'Domyślnie Kołobrzeg. Osiedla Kołobrzegu (np. Podczele) wybierzesz niżej, w polu „Dzielnica lub osiedle”. Grzybowo, Bogucino, Budzistowo, Zieleniewo i Dźwirzyno to osobne miejscowości: wybierz je tutaj. Dla miejscowości spoza listy wybierz „Inna lokalizacja”.')
+  assert.ok(T.fields.district_hint.endsWith('jeśli Twojej nie ma na liście.'))
   assert.ok(T.metaDescription.length <= 160, 'metaDescription do 160 znakow'); assert.ok(!T.metaDescription.includes('Podaj kilka danych'))
   assert.ok(T.lead.consentCall.includes('Zgodę mogę cofnąć w każdej chwili, pisząc na biuro@investrent.com.pl.'))
   assert.ok(items.includes('jeśli sam(a) poprosisz o rozmowy o współpracy, Twój numer i dane z tych rozmów przechowujemy najdłużej 12 miesięcy od ostatniej takiej rozmowy')); assert.ok(how.includes('rozmowy o współpracy, o które sam(a) poprosisz (Twój numer i dane z tych rozmów najdłużej 12 miesięcy od ostatniej takiej rozmowy; każda kolejna taka rozmowa odnawia te 12 miesięcy)'))
@@ -272,7 +272,7 @@ test('teksty v11.6: cel [2] dla wspolpracy, Cenogram, Vercel w DPF, T-t (punkty)
   assert.ok(items.includes('oraz dane rynkowe: Cenogram (Polska); do obu trafiają wyłącznie dane nieruchomości')); assert.ok(how.includes('Anthropic) i dostawcy danych rynkowych (Cenogram)'))
   assert.ok(items.includes('Vercel (hosting strony): Data Privacy Framework oraz umowa powierzenia przetwarzania danych;'))
   assert.equal(T.h1, 'Orientacyjna wycena mieszkania w Kołobrzegu online'); assert.ok(!/bezpłatn/i.test(T.h1))
-  assert.ok(T.result.outOfScopeBody.includes('agent sprawdzi, czy może przygotować wycenę.') && !T.result.outOfScopeBody.includes('czy i jak'))
+  assert.ok(T.result.outOfScopeBody.includes('agent zadzwoni i powie, jak może pomóc z wyceną.') && !T.result.outOfScopeBody.includes('sprawdzi, czy'))
   assert.ok(!how.includes('bez danych kontaktowych i adresu IP; nie zawierają'))
   assert.equal(T.how.body.filter(b => b.startsWith('Adres IP:')).length, 1)
   for (const k of ['adres IP, dostawca hostingu naszego serwera (Railway)', 'adres IP, nasza aplikacja', 'adres IP, dostawcy hostingu strony (Vercel)', 'zapytanie z numerem telefonu, zwykle', 'zapytanie z numerem telefonu, najpóźniej', 'zapytanie z numerem telefonu, wyjątki']) assert.ok(items.includes(k), k)
@@ -306,9 +306,9 @@ test('teksty v11.8 (decyzje Daniela 26.09): T-k lista nie dzwonimy, T-c2 rozmowa
   assert.ok(items.includes('każda kolejna taka rozmowa odnawia te 12 miesięcy') && how.includes('każda kolejna taka rozmowa odnawia te 12 miesięcy'))
 })
 
-test('teksty v12: wstep do 3 zdan (disclaimery pod przyciskiem), okresy wariant B domyslnie (A jako wylaczona flaga), krotkie streszczenie zgody na wierzchu', async () => {
+test('teksty v12: wstep krotki (zakres tez we wstepie od 28.09), okresy wariant B domyslnie (A jako wylaczona flaga), krotkie streszczenie zgody na wierzchu', async () => {
   const { T, RETENTION_VARIANT_A, RETENTION_A_ITEMS, RETENTION_B_ITEMS } = await import('../app/wycena/texts.ts')
-  assert.ok(T.intro.split(/[.?] /).length <= 3, 'wstep: max 3 zdania'); assert.ok(T.intro.includes('sztucznej inteligencji'))
+  assert.ok(T.intro.split(/[.?] /).length <= 5, 'wstep: max 5 zdan (28.09: zakres wrocil do wstepu wg Krytyka pkt 1)'); assert.ok(T.intro.includes('sztucznej inteligencji'))
   assert.ok(T.disclaimerMore.startsWith('To szacunek, a nie operat szacunkowy'))
   assert.equal(RETENTION_VARIANT_A, false)
   const items = T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]).join(' ')

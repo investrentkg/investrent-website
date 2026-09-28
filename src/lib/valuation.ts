@@ -98,7 +98,7 @@ export function validateForm(v: FormValues): FormErrors {
   else if (city.length > 80) e.city = 'Nazwa miejscowości jest za długa.'
   if (isKolobrzeg(city) && v.district.trim() && !canonicalDistrict(v.district)) e.district = DISTRICT_ERROR
   else if (v.property_type === 'mieszkanie' && isKolobrzeg(city) && !v.district.trim()) {
-    e.district = 'Wybierz dzielnicę lub osiedle z listy. Jeśli nie ma jej na liście, wybierz „Inna dzielnica” (widełek online wtedy nie podajemy, wycenę przygotuje agent) albo zostaw numer telefonu i zaznacz zgodę na telefon w sprawie wyceny.'
+    e.district = 'Wybierz dzielnicę lub osiedle z listy. Jeśli Twojej nie ma na liście, wybierz „Inna dzielnica”.'
   }
 
   const area = parseNum(v.area_m2)

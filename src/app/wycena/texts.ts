@@ -32,18 +32,18 @@ export const T = {
   // title bez doklejania marki: page.tsx uzywa title.absolute (layout ma szablon '%s | InvestRent Nieruchomości')
   metaTitle: 'Wycena mieszkania w Kołobrzegu online — orientacyjna cena',
   metaDescription:
-    'Ile jest warte mieszkanie w Kołobrzegu? Widełki ceny online dla wybranych osiedli, w innych przypadkach agent sprawdzi, czy może przygotować wycenę.',
+    'Ile jest warte mieszkanie w Kołobrzegu i okolicy? Orientacyjne widełki ceny online. W innych przypadkach agent zadzwoni i powie, jak może pomóc z wyceną.',
   metaDescriptionOff:
-    'Wycena mieszkania w Kołobrzegu: zostaw numer telefonu, a agent InvestRent sprawdzi, czy może przygotować wycenę, i zadzwoni. Bez zobowiązań.',
+    'Wycena mieszkania w Kołobrzegu: zostaw numer telefonu, a agent InvestRent zadzwoni i powie, jak może pomóc z wyceną.',
   h1: 'Orientacyjna wycena mieszkania w Kołobrzegu online',
-  h1Off: 'Wycena mieszkania w Kołobrzegu — zajmie się nią agent',
-  intro: 'Ile jest warte Twoje mieszkanie w Kołobrzegu? Podaj kilka danych, a od razu pokażemy orientacyjne widełki ceny i ceny za m², liczone automatycznie z użyciem sztucznej inteligencji na podstawie danych rynkowych. Numeru telefonu podawać nie musisz.',
-  introOff: 'Kalkulator online jest chwilowo niedostępny. Zostaw numer telefonu — agent sprawdzi, czy może przygotować wycenę Twojej nieruchomości, i zadzwoni. Bez zobowiązań.',
+  h1Off: 'Wycena mieszkania w Kołobrzegu z pomocą agenta',
+  intro: 'Ile jest warte Twoje mieszkanie w Kołobrzegu? Podaj kilka danych, a po chwili pokażemy orientacyjne widełki ceny i ceny za m². Liczymy je automatycznie, z użyciem sztucznej inteligencji, na podstawie danych rynkowych. Działa dla mieszkań w Kołobrzegu i wybranych miejscowościach regionu (lista w formularzu); w innych przypadkach oddzwoni agent. Numeru telefonu podawać nie musisz.',
+  introOff: 'Kalkulator online jest chwilowo niedostępny. Zostaw numer telefonu, a agent zadzwoni i powie, jak może pomóc z wyceną Twojej nieruchomości.',
   callInstead: 'Wolisz, żebyśmy zadzwonili?',
   callInsteadLink: 'Zostaw numer telefonu',
   disclaimerTop: 'Wynik jest orientacyjny — to nie operat szacunkowy rzeczoznawcy majątkowego.',
-  // v12: dawne zdania z wstępu (przeniesione pod przycisk, tekst bez zmian merytorycznych)
-  disclaimerMore: 'To szacunek, a nie operat szacunkowy ani wycena rzeczoznawcy. Widełki podajemy dla mieszkań w wybranych dzielnicach Kołobrzegu (lista w formularzu). W pozostałych przypadkach (dom, działka, Śródmieście, inna dzielnica lub miejscowość) agent sprawdzi, czy może przygotować wycenę.',
+  // 28.09.2026 (recenzja Krytyka 6/10, pkt 1-2): zakres jest tez we wstepie; zakres wg decyzji Daniela 27.09 (caly Kolobrzeg + wybrane miejscowosci, backend #570).
+  disclaimerMore: 'To szacunek, a nie operat szacunkowy ani wycena rzeczoznawcy. Widełki podajemy dla mieszkań w Kołobrzegu i wybranych miejscowościach regionu (lista w formularzu); poza Kołobrzegiem są szersze, bo mamy tam mniej danych. W pozostałych przypadkach (dom, działka, inna lokalizacja) agent zadzwoni i powie, jak może pomóc z wyceną.',
 
   formTitle: 'Dane nieruchomości',
   requiredNote: 'Pola z gwiazdką (*) są wymagane. Dla mieszkania w Kołobrzegu wymagana jest także dzielnica lub osiedle. Pozostałe pola możesz pominąć, ale pomagają zawęzić widełki.',
@@ -51,10 +51,10 @@ export const T = {
     property_type: 'Rodzaj nieruchomości',
     property_type_placeholder: 'Wybierz…',
     city: 'Miejscowość',
-    city_hint: 'Domyślnie Kołobrzeg; możesz zacząć pisać nazwę. Osiedla Kołobrzegu (np. Podczele) wskażesz niżej, w polu „Dzielnica lub osiedle”. Grzybowo, Bogucino, Budzistowo, Zieleniewo i Dźwirzyno to osobne miejscowości — wybierz je tutaj (widełek online dla nich nie podajemy, agent sprawdzi, czy może przygotować wycenę). Dla innej miejscowości wybierz „Inna lokalizacja”.',
+    city_hint: 'Domyślnie Kołobrzeg. Osiedla Kołobrzegu (np. Podczele) wybierzesz niżej, w polu „Dzielnica lub osiedle”. Grzybowo, Bogucino, Budzistowo, Zieleniewo i Dźwirzyno to osobne miejscowości: wybierz je tutaj. Dla miejscowości spoza listy wybierz „Inna lokalizacja”.',
     district: 'Dzielnica lub osiedle',
     district_placeholder: 'Wybierz z listy…',
-    district_hint: 'Dla mieszkania w Kołobrzegu wybierz dzielnicę lub osiedle z listy. Dla Śródmieścia (także pozycji „Centrum” i „Stare Miasto”) oraz dla „Inna dzielnica” widełek online nie podajemy — agent sprawdzi, czy może przygotować wycenę.',
+    district_hint: 'Dla mieszkania w Kołobrzegu wybierz dzielnicę lub osiedle z listy albo „Inna dzielnica”, jeśli Twojej nie ma na liście.',
     area_m2: 'Powierzchnia (m²)',
     rooms: 'Liczba pokoi (opcjonalnie)',
     floor: 'Piętro (opcjonalnie)',
@@ -76,25 +76,25 @@ export const T = {
     scopeNote: 'Orientacyjny zakres liczony automatycznie z użyciem sztucznej inteligencji na podstawie danych rynkowych (m.in. cen ofertowych z ogłoszeń i cen transakcyjnych). To nie jest operat szacunkowy ani wycena rzeczoznawcy. Cena, za którą faktycznie sprzedasz mieszkanie, może się od niego wyraźnie różnić.',
     disclaimerFallback:
       'To wycena orientacyjna, a nie operat szacunkowy rzeczoznawcy majątkowego. Cena, jaką uzyskasz, zależy m.in. od stanu technicznego, standardu wykończenia, widoku z okien i sytuacji na rynku.',
-    // Poza zakresem liczb online (dom, działka, inna miejscowość, Śródmieście) - to reguła, nie brak danych.
-    outOfScopeTitle: 'Widełek dla tej nieruchomości nie podajemy online',
+    // Poza zakresem liczb online (dom, działka, miejscowość spoza listy) - to reguła, nie brak danych.
+    outOfScopeTitle: 'Dla tej nieruchomości nie liczymy widełek online',
     outOfScopeBody:
-      'Widełki online liczymy tylko dla mieszkań w wybranych dzielnicach Kołobrzegu (lista w formularzu). W pozostałych przypadkach (domy, działki, Śródmieście, inne dzielnice i miejscowości) agent sprawdzi, czy może przygotować wycenę. Jeśli chcesz, zostaw numer telefonu i zaznacz zgodę na telefon w sprawie wyceny — zadzwonimy tylko w sprawie Twojej wyceny.',
+      'Widełki online liczymy dla mieszkań w Kołobrzegu i wybranych miejscowościach regionu (lista w formularzu). Dla domów, działek i innych lokalizacji agent zadzwoni i powie, jak może pomóc z wyceną. Jeśli chcesz, zostaw numer telefonu i zaznacz zgodę na telefon w sprawie wyceny — zadzwonimy tylko w sprawie Twojej wyceny.',
     // W zakresie, ale silnik nie ma dość porównań.
     noNumbersTitle: 'Nie mamy dość danych, żeby podać widełki',
     noNumbersBody:
-      'Dla tej nieruchomości mamy za mało porównywalnych danych rynkowych, żeby rzetelnie wyznaczyć widełki. Jeśli chcesz, zostaw numer telefonu i zaznacz zgodę na telefon w sprawie wyceny — agent sprawdzi, czy może przygotować wycenę indywidualnie.',
+      'Dla tej nieruchomości mamy za mało porównywalnych danych rynkowych, żeby rzetelnie wyznaczyć widełki. Jeśli chcesz, zostaw numer telefonu i zaznacz zgodę na telefon w sprawie wyceny. Agent zadzwoni i powie, jak może pomóc z wyceną indywidualną.',
     again: 'Wyceń inną nieruchomość',
   },
 
   lead: {
     titleRange: 'Chcesz omówić wynik z agentem?',
-    bodyRange: 'Zostaw numer telefonu i zaznacz zgodę na telefon w sprawie wyceny — agent zadzwoni, omówi z Tobą wynik i sprawdzi, czy może przygotować wycenę indywidualną. Bez zobowiązań.',
-    titleFallback: 'Zostaw numer, a agent sprawdzi, czy może przygotować wycenę',
-    bodyFallback: 'Zaznacz zgodę na telefon w sprawie wyceny, a agent zadzwoni i omówi z Tobą Twoją nieruchomość. Bez zobowiązań.',
+    bodyRange: 'Zostaw numer telefonu i zaznacz zgodę na telefon w sprawie wyceny. Agent zadzwoni, omówi z Tobą wynik i powie, jak może przygotować wycenę indywidualną.',
+    titleFallback: 'Zostaw numer, a agent zadzwoni w sprawie wyceny',
+    bodyFallback: 'Zaznacz zgodę na telefon w sprawie wyceny. Agent zadzwoni, zapyta o nieruchomość i powie, jak może pomóc z wyceną.',
     name: 'Imię (opcjonalnie)',
     phone: 'Numer telefonu',
-    phoneHint: 'Podaj 9 cyfr (numer polski) albo pełny numer z kierunkowym kraju, zaczynający się od +.',
+    phoneHint: 'Podaj 9 cyfr (numer polski) albo pełny numer z numerem kierunkowym kraju, zaczynający się od +.',
     // Teksty zgód i klauzuli = wersja CONSENT_VERSION (lib/valuation.ts). Zmiana JAKIEGOKOLWIEK z tych tekstów = nowy numer wersji.
     // Zatwierdzenie treści: Krytyk + przegląd AI (kancelaria nieangażowana wg decyzji Daniela 25.09; ryzyko przyjęte świadomie).
     // v11 (decyzja Daniela 26.09.2026): kalkulator startuje BEZ zgody marketingowej. Jedna zgoda: na oddzwonienie w sprawie wyceny
@@ -154,7 +154,7 @@ export const T = {
     optionalLabel: '(opcjonalnie)',
     submit: 'Proszę o kontakt',
     submitting: 'Wysyłanie…',
-    errPhone: 'Wpisz numer telefonu: 9 cyfr (numer polski) albo pełny numer z kierunkowym kraju, zaczynający się od +.',
+    errPhone: 'Wpisz numer telefonu: 9 cyfr (numer polski) albo pełny numer z numerem kierunkowym kraju, zaczynający się od +.',
     errConsent: 'Zaznacz zgodę na telefon w sprawie wyceny — bez niej nie możemy do Ciebie zadzwonić.',
     doneTitle: 'Dziękujemy, otrzymaliśmy Twój numer',
     doneBody: 'Agent skontaktuje się z Tobą telefonicznie w godzinach pracy biura.',
@@ -162,13 +162,13 @@ export const T = {
 
   // Komunikaty konczace sie na "zadzwon:" - numer biura dopisuje komponent jako link tel:.
   errors: {
-    disabled: 'Kalkulator jest chwilowo niedostępny. Agent sprawdzi, czy może przygotować wycenę indywidualnie — zostaw numer poniżej lub zadzwoń:',
+    disabled: 'Kalkulator jest chwilowo niedostępny. Zostaw numer poniżej, a agent zadzwoni i powie, jak może pomóc z wyceną. Możesz też zadzwonić:',
     // when = wynik formatRetryAfter(retry_after_seconds z backendu; okno 1 h dla luźnego limitu, 24 h dla limitu 3 wycen)
-    rateLimited: (when: string) => `Z tego połączenia wykonano już maksymalną liczbę wycen. Spróbuj ponownie za około ${when}. Możesz też zostawić numer poniżej lub zadzwonić:`,
+    rateLimited: (when: string) => `Z tego urządzenia lub sieci wykonano już maksymalną liczbę wycen. Spróbuj ponownie za około ${when}. Możesz też zostawić numer poniżej lub zadzwonić:`,
     network: 'Nie udało się połączyć z kalkulatorem. Spróbuj ponownie za chwilę, a jeśli problem się powtórzy, sprawdź połączenie z internetem. Możesz też zostawić numer poniżej lub zadzwonić:',
     server: 'Coś poszło nie tak po naszej stronie. Spróbuj ponownie za chwilę. Możesz też zostawić numer poniżej lub zadzwonić:',
     turnstilePending: 'Weryfikacja antyspamowa jeszcze się ładuje. Poczekaj chwilę i spróbuj ponownie.',
-    invalid: 'Nie udało się przetworzyć części danych. Sprawdź wartości w formularzu i spróbuj ponownie. Jeśli to nie pomoże, zadzwoń:',
+    invalid: 'Któreś z pól ma nieprawidłową wartość. Sprawdź formularz i spróbuj ponownie. Jeśli to nie pomoże, zadzwoń:',
     // Zbyt szybkie wysłanie formularza (próg czasowy) - neutralny komunikat, bez ujawniania mechanizmu.
     tryAgain: 'Nie udało się wysłać zapytania. Spróbuj ponownie za chwilę.',
     leadFail: 'Nie udało się wysłać numeru. Spróbuj ponownie lub zadzwoń:',
