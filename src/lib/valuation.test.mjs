@@ -226,7 +226,7 @@ test('teksty v11.3 (Brevo ustalone): Sendinblue SAS (Francja) jako procesor wg u
   const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/wycena/texts.ts'); const RA = { items: RETENTION_A_ITEMS, how: RETENTION_A_HOW }
   const sp = String.fromCharCode(160)
   const items = [...T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]), ...RA.items].join(' ').split(sp).join(' ')
-  assert.ok(items.includes('Brevo (Sendinblue SAS, Francja; imię i odnośnik do zgłoszenia w naszym systemie, bez numeru telefonu), na podstawie umowy powierzenia będącej częścią regulaminu usługi')); assert.ok(!items.includes('Brevo (Sendinblue SAS, Francja; imię, numer telefonu')) // po #575 mail do managerów bez numeru
+  assert.ok(items.includes('Brevo (Sendinblue SAS, Francja; zwykle imię i odnośnik do zgłoszenia w naszym systemie, bez numeru telefonu; w wyjątkowych przypadkach, np. gdy przez 24 godziny od przypisania klienta agent nie nawiąże z nim kontaktu, także numer telefonu), na podstawie umowy powierzenia będącej częścią regulaminu usługi')); assert.ok(!items.includes('Brevo (Sendinblue SAS, Francja; imię, numer telefonu')) /* audyt sciezek e-mail 28.09: staleAssignmentScheduler wysyla numer po 24 h bez kontaktu, wiec klauzula ma wyjatek */ // po #575 mail do managerów bez numeru
   assert.ok(!items.includes('Brevo opiera się')); assert.ok(!items.includes('Brevo i Google'))
 })
 

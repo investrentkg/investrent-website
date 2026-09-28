@@ -150,7 +150,7 @@ export const T = {
         'baza danych: Supabase;',
         'sztuczna inteligencja: Anthropic, oraz dane rynkowe: Cenogram (Polska); do obu trafiają wyłącznie dane nieruchomości, bez Twoich danych kontaktowych i adresu IP;',
         'ochrona formularza: Cloudflare Turnstile (adres IP, informacje o przeglądarce);',
-        'poczta e-mail, którą powiadamiamy pracowników biura o zgłoszeniu: Brevo (Sendinblue SAS, Francja; imię i odnośnik do zgłoszenia w naszym systemie, bez numeru telefonu), na podstawie umowy powierzenia będącej częścią regulaminu usługi;',
+        'poczta e-mail, którą powiadamiamy pracowników biura o zgłoszeniu: Brevo (Sendinblue SAS, Francja; zwykle imię i odnośnik do zgłoszenia w naszym systemie, bez numeru telefonu; w wyjątkowych przypadkach, np. gdy przez 24 godziny od przypisania klienta agent nie nawiąże z nim kontaktu, także numer telefonu), na podstawie umowy powierzenia będącej częścią regulaminu usługi;',
         'kalendarz Google pracowników biura, jeśli mają go połączonego z naszym systemem (zadanie oddzwonienia z imieniem i odnośnikiem do karty w naszym systemie).',
       ] },
       { h: 'Zabezpieczenia przy przekazaniu poza Europejski Obszar Gospodarczy (EOG).', t: 'Część dostawców ma siedzibę w USA lub może przetwarzać dane poza Europejskim Obszarem Gospodarczym. Przekazanie opieramy na decyzji Komisji Europejskiej o odpowiednim stopniu ochrony (EU-US Data Privacy Framework, czyli unijno-amerykańskie porozumienie o ochronie danych), o ile odbiorca ma w danym czasie aktywną certyfikację, a w pozostałym zakresie na standardowych klauzulach umownych UE. Na Twój wniosek (biuro@investrent.com.pl) prześlemy kopię zabezpieczeń. Dotyczy to dostawców:', items: [
