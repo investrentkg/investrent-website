@@ -19,6 +19,8 @@ const LINKS = [
   // z Nav.tsx (patrz komentarz tam) - link wciaz istnieje, tylko nie
   // zabiera juz miejsca w ciasnym, gornym pasku nawigacji.
   { label: 'Blog',                href: '/blog' },
+  // NOWE (25.09.2026): kalkulator wyceny - link wewnetrzny na kazdej podstronie.
+  { label: 'Bezpłatna wycena',    href: '/wycena' },
   // NOWE (21.09.2026, SEO+Rozwój Produktu) - ten sam wzorzec co Blog powyzej,
   // celowo w stopce a nie w ciasnym gornym menu.
   { label: 'Nieruchomości Kołobrzeg', href: '/kolobrzeg' },
@@ -85,6 +87,11 @@ export default function Footer({ office }: { office: Office | null }) {
             </div>
             <div style={{ color: 'rgba(255,255,255,.3)', fontSize: 12 }}>
               © {new Date().getFullYear()} {name} · Wszystkie prawa zastrzeżone
+            </div>
+            {/* NOWE (25.09.2026): dyskretne linki dla odbiorców z Niemiec (Meta Suchwünsche) */}
+            <div style={{ display: 'flex', gap: 14, fontSize: 11 }}>
+              <a href="/de/datenschutz" hrefLang="de" lang="de" style={{ color: 'rgba(255,255,255,.3)', textDecoration: 'none' }}>Datenschutz (DE)</a>
+              <a href="/de/impressum" hrefLang="de" lang="de" style={{ color: 'rgba(255,255,255,.3)', textDecoration: 'none' }}>Impressum (DE)</a>
             </div>
           </div>
         </div>

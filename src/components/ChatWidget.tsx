@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { usePathname } from 'next/navigation'
 import { MessageCircle, X, Send, Phone } from 'lucide-react'
 import { submitLead } from '@/lib/api'
+import PrivacyNote from '@/components/PrivacyNote'
 import { trackContactEvent } from '@/lib/track'
 
 // Launcher kontaktu: JEDEN pływający przycisk (prawy dolny róg) -> menu WhatsApp /
@@ -262,9 +263,7 @@ export default function ChatWidget() {
                     {status === 'loading' ? 'Wysyłanie…' : 'Wyślij wiadomość'}
                   </button>
                 </div>
-                <p style={{ color: '#94a3b8', fontSize: 10, textAlign: 'center' as const, margin: '10px 0 0' }}>
-                  🔒 RODO · Bez zobowiązań
-                </p>
+                <PrivacyNote color="#94a3b8" style={{ marginTop: 10 }} />
               </>
             )}
           </div>
