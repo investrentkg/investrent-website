@@ -81,11 +81,11 @@ test('notatka leada v11: z dlugim UTM miesci sie w limicie 500 znakow backendu, 
   const clean = String(n).slice(0, 500).replace(/[<>]/g, '') // jak backend: clean(notes)
   assert.equal(clean, n)
 })
-test('zakres liczb: dom, dzialka, inna miejscowosc, Srodmiescie = poza zakresem; mieszkanie Kolobrzeg z dzielnica = w zakresie', () => {
+test('zakres liczb: dom, dzialka, inna miejscowosc = poza zakresem; mieszkanie Kolobrzeg z dowolna dzielnica ze slownika (takze Srodmiescie, decyzja 27.09) = w zakresie', () => {
   assert.equal(isOutOfScope(ok), false)
   assert.equal(isOutOfScope({ ...ok, property_type: 'dom' }), true); assert.equal(isOutOfScope({ ...ok, property_type: 'dzialka' }), true)
   assert.equal(isOutOfScope({ ...ok, city: 'Koszalin' }), true)
-  assert.equal(isOutOfScope({ ...ok, district: 'Śródmieście' }), true); assert.equal(isOutOfScope({ ...ok, district: 'Stare Miasto' }), true)
+  assert.equal(isOutOfScope({ ...ok, district: 'Śródmieście' }), false); assert.equal(isOutOfScope({ ...ok, district: 'Stare Miasto' }), false)
   assert.equal(isOutOfScope({ ...ok, city: 'kolobrzeg' }), false)
 })
 test('walidacja: mieszkanie w Kolobrzegu bez dzielnicy = blad z wyjasnieniem; dom i inne miasto bez dzielnicy OK', () => {
@@ -169,7 +169,7 @@ test('teksty v11.2: okres z numerem (T-f: umowa przed pulapem, kontakt = rozmowa
 test('konfiguracja per biuro (SaaS): miasto domowe, slowniki i wylaczone dzielnice z konfiguracji; zrodlo i data przegladu listy dzielnic jawne', () => {
   assert.equal(CALCULATOR_CONFIG, INVESTRENT_CONFIG)
   assert.equal(isHomeCity('kolobrzeg'), true); assert.equal(isHomeCity('Koszalin'), false)
-  assert.equal(isRestrictedDistrict('Śródmieście'), true); assert.equal(isRestrictedDistrict('Centrum'), true); assert.equal(isRestrictedDistrict('Podczele'), false)
+  assert.equal(isRestrictedDistrict('Śródmieście'), false); assert.equal(isRestrictedDistrict('Centrum'), false); assert.equal(isRestrictedDistrict('Podczele'), false) // 27.09: brak dzielnic wylaczonych (decyzja Daniela, lustro backendu #570)
   assert.ok(INVESTRENT_CONFIG.districtsSource.includes('portal_listings_archive')); assert.equal(INVESTRENT_CONFIG.districtsReviewedAt, '2026-09-26'); assert.ok(INVESTRENT_CONFIG.districtsSource.includes('decyzja Daniela, biuro'))
   assert.ok(!INVESTRENT_CONFIG.districts.includes('Dzielnica Uzdrowiskowa'), 'nazwy tylko z danych, nie z pamieci')
 })
@@ -181,8 +181,8 @@ test('decyzja biura 26.09: Grzybowo/Bogucino/Budzistowo/Zieleniewo/Dzwirzyno to 
   assert.equal(canonicalCity('dzwirzyno'), 'Dźwirzyno'); assert.equal(canonicalCity('Bogucin'), 'Bogucino')
   assert.ok(!INVESTRENT_CONFIG.districts.some(d => ['grzybowo', 'bogucino', 'budzistowo', 'zieleniewo', 'dzwirzyno'].includes(fold(d))))
 })
-test('Srodmiescie i "Inna dzielnica" nie daja widelek online (tylko wycena agenta); dzielnica z listy poza Srodmiesciem tak', () => {
-  assert.equal(isOutOfScope({ ...ok, district: 'Śródmieście' }), true); assert.equal(isOutOfScope({ ...ok, district: 'Inna dzielnica' }), true)
+test('Srodmiescie (od 27.09) dopuszczone do widelek online; "Inna dzielnica" nadal tylko komunikat frontu "poza zakresem" (backend liczy, tekst do decyzji Krytyka); dzielnica z listy tak', () => {
+  assert.equal(isOutOfScope({ ...ok, district: 'Śródmieście' }), false); assert.equal(isOutOfScope({ ...ok, district: 'Inna dzielnica' }), true)
   assert.equal(isOutOfScope({ ...ok, district: 'Zachodnia' }), false)
 })
 test('test kontraktowy slownikow front/backend: front == wspolny plik slowniki_kalkulatora_2026_09_26.json (kontrakt sekcja 13.11)', t => {
