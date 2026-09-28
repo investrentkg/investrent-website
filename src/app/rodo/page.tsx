@@ -4,6 +4,7 @@ import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
 import { H2, H3, P, UL, LI } from '@/components/legal/LegalShell'
 import { getOffice } from '@/lib/api'
+import { RETENTION_A_ITEMS } from '@/app/wycena/texts'
 import type { Metadata } from 'next'
 
 // NAPRAWA (audyt SEO/tresci, Daniel 30.07.2026): strona calkowicie brakowala,
@@ -25,9 +26,10 @@ import type { Metadata } from 'next'
 // STAN NA (jedno miejsce): data ma byc zaktualizowana w dniu faktycznego wdrozenia na produkcje.
 const POLICY_DATE = '26.09.2026'
 
-// PRZELACZNIK OKRESOW KALKULATORA: false = wariant B (ogolny: "nie dluzej niz konieczne"); true = wariant A (okresy 12/24 mies.).
-// Ustawic true DOPIERO gdy job retencji `calculator` (PR #479) jest wlaczony i sprawdzony na produkcji (warunek startu kalkulatora).
-const RETENTION_CALCULATOR_ACTIVE = false
+// PRZELACZNIK OKRESOW KALKULATORA (wydanie 28.09.2026): true = wariant A (okresy 12/24 mies.), false = wariant B (ogolny: "nie dluzej niz konieczne").
+// MUSI byc zgodny z RETENTION_VARIANT_A w src/app/wycena/texts.ts (oba naraz: klauzula w kalkulatorze i /rodo musza mowic to samo).
+// Tresc wariantu A jest w JEDNYM miejscu: RETENTION_A_ITEMS w src/app/wycena/texts.ts (czas terazniejszy/przyszly zalezy tam od RETENTION_JOB_ACTIVE).
+const RETENTION_CALCULATOR_ACTIVE = true
 
 export const metadata: Metadata = {
   title: 'Polityka prywatności (RODO)',
@@ -290,7 +292,7 @@ export default async function RodoPage() {
 
               <H2>Okres przechowywania danych</H2>
               <P>
-                Państwa dane osobowe będą przechowywane przez okres niezbędny do realizacji celów przetwarzania, a po tym czasie przez okres oraz w zakresie wymaganym przez przepisy prawa lub dla zabezpieczenia ewentualnych roszczeń. W szczególności obowiązują następujące maksymalne okresy; przechowujemy dane nie dłużej niż:
+                Państwa dane osobowe będą przechowywane przez okres niezbędny do realizacji celów przetwarzania, a po tym czasie przez okres oraz w zakresie wymaganym przez przepisy prawa lub dla zabezpieczenia ewentualnych roszczeń. W szczególności:
               </P>
               <UL>
                 <LI>zapytania i dane kontaktowe z formularzy na stronie (poza kalkulatorem wyceny) i z formularzy Facebook i Instagram, gdy nie doszło do zawarcia umowy: nie dłużej, niż jest to konieczne do obsługi zapytania, w razie cofnięcia zgody lub sprzeciwu – krócej;</LI>
@@ -302,14 +304,9 @@ export default async function RodoPage() {
               <H3>Okresy dla kalkulatora wyceny</H3>
               {RETENTION_CALCULATOR_ACTIVE ? (
                 <>
-                  <P>Dla zapytań w kalkulatorze wyceny obowiązują odrębne okresy (nie stosuje się ich do pozostałych formularzy):</P>
+                  <P>Dla zapytań w kalkulatorze wyceny obowiązują odrębne okresy (nie stosuje się ich do pozostałych formularzy). Poniższe punkty są tym samym tekstem, który pokazujemy w kalkulatorze (w formie zwrotu wprost do osoby, która z niego korzysta):</P>
                   <UL>
-                    <LI>zapytanie bez numeru telefonu: dane nieruchomości i wynik zapisujemy bez danych kontaktowych i adresu IP; po 12 miesiącach od dnia zapytania usuwamy szczegółowy opis wyceny, a zostaje statystyka (typ, przedział powierzchni co 10 m², miejscowość i dzielnica z listy, stan, widełki ceny, data), która nie zawiera Państwa danych kontaktowych ani adresu IP;</LI>
-                    <LI>zapytanie z numerem telefonu, zwykle: usuwamy je 12 miesięcy po ostatniej rozmowie z Państwem lub Państwa wiadomości w sprawie wyceny; jeśli do rozmowy lub wiadomości nie doszło, 12 miesięcy od zgłoszenia;</LI>
-                    <LI>zapytanie z numerem telefonu, najpóźniej: 24 miesiące po pierwszym zgłoszeniu z tego numeru (kolejne zgłoszenie z tego numeru tych 24 miesięcy nie wydłuża);</LI>
-                    <LI>wyjątki: jeśli dojdzie do umowy, dane związane z umową przechowujemy tak długo, jak wymagają tego przepisy; jeśli sami Państwo poproszą o rozmowy o współpracy, Państwa numer i dane z tych rozmów przechowujemy najdłużej 12 miesięcy od ostatniej takiej rozmowy (każda kolejna taka rozmowa odnawia te 12 miesięcy);</LI>
-                    <LI>nieodebrane próby kontaktu z naszej strony oraz same notatki pracowników tych okresów nie wydłużają;</LI>
-                    <LI>dowód zgody na telefon w sprawie wyceny (wersja zgody, kanał, czas): usuwamy razem ze zgłoszeniem.</LI>
+                    {RETENTION_A_ITEMS.map(item => <LI key={item}>{item}</LI>)}
                   </UL>
                 </>
               ) : (
