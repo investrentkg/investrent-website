@@ -223,7 +223,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
 
         {available && phase === 'after' && outcome && (
           <div ref={resultRef} tabIndex={-1} style={{ outline: 'none', display: 'flex', flexDirection: 'column', gap: 24 }}>
-            <OutcomePanel outcome={outcome} scoped={!isOutOfScope(submittedValues)} onAgain={reset} />
+            <OutcomePanel outcome={outcome} scoped={!isOutOfScope(submittedValues)} wider={!isKolobrzeg(submittedValues.city)} onAgain={reset} />
             <LeadPanel outcome={outcome} values={submittedValues} />
           </div>
         )}
@@ -249,7 +249,7 @@ function PhoneLink() {
   return <a href={phoneHref} style={{ color: '#0d2a5c', fontWeight: 700 }}>{OFFICE_PHONE}</a>
 }
 
-function OutcomePanel({ outcome, scoped, onAgain }: { outcome: EstimateOutcome; scoped: boolean; onAgain: () => void }) {
+function OutcomePanel({ outcome, scoped, wider, onAgain }: { outcome: EstimateOutcome; scoped: boolean; wider: boolean; onAgain: () => void }) {
   if (outcome.kind === 'range') {
     return (
       <section style={card} aria-labelledby="wy-res-title">
@@ -267,12 +267,13 @@ function OutcomePanel({ outcome, scoped, onAgain }: { outcome: EstimateOutcome; 
           )}
         </div>
         <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '0 0 8px' }}><strong>{T.result.scopeNote}</strong></p>
+        {wider && <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '0 0 8px' }}>{T.result.scopeNoteWider}</p>}
         {outcome.message && <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '0 0 8px' }}>{outcome.message}</p>}
         {outcome.comparables && <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '0 0 8px' }}>{T.result.comparables(outcome.comparables.min, outcome.comparables.max)}</p>}
         <p style={{ color: '#7c2d12', background: '#fff7ed', border: '1px solid #fed7aa', borderRadius: 10, padding: '10px 14px', fontSize: 14, lineHeight: 1.6, margin: '12px 0 0' }}>
           <strong>{outcome.disclaimer ?? T.result.disclaimerFallback}</strong>
         </p>
-        <button type="button" className="wy-btn wy-btn-secondary" style={{ marginTop: 16 }} onClick={onAgain}>{T.result.again}</button>
+        <button type="button" className="wy-linkbtn" style={{ marginTop: 8, marginLeft: -6 }} onClick={onAgain}>{T.result.again}</button>
       </section>
     )
   }
@@ -281,7 +282,7 @@ function OutcomePanel({ outcome, scoped, onAgain }: { outcome: EstimateOutcome; 
       <section style={card} aria-labelledby="wy-res-title">
         <h2 id="wy-res-title" style={h2}>{scoped ? T.result.noNumbersTitle : T.result.outOfScopeTitle}</h2>
         <p style={{ color: '#374151', fontSize: 15, lineHeight: 1.7, margin: 0 }}>{scoped ? T.result.noNumbersBody : T.result.outOfScopeBody}</p>
-        <button type="button" className="wy-btn wy-btn-secondary" style={{ marginTop: 16 }} onClick={onAgain}>{T.result.again}</button>
+        <button type="button" className="wy-linkbtn" style={{ marginTop: 8, marginLeft: -6 }} onClick={onAgain}>{T.result.again}</button>
       </section>
     )
   }
@@ -293,7 +294,7 @@ function OutcomePanel({ outcome, scoped, onAgain }: { outcome: EstimateOutcome; 
   return (
     <section style={card} role="alert">
       <p style={{ color: '#374151', fontSize: 15, lineHeight: 1.7, margin: 0 }}>{text} <PhoneLink /></p>
-      {outcome.kind !== 'disabled' && <button type="button" className="wy-btn wy-btn-secondary" style={{ marginTop: 16 }} onClick={onAgain}>{T.result.again}</button>}
+      {outcome.kind !== 'disabled' && <button type="button" className="wy-linkbtn" style={{ marginTop: 8, marginLeft: -6 }} onClick={onAgain}>{T.result.again}</button>}
     </section>
   )
 }

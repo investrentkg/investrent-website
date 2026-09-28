@@ -71,12 +71,15 @@ export function fieldApplies(type: FormValues['property_type'], field: 'rooms' |
 // nie sa na sztywno w kodzie (SaaS). Backend jest zrodlem prawdy; ta kopia sluzy tylko do trafnych komunikatow.
 export const isKolobrzeg = (city: string): boolean => isHomeCity(city) // nazwa historyczna: "miasto domowe biura" (dzis Kolobrzeg)
 export const districtIsBlocked = (district: string): boolean => isRestrictedDistrict(district)
-// true = to zapytanie jest POZA zakresem liczb online (dom, dzialka, inna miejscowosc, Srodmiescie) - odmienny komunikat niz "za malo danych".
+// true = to zapytanie jest POZA zakresem liczb online - odmienny komunikat niz "za malo danych".
+// v14 (zgodnie z intro na stronie): poza zakresem TYLKO gdy typ != mieszkanie albo miejscowosc = "Inna lokalizacja" / spoza slownika.
+// Mieszkanie w miescie domowym (kazda dzielnica, takze Srodmiescie i "Inna dzielnica") i w miejscowosci ze slownika = W ZAKRESIE
+// (gdy backend nie ma dosc danych, front pokazuje "za malo danych", nie "nie liczymy online"). Dzielnice wylaczone z konfiguracji biura (dzis brak) dotycza tylko miasta domowego.
 export function isOutOfScope(v: Pick<FormValues, 'property_type' | 'city' | 'district'>): boolean {
   if (v.property_type !== 'mieszkanie') return true
-  if (!isKolobrzeg(v.city)) return true
-  if (canonicalDistrict(v.district) === CALCULATOR_CONFIG.otherDistrict) return true // dzielnica spoza slownika: bez widelek online
-  return !!v.district.trim() && districtIsBlocked(v.district)
+  const city = canonicalCity(v.city)
+  if (!city || city === CALCULATOR_CONFIG.otherCity) return true
+  return isKolobrzeg(v.city) && !!v.district.trim() && districtIsBlocked(v.district)
 }
 
 // Minimalny czas od zaladowania strony do wyslania formularza (odsiew najprostszych botow). Tylko front; backend tego nie egzekwuje.
@@ -98,7 +101,7 @@ export function validateForm(v: FormValues): FormErrors {
   else if (city.length > 80) e.city = 'Nazwa miejscowości jest za długa.'
   if (isKolobrzeg(city) && v.district.trim() && !canonicalDistrict(v.district)) e.district = DISTRICT_ERROR
   else if (v.property_type === 'mieszkanie' && isKolobrzeg(city) && !v.district.trim()) {
-    e.district = 'Wybierz dzielnicę lub osiedle z listy. Jeśli Twojej nie ma na liście, wybierz „Inna dzielnica”.'
+    e.district = 'Wybierz dzielnicę lub osiedle z listy. Jeśli nie ma na niej Twojej, wybierz „Inna dzielnica”.' // v14
   }
 
   const area = parseNum(v.area_m2)

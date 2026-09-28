@@ -81,10 +81,12 @@ test('notatka leada v11: z dlugim UTM miesci sie w limicie 500 znakow backendu, 
   const clean = String(n).slice(0, 500).replace(/[<>]/g, '') // jak backend: clean(notes)
   assert.equal(clean, n)
 })
-test('zakres liczb: dom, dzialka, inna miejscowosc = poza zakresem; mieszkanie Kolobrzeg z dowolna dzielnica ze slownika (takze Srodmiescie, decyzja 27.09) = w zakresie', () => {
+test('zakres liczb v14 (zgodnie z intro): poza zakresem TYLKO dom/dzialka albo "Inna lokalizacja"/spoza slownika; mieszkanie w Kolobrzegu (kazda dzielnica, takze Srodmiescie i "Inna dzielnica") i w miejscowosci ze slownika = w zakresie', () => {
   assert.equal(isOutOfScope(ok), false)
   assert.equal(isOutOfScope({ ...ok, property_type: 'dom' }), true); assert.equal(isOutOfScope({ ...ok, property_type: 'dzialka' }), true)
-  assert.equal(isOutOfScope({ ...ok, city: 'Koszalin' }), true)
+  assert.equal(isOutOfScope({ ...ok, city: 'Koszalin' }), false, 'v14 (ZNACZENIE ZMIENIONE): mieszkanie w miejscowosci ze slownika = w zakresie (dawniej: kazda inna miejscowosc poza zakresem)')
+  assert.equal(isOutOfScope({ ...ok, city: OTHER_CITY }), true); assert.equal(isOutOfScope({ ...ok, city: 'Jan Kowalski' }), true); assert.equal(isOutOfScope({ ...ok, city: 'Koszalin', property_type: 'dom' }), true)
+  assert.equal(isOutOfScope({ ...ok, district: OTHER_DISTRICT }), false, 'v14: "Inna dzielnica" w Kolobrzegu = w zakresie (dawniej: poza zakresem)')
   assert.equal(isOutOfScope({ ...ok, district: 'Śródmieście' }), false); assert.equal(isOutOfScope({ ...ok, district: 'Stare Miasto' }), false)
   assert.equal(isOutOfScope({ ...ok, city: 'kolobrzeg' }), false)
 })
@@ -129,12 +131,12 @@ test('teksty v11: zadnego marketingu, skrotu numeru ani "3 lat" w tekstach publi
   assert.ok(T.lead.consentCall.includes('wyłącznie w sprawie wyceny mojej nieruchomości')); assert.ok(nb(T.lead.consentCall).endsWith('Zgodę mogę cofnąć w każdej chwili: e-mailem (biuro@investrent.com.pl), telefonicznie (+48 731 554 341) lub mówiąc o tym agentowi podczas rozmowy.'))
   assert.ok(T.lead.consentCallRequired.includes('wymagana'))
   const items = [...T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]), ...RA.items].join(' ')
-  assert.ok(items.includes('dowód zgody na telefon w sprawie wyceny (wersja zgody, kanał, czas): usuwamy razem ze zgłoszeniem'))
-  assert.ok(nb(items).includes('Zgodę możesz cofnąć e-mailem (biuro@investrent.com.pl), telefonicznie (+48 731 554 341) albo mówiąc o tym pracownikowi biura podczas rozmowy; wystarczy powiedzieć, że nie chcesz, żebyśmy dzwonili. Po cofnięciu nie zadzwonimy do Ciebie w sprawie wyceny. Wnioski o pozostałe prawa wyślij na biuro@investrent.com.pl albo zgłoś je telefonicznie lub podczas rozmowy.'))
+  assert.ok(items.includes('Dowód zgody na telefon w sprawie wyceny (wersja zgody, kanał, czas): usuwamy razem ze zgłoszeniem'))
+  assert.ok(nb(items).includes('Zgodę możesz cofnąć e-mailem (biuro@investrent.com.pl), telefonicznie (+48 731 554 341) albo mówiąc o tym pracownikowi biura podczas rozmowy; wystarczy powiedzieć, że nie chcesz, żebyśmy dzwonili. Po cofnięciu nie zadzwonimy do Ciebie w sprawie wyceny. Wnioski o pozostałe prawa wyślij na biuro@investrent.com.pl. Możesz też złożyć skargę do Prezesa Urzędu Ochrony Danych Osobowych. Podanie danych jest dobrowolne; bez numeru telefonu pokażemy wynik (jeśli liczymy go online), ale nie oddzwonimy.')) // v14: wnioski o pozostałe prawa tylko e-mailem (zgodnie z tekstem)
   assert.ok(items.includes('dowód zgody na telefon w sprawie wyceny, adres IP'))
   assert.ok(T.errors.rateLimited('2 h').includes('za około 2 h')); assert.ok(!all.includes('około 24'), 'v13: "do 24 godzin" (pamiec serwera, skrot IP) jest teraz w tekstach, wycofane zostaje tylko "okolo 24"')
   assert.ok(all.includes('Cloudflare: standardowe klauzule umowne UE zawarte w umowie dostawcy')); assert.ok(!all.includes('Cloudflare i Google (dla kont w naszej domenie)'))
-  assert.ok(T.result.outOfScopeBody.endsWith('zadzwonimy tylko w sprawie Twojej wyceny.'))
+  assert.ok(T.result.outOfScopeBody.includes('zadzwonimy tylko w tej sprawie')) // v14
 })
 test('miejscowosc i dzielnica: slowniki zamiast wolnego tekstu (v11.2); poza slownikiem blad albo "Inna ..."', () => {
   assert.equal(canonicalCity('kolobrzeg'), 'Kołobrzeg'); assert.equal(canonicalCity('KOSZALIN '), 'Koszalin'); assert.equal(canonicalCity('inna lokalizacja'), OTHER_CITY)
@@ -150,22 +152,22 @@ test('payload v11.2: nazwy kanoniczne ze slownika; "Inna dzielnica" i dzielnica 
   assert.equal(bp({ ...ok, city: 'kolobrzeg', district: 'podczele' }).district, 'Podczele')
   assert.equal(bp({ ...ok, district: OTHER_DISTRICT }).district, undefined)
   assert.equal(bp({ ...ok, city: 'Koszalin', district: 'Podczele' }).district, undefined)
-  assert.equal(isOutOfScope({ ...ok, district: OTHER_DISTRICT }), true)
+  assert.equal(isOutOfScope({ ...ok, district: OTHER_DISTRICT }), false) // v14: w zakresie
 })
 test('teksty v11.2: okres z numerem (T-f: umowa przed pulapem, kontakt = rozmowa/wiadomosc, nieodebrane nie licza sie, ponowne zgloszenie nie odnawia), T-g, T-h, T-e', async () => {
   const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/wycena/texts.ts'); const RA = { items: RETENTION_A_ITEMS, how: RETENTION_A_HOW }
   const sp = String.fromCharCode(160)
   const items = [...T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]), ...RA.items].join(' ').split(sp).join(' ')
   const last = [...T.how.body, ...RA.how].slice(-3).join(' ').split(sp).join(' ')
-  const iUmowa = items.indexOf('jeśli dojdzie do umowy'), iPulap = items.indexOf('nie później niż 24 miesiące po zgłoszeniu')
+  const iUmowa = items.indexOf('Jeśli dojdzie do umowy'), iPulap = items.indexOf('Nie później niż 24 miesiące po zgłoszeniu, chyba że zachodzi wyjątek z punktu (3)')
   assert.ok(iUmowa >= 0 && iPulap >= 0, 'wyjatek umowy i pulap jako osobne punkty (T-t, v11.6)')
-  assert.ok(items.includes('ostatniej rozmowie (telefonicznej lub osobistej) lub Twojej wiadomości w sprawie wyceny')); assert.ok(!items.includes('kolejne zgłoszenie z tego numeru'), 'v13: szczegol dla prawnika (kolejne zgloszenie) wycofany z klauzuli')
-  assert.ok(items.includes('nieodebrane próby kontaktu z naszej strony tych okresów nie wydłużają'))
-  assert.ok(items.includes('dowód zgody na telefon w sprawie wyceny (wersja zgody, kanał, czas): usuwamy razem ze zgłoszeniem.'))
-  assert.ok(last.indexOf('wyjątek: jeśli dojdzie do umowy') > last.indexOf('a najpóźniej 24 miesiące po zgłoszeniu')); assert.ok(RA.how.length === 1, 'v13: warstwa krotka = jeden akapit')
+  assert.ok(items.includes('12 miesięcy po ostatnim kontakcie w sprawie wyceny (Twojej rozmowie lub wiadomości), a jeśli go nie było, 12 miesięcy po zgłoszeniu')); assert.ok(!items.includes('kolejne zgłoszenie z tego numeru'), 'v13: szczegol dla prawnika (kolejne zgloszenie) wycofany z klauzuli')
+  assert.ok(!/nieodebrane/i.test(items), 'v14: zdanie o nieodebranych probach wycofane (Krytyk)')
+  assert.ok(items.includes('Dowód zgody na telefon w sprawie wyceny (wersja zgody, kanał, czas): usuwamy razem ze zgłoszeniem.'))
+  assert.ok(last.indexOf('wyjątek: umowa albo rozmowa o sprzedaży lub wynajmie') > last.indexOf('a najpóźniej 24 miesiące po zgłoszeniu') && last.includes('wtedy dane przechowujemy dłużej, jak opisano wyżej'), 'v14 (Prawnik A i D): wyjatek od 24 mies. domkniety w obu warstwach'); assert.ok(RA.how.length === 1, 'v13: warstwa krotka = jeden akapit')
   assert.ok(items.includes('zostaje anonimowa statystyka (typ nieruchomości, przedział powierzchni, miejscowość i dzielnica z listy, stan, widełki ceny, data)'))
   assert.ok(items.includes('Nie podejmujemy wobec Ciebie decyzji opartych wyłącznie na zautomatyzowanym przetwarzaniu'))
-  assert.equal(T.lead.titleRange, 'Chcesz omówić wynik z agentem?'); assert.ok(!/mapą|raport/i.test(T.lead.bodyRange)); assert.ok(T.lead.bodyRange.includes('powie, jak może przygotować wycenę indywidualną'))
+  assert.equal(T.lead.titleRange, 'Chcesz omówić wynik z agentem?'); assert.ok(!/mapą|raport/i.test(T.lead.bodyRange)); assert.ok(T.lead.bodyRange.includes('oszacuje cenę, bezpłatnie i bez zobowiązań')) // v14: jedna formula agenta
 })
 test('konfiguracja per biuro (SaaS): miasto domowe, slowniki i wylaczone dzielnice z konfiguracji; zrodlo i data przegladu listy dzielnic jawne', () => {
   assert.equal(CALCULATOR_CONFIG, INVESTRENT_CONFIG)
@@ -177,13 +179,13 @@ test('konfiguracja per biuro (SaaS): miasto domowe, slowniki i wylaczone dzielni
 test('decyzja biura 26.09: Grzybowo/Bogucino/Budzistowo/Zieleniewo/Dzwirzyno to MIEJSCOWOSCI (nie dzielnice Kolobrzegu); brak widelek online (tylko wycena agenta)', () => {
   for (const c of ['Grzybowo', 'Bogucino', 'Budzistowo', 'Zieleniewo', 'Dźwirzyno']) {
     assert.equal(canonicalCity(c), c); assert.ok(INVESTRENT_CONFIG.cities.includes(c)); assert.equal(canonicalDistrict(c), null, c + ' nie jest dzielnica')
-    assert.equal(isHomeCity(c), false); assert.equal(isOutOfScope({ ...ok, city: c, district: 'Inna dzielnica' }), true)
+    assert.equal(isHomeCity(c), false); assert.equal(isOutOfScope({ ...ok, city: c, district: 'Inna dzielnica' }), false, 'v14: miejscowosc ze slownika = w zakresie (dawniej true)'); assert.equal(isOutOfScope({ ...ok, city: c, property_type: 'dom' }), true)
   }
   assert.equal(canonicalCity('dzwirzyno'), 'Dźwirzyno'); assert.equal(canonicalCity('Bogucin'), 'Bogucino')
   assert.ok(!INVESTRENT_CONFIG.districts.some(d => ['grzybowo', 'bogucino', 'budzistowo', 'zieleniewo', 'dzwirzyno'].includes(fold(d))))
 })
-test('Srodmiescie (od 27.09) dopuszczone do widelek online; "Inna dzielnica" nadal tylko komunikat frontu "poza zakresem" (backend liczy, tekst do decyzji Krytyka); dzielnica z listy tak', () => {
-  assert.equal(isOutOfScope({ ...ok, district: 'Śródmieście' }), false); assert.equal(isOutOfScope({ ...ok, district: 'Inna dzielnica' }), true)
+test('Srodmiescie (od 27.09) i "Inna dzielnica" (v14) = w zakresie widelek online; dzielnica z listy tak', () => {
+  assert.equal(isOutOfScope({ ...ok, district: 'Śródmieście' }), false); assert.equal(isOutOfScope({ ...ok, district: 'Inna dzielnica' }), false)
   assert.equal(isOutOfScope({ ...ok, district: 'Zachodnia' }), false)
 })
 test('test kontraktowy slownikow front/backend: front == wspolny plik slowniki_kalkulatora_2026_09_26.json (kontrakt sekcja 13.11)', t => {
@@ -205,7 +207,8 @@ test('teksty v13: telefon biura jako droga cofniecia (numer = OFFICE_PHONE), Rai
   // v13: ZNACZENIE ZMIENIONE: dawna asercja wymagala "tylko e-mail, bez telefonu biura"; teraz numer biura MUSI byc w zgodzie, skrocie i klauzuli i musi byc numerem z kodu strony
   const { OFFICE_PHONE } = await import('./valuation.ts'); const phone = OFFICE_PHONE.split(sp).join(' ')
   assert.equal(phone, '+48 731 554 341')
-  for (const [nazwa, txt] of [['consentCall', T.lead.consentCall], ['consentShort', T.lead.consentShort], ['Twoje prawa', T.lead.consentInfo.find(c => c.h === 'Twoje prawa.').t]]) assert.ok(txt.split(sp).join(' ').includes(`telefonicznie (${phone})`), 'numer biura w: ' + nazwa)
+  for (const [nazwa, txt] of [['consentCall', T.lead.consentCall], ['Twoje prawa', T.lead.consentInfo.find(c => c.h === 'Twoje prawa.').t]]) assert.ok(txt.split(sp).join(' ').includes(`telefonicznie (${phone})`), 'numer biura w: ' + nazwa)
+  assert.ok(T.lead.consentShort.includes('także telefonicznie lub w rozmowie z agentem'), 'v14: skrot bez literalu numeru, ale z droga telefoniczna')
   assert.ok(items.includes('mówiąc o tym pracownikowi biura podczas rozmowy') && !items.includes('pisząc na biuro@investrent.com.pl'), 'v13: cofniecie trzema drogami, nie tylko e-mailem')
 })
 test('teksty v11.3 (DPA Railway 26.09): Railway w transferze wg umowy powierzenia (bez niepotwierdzonego mechanizmu), wyjatek 30 dni logow Railway od "okolo 24 godzin", brak zdan o Vercel/Brevo/Google/Anthropic jako zabezpieczonych', async () => {
@@ -214,7 +217,7 @@ test('teksty v11.3 (DPA Railway 26.09): Railway w transferze wg umowy powierzeni
   const items = [...T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]), ...RA.items].join(' ').split(sp).join(' ')
   const how = [...T.how.body, ...RA.how].join(' ').split(sp).join(' ')
   assert.ok(items.includes('Railway: umowa powierzenia; mechanizm przekazania (Data Privacy Framework albo standardowe klauzule umowne UE) wskażemy na wniosek')); assert.ok(!items.includes('26.09.2026'), 'v13: data umowy powierzenia usunieta z klauzuli (Krytyk pkt 11, Prawnik)')
-  assert.ok(!items.includes('około 24 godzin') && !items.includes('krótkotrwale') && !how.includes('krótkotrwale') && items.includes('w pamięci serwera, w postaci skrótu, do 24 godzin (limit zapytań); nie zapisujemy go w bazie danych')); assert.ok(items.includes('do 30 dni')); assert.ok(how.includes('do 30 dni')) // v13: "krotkotrwale" (nie okres) zastapione "do 24 godzin" (warunek publikacji: #505 na produkcji)
+  assert.ok(!items.includes('około 24 godzin') && !items.includes('krótkotrwale') && !how.includes('krótkotrwale') && items.includes('w pamięci serwera, do 24 godzin (limit zapytań); nie zapisujemy go w bazie danych') && !JSON.stringify(T).includes('w postaci skrótu')); assert.ok(items.includes('do 30 dni')); assert.ok(how.includes('dokładne miejsca i okresy podajemy w pełnej informacji o danych poniżej')) // v14: okresy IP tylko w pelnej informacji; decyzja Dyrektora: IP aplikacji BEZ "w postaci skrotu"; v13: "krotkotrwale" (nie okres) zastapione "do 24 godzin" (warunek publikacji: #505 na produkcji)
   assert.ok(!items.includes('Vercel opiera się')); assert.ok(!items.includes('standardowych klauzulach umownych zatwierdzonych'))
   assert.ok(items.includes('Google: Data Privacy Framework, a w razie jego braku standardowe klauzule umowne UE'))
 })
@@ -233,18 +236,19 @@ test('teksty v11.4: T-m (Railway 30 dni pierwsze), T-l (bez kopii DPF, bez Verce
   const items = [...T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]), ...RA.items].join(' ').split(sp).join(' ')
   const how = [...T.how.body, ...RA.how].join(' ').split(sp).join(' ')
   // T-m (ZNACZENIE ZMIENIONE w v13): dawniej dluzszy okres (Railway 30 dni) PRZED 24 h w aplikacji; Prawnik (28.09) ustala kolejnosc baza -> pamiec serwera (24 h) -> Railway (30 dni) -> Vercel/Cloudflare, w klauzuli i w "Jak liczymy"
-  assert.ok(items.indexOf('do 24 godzin') < items.indexOf('do 30 dni')); assert.ok(how.indexOf('do 24 godzin') < how.indexOf('do 30 dni'))
+  assert.ok(items.indexOf('do 24 godzin') < items.indexOf('do 30 dni')); assert.ok(!how.includes('do 30 dni') && !how.includes('do 24 godzin'), 'v14: "Jak liczymy" bez okresow IP (prywatnosc krotko)')
   // T-l: bez "kopii dokumentu ... Data Privacy Framework", DPF nie jest dokumentem; kopia tylko dla SCC; Anthropic SCC, brak Vercel/Brevo jako zabezpieczonych
   assert.ok(!items.includes('Kopię dokumentu')); assert.ok(items.includes('jeśli to standardowe klauzule umowne, prześlemy ich kopię'))
   assert.ok(items.includes('Anthropic: zabezpieczenie wskazane w warunkach API dostawcy; szczegóły wskażemy na wniosek')); assert.ok(items.includes('wskażemy na wniosek;') && !items.includes('szczegóły na Twój wniosek'), 'v13: "na wniosek" ujednolicone dla Railway i Anthropic'); assert.ok(!/Anthropic[^;]*(umow[aeyię] powierzenia|DPA)/.test(items + T.how.body.join(' ')), 'v12: bez umowy/DPA z Anthropic')
   assert.ok(items.includes('Cloudflare: standardowe klauzule umowne UE zawarte w umowie dostawcy; korzysta on też z ram ochrony danych UE-USA (Data Privacy Framework), o ile jego certyfikacja jest w danym czasie aktywna; Google: Data Privacy Framework, a w razie jego braku standardowe klauzule umowne UE'))
   assert.ok(!items.includes('Vercel opiera się')); assert.ok(!items.includes('Supabase opiera się')); assert.ok(!items.includes('Brevo opiera się'))
   // T-o, T-n
-  assert.ok(T.disclaimerMore.includes('Kołobrzegu i wybranych miejscowościach regionu (lista w formularzu)')); assert.ok(!T.disclaimerMore.includes('z wyjątkiem Śródmieścia'))
-  assert.ok(T.result.outOfScopeBody.includes('Kołobrzegu i wybranych miejscowościach regionu (lista w formularzu)'))
+  assert.ok(T.intro.includes('w Kołobrzegu i w wybranych miejscowościach regionu (lista w formularzu)')); assert.ok(!T.disclaimerMore.includes('z wyjątkiem Śródmieścia'))
+  assert.ok(T.result.outOfScopeBody.includes('w Kołobrzegu i w wybranych miejscowościach regionu (lista w formularzu)'))
   assert.ok(!T.fields.district_hint.includes('Centrum') && T.fields.district_hint.includes('Inna dzielnica')) // 28.09: Srodmiescie/Centrum/Stare Miasto NIE sa juz wylaczone
   // doneBody bez obietnicy wyniku
-  assert.equal(T.lead.doneBody, 'Agent skontaktuje się z Tobą telefonicznie w godzinach pracy biura.')
+  const { OFFICE_PHONE } = await import('./valuation.ts') // v14 (ZNACZENIE ZMIENIONE): doneBody z terminem oddzwonienia i numerem biura z jednego zrodla
+  assert.equal(T.lead.doneBody, `Zwykle oddzwaniamy w ciągu 24\u00A0godzin, najczęściej szybciej. Wolisz zadzwonić do nas? Numer biura: ${OFFICE_PHONE}.`)
   // Podczele: dzielnica Kolobrzegu, nie osobna miejscowosc
   assert.ok(!CITY_LIST.includes('Podczele')); assert.equal(canonicalCity('Podczele'), null)
 })
@@ -258,11 +262,12 @@ test('teksty v11.5: T-l2 (lista, Supabase UE), T-r, T-q, T-s, consentCall 3 drog
   assert.ok(items.includes('Vercel (hosting strony): Data Privacy Framework oraz umowa powierzenia przetwarzania danych;')); assert.ok(!/Vercel[^.;]*(SCC|klauzul)/.test(items))
   assert.ok(items.includes('zadanie oddzwonienia z imieniem i odnośnikiem do karty w naszym systemie')); assert.ok(!items.includes('bez numeru telefonu, z odnośnikiem'))
   assert.ok(!items.includes('zadanie oddzwonienia z imieniem i numerem'))
-  assert.equal(T.fields.city_hint, 'Domyślnie Kołobrzeg. Osiedla Kołobrzegu (np. Podczele) wybierzesz niżej, w polu „Dzielnica lub osiedle”. Grzybowo, Bogucino, Budzistowo, Zieleniewo i Dźwirzyno to osobne miejscowości: wybierz je tutaj. Dla miejscowości spoza listy wybierz „Inna lokalizacja”.')
+  assert.equal(T.fields.city_hint, 'Domyślnie Kołobrzeg; możesz zacząć pisać nazwę. Dzielnicę lub osiedle Kołobrzegu (np. Podczele) wybierzesz niżej, w polu „Dzielnica lub osiedle”. Grzybowo, Bogucino, Budzistowo, Zieleniewo i Dźwirzyno to osobne miejscowości: wybierz je tutaj. Jeśli Twojej miejscowości nie ma na liście, wybierz „Inna lokalizacja”: widełek online nie podamy, ale w województwie zachodniopomorskim cenę oszacuje agent, a poza nim sprawdzimy, czy możemy pomóc. Zostaw numer lub zadzwoń.')
   assert.ok(T.fields.district_hint.endsWith('jeśli Twojej nie ma na liście.'))
   assert.ok(T.metaDescription.length <= 160, 'metaDescription do 160 znakow'); assert.ok(!T.metaDescription.includes('Podaj kilka danych'))
   assert.ok(T.lead.consentCall.split(sp).join(' ').includes('Zgodę mogę cofnąć w każdej chwili: e-mailem (biuro@investrent.com.pl), telefonicznie (+48 731 554 341) lub mówiąc o tym agentowi podczas rozmowy.'))
-  assert.ok(items.includes('jeśli dojdzie do umowy albo sam(a) poprosisz o rozmowy o współpracy: dane z kalkulatora stają się częścią Twojej sprawy jako klienta i przechowujemy je według zasad dla klientów (umowa: tak długo, jak wymagają przepisy; rozmowy o współpracy: do 12 miesięcy po ostatniej takiej rozmowie, każda kolejna rozmowa odnawia ten okres)')); assert.ok(how.includes('wyjątek: jeśli dojdzie do umowy albo poprosisz o rozmowy o współpracy, stosujemy zasady dla klientów (szczegóły w pełnej informacji poniżej)'))
+  assert.ok(items.includes('Jeśli dojdzie do umowy albo poprosisz nas o rozmowę o sprzedaży lub wynajmie Twojej nieruchomości z pomocą naszego biura, dane z kalkulatora dołączamy do Twojej sprawy w biurze. Przechowujemy je wtedy: przy umowie tak długo, jak trwa umowa i jak wymagają tego przepisy; przy samej rozmowie o sprzedaży lub wynajmie do 12 miesięcy po ostatniej takiej rozmowie.')); assert.ok(how.includes('wyjątek: umowa albo rozmowa o sprzedaży lub wynajmie Twojej nieruchomości z pomocą naszego biura, o którą poprosisz; wtedy dane przechowujemy dłużej, jak opisano wyżej.'))
+  assert.ok(!/współpracy/.test(JSON.stringify(T)), 'v14 (akceptacja Prawnika 28.09): "rozmowy o wspolpracy" zastapione "rozmowa o sprzedazy lub wynajmie Twojej nieruchomosci z pomocą naszego biura"'); assert.ok(!/przez nasze biuro/.test(JSON.stringify(T)), 'v14: "z pomocą naszego biura" (nie "przez" - biuro posredniczy, nie sprzedaje)')
   assert.ok(!/nie pozwalaj\S* nam Cię zidentyfikować/.test(items + how)); assert.ok(items.includes('zapisujemy bez danych kontaktowych i bez adresu IP'))
   const all = JSON.stringify(T)
   assert.ok(!/przygotujemy wycenę|przygotuje ją agent|przygotuje wycenę Twojej/.test(all), 'obietnica "przygotuje" tylko tam, gdzie skrypt ja gwarantuje')
@@ -273,15 +278,15 @@ test('teksty v11.6: cel [2] dla wspolpracy, Cenogram, Vercel w DPF, T-t (punkty)
   const sp = String.fromCharCode(160)
   const items = [...T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]), ...RA.items].join(' ').split(sp).join(' ')
   const how = [...T.how.body, ...RA.how].join(' ').split(sp).join(' ')
-  assert.ok(items.includes('rozmowy o współpracy, o które sam(a) poprosisz, oraz umowa — działania na Twoje żądanie przed zawarciem umowy i wykonanie umowy (art. 6 ust. 1 lit. b RODO)'))
+  assert.ok(items.includes('rozmowa o sprzedaży lub wynajmie Twojej nieruchomości z pomocą naszego biura, o którą sam(a) poprosisz — działania na Twoje żądanie przed zawarciem umowy (art. 6 ust. 1 lit. b RODO);') && items.includes('umowa, jeśli do niej dojdzie — wykonanie umowy (art. 6 ust. 1 lit. b RODO) oraz obowiązki prawne wynikające z przepisów, np. podatkowych (art. 6 ust. 1 lit. c RODO);'), 'v14: cel [2] rozbity na dwa punkty (rozmowa / umowa)')
   assert.ok(items.includes('oraz dane rynkowe: Cenogram (Polska); do obu trafiają wyłącznie dane nieruchomości')); assert.ok(how.includes('Anthropic) i dostawcy danych rynkowych (Cenogram)'))
   assert.ok(items.includes('Vercel (hosting strony): Data Privacy Framework oraz umowa powierzenia przetwarzania danych;'))
   assert.equal(T.h1, 'Orientacyjna wycena mieszkania w Kołobrzegu online'); assert.ok(!/bezpłatn/i.test(T.h1))
-  assert.ok(T.result.outOfScopeBody.includes('agent zadzwoni i powie, jak może pomóc z wyceną.') && !T.result.outOfScopeBody.includes('sprawdzi, czy'))
+  assert.ok(T.result.outOfScopeBody.includes('cenę oszacuje agent, bezpłatnie i bez zobowiązań') && T.result.outOfScopeBody.includes('sprawdzimy, czy możemy pomóc'), 'v14: region = agent szacuje cene; poza wojewodztwem = sprawdzimy, czy mozemy pomoc')
   assert.ok(!how.includes('bez danych kontaktowych i adresu IP; nie zawierają'))
-  assert.equal(T.how.body.filter(b => b.startsWith('Adres IP:')).length, 1)
-  for (const k of ['adres IP, dostawca hostingu naszego serwera (Railway)', 'adres IP, nasza aplikacja', 'adres IP, dostawcy hostingu strony (Vercel)', 'zapytanie bez numeru telefonu', 'zapytanie z numerem telefonu, bez umowy i bez rozmów o współpracy', 'jeśli dojdzie do umowy albo sam(a) poprosisz o rozmowy o współpracy']) assert.ok(items.includes(k), k)
-  assert.ok(!/okolicy/.test(JSON.stringify(T.how.body)) && !T.result.comparables(20, 49).includes('okolicy'))
+  assert.equal(T.how.body.filter(b => b.startsWith('Adres IP')).length, 1)
+  for (const k of ['Adres IP, dostawca hostingu naszego serwera (Railway)', 'Adres IP, nasza aplikacja', 'Adres IP, dostawcy hostingu strony (Vercel)', 'Zapytanie bez numeru telefonu', 'Zapytanie z numerem telefonu', 'Jeśli dojdzie do umowy albo poprosisz nas o rozmowę o sprzedaży lub wynajmie']) assert.ok(items.includes(k), k)
+  assert.ok(!T.result.comparables(20, 49).includes('okolicy')) // v14: how.body pkt 1 celowo "z Twojej okolicy" (decyzja Krytyka), wynik liczy porownania "z Twojej miejscowosci"
 })
 
 test('teksty v11.7: [4] jako lista odbiorcow (T-u) + osobny punkt zabezpieczen; Cenogram (Polska); lit. c w [2]; DPF objasniony; Vercel z umowa powierzenia', async () => {
@@ -306,31 +311,34 @@ test('teksty v11.8 (decyzje Daniela 26.09): T-k lista nie dzwonimy, T-c2 rozmowa
   const how = [...T.how.body, ...RA.how].join(' ').split(sp).join(' ')
   assert.ok(!items.includes('lista osób, do których nie dzwonimy') && !items.includes('nie dzwonimy:'), 'v12: lista "nie dzwonimy" wycofana z klauzuli do potwierdzenia wdrozenia')
   assert.ok(!items.includes('3 lata') && !items.includes('numer na liście'))
-  assert.ok(items.includes('(telefonicznej lub osobistej)') && how.includes('12 miesięcy po ostatniej rozmowie lub wiadomości w sprawie wyceny')) // v13: warstwa krotka bez nawiasu (uproszczona przez Prawnika), pelna klauzula z nawiasem
+  assert.ok(items.includes('ostatnim kontakcie w sprawie wyceny (Twojej rozmowie lub wiadomości)') && how.includes('12 miesięcy po ostatnim kontakcie w sprawie wyceny')) // v14: "kontakt w sprawie wyceny" zamiast "rozmowa telefoniczna lub osobista"
   assert.ok(items.includes('Po cofnięciu nie zadzwonimy do Ciebie w sprawie wyceny.') && !items.includes('najpóźniej w ciągu miesiąca') && !items.includes('usuniemy Twoje dane z naszego systemu'))
-  assert.ok(items.includes('każda kolejna rozmowa odnawia ten okres') && how.includes('poprosisz o rozmowy o współpracy, stosujemy zasady dla klientów'))
+  assert.ok(items.includes('przy samej rozmowie o sprzedaży lub wynajmie do 12 miesięcy po ostatniej takiej rozmowie') && how.includes('o którą poprosisz'), 'v14: bez zdania o odnawianiu okresu')
 })
 
 test('teksty v13: wstep krotki (zakres tez we wstepie od 28.09), okresy WARIANT A wlaczony (B tylko awaryjnie), streszczenie zgody na wierzchu z trzema drogami cofniecia', async () => {
-  const { T, RETENTION_VARIANT_A, RETENTION_A_ITEMS, RETENTION_B_ITEMS, RETENTION_B_HOW } = await import('../app/wycena/texts.ts')
+  const { T, RETENTION_VARIANT_A, RETENTION_A_ITEMS, RETENTION_A_HOW, RETENTION_B_ITEMS, RETENTION_B_HOW } = await import('../app/wycena/texts.ts')
   const sp = String.fromCharCode(160)
   assert.ok(T.intro.split(/[.?] /).length <= 5, 'wstep: max 5 zdan (28.09: zakres wrocil do wstepu wg Krytyka pkt 1)'); assert.ok(T.intro.includes('sztucznej inteligencji'))
-  assert.ok(T.disclaimerMore.startsWith('To szacunek, a nie operat szacunkowy'))
+  assert.ok(T.disclaimerMore.startsWith('Poza Kołobrzegiem widełki są szersze')); assert.ok(T.result.scopeNoteWider.startsWith('Dla Twojej miejscowości widełki są szersze'))
   assert.equal(RETENTION_VARIANT_A, true) // v13: ZNACZENIE ZMIENIONE (dawniej false = wariant B); wariant B jest niezgodny z art. 13 ust. 2 lit. a RODO (Prawnik 28.09)
   const items = T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]).join(' ').split(sp).join(' ')
   assert.ok(!items.includes(RETENTION_B_ITEMS[0])); assert.ok(items.includes('12 miesięcy') && items.includes('24 miesiące'), 'wariant A z konkretnymi okresami')
   for (const it of RETENTION_A_ITEMS) assert.ok(items.includes(it.split(sp).join(' ')), 'punkt A w klauzuli')
   assert.ok(RETENTION_A_ITEMS.length === 4)
   const how = T.how.body.join(' ').split(sp).join(' ')
-  assert.ok(!how.includes('nie dłużej, niż to konieczne')); assert.ok(how.includes('Jak długo: zapytanie bez numeru usuwamy po 12 miesiącach') && how.includes('najpóźniej 24 miesiące po zgłoszeniu'))
+  assert.ok(!how.includes('nie dłużej, niż to konieczne')); assert.ok(how.includes('Zapytanie bez numeru usuwamy po 12 miesiącach') && how.includes('najpóźniej 24 miesiące po zgłoszeniu'))
+  assert.equal(T.how.body.length, 7, 'v14: "Jak liczymy" = 7 punktow (7 = retencja)'); assert.equal(T.how.body[6], RETENTION_A_HOW[0])
+  assert.equal((how.match(/Jak długo/g) ?? []).length, 0, 'v14: brak dubletu naglowka "Jak dlugo" w Jak liczymy')
   assert.ok(RETENTION_B_HOW[0].includes('cofnąć e-mailem, telefonicznie lub w rozmowie z agentem') && !RETENTION_B_HOW[0].includes('pisząc na'), 'wariant B (awaryjny) tez z trzema drogami cofniecia')
-  assert.ok(how.includes('Zgodę na telefon w sprawie wyceny możesz cofnąć e-mailem, telefonicznie lub w rozmowie z agentem.'))
+  assert.equal((how.match(/możesz cofnąć e-mailem, telefonicznie lub w rozmowie z agentem/g) ?? []).length, 1, 'v14: zdanie o cofnieciu raz (brak dubletu)')
   // consentShort: ZNACZENIE ZMIENIONE (dawniej < 300 znakow i "wylacznie do telefonu"); teraz opisuje realne przetwarzanie (CRM + e-mail do pracownikow), cele dodatkowe tylko na prosbe i 3 drogi cofniecia
   const cs = T.lead.consentShort.split(sp).join(' ')
-  assert.ok(cs.length < 700 && cs.includes('biuro@investrent.com.pl') && cs.includes('+48 731 554 341') && cs.includes('w rozmowie z agentem'))
-  assert.ok(!cs.includes('wyłącznie do telefonu') && cs.includes('przekazujemy pracownikom biura (także w powiadomieniu e-mail)') && cs.includes('tylko wtedy, gdy sam(a) o to poprosisz'))
+  assert.ok(cs.length < 700 && cs.includes('także telefonicznie lub w rozmowie z agentem'))
+  assert.ok(!cs.includes('wyłącznie do telefonu') && cs.includes('przekazujemy pracownikom biura, żeby agent mógł do Ciebie zadzwonić') && !cs.includes('e-mail') && cs.includes('Rozmowa o sprzedaży lub wynajmie to osobna sprawa: numeru do niej (i do innych celów) użyjemy tylko na Twoją prośbę'), 'v14 (akceptacja Prawnika C) + wariant A maila (Dyrektor): numer nie idzie e-mailem, wiec bez wtracenia o powiadomieniu e-mail')
   // IP: rozdzielone na trzy miejsca (baza / pamiec serwera / logi dostawcow)
-  assert.ok(how.includes('Adres IP: nie zapisujemy go w naszej bazie danych razem z wyceną ani z Twoimi danymi kontaktowymi.') && how.includes('o adresie IP piszemy niżej'))
+  assert.ok(how.includes('Adres IP to numer identyfikujący Twoje połączenie z internetem. Nie zapisujemy go w naszej bazie razem z wyceną ani z Twoimi danymi kontaktowymi.'))
+  assert.ok(how.includes('Imię trafia też e-mailem do pracowników biura, razem z odnośnikiem do zgłoszenia w naszym systemie; numeru w e-mailu nie ma.') && !how.includes('Imię i numer trafiają też e-mailem'), 'wariant A maila managerow (Dyrektor 28.09): tylko imie + link')
   assert.ok(!JSON.stringify(T).includes('26.09.2026'))
   assert.ok(!/nie dzwonimy|w ciągu miesiąca|około 24|bez numeru telefonu, z odn/.test(JSON.stringify(T)), 'v12: brak wycofanych zdan')
 })
@@ -345,3 +353,22 @@ test('lead z /wycena v12: source=wycena_lp, honeypot hp_field pusty, token Turns
   const fs2 = fs.readFileSync(new URL('../components/WycenaModal.tsx', import.meta.url), 'utf8')
   assert.ok(fs2.includes("source: 'wycena_modal'") && !fs2.includes('wycena_lp'), 'okienko Zamow rozmowe zostaje wycena_modal')
 })
+test('teksty v14: numer biura w tekstach = OFFICE_PHONE (jedno zrodlo), doneBody i outOfScopeBody z numerem bez dubletu, scopeNoteWider i floor_hint, bledy z dzwonieniem', async () => {
+  const { T } = await import('../app/wycena/texts.ts'); const { OFFICE_PHONE } = await import('./valuation.ts')
+  const sp = String.fromCharCode(160); const norm = x => x.split(sp).join(' ')
+  const all = norm(JSON.stringify(T)); const phone = norm(OFFICE_PHONE)
+  const nums = all.match(/\+48 \d{3} \d{3} \d{3}/g) ?? []
+  assert.ok(nums.length >= 4 && nums.every(n => n === phone), 'kazdy numer w tekstach = OFFICE_PHONE: ' + nums.join(', '))
+  assert.equal(norm(T.lead.doneBody).split(phone).length - 1, 1); assert.equal(norm(T.result.outOfScopeBody).split(phone).length - 1, 1)
+  assert.equal(T.fields.floor_hint, 'Parter wpisz jako 0, a poziom poniżej parteru (suterenę) jako -1.')
+  assert.equal(T.errors.disabled, 'Kalkulator jest chwilowo niedostępny. Zostaw numer poniżej lub zadzwoń:')
+  assert.ok(T.errors.rateLimited('2 h').startsWith('Z tej sieci wykonano już maksymalną liczbę wycen. Spróbuj ponownie za około 2 h.') && T.errors.rateLimited('2 h').endsWith('zadzwonić:'))
+  assert.ok(T.errors.invalid.endsWith('zadzwoń:') && T.errors.leadFail.endsWith('zadzwoń:'))
+  assert.equal(T.lead.phoneHint, 'Podaj 9 cyfr (numer polski) albo numer zaczynający się od + i kierunkowego kraju, np. +49.')
+  assert.equal(T.lead.errConsent, 'Zaznacz zgodę na telefon w sprawie wyceny. Bez niej nie możemy do Ciebie zadzwonić.')
+  assert.equal(T.how.moreSummary, 'Więcej: co zapisujemy i jak długo')
+})
+test('walidacja v14: komunikat braku dzielnicy wg tabeli', () => {
+  assert.equal(validateForm({ ...ok, district: '' }).district, 'Wybierz dzielnicę lub osiedle z listy. Jeśli nie ma na niej Twojej, wybierz „Inna dzielnica”.')
+})
+
