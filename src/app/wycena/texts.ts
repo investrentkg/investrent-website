@@ -5,27 +5,24 @@
 // do zatwierdzenia przez prawnika (patrz lista blokerow w opisie PR #21).
 // Brak superlatyw i obietnic. Twarde spacje ( ) w liczbach i numerze telefonu.
 
-// v12: okresy przechowywania. Wariant B (domyslny, wyswietlany) = polityka /rodo v3 bez konkretnych liczb, do czasu wlaczenia i sprawdzenia joba retencji "calculator".
-// Wariant A (12/24 mies.) = przelacznik ponizej; przestaw na true RAZEM z RETENTION_CALCULATOR_ACTIVE=true w polityce (oba miejsca naraz) i nowa wersja zgody.
-export const RETENTION_VARIANT_A = false
+// v13 (28.09.2026, rekomendacja prawna _wspolne_pliki\kalkulator_v12_rekomendacja_prawna_2026_09_28.md): okresy przechowywania = WARIANT A (12/24 mies.) wyswietlany.
+// Wariant B ("nie dluzej, niz to konieczne") zostaje w kodzie tylko jako awaryjny odwrot, ale jest niezgodny z art. 13 ust. 2 lit. a RODO - nie wracac do niego bez prawnika.
+// WARUNEK WDROZENIA: ta flaga = true wchodzi RAZEM z RETENTION_CALCULATOR_ACTIVE=true w /rodo (oba miejsca naraz), nowa wersja zgody w Railway PRZED frontem, job retencji "calculator" po dry-runie.
+export const RETENTION_VARIANT_A = true
 export const RETENTION_A_ITEMS = [
-  'zapytanie bez numeru telefonu: dane nieruchomości i wynik zapisujemy bez danych kontaktowych i adresu IP; po 12\u00A0miesiącach od dnia zapytania usuwamy szczegółowy opis wyceny, a zostaje statystyka (typ, przedział powierzchni co 10\u00A0m², miejscowość i dzielnica z listy, stan, widełki ceny, data), która nie zawiera Twoich danych kontaktowych ani adresu IP;',
-  'zapytanie z numerem telefonu, zwykle: usuwamy je 12\u00A0miesięcy po ostatniej rozmowie z Tobą (telefonicznej lub osobistej) lub Twojej wiadomości w sprawie wyceny;',
-  'zapytanie z numerem telefonu, najpóźniej: 24\u00A0miesiące po pierwszym zgłoszeniu z tego numeru (kolejne zgłoszenie z tego numeru tych 24\u00A0miesięcy nie wydłuża); jeśli do rozmowy lub wiadomości nie doszło, 12\u00A0miesięcy od zgłoszenia;',
-  'zapytanie z numerem telefonu, wyjątki: jeśli dojdzie do umowy, dane związane z umową przechowujemy tak długo, jak wymagają tego przepisy; jeśli sam(a) poprosisz o rozmowy o współpracy, Twój numer i dane z tych rozmów przechowujemy najdłużej 12\u00A0miesięcy od ostatniej takiej rozmowy (każda kolejna taka rozmowa odnawia te 12\u00A0miesięcy);',
-  'nieodebrane próby kontaktu z naszej strony tych okresów nie wydłużają;',
-  'dowód zgody na telefon w sprawie wyceny (wersja zgody, kanał, czas): wygasa razem ze zgłoszeniem.',
+  'zapytanie bez numeru telefonu: dane nieruchomości i wynik zapisujemy bez danych kontaktowych i bez adresu IP; po 12\u00A0miesiącach od zapytania usuwamy szczegółowy opis wyceny, zostaje anonimowa statystyka (typ nieruchomości, przedział powierzchni, miejscowość i dzielnica z listy, stan, widełki ceny, data);',
+  'zapytanie z numerem telefonu, bez umowy i bez rozmów o współpracy: usuwamy Twoje imię, numer i dane kontaktowe 12\u00A0miesięcy po ostatniej rozmowie (telefonicznej lub osobistej) lub Twojej wiadomości w sprawie wyceny, a jeśli ich nie było, 12\u00A0miesięcy po zgłoszeniu; nie później niż 24\u00A0miesiące po zgłoszeniu; nieodebrane próby kontaktu z naszej strony tych okresów nie wydłużają;',
+  'jeśli dojdzie do umowy albo sam(a) poprosisz o rozmowy o współpracy: dane z kalkulatora stają się częścią Twojej sprawy jako klienta i przechowujemy je według zasad dla klientów (umowa: tak długo, jak wymagają przepisy; rozmowy o współpracy: do 12\u00A0miesięcy po ostatniej takiej rozmowie, każda kolejna rozmowa odnawia ten okres);',
+  'dowód zgody na telefon w sprawie wyceny (wersja zgody, kanał, czas): usuwamy razem ze zgłoszeniem.',
 ] as const
 export const RETENTION_B_ITEMS = [
   'zapytania z kalkulatora: nie dłużej, niż to konieczne do obsługi Twojej wyceny.',
 ] as const
 export const RETENTION_A_HOW = [
-  'Jak długo, zapytanie bez numeru telefonu: 12\u00A0miesięcy od dnia zapytania, potem zostaje sama statystyka.',
-  'Jak długo, zapytanie z numerem telefonu: zwykle usuwamy je 12\u00A0miesięcy po ostatniej rozmowie z Tobą (telefonicznej lub osobistej) lub Twojej wiadomości w sprawie wyceny; najpóźniej 24\u00A0miesiące po pierwszym zgłoszeniu z tego numeru (kolejne zgłoszenie z tego numeru tych 24\u00A0miesięcy nie wydłuża); bez rozmowy lub wiadomości 12\u00A0miesięcy od zgłoszenia. Wyjątki: umowa (tak długo, jak wymagają przepisy) albo rozmowy o współpracy, o które sam(a) poprosisz (Twój numer i dane z tych rozmów najdłużej 12\u00A0miesięcy od ostatniej takiej rozmowy; każda kolejna taka rozmowa odnawia te 12\u00A0miesięcy). Nieodebrane próby kontaktu z naszej strony okresów nie wydłużają.',
-  'Razem ze zgłoszeniem wygasa dowód zgody na telefon w sprawie wyceny. Zgodę na telefon w sprawie wyceny możesz cofnąć w każdej chwili, pisząc na biuro@investrent.com.pl. Szczegóły: polityka prywatności (RODO).',
+  'Jak długo: zapytanie bez numeru usuwamy po 12\u00A0miesiącach (zostaje anonimowa statystyka). Zapytanie z numerem usuwamy 12\u00A0miesięcy po ostatniej rozmowie lub wiadomości w sprawie wyceny, a najpóźniej 24\u00A0miesiące po zgłoszeniu; wyjątek: jeśli dojdzie do umowy albo poprosisz o rozmowy o współpracy, stosujemy zasady dla klientów (szczegóły w pełnej informacji poniżej). Zgodę na telefon w sprawie wyceny możesz cofnąć e-mailem, telefonicznie lub w rozmowie z agentem.',
 ] as const
 export const RETENTION_B_HOW = [
-  'Jak długo: zapytania z kalkulatora przechowujemy nie dłużej, niż to konieczne do obsługi wyceny. Zgodę na telefon w sprawie wyceny możesz cofnąć w każdej chwili, pisząc na biuro@investrent.com.pl. Szczegóły: polityka prywatności (RODO).',
+  'Jak długo: zapytania z kalkulatora przechowujemy nie dłużej, niż to konieczne do obsługi wyceny. Zgodę na telefon w sprawie wyceny możesz cofnąć e-mailem, telefonicznie lub w rozmowie z agentem. Szczegóły: polityka prywatności (RODO).',
 ] as const
 
 export const T = {
@@ -100,13 +97,14 @@ export const T = {
     // v11 (decyzja Daniela 26.09.2026): kalkulator startuje BEZ zgody marketingowej. Jedna zgoda: na oddzwonienie w sprawie wyceny
     // (NIEZAZNACZONA domyślnie, wymagana przy podanym numerze). Marketing = osobny, późniejszy krok (v12) po gotowym mechanizmie (#507).
     // v12 (27.09.2026, wg klauzula_kalkulator_T11_propozycja_2026_09_26.md): cofniecie zgody tylko e-mailem; Anthropic wg warunkow API dostawcy; bez listy "nie dzwonimy" i bez obietnicy usuniecia w miesiac; IP "krotkotrwale"; okresy: wariant B (domyslny), wariant A = RETENTION_VARIANT_A (wylaczony do wlaczenia joba retencji, razem z RETENTION_CALCULATOR_ACTIVE w polityce).
+    // v13 (28.09.2026, rekomendacja prawna): consentCall/consentShort, cofniecie zgody trzema drogami (e-mail, telefon do biura, slowo do agenta), retencja WARIANT A, IP rozdzielony na trzy miejsca (baza / pamiec serwera / logi dostawcow), bez daty umowy powierzenia Railway. Numer biura = OFFICE_PHONE (lib/valuation.ts).
     // Bez skrótu numeru (id_hash) i bez klucza HMAC w ścieżce kalkulatora; dowód zgody = wersja, kanał, czas, wygasa ze zgłoszeniem po 12 mies.
     consentCallRequired: '(wymagana, jeśli podajesz numer telefonu)',
     consentCall:
-      'Zgadzam się, aby spółka INVESTRENT SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ (biuro nieruchomości InvestRent) zadzwoniła do mnie pod podany numer wyłącznie w sprawie wyceny mojej nieruchomości. Zgodę mogę cofnąć w każdej chwili, pisząc na biuro@investrent.com.pl.',
+      'Zgadzam się, aby spółka INVESTRENT SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ (biuro nieruchomości InvestRent) zadzwoniła do mnie pod podany numer wyłącznie w sprawie wyceny mojej nieruchomości. Zgodę mogę cofnąć w każdej chwili: e-mailem (biuro@investrent.com.pl), telefonicznie (+48\u00A0731\u00A0554\u00A0341) lub mówiąc o tym agentowi podczas rozmowy.',
     // Klauzula informacyjna (art. 13 RODO): pełne dane administratora wg odpisu KRS (api-krs.ms.gov.pl, 25.09.2026).
     // Fakty (kod backendu origin/main 26.09.2026): IP w limiterze w pamięci procesu jako skrót HMAC z solą procesu (okno 24 h; sprzątanie co 10 min, #505),
-    // bez zapisu w bazie; ai_valuations bez kontaktu i IP; odbiorcy danych leada: Brevo (mail do managerów), kalendarz Google (zadanie z imieniem i numerem).
+    // bez zapisu w bazie; ai_valuations bez kontaktu i IP; odbiorcy danych leada: Brevo (mail do managerów z imieniem i numerem), kalendarz Google (zadanie z samym imieniem i linkiem do karty; NUMER do kalendarza NIE trafia, googleEventPrivacy.ts, decyzja 25.09; nie dopisywać numeru do klauzuli).
     // WARUNEK PUBLIKACJI (zdanie o IP "około 24 godzin"): #505 potwierdzone na produkcji i brak IP w logach aplikacji (kod origin/main 26.09.2026: req.ip tylko jako klucz limitera (skrót HMAC) i remoteip do Turnstile; brak logowania IP; osobno leadLimit express-rate-limit trzyma IP w pamięci do 1 h).
     // WARUNKI PUBLIKACJI: (1) backend dowodu zgody na oddzwonienie + test na żywo; (2) kasowanie dowodu z leadem po 12 mies. (dziś job zostawia zredagowaną
     // notatkę [Zgoda-kalkulator]); (3) potwierdzenia dostawców (tabela_dostawcow_kalkulator_2026_09_25.md); (4) polityki #22 i wersja DE.
@@ -132,21 +130,21 @@ export const T = {
       { h: 'Zabezpieczenia przy przekazaniu poza EOG.', t: 'Część dostawców ma siedzibę w USA lub może przetwarzać dane poza Europejskim Obszarem Gospodarczym. Na Twój wniosek (biuro@investrent.com.pl) wskażemy zabezpieczenie zastosowane wobec danego dostawcy oraz, jeśli to standardowe klauzule umowne, prześlemy ich kopię. Zabezpieczenia:', items: [
         'Cloudflare: standardowe klauzule umowne UE zawarte w umowie dostawcy; korzysta on też z ram ochrony danych UE-USA (Data Privacy Framework), o ile jego certyfikacja jest w danym czasie aktywna; Google: Data Privacy Framework, a w razie jego braku standardowe klauzule umowne UE;',
         'Vercel (hosting strony): Data Privacy Framework oraz umowa powierzenia przetwarzania danych;',
-        'Railway: umowa powierzenia z 26.09.2026; mechanizm przekazania (Data Privacy Framework albo standardowe klauzule umowne UE) wskażemy na wniosek;',
-        'Anthropic: zabezpieczenie wskazane w warunkach API dostawcy; szczegóły na Twój wniosek (biuro@investrent.com.pl);',
+        'Railway: umowa powierzenia; mechanizm przekazania (Data Privacy Framework albo standardowe klauzule umowne UE) wskażemy na wniosek;',
+        'Anthropic: zabezpieczenie wskazane w warunkach API dostawcy; szczegóły wskażemy na wniosek;',
         'Supabase (baza danych): dane przechowywane w regionie UE (Irlandia); umowa powierzenia zawiera standardowe klauzule umowne UE.',
       ] },
       { h: 'Jak długo.', t: 'Okresy przechowywania:', items: [
-        'adres IP, dostawca hostingu naszego serwera (Railway): może przechowywać dzienniki żądań, w tym Twój adres IP, do 30\u00A0dni;',
-        'adres IP, nasza aplikacja: krótkotrwale, dla limitu zapytań;',
-        'adres IP, dostawcy hostingu strony (Vercel) i ochrony formularza (Cloudflare): w swoich logach technicznych według własnych zasad i okresów;',
+        'adres IP, nasza aplikacja: w pamięci serwera, w postaci skrótu, do 24\u00A0godzin (limit zapytań); nie zapisujemy go w bazie danych;',
+        'adres IP, dostawca hostingu naszego serwera (Railway): dzienniki techniczne do 30\u00A0dni;',
+        'adres IP, dostawcy hostingu strony (Vercel) i ochrony formularza (Cloudflare): w ich logach technicznych według ich zasad i okresów;',
         ...(RETENTION_VARIANT_A ? RETENTION_A_ITEMS : RETENTION_B_ITEMS),
       ] },
-      { h: 'Twoje prawa.', t: 'Możesz żądać dostępu do danych, ich sprostowania, usunięcia, ograniczenia przetwarzania i przeniesienia oraz w każdej chwili cofnąć zgodę na telefon w sprawie wyceny (cofnięcie nie wpływa na zgodność z prawem tego, co zrobiliśmy wcześniej). Zgodę na telefon w sprawie wyceny możesz cofnąć, pisząc na biuro@investrent.com.pl. Po cofnięciu nie zadzwonimy do Ciebie w sprawie wyceny. Wnioski o pozostałe prawa wyślij na biuro@investrent.com.pl. Możesz też złożyć skargę do Prezesa Urzędu Ochrony Danych Osobowych. Podanie danych jest dobrowolne; bez numeru telefonu pokażemy wynik, ale nie oddzwonimy.' },
+      { h: 'Twoje prawa.', t: 'Możesz żądać dostępu do danych, ich sprostowania, usunięcia, ograniczenia przetwarzania i przeniesienia oraz w każdej chwili cofnąć zgodę na telefon w sprawie wyceny (cofnięcie nie wpływa na zgodność z prawem tego, co zrobiliśmy wcześniej). Zgodę możesz cofnąć e-mailem (biuro@investrent.com.pl), telefonicznie (+48\u00A0731\u00A0554\u00A0341) albo mówiąc o tym pracownikowi biura podczas rozmowy; wystarczy powiedzieć, że nie chcesz, żebyśmy dzwonili. Po cofnięciu nie zadzwonimy do Ciebie w sprawie wyceny. Wnioski o pozostałe prawa wyślij na biuro@investrent.com.pl albo zgłoś je telefonicznie lub podczas rozmowy. Możesz też złożyć skargę do Prezesa Urzędu Ochrony Danych Osobowych. Podanie danych jest dobrowolne; bez numeru telefonu pokażemy wynik, ale nie oddzwonimy.' },
       { h: 'Prawo sprzeciwu.', highlight: true, t: 'Masz prawo w każdej chwili wnieść sprzeciw wobec przetwarzania Twoich danych opartego na naszym prawnie uzasadnionym interesie (dowód zgody na telefon w sprawie wyceny, adres IP; art.\u00A06 ust.\u00A01 lit.\u00A0f RODO), z przyczyn związanych z Twoją szczególną sytuacją (art.\u00A021 RODO). Napisz na biuro@investrent.com.pl lub powiedz o tym podczas rozmowy.' },
     ],
     // v12: krotkie streszczenie na wierzchu, pelna klauzula (consentInfo) w rozwijanym bloku
-    consentShort: 'Administratorem jest INVESTRENT sp. z o.o. (InvestRent). Numer wykorzystamy wyłącznie do telefonu w sprawie wyceny, a zgodę cofniesz, pisząc na biuro@investrent.com.pl. Pełną informację o danych znajdziesz poniżej.',
+    consentShort: 'Administratorem jest INVESTRENT sp. z o.o. (InvestRent). Numer i imię zapisujemy w naszym systemie i przekazujemy pracownikom biura (także w powiadomieniu e-mail), żeby agent mógł do Ciebie zadzwonić w sprawie wyceny. Do innych celów, np. rozmów o współpracy, użyjemy numeru tylko wtedy, gdy sam(a) o to poprosisz. Numeru podawać nie musisz. Zgodę możesz cofnąć w każdej chwili: e-mailem (biuro@investrent.com.pl), telefonicznie (+48\u00A0731\u00A0554\u00A0341) lub w rozmowie z agentem. Pełna informacja o danych jest poniżej.',
     consentInfoSummary: 'Pełna informacja o przetwarzaniu danych (art. 13 RODO)',
     consentInfoMore: 'Szczegóły znajdziesz w ',
     consentInfoLink: 'polityce prywatności (RODO)',
@@ -181,9 +179,9 @@ export const T = {
       'Porównujemy dane Twojej nieruchomości z cenami transakcyjnymi i ofertowymi podobnych nieruchomości z Twojej miejscowości. Szacunek liczymy automatycznie z użyciem sztucznej inteligencji, bez oględzin. Ceny ofertowe bywają wyższe od faktycznie zapłaconych.',
       'Widełki są zaokrąglone i mają charakter orientacyjny. Nie zastępują operatu szacunkowego sporządzanego przez rzeczoznawcę majątkowego (np. do kredytu, sądu lub urzędu).',
       'Co trafia do usług zewnętrznych: dane nieruchomości wpisane w kalkulatorze trafiają wyłącznie do dostawcy sztucznej inteligencji (Anthropic) i dostawcy danych rynkowych (Cenogram), bez Twoich danych kontaktowych i adresu IP.',
-      'Co zapisujemy bez numeru: jeśli nie zostawisz numeru telefonu, zapisujemy dane nieruchomości i wynik bez danych kontaktowych i adresu IP.',
-      'Adres IP: dostawca hostingu naszego serwera (Railway) może przechowywać dzienniki żądań, w tym adres IP, do 30\u00A0dni; w samej naszej aplikacji wykorzystujemy go krótkotrwale, dla limitu zapytań (formularz chroni Cloudflare Turnstile); pozostali dostawcy (hosting strony, ochrona formularza) przetwarzają go w swoich logach według własnych zasad.',
-      'Co zapisujemy z numerem: jeśli zostawisz numer telefonu, zapisujemy w naszym systemie CRM Twoje imię, numer, dane nieruchomości i wynik oraz dowód udzielonej zgody na telefon w sprawie wyceny: wersję zgody, kanał i czas.',
+      'Co zapisujemy bez numeru: jeśli nie zostawisz numeru telefonu, zapisujemy w naszej bazie danych dane nieruchomości i wynik, bez danych kontaktowych i bez adresu IP (o adresie IP piszemy niżej).',
+      'Adres IP: nie zapisujemy go w naszej bazie danych razem z wyceną ani z Twoimi danymi kontaktowymi. Przetwarzamy go tylko technicznie: w pamięci naszego serwera, w postaci skrótu, do 24\u00A0godzin, żeby ograniczyć liczbę zapytań z jednego urządzenia; w dziennikach technicznych dostawcy hostingu naszego serwera (Railway), do 30\u00A0dni; oraz w logach dostawców hostingu strony (Vercel) i ochrony formularza (Cloudflare Turnstile), według ich zasad i okresów.',
+      'Co zapisujemy z numerem: jeśli zostawisz numer telefonu, zapisujemy w naszym systemie CRM Twoje imię, numer, dane nieruchomości i wynik oraz dowód udzielonej zgody na telefon w sprawie wyceny: wersję zgody, kanał i czas. Zgodę na telefon w sprawie wyceny możesz cofnąć e-mailem, telefonicznie lub w rozmowie z agentem.',
       ...(RETENTION_VARIANT_A ? RETENTION_A_HOW : RETENTION_B_HOW),
     ],
 
