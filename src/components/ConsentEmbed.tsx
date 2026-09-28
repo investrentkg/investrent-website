@@ -46,7 +46,7 @@ const COPY: Record<Locale, {
       vimeo: 'Mit dem Klick verbinden Sie sich mit Servern von Vimeo, die Ihre IP-Adresse und Cookies speichern können.',
     },
     policy: 'Datenschutzerklärung',
-    policyHref: '/rodo',
+    policyHref: '/de/datenschutz',
     openInMaps: 'In Google Maps öffnen',
   },
 }

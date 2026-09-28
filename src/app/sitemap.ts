@@ -25,6 +25,10 @@ const STATIC_PAGES = [
   { path: '/blog', priority: 0.7, changeFrequency: 'weekly' as const },
   { path: '/o-nas', priority: 0.7, changeFrequency: 'monthly' as const },
   { path: '/kontakt', priority: 0.7, changeFrequency: 'monthly' as const },
+  // NOWE (25.09.2026): niemieckie strony prawne (index,follow) - wymagane pod
+  // formularze Meta "Suchwunsche" dla odbiorcow z Niemiec.
+  { path: '/de/datenschutz', priority: 0.3, changeFrequency: 'yearly' as const },
+  { path: '/de/impressum', priority: 0.3, changeFrequency: 'yearly' as const },
   // /rodo CELOWO pominiete - oznaczone noindex (patrz rodo/page.tsx), obecnosc
   // w sitemapie razem z noindex to sprzeczny sygnal dla Google.
 ]
