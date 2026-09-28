@@ -10,7 +10,6 @@ export const revalidate = 300
 
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
-import FloatingWA from '@/components/FloatingWA'
 import SocialSidebar from '@/components/SocialSidebar'
 import Team from '@/components/Team'
 import Reviews from '@/components/Reviews'
@@ -170,7 +169,6 @@ export default async function ONasPage() {
         </div>
       </main>
       <Footer office={office} />
-      <FloatingWA />
 
       <SocialSidebar office={office} />
     </>

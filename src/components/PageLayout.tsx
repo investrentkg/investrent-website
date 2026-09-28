@@ -1,6 +1,5 @@
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
-import FloatingWA from '@/components/FloatingWA'
 import { getOffice } from '@/lib/api'
 
 export default async function PageLayout({ children }: { children: React.ReactNode }) {
@@ -20,7 +19,6 @@ export default async function PageLayout({ children }: { children: React.ReactNo
       <Nav office={off} />
       <main>{children}</main>
       <Footer office={off} />
-      <FloatingWA />
     </>
   )
 }

@@ -1,6 +1,6 @@
 "use client"
 import { useState, useEffect } from 'react'
-import { MapPin, ShieldCheck, Clock, Trophy } from 'lucide-react'
+import { MapPin, ShieldCheck, Clock, Star } from 'lucide-react'
 import Image from 'next/image'
 import ScrollReveal from '@/components/ScrollReveal'
 
@@ -54,7 +54,7 @@ export default function About() {
               display: 'flex', alignItems: 'center', gap: 14,
             }}>
               <div style={{ width: 44, height: 44, background: '#f5a623', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <Trophy size={22} color="white" />
+                <Star size={22} color="white" fill="white" />
               </div>
               <div>
                 <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 16, color: '#0d2a5c' }}>4.9/5</div>

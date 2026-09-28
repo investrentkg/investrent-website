@@ -1,12 +1,11 @@
 import type { CSSProperties, ReactNode } from 'react'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
-import FloatingWA from '@/components/FloatingWA'
 import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
 import { getOffice } from '@/lib/api'
 
-// Wspolna oprawa niemieckich stron prawnych (/de/datenschutz, /de/impressum).
+// Wspolna oprawa stron prawnych (/rodo oraz niemieckie /de/datenschutz, /de/impressum - te ostatnie w osobnym PR).
 // Wzor wizualny: src/app/rodo/page.tsx.
 
 const FALLBACK_OFFICE = {
@@ -62,7 +61,6 @@ export default async function LegalShell({ title, children }: { title: string; c
         </div>
       </main>
       <Footer office={office} />
-      <FloatingWA />
       <SocialSidebar office={office} />
     </>
   )

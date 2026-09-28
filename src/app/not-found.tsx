@@ -23,7 +23,6 @@
 // neutralny komunikat pasujacy do KAZDEGO nieistniejacego adresu.
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
-import FloatingWA from '@/components/FloatingWA'
 import { getPublicOffers, getOffice } from '@/lib/api'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -104,7 +103,6 @@ export default async function NotFound() {
         </div>
       </main>
       <Footer office={office} />
-      <FloatingWA />
     </>
   )
 }

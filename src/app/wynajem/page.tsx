@@ -1,6 +1,5 @@
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
-import FloatingWA from '@/components/FloatingWA'
 import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
 import OffersPageClient from '@/app/oferty/OffersPageClient'
@@ -103,7 +102,6 @@ export default async function WynajemPage() {
         }).replace(/</g, '\\u003c') }} />
       </main>
       <Footer office={office} />
-      <FloatingWA />
 
       <SocialSidebar office={office} />
     </>

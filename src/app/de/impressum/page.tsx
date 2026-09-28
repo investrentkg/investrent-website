@@ -1,11 +1,17 @@
 import type { Metadata } from 'next'
-import LegalShell, { H2, P } from '@/components/de/LegalShell'
+import LegalShell, { H2, P } from '@/components/legal/LegalShell'
 
 // Impressum (Anbieterkennzeichnung, § 5 DDG - dawniej § 5 TMG) dla odbiorcow z
 // Niemiec. Po przegladzie prawnym z 25.09.2026 (uwagi 5-7, 19-22): teksty prawnika
 // wdrozone, dane spolki z odpisu KRS/VIES z 25.09.2026 (_wspolne_pliki\dane_spolki_do_impressum_2026_09_25.md).
 // Placeholdery (zolte): brak.
-// STATUS: PROJEKT DO PRZEGLADU PRAWNIKA.
+// STATUS: wersja uzgodniona 28.09.2026 (Agent Prawnik, runda 3) - patrz de_przeglad_prawny_runda3_2026_09_28.md.
+//
+// DECYZJA BIZNESOWA 27.09.2026 (do wiadomosci kazdego, kto edytuje ta strone): § 34c GewO (czy oferowanie posrednictwa zdalnie z Polski
+// kupujacym z Niemiec wymaga niemieckiego zezwolenia) NIE zostalo potwierdzone opinia kancelarii z kompetencja niemiecka. Daniel zdecydowal
+// 27.09.2026 ruszyc bez tej opinii, na podstawie wlasnej obserwacji rynku, NIE formalnej opinii prawnej. Ryzyko ZAAKCEPTOWANE PRZEZ WLASCICIELA.
+// Numer polisy OC (WYLACZNIE wewnetrznie, NIE publikowac): 1118663294, okres 12.03.2026-11.03.2027. Dokument polisy nie potwierdza zasiegu wobec DE -
+// stad w tekscie brak deklaracji zasiegu terytorialnego.
 
 export const metadata: Metadata = {
   title: 'Impressum',
@@ -64,7 +70,7 @@ export default function ImpressumPage() {
 
       <H2>Tätigkeit und Berufshaftpflichtversicherung</H2>
       <P>
-        Tätigkeit: Vermittlung von Immobilien (Immobilienmakler nach polnischem Recht, pośrednik w obrocie nieruchomościami). Die Tätigkeit bedarf in Polen keiner behördlichen Zulassung; eine Aufsichtsbehörde im Sinne des § 5 Abs. 1 Nr. 4 DDG besteht daher nicht. Unsere Tätigkeit bezieht sich auf Immobilien in der Republik Polen und wird von Polen aus erbracht.<br />
+        Tätigkeit: Vermittlung von Immobilien (Immobilienmakler nach polnischem Recht, pośrednik w obrocie nieruchomościami). Die Tätigkeit bedarf in Polen keiner behördlichen Zulassung; eine Aufsichtsbehörde im Sinne des § 5 Abs. 1 Nr. 4 DDG besteht daher nicht. Unsere Tätigkeit bezieht sich auf Immobilien in der Republik Polen und wird von Polen aus erbracht; Präsenzveranstaltungen (z. B. Messen oder Vorträge) in Deutschland führen wir nicht durch.<br />
         Berufshaftpflichtversicherung für Immobilienmakler (nach polnischem Recht vorgeschrieben): Powszechny Zakład Ubezpieczeń Spółka Akcyjna (PZU SA), Rondo Ignacego Daszyńskiego 4, 00-843 Warszawa, Polen; Deckungssumme 25.000 EUR je Schadensfall und insgesamt 25.000 EUR.
         {/* Polisa OC (dane od Daniela 25.09.2026, NIE publicznie): PZU, nr polisy 1118663294, okres 12.03.2026-11.03.2027, ubezpieczajacy i ubezpieczony INVESTRENT sp. z o.o. (REGON 526973936), OC obowiazkowe posrednika w obrocie nieruchomosciami, suma gwarancyjna 25 000 EUR na jedno zdarzenie i 25 000 EUR na wszystkie zdarzenia (kurs sredni NBP z pierwszego dnia roboczego roku zawarcia umowy). Adres ubezpieczyciela zweryfikowany 25.09.2026 na https://www.pzu.pl/grupa-pzu/spolki/pzu-sa (Rondo Ignacego Daszynskiego 4, 00-843 Warszawa; KRS 0000009831; Sad Rejonowy dla m.st. Warszawy, XIII Wydzial Gospodarczy KRS). Numer polisy i okres nie sa wymagane publicznie (§ 2 Abs. 1 Nr. 11 DL-InfoV: nazwa i adres ubezpieczyciela oraz zasieg terytorialny; przeglad prawny rundy 1 i 2 nie wymaga numeru). PRZYPOMNIENIE: polisa wygasa 11.03.2027 - odnowic i zaktualizowac Impressum ok. 30 dni wczesniej (backlog: _wspolne_pliki
 etencja_danych_stan_i_backlog_2026_09_25.md). Zasieg terytorialny: decyzja Daniela 25.09.2026 - nie podajemy (uslugi tylko w Polsce, w Niemczech wylacznie reklama). */}
