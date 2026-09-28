@@ -227,7 +227,7 @@ export function formatRange(r: Range): string {
 }
 
 // ── Notatka do leada (pole notes w /api/public/leads) ──
-// Wersja tekstow zgod i klauzuli (texts.ts: consentCall, consentMarketing, consentInfoPrefix). v13 = wersja OCZEKUJACA (v2-v12 zastapione przed publikacja po recenzjach Krytyka i rekomendacji prawnej 28.09):
+// Wersja tekstow zgod i klauzuli (texts.ts: consentCall, consentShort, consentInfo, RETENTION_A_*, ORAZ zdania nad polem zgody lead.bodyRange i lead.bodyFallback, ktore wspoldefiniuja zakres zgody - P8 Prawnika 28.09). v13 = wersja OCZEKUJACA (v2-v12 zastapione przed publikacja po recenzjach Krytyka i rekomendacji prawnej 28.09):
 // publikacja na produkcji wymaga zatwierdzenia tresci (Krytyk + przeglad AI; kancelaria nieangazowana wg decyzji Daniela 25.09); kazda zmiana tych tekstow = nowy numer wersji.
 // Pelne brzmienie danej wersji jest wersjonowane w repo (git) - do leada zapisujemy TYLKO znacznik (limit backendu: 500 znakow).
 export const CONSENT_VERSION = 'wycena-2026-09-28-v13'

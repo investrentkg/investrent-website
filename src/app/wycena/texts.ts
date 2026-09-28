@@ -14,15 +14,15 @@ import { OFFICE_PHONE } from '../../lib/valuation.ts' // numer biura z jednego z
 export const RETENTION_VARIANT_A = true
 export const RETENTION_A_ITEMS = [
   'Zapytanie bez numeru telefonu: dane nieruchomości i wynik zapisujemy bez danych kontaktowych i bez adresu IP. Po 12\u00A0miesiącach usuwamy szczegółowy opis wyceny, zostaje anonimowa statystyka (typ nieruchomości, przedział powierzchni, miejscowość i dzielnica z listy, stan, widełki ceny, data).',
-  'Zapytanie z numerem telefonu: usuwamy z naszego systemu Twoje imię, numer i dane kontaktowe 12\u00A0miesięcy po ostatnim kontakcie w sprawie wyceny (rozmowie lub wiadomości od Ciebie). Jeśli takiego kontaktu nie było, liczymy 12\u00A0miesięcy od zgłoszenia. Usuwamy je najpóźniej 24\u00A0miesiące po zgłoszeniu, chyba że zachodzi wyjątek z punktu (3).',
+  'Zapytanie z numerem telefonu: czekamy 12\u00A0miesięcy po ostatnim kontakcie w sprawie wyceny (rozmowie lub wiadomości od Ciebie). Jeśli takiego kontaktu nie było, liczymy 12\u00A0miesięcy od zgłoszenia. Po upływie tego terminu usuwamy Twoje imię, numer telefonu, adres e-mail i notatki oraz treść zgłoszenia; zostaje wyłącznie anonimowa statystyka, której nie da się powiązać z Tobą, oraz, przez ograniczony czas, dowód Twojej zgody (bez danych kontaktowych). Usuwamy te dane najpóźniej 24\u00A0miesiące po zgłoszeniu, chyba że zachodzi wyjątek z punktu (3).',
   'Jeśli dojdzie do umowy albo poprosisz nas o rozmowę na temat sprzedaży lub wynajmu Twojej nieruchomości z pomocą naszego biura, dane z kalkulatora dołączamy do Twojej sprawy w biurze. Przechowujemy je wtedy: przy umowie tak długo, jak trwa umowa i jak wymagają tego przepisy; przy samej rozmowie na temat sprzedaży lub wynajmu do 12\u00A0miesięcy po ostatniej takiej rozmowie.',
-  'Dowód zgody na telefon w sprawie wyceny (wersja zgody, kanał, czas): usuwamy razem ze zgłoszeniem.',
+  'Dowód zgody na telefon w sprawie wyceny (wersja zgody, sposób jej złożenia, data i godzina), bez danych kontaktowych: przechowujemy do 3\u00A0lat od końca roku, w którym cofniesz zgodę albo zakończymy przetwarzanie Twoich danych z kalkulatora.',
 ] as const
 export const RETENTION_B_ITEMS = [
   'zapytania z kalkulatora: nie dłużej, niż to konieczne do obsługi Twojej wyceny.',
 ] as const
 export const RETENTION_A_HOW = [
-  'Zapytanie bez numeru usuwamy po 12\u00A0miesiącach (zostaje anonimowa statystyka). Zapytanie z numerem usuwamy 12\u00A0miesięcy po ostatnim kontakcie w sprawie wyceny, a najpóźniej 24\u00A0miesiące po zgłoszeniu. Wyjątek: jeśli dojdzie do umowy albo poprosisz nas o rozmowę na temat sprzedaży lub wynajmu Twojej nieruchomości z pomocą naszego biura, dane przechowujemy dłużej, jak opisano w pełnej informacji o danych. Zgodę na telefon możesz cofnąć e-mailem, telefonicznie lub w rozmowie z agentem.',
+  'Zapytanie bez numeru usuwamy po 12\u00A0miesiącach (zostaje anonimowa statystyka). Po 12\u00A0miesiącach od ostatniego kontaktu w sprawie wyceny (a gdy takiego kontaktu nie było, od zgłoszenia; najpóźniej po 24\u00A0miesiącach od zgłoszenia) usuwamy Twoje imię, numer telefonu, adres e-mail i notatki oraz treść zgłoszenia; zostaje wyłącznie anonimowa statystyka, której nie da się powiązać z Tobą, oraz, przez ograniczony czas, dowód Twojej zgody (bez danych kontaktowych). Wyjątek: jeśli dojdzie do umowy albo poprosisz nas o rozmowę na temat sprzedaży lub wynajmu Twojej nieruchomości z pomocą naszego biura, dane przechowujemy dłużej, jak opisano w pełnej informacji o danych. Zgodę na telefon możesz cofnąć e-mailem, telefonicznie lub w rozmowie z agentem.',
 ] as const
 export const RETENTION_B_HOW = [
   'Jak długo: zapytania z kalkulatora przechowujemy nie dłużej, niż to konieczne do obsługi wyceny. Zgodę na telefon w sprawie wyceny możesz cofnąć e-mailem, telefonicznie lub w rozmowie z agentem. Szczegóły: polityka prywatności (RODO).',
@@ -41,7 +41,7 @@ export const T = {
   introOff: 'Kalkulator online jest chwilowo niedostępny. Zostaw numer telefonu, a agent zadzwoni i oszacuje cenę, bezpłatnie i bez zobowiązań.',
   callInstead: 'Wolisz, żebyśmy zadzwonili?',
   callInsteadLink: 'Zostaw numer telefonu',
-  disclaimerTop: 'Wynik jest orientacyjny i nie jest operatem szacunkowym rzeczoznawcy majątkowego.',
+  disclaimerTop: 'Wynik jest orientacyjny, nie jest operatem szacunkowym rzeczoznawcy majątkowego ani ofertą. Liczymy go automatycznie z użyciem sztucznej inteligencji.',
   // 28.09.2026 (recenzja Krytyka 6/10, pkt 1-2): zakres jest tez we wstepie; zakres wg decyzji Daniela 27.09 (caly Kolobrzeg + wybrane miejscowosci, backend #570).
   disclaimerMore: 'Poza Kołobrzegiem widełki są szersze, bo mamy mniej porównywalnych danych. Domów, działek i miejscowości spoza listy nie liczymy online.',
 
@@ -98,6 +98,7 @@ export const T = {
     phone: 'Numer telefonu',
     phoneHint: 'Podaj 9 cyfr (numer polski) albo numer zaczynający się od + i kierunkowego kraju, np. +49.',
     // Teksty zgód i klauzuli = wersja CONSENT_VERSION (lib/valuation.ts). Zmiana JAKIEGOKOLWIEK z tych tekstów = nowy numer wersji.
+    // Snapshot brzmienia wersji = ten plik w git (do leada trafia tylko znacznik wersji). Zakres zgody współdefiniują TEŻ zdania NAD polem zgody: lead.bodyRange (początek: co ocenia agent po kontakcie) i lead.bodyFallback (P8, Prawnik 28.09).
     // Zatwierdzenie treści: Krytyk + przegląd AI (kancelaria nieangażowana wg decyzji Daniela 25.09; ryzyko przyjęte świadomie).
     // v11 (decyzja Daniela 26.09.2026): kalkulator startuje BEZ zgody marketingowej. Jedna zgoda: na oddzwonienie w sprawie wyceny
     // (NIEZAZNACZONA domyślnie, wymagana przy podanym numerze). Marketing = osobny, późniejszy krok (v12) po gotowym mechanizmie (#507).
@@ -117,7 +118,7 @@ export const T = {
       { h: 'Kto jest administratorem Twoich danych.', t: 'Administratorem jest INVESTRENT SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ, ul. Ratuszowa\u00A012/1\u00A0lok.\u00A03, 78-100 Kołobrzeg, KRS\u00A00001069797, NIP\u00A0671\u00A0185\u00A085\u00A059. Działamy pod marką InvestRent. Kontakt: biuro@investrent.com.pl.' },
       { h: 'Po co i na jakiej podstawie.', t: 'Wykorzystujemy Twoje dane w tych celach:', items: [
         'obliczenie i pokazanie szacunku — wykonanie Twojego żądania (art.\u00A06 ust.\u00A01 lit.\u00A0b RODO);',
-        'rozmowa o sprzedaży lub wynajmie Twojej nieruchomości z pomocą naszego biura, jeśli o nią poprosisz — działania na Twoje żądanie przed zawarciem umowy (art. 6 ust. 1 lit. b RODO);',
+        'rozmowa o sprzedaży lub wynajmie Twojej nieruchomości z pomocą naszego biura, jeśli poprosisz o taką rozmowę — działania na Twoje żądanie przed zawarciem umowy (art. 6 ust. 1 lit. b RODO);',
         'umowa, jeśli do niej dojdzie — wykonanie umowy (art. 6 ust. 1 lit. b RODO) oraz obowiązki prawne wynikające z przepisów, np. podatkowych (art. 6 ust. 1 lit. c RODO);',
         'telefon w sprawie wyceny — Twoja zgoda (art.\u00A06 ust.\u00A01 lit.\u00A0a RODO), jeśli podasz numer i zaznaczysz zgodę na telefon w sprawie wyceny;',
         'dowód udzielonej zgody na telefon w sprawie wyceny (wersja zgody, kanał, czas), aby wykazać jej udzielenie i bronić się przed roszczeniami — nasz prawnie uzasadniony interes (art.\u00A06 ust.\u00A01 lit.\u00A0f oraz art.\u00A07 ust.\u00A01 RODO);',
@@ -146,11 +147,11 @@ export const T = {
         'Adres IP, dostawcy hostingu strony (Vercel) i ochrony formularza (Cloudflare): w ich logach technicznych według ich zasad i okresów.',
         ...(RETENTION_VARIANT_A ? RETENTION_A_ITEMS : RETENTION_B_ITEMS),
       ] },
-      { h: 'Twoje prawa.', t: `Możesz żądać dostępu do danych, ich sprostowania, usunięcia, ograniczenia przetwarzania i przeniesienia oraz w każdej chwili cofnąć zgodę na telefon w sprawie wyceny (cofnięcie nie wpływa na zgodność z prawem tego, co zrobiliśmy wcześniej). Zgodę możesz cofnąć e-mailem (biuro@investrent.com.pl), telefonicznie (${OFFICE_PHONE}) albo mówiąc o tym agentowi podczas rozmowy; wystarczy powiedzieć, że nie chcesz, żebyśmy dzwonili. Po cofnięciu nie zadzwonimy do Ciebie w sprawie wyceny. Wnioski o pozostałe prawa wyślij na biuro@investrent.com.pl. Możesz też złożyć skargę do Prezesa Urzędu Ochrony Danych Osobowych. Podanie danych jest dobrowolne; bez numeru telefonu pokażemy wynik (jeśli liczymy go online), ale nie oddzwonimy.` },
+      { h: 'Twoje prawa.', t: `Możesz żądać dostępu do danych, ich sprostowania, usunięcia, ograniczenia przetwarzania i przeniesienia oraz w każdej chwili cofnąć zgodę na telefon w sprawie wyceny (cofnięcie nie wpływa na zgodność z prawem tego, co zrobiliśmy wcześniej). Zgodę możesz cofnąć e-mailem (biuro@investrent.com.pl), telefonicznie (${OFFICE_PHONE}) albo mówiąc o tym agentowi podczas rozmowy; wystarczy powiedzieć, że nie chcesz, żebyśmy do Ciebie dzwonili. Po cofnięciu nie zadzwonimy do Ciebie w sprawie wyceny. Wnioski o pozostałe prawa wyślij na biuro@investrent.com.pl. Możesz też złożyć skargę do Prezesa Urzędu Ochrony Danych Osobowych. Podanie danych jest dobrowolne; bez numeru telefonu pokażemy wynik (jeśli liczymy go online), ale nie oddzwonimy.` },
       { h: 'Prawo sprzeciwu.', highlight: true, t: 'Masz prawo w każdej chwili wnieść sprzeciw wobec przetwarzania Twoich danych opartego na naszym prawnie uzasadnionym interesie (dowód zgody na telefon w sprawie wyceny, adres IP; art.\u00A06 ust.\u00A01 lit.\u00A0f RODO), z przyczyn związanych z Twoją szczególną sytuacją (art.\u00A021 RODO). Napisz na biuro@investrent.com.pl lub powiedz o tym podczas rozmowy.' },
     ],
     // v12: krotkie streszczenie na wierzchu, pelna klauzula (consentInfo) w rozwijanym bloku
-    consentShort: 'Administratorem jest INVESTRENT sp. z o.o. (InvestRent). Numer (i imię, jeśli je podasz) zapisujemy w naszym systemie i przekazujemy pracownikom biura, żeby agent mógł do Ciebie zadzwonić w sprawie wyceny. Rozmowa o sprzedaży lub wynajmie to osobna sprawa: numeru do niej (i do innych celów) użyjemy tylko na Twoją prośbę. Zgodę cofniesz w każdej chwili: e-mailem, telefonicznie lub w rozmowie z agentem. Pełna informacja o danych jest poniżej.',
+    consentShort: 'Administratorem jest INVESTRENT sp. z o.o. (InvestRent). Numer (i imię, jeśli je podasz) zapisujemy w naszym systemie i przekazujemy pracownikom biura, żeby agent mógł do Ciebie zadzwonić w sprawie wyceny. Rozmowa o sprzedaży lub wynajmie to osobna sprawa: zadzwonimy w niej (albo w innej sprawie) tylko wtedy, gdy o to poprosisz. Zgodę cofniesz w każdej chwili: e-mailem, telefonicznie lub w rozmowie z agentem. Pełna informacja o danych jest poniżej.',
     consentInfoSummary: 'Pełna informacja o przetwarzaniu danych (art. 13 RODO)',
     consentInfoMore: 'Szczegóły znajdziesz w ',
     consentInfoLink: 'polityce prywatności (RODO)',
