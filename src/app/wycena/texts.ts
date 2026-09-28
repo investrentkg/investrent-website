@@ -12,18 +12,37 @@ import { OFFICE_PHONE } from '../../lib/valuation.ts' // numer biura z jednego z
 // Wariant B ("nie dluzej, niz to konieczne") zostaje w kodzie tylko jako awaryjny odwrot, ale jest niezgodny z art. 13 ust. 2 lit. a RODO - nie wracac do niego bez prawnika.
 // WARUNEK WDROZENIA: ta flaga = true wchodzi RAZEM z RETENTION_CALCULATOR_ACTIVE=true w /rodo (oba miejsca naraz), nowa wersja zgody w Railway PRZED frontem, job retencji "calculator" po dry-runie.
 export const RETENTION_VARIANT_A = true
-export const RETENTION_A_ITEMS = [
+// v14 runda 7: OSOBNY przelacznik od RETENTION_VARIANT_A (ten wybiera okresy A/B, ten czas zdan o usuwaniu).
+// false (domyslnie, bezpieczny wariant): zdania o usuwaniu w czasie PRZYSZLYM ("usuniemy", "zostanie anonimowa statystyka") - nic nie jest obiecane jako juz dzialajace.
+// true: brzmienie z pliku v14 w czasie terazniejszym ("usuwamy", "zostaje").
+// Przestaw na true dopiero, gdy job retencji kalkulatora dziala w produkcji (RETENTION_CALCULATOR_ENABLED + RETENTION_APPLY na Railway), potem redeploy.
+// (Art. 13 RODO: informacja musi byc prawdziwa w chwili publikacji.) Analogiczny przelacznik trzeba ustawic w /rodo (RETENTION_CALCULATOR_ACTIVE).
+export const RETENTION_JOB_ACTIVE = false
+// Brzmienie z pliku v14 (czas terazniejszy) - uzywane, gdy RETENTION_JOB_ACTIVE = true.
+export const RETENTION_A_ITEMS_ACTIVE = [
   'Zapytanie bez numeru telefonu: dane nieruchomości i wynik zapisujemy bez danych kontaktowych i bez adresu IP. Po 12\u00A0miesiącach usuwamy szczegółowy opis wyceny, zostaje anonimowa statystyka (typ nieruchomości, przedział powierzchni, miejscowość i dzielnica z listy, stan, widełki ceny, data).',
   'Zapytanie z numerem telefonu: czekamy 12\u00A0miesięcy po ostatnim kontakcie w sprawie wyceny (rozmowie lub wiadomości od Ciebie). Jeśli takiego kontaktu nie było, liczymy 12\u00A0miesięcy od zgłoszenia. Po upływie tego terminu usuwamy Twoje imię, numer telefonu, adres e-mail i notatki oraz treść zgłoszenia; zostaje wyłącznie anonimowa statystyka, której nie da się powiązać z Tobą, oraz, przez ograniczony czas, dowód Twojej zgody (bez danych kontaktowych). Usuwamy te dane najpóźniej 24\u00A0miesiące po zgłoszeniu, chyba że zachodzi wyjątek z punktu (3).',
   'Jeśli dojdzie do umowy albo poprosisz nas o rozmowę na temat sprzedaży lub wynajmu Twojej nieruchomości z pomocą naszego biura, dane z kalkulatora dołączamy do Twojej sprawy w biurze. Przechowujemy je wtedy: przy umowie tak długo, jak trwa umowa i jak wymagają tego przepisy; przy samej rozmowie na temat sprzedaży lub wynajmu do 12\u00A0miesięcy po ostatniej takiej rozmowie.',
   'Dowód zgody na telefon w sprawie wyceny (wersja zgody, sposób jej złożenia, data i godzina), bez danych kontaktowych: przechowujemy do 3\u00A0lat od końca roku, w którym cofniesz zgodę albo zakończymy przetwarzanie Twoich danych z kalkulatora.',
 ] as const
+// Brzmienie w czasie przyszlym (RETENTION_JOB_ACTIVE = false): zmieniony tylko czas i szyk, tresc merytoryczna ta sama; przechowywanie bez zmian.
+export const RETENTION_A_ITEMS_PLANNED = [
+  'Zapytanie bez numeru telefonu: dane nieruchomości i wynik zapisujemy bez danych kontaktowych i bez adresu IP. Po 12\u00A0miesiącach usuniemy szczegółowy opis wyceny, zostanie anonimowa statystyka (typ nieruchomości, przedział powierzchni, miejscowość i dzielnica z listy, stan, widełki ceny, data).',
+  'Zapytanie z numerem telefonu: czekamy 12\u00A0miesięcy po ostatnim kontakcie w sprawie wyceny (rozmowie lub wiadomości od Ciebie). Jeśli takiego kontaktu nie było, liczymy 12\u00A0miesięcy od zgłoszenia. Po upływie tego terminu usuniemy Twoje imię, numer telefonu, adres e-mail i notatki oraz treść zgłoszenia; zostanie wyłącznie anonimowa statystyka, której nie da się powiązać z Tobą, oraz, przez ograniczony czas, dowód Twojej zgody (bez danych kontaktowych). Usuniemy te dane najpóźniej 24\u00A0miesiące po zgłoszeniu, chyba że zachodzi wyjątek z punktu (3).',
+  'Jeśli dojdzie do umowy albo poprosisz nas o rozmowę na temat sprzedaży lub wynajmu Twojej nieruchomości z pomocą naszego biura, dane z kalkulatora dołączamy do Twojej sprawy w biurze. Przechowujemy je wtedy: przy umowie tak długo, jak trwa umowa i jak wymagają tego przepisy; przy samej rozmowie na temat sprzedaży lub wynajmu do 12\u00A0miesięcy po ostatniej takiej rozmowie.',
+  'Dowód zgody na telefon w sprawie wyceny (wersja zgody, sposób jej złożenia, data i godzina), bez danych kontaktowych: przechowujemy do 3\u00A0lat od końca roku, w którym cofniesz zgodę albo zakończymy przetwarzanie Twoich danych z kalkulatora.',
+] as const
+export const RETENTION_A_ITEMS = RETENTION_JOB_ACTIVE ? RETENTION_A_ITEMS_ACTIVE : RETENTION_A_ITEMS_PLANNED
 export const RETENTION_B_ITEMS = [
   'zapytania z kalkulatora: nie dłużej, niż to konieczne do obsługi Twojej wyceny.',
 ] as const
-export const RETENTION_A_HOW = [
+export const RETENTION_A_HOW_ACTIVE = [
   'Zapytanie bez numeru usuwamy po 12\u00A0miesiącach (zostaje anonimowa statystyka). Po 12\u00A0miesiącach od ostatniego kontaktu w sprawie wyceny (a gdy takiego kontaktu nie było, od zgłoszenia; najpóźniej po 24\u00A0miesiącach od zgłoszenia) usuwamy Twoje imię, numer telefonu, adres e-mail i notatki oraz treść zgłoszenia; zostaje wyłącznie anonimowa statystyka, której nie da się powiązać z Tobą, oraz, przez ograniczony czas, dowód Twojej zgody (bez danych kontaktowych). Wyjątek: jeśli dojdzie do umowy albo poprosisz nas o rozmowę na temat sprzedaży lub wynajmu Twojej nieruchomości z pomocą naszego biura, dane przechowujemy dłużej, jak opisano w pełnej informacji o danych. Zgodę na telefon możesz cofnąć e-mailem, telefonicznie lub w rozmowie z agentem.',
 ] as const
+export const RETENTION_A_HOW_PLANNED = [
+  'Zapytanie bez numeru usuniemy po 12\u00A0miesiącach (zostanie anonimowa statystyka). Po 12\u00A0miesiącach od ostatniego kontaktu w sprawie wyceny (a gdy takiego kontaktu nie było, od zgłoszenia; najpóźniej po 24\u00A0miesiącach od zgłoszenia) usuniemy Twoje imię, numer telefonu, adres e-mail i notatki oraz treść zgłoszenia; zostanie wyłącznie anonimowa statystyka, której nie da się powiązać z Tobą, oraz, przez ograniczony czas, dowód Twojej zgody (bez danych kontaktowych). Wyjątek: jeśli dojdzie do umowy albo poprosisz nas o rozmowę na temat sprzedaży lub wynajmu Twojej nieruchomości z pomocą naszego biura, dane przechowujemy dłużej, jak opisano w pełnej informacji o danych. Zgodę na telefon możesz cofnąć e-mailem, telefonicznie lub w rozmowie z agentem.',
+] as const
+export const RETENTION_A_HOW = RETENTION_JOB_ACTIVE ? RETENTION_A_HOW_ACTIVE : RETENTION_A_HOW_PLANNED
 export const RETENTION_B_HOW = [
   'Jak długo: zapytania z kalkulatora przechowujemy nie dłużej, niż to konieczne do obsługi wyceny. Zgodę na telefon w sprawie wyceny możesz cofnąć e-mailem, telefonicznie lub w rozmowie z agentem. Szczegóły: polityka prywatności (RODO).',
 ] as const
