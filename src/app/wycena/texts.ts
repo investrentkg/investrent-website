@@ -129,7 +129,7 @@ export const T = {
       `Zgadzam się, aby INVESTRENT sp. z o.o. (biuro nieruchomości InvestRent) zadzwoniła do mnie pod podany numer wyłącznie w sprawie wyceny mojej nieruchomości. Zgodę mogę cofnąć w każdej chwili: e-mailem (biuro@investrent.com.pl), telefonicznie (${OFFICE_PHONE}) lub mówiąc o tym agentowi podczas rozmowy.`,
     // Klauzula informacyjna (art. 13 RODO): pełne dane administratora wg odpisu KRS (api-krs.ms.gov.pl, 25.09.2026).
     // Fakty (kod backendu origin/main 26.09.2026): IP w limiterze w pamięci procesu jako skrót HMAC z solą procesu (okno 24 h; sprzątanie co 10 min, #505),
-    // bez zapisu w bazie; ai_valuations bez kontaktu i IP; odbiorcy danych leada: Brevo (mail do managerów z imieniem i numerem), kalendarz Google (zadanie z samym imieniem i linkiem do karty; NUMER do kalendarza NIE trafia, googleEventPrivacy.ts, decyzja 25.09; nie dopisywać numeru do klauzuli).
+    // bez zapisu w bazie; ai_valuations bez kontaktu i IP; odbiorcy danych leada: Brevo (mail do managerów tylko z imieniem i odnośnikiem do zgłoszenia od PR #575, 28.09; numer NIE trafia do e-maila), kalendarz Google (zadanie z samym imieniem i linkiem do karty; NUMER do kalendarza NIE trafia, googleEventPrivacy.ts, decyzja 25.09; nie dopisywać numeru do klauzuli).
     // WARUNEK PUBLIKACJI (zdanie o IP "około 24 godzin"): #505 potwierdzone na produkcji i brak IP w logach aplikacji (kod origin/main 26.09.2026: req.ip tylko jako klucz limitera (skrót HMAC) i remoteip do Turnstile; brak logowania IP; osobno leadLimit express-rate-limit trzyma IP w pamięci do 1 h).
     // WARUNKI PUBLIKACJI: (1) backend dowodu zgody na oddzwonienie + test na żywo; (2) kasowanie dowodu z leadem po 12 mies. (dziś job zostawia zredagowaną
     // notatkę [Zgoda-kalkulator]); (3) potwierdzenia dostawców (tabela_dostawcow_kalkulator_2026_09_25.md); (4) polityki #22 i wersja DE.
@@ -150,7 +150,7 @@ export const T = {
         'baza danych: Supabase;',
         'sztuczna inteligencja: Anthropic, oraz dane rynkowe: Cenogram (Polska); do obu trafiają wyłącznie dane nieruchomości, bez Twoich danych kontaktowych i adresu IP;',
         'ochrona formularza: Cloudflare Turnstile (adres IP, informacje o przeglądarce);',
-        'poczta e-mail, którą powiadamiamy pracowników biura o zgłoszeniu: Brevo (Sendinblue SAS, Francja; imię, numer telefonu i treść zgłoszenia), na podstawie umowy powierzenia będącej częścią regulaminu usługi;',
+        'poczta e-mail, którą powiadamiamy pracowników biura o zgłoszeniu: Brevo (Sendinblue SAS, Francja; imię i odnośnik do zgłoszenia w naszym systemie, bez numeru telefonu), na podstawie umowy powierzenia będącej częścią regulaminu usługi;',
         'kalendarz Google pracowników biura, jeśli mają go połączonego z naszym systemem (zadanie oddzwonienia z imieniem i odnośnikiem do karty w naszym systemie).',
       ] },
       { h: 'Zabezpieczenia przy przekazaniu poza Europejski Obszar Gospodarczy (EOG).', t: 'Część dostawców ma siedzibę w USA lub może przetwarzać dane poza Europejskim Obszarem Gospodarczym. Przekazanie opieramy na decyzji Komisji Europejskiej o odpowiednim stopniu ochrony (EU-US Data Privacy Framework, czyli unijno-amerykańskie porozumienie o ochronie danych), o ile odbiorca ma w danym czasie aktywną certyfikację, a w pozostałym zakresie na standardowych klauzulach umownych UE. Na Twój wniosek (biuro@investrent.com.pl) prześlemy kopię zabezpieczeń. Dotyczy to dostawców:', items: [

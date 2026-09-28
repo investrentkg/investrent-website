@@ -16,6 +16,16 @@ export const metadata: Metadata = {
   title: 'Datenschutzerklärung',
   description: 'Informationen zur Verarbeitung personenbezogener Daten gemäß DSGVO durch die Investrent sp. z o.o., Kołobrzeg (Polen).',
   robots: { index: true, follow: true },
+  // og:locale wg Audytu Wizualnego 28.09 (strona DE dziedziczyla pl_PL z root layoutu; lang="de" jest na kontenerze segmentu, src/app/de/layout.tsx)
+  openGraph: {
+    title: 'Datenschutzerklärung',
+    description: 'Informationen zur Verarbeitung personenbezogener Daten gemäß DSGVO durch die Investrent sp. z o.o., Kołobrzeg (Polen).',
+    type: 'website',
+    locale: 'de_DE',
+    url: 'https://www.investrent.com.pl/de/datenschutz',
+    siteName: 'InvestRent Nieruchomości',
+    images: [{ url: '/hero.jpg', width: 1920, height: 1080, alt: 'InvestRent Nieruchomości Kołobrzeg' }],
+  },
   alternates: {
     canonical: 'https://www.investrent.com.pl/de/datenschutz',
     languages: {

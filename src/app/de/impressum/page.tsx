@@ -17,6 +17,16 @@ export const metadata: Metadata = {
   title: 'Impressum',
   description: 'Anbieterkennzeichnung der Investrent sp. z o.o., Kołobrzeg (Polen) gemäß § 5 DDG.',
   robots: { index: true, follow: true },
+  // og:locale wg Audytu Wizualnego 28.09 (strona DE dziedziczyla pl_PL z root layoutu; lang="de" jest na kontenerze segmentu, src/app/de/layout.tsx)
+  openGraph: {
+    title: 'Impressum',
+    description: 'Anbieterkennzeichnung der Investrent sp. z o.o., Kołobrzeg (Polen) gemäß § 5 DDG.',
+    type: 'website',
+    locale: 'de_DE',
+    url: 'https://www.investrent.com.pl/de/impressum',
+    siteName: 'InvestRent Nieruchomości',
+    images: [{ url: '/hero.jpg', width: 1920, height: 1080, alt: 'InvestRent Nieruchomości Kołobrzeg' }],
+  },
   alternates: { canonical: 'https://www.investrent.com.pl/de/impressum' },
 }
 
@@ -70,7 +80,7 @@ export default function ImpressumPage() {
 
       <H2>Tätigkeit und Berufshaftpflichtversicherung</H2>
       <P>
-        Tätigkeit: Vermittlung von Immobilien (Immobilienmakler nach polnischem Recht, pośrednik w obrocie nieruchomościami). Die Tätigkeit bedarf in Polen keiner behördlichen Zulassung; eine Aufsichtsbehörde im Sinne des § 5 Abs. 1 Nr. 4 DDG besteht daher nicht. Unsere Tätigkeit bezieht sich auf Immobilien in der Republik Polen und wird von Polen aus erbracht; Präsenzveranstaltungen (z. B. Messen oder Vorträge) in Deutschland führen wir nicht durch. Vermittlungsverträge unterzeichnen wir in unserem Büro in Kołobrzeg (Kolberg), Polen; sie unterliegen polnischem Recht, soweit nicht zwingende Verbraucherschutzvorschriften Ihres Wohnsitzstaates entgegenstehen.<br />
+        Tätigkeit: Vermittlung von Immobilien (Immobilienmakler nach polnischem Recht, pośrednik w obrocie nieruchomościami). Die Tätigkeit bedarf in Polen keiner behördlichen Zulassung; eine Aufsichtsbehörde im Sinne des § 5 Abs. 1 Nr. 4 DDG besteht daher nicht. Unsere Tätigkeit bezieht sich auf Immobilien in der Republik Polen und wird von Polen aus erbracht; Präsenzveranstaltungen (z. B. Messen oder Vorträge) in Deutschland führen wir nicht durch.<br />
         Berufshaftpflichtversicherung für Immobilienmakler (nach polnischem Recht vorgeschrieben): Powszechny Zakład Ubezpieczeń Spółka Akcyjna (PZU SA), Rondo Ignacego Daszyńskiego 4, 00-843 Warszawa, Polen; Deckungssumme 25.000 EUR je Schadensfall und insgesamt 25.000 EUR.
         {/* Polisa OC (dane od Daniela 25.09.2026, NIE publicznie): PZU, nr polisy 1118663294, okres 12.03.2026-11.03.2027, ubezpieczajacy i ubezpieczony INVESTRENT sp. z o.o. (REGON 526973936), OC obowiazkowe posrednika w obrocie nieruchomosciami, suma gwarancyjna 25 000 EUR na jedno zdarzenie i 25 000 EUR na wszystkie zdarzenia (kurs sredni NBP z pierwszego dnia roboczego roku zawarcia umowy). Adres ubezpieczyciela zweryfikowany 25.09.2026 na https://www.pzu.pl/grupa-pzu/spolki/pzu-sa (Rondo Ignacego Daszynskiego 4, 00-843 Warszawa; KRS 0000009831; Sad Rejonowy dla m.st. Warszawy, XIII Wydzial Gospodarczy KRS). Numer polisy i okres nie sa wymagane publicznie (§ 2 Abs. 1 Nr. 11 DL-InfoV: nazwa i adres ubezpieczyciela oraz zasieg terytorialny; przeglad prawny rundy 1 i 2 nie wymaga numeru). PRZYPOMNIENIE: polisa wygasa 11.03.2027 - odnowic i zaktualizowac Impressum ok. 30 dni wczesniej (backlog: _wspolne_pliki
 etencja_danych_stan_i_backlog_2026_09_25.md). Zasieg terytorialny: decyzja Daniela 25.09.2026 - nie podajemy (uslugi tylko w Polsce, w Niemczech wylacznie reklama). */}
