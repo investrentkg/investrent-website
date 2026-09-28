@@ -2,7 +2,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Search, Handshake, Clock, Star, Award, Home } from 'lucide-react'
 import HeroWidget from '@/components/HeroWidget'
-import WycenaModal from '@/components/WycenaModal'
 import AnimatedCounter from '@/components/AnimatedCounter'
 import type { PublicStats } from '@/types'
 
@@ -36,7 +35,6 @@ const HEADLINE_LINES: { words: string[]; gold?: boolean }[] = [
 export default function Hero({ stats, googleRating = 4.9, googleTotal = 55 }: HeroProps) {
   const s = { active_offers: stats?.active_offers ?? 30, completed_transactions: Math.max(stats?.completed_transactions ?? 0, 150), team_size: stats?.team_size ?? 7 }
   const [isDesktop, setIsDesktop] = useState(false)
-  const [modalOpen, setModalOpen] = useState(false)
   const [videoReady, setVideoReady] = useState(false)
   const [mounted, setMounted] = useState(false)
   const [scrollProgress, setScrollProgress] = useState(0) // 0 = na górze, 1 = wyscrollowane poza hero
@@ -176,11 +174,11 @@ export default function Hero({ stats, googleRating = 4.9, googleTotal = 55 }: He
               <a href="/oferty" className="btn-gold text-[14px] font-bold">
                 <Search size={17} /> Szukam nieruchomości
               </a>
-              <button type="button" onClick={() => setModalOpen(true)}
+              <a href="/wycena"
                 className="cta-pulse inline-flex items-center gap-2 bg-white/12 text-white font-semibold text-[14px] px-7 py-3.5 rounded-xl border border-white/28 hover:bg-white/18 transition-all"
-                style={{ cursor: 'pointer' }}>
-                <Home size={17} /> Chcę sprzedać
-              </button>
+                style={{ textDecoration: 'none' }}>
+                <Home size={17} /> Bezpłatna wycena
+              </a>
             </div>
             <div className="flex gap-7 pt-5 border-t border-white/15 flex-wrap">
               {STATS.map((st, i) => {
@@ -203,8 +201,6 @@ export default function Hero({ stats, googleRating = 4.9, googleTotal = 55 }: He
               })}
             </div>
           </div>
-
-          <WycenaModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
           <div className={`hero-reveal ${mounted ? 'hero-reveal-in' : ''}`} style={{ display: isDesktop ? 'block' : 'none', transitionDelay: '480ms' }}>
             <HeroWidget />
           </div>

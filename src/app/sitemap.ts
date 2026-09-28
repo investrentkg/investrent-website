@@ -20,6 +20,7 @@ const STATIC_PAGES = [
   { path: '/sprzedaz', priority: 0.8, changeFrequency: 'weekly' as const },
   { path: '/wynajem', priority: 0.8, changeFrequency: 'weekly' as const },
   { path: '/zarzadzanie-najmem', priority: 0.7, changeFrequency: 'monthly' as const },
+  { path: '/wycena', priority: 0.8, changeFrequency: 'monthly' as const },
   { path: '/kalkulator', priority: 0.6, changeFrequency: 'monthly' as const },
   { path: '/trudne-nieruchomosci', priority: 0.6, changeFrequency: 'monthly' as const },
   { path: '/blog', priority: 0.7, changeFrequency: 'weekly' as const },
