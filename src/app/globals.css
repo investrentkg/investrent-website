@@ -610,6 +610,9 @@ html, body {
 }
 .wy-btn:disabled { background: #cbd5e1; color: #475569; cursor: not-allowed; }
 .wy-btn-secondary { background: white; color: #0d2a5c; border: 1.5px solid #0d2a5c; }
+/* przyciski kontaktu w panelu leada (nie rywalizują z linkiem tekstowym "Wyceń inną": ten guard testuje brak wy-btn-secondary w WycenaClient) */
+.wy-btn-outline { background: white; color: #0d2a5c; border: 1.5px solid #0d2a5c; text-decoration: none; }
+.wy-btn-outline:focus-visible { outline: 3px solid #f5a623; outline-offset: 2px; }
 .wy-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
 @media (min-width: 640px) { .wy-grid { grid-template-columns: 1fr 1fr; } }
 .wy-hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
