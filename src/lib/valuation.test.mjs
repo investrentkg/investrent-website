@@ -426,3 +426,55 @@ test('teksty v14 (runda 7): przelacznik RETENTION_JOB_ACTIVE (czas zdan o usuwan
   assert.equal(m.RETENTION_A_ITEMS_ACTIVE.length, 4); assert.equal(m.RETENTION_A_ITEMS_PLANNED.length, 4)
 })
 
+
+// ── pomiar lejka i wyjście awaryjne (02.10.2026) ──
+import { inAppBrowserClass, bucketMs, isMachineCode, leadBlockReason, trackValuation, TS_STUCK_MS } from './valuation.ts'
+
+test('inAppBrowserClass: FB/IG rozpoznane, reszta other, nigdy surowy UA', () => {
+  assert.equal(inAppBrowserClass('Mozilla/5.0 (Linux; Android 13) Chrome/154 Mobile Safari/537.36 [FB_IAB/FB4A;FBAV/580.0.0.51.74;IABMV/1;]'), 'fb')
+  assert.equal(inAppBrowserClass('Mozilla/5.0 (iPhone; CPU iPhone OS 27_0) Mobile/24A437 [FBAN/FBIOS;FBAV/580.0.0.47.72]'), 'fb')
+  assert.equal(inAppBrowserClass('Mozilla/5.0 (iPhone) Mobile/24A437 Instagram 448.0.0.39.66 (iPhone14,2)'), 'ig')
+  assert.equal(inAppBrowserClass('Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/154 Safari/537.36'), 'other')
+  assert.equal(inAppBrowserClass(''), 'other'); assert.equal(inAppBrowserClass(undefined), 'other'); assert.equal(inAppBrowserClass(null), 'other')
+})
+
+test('bucketMs: przedziały czasu zamiast surowych liczb', () => {
+  assert.equal(bucketMs(0), '<1s'); assert.equal(bucketMs(999), '<1s'); assert.equal(bucketMs(1000), '1-3s'); assert.equal(bucketMs(2999), '1-3s')
+  assert.equal(bucketMs(3000), '3-10s'); assert.equal(bucketMs(9999), '3-10s'); assert.equal(bucketMs(10000), '10-30s'); assert.equal(bucketMs(29999), '10-30s')
+  assert.equal(bucketMs(30000), '>30s'); assert.equal(bucketMs(NaN), '<1s')
+})
+
+test('isMachineCode: kod serwera vs zdanie dla człowieka', () => {
+  for (const c of ['validation_error', 'captcha_failed', 'rate_limited']) assert.equal(isMachineCode(c), true, c)
+  for (const m of ['Podaj powierzchnię od 8 do 2000 m².', 'Nieprawidłowy numer telefonu', '', null, undefined]) assert.equal(isMachineCode(m), false, String(m))
+})
+
+test('leadBlockReason: kolejność telefon -> zgoda -> Turnstile; brak blokady gdy wszystko gotowe', () => {
+  const ok = { phoneValid: true, consent: true, needsToken: true, hasToken: true, tokenFailed: false }
+  assert.equal(leadBlockReason(ok), null)
+  assert.equal(leadBlockReason({ ...ok, phoneValid: false, consent: false, hasToken: false }), 'phone_invalid')
+  assert.equal(leadBlockReason({ ...ok, consent: false, hasToken: false }), 'consent_missing')
+  assert.equal(leadBlockReason({ ...ok, hasToken: false }), 'turnstile_pending')
+  assert.equal(leadBlockReason({ ...ok, hasToken: false, tokenFailed: true }), 'turnstile_failed')
+  assert.equal(leadBlockReason({ ...ok, needsToken: false, hasToken: false }), null)
+})
+
+test('TS_STUCK_MS: sensowny próg (kilka sekund, nie minuty)', () => { assert.ok(TS_STUCK_MS >= 5000 && TS_STUCK_MS <= 20000) })
+
+test('trackValuation: nowe zdarzenia przekazują tylko parametry nieosobowe i nie rzucają bez gtag', () => {
+  assert.doesNotThrow(() => trackValuation('wycena_lead_ts_failed', { reason: 'timeout', iab: 'fb' }))
+  const calls = []
+  globalThis.window = { gtag: (...a) => calls.push(a) }
+  try {
+    trackValuation('wycena_lead_submit_blocked', { reason: 'turnstile_pending', mode: 'range', iab: 'fb' })
+    assert.deepEqual(calls[0], ['event', 'wycena_lead_submit_blocked', { reason: 'turnstile_pending', mode: 'range', iab: 'fb' }])
+  } finally { delete globalThis.window }
+})
+
+test('teksty zgód i wersja zgody nietknięte przez pakiet pomiaru/CTA (bez nowej wersji CONSENT_VERSION)', async () => {
+  const { T } = await import('../app/wycena/texts.ts')
+  assert.equal(CONSENT_VERSION, 'wycena-2026-09-28-v13')
+  assert.ok(T.lead.consentCall.startsWith('Zgadzam się, aby INVESTRENT sp. z o.o.'))
+  assert.ok(T.lead.bodyRange.startsWith('Zdjęcia, szczegóły stanu i standardu mieszkania'))
+  assert.ok(T.lead.altTitle && T.lead.callCta && T.lead.whatsappCta && T.errors.turnstileStuck && T.errors.turnstileRetry)
+})

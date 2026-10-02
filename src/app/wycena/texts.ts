@@ -177,6 +177,12 @@ export const T = {
     submitting: 'Wysyłanie…',
     errPhone: 'Wpisz numer telefonu: 9 cyfr (numer polski) albo numer zaczynający się od + i kierunkowego kraju, np. +49.',
     errConsent: 'Zaznacz zgodę na telefon w sprawie wyceny. Bez niej nie możemy do Ciebie zadzwonić.',
+    // Alternatywa bez formularza (nie jest częścią zgody - to osobny kanał, rozmowę zaczyna klient).
+    altTitle: 'Wolisz porozmawiać od razu?',
+    altBody: 'Zadzwoń albo napisz na WhatsApp do biura. Bez formularza i bez zostawiania numeru.',
+    callCta: 'Zadzwoń do biura',
+    whatsappCta: 'Napisz na WhatsApp',
+    whatsappText: 'Dzień dobry, korzystałem(am) z kalkulatora wyceny na stronie InvestRent i chcę omówić wynik.',
     doneTitle: 'Dziękujemy, otrzymaliśmy Twój numer',
     doneBody: `Zwykle oddzwaniamy w ciągu 24\u00A0godzin, najczęściej szybciej. Wolisz zadzwonić do nas? Numer biura: ${OFFICE_PHONE}.`,
   },
@@ -189,6 +195,10 @@ export const T = {
     network: 'Nie udało się połączyć z kalkulatorem. Spróbuj ponownie za chwilę, a jeśli problem się powtórzy, sprawdź połączenie z internetem. Możesz też zostawić numer poniżej lub zadzwonić:',
     server: 'Coś poszło nie tak po naszej stronie. Spróbuj ponownie za chwilę. Możesz też zostawić numer poniżej lub zadzwonić:',
     turnstilePending: 'Weryfikacja antyspamowa jeszcze się ładuje. Poczekaj chwilę i spróbuj ponownie.',
+    // Wyjście awaryjne, gdy widget Turnstile w panelu leada nie wydał tokenu (przeglądarka FB/IG, blokada skryptów).
+    turnstileStuck: 'Weryfikacja antyspamowa się nie załadowała, więc nie możemy teraz wysłać formularza.',
+    turnstileRetry: 'Spróbuj ponownie',
+    captchaFailed: 'Weryfikacja antyspamowa nie powiodła się. Odśwież stronę i spróbuj ponownie. Jeśli to nie pomoże, zadzwoń:',
     invalid: 'Któreś z pól ma nieprawidłową wartość. Sprawdź formularz i spróbuj ponownie. Jeśli to nie pomoże, zadzwoń:',
     // Zbyt szybkie wysłanie formularza (próg czasowy) - neutralny komunikat, bez ujawniania mechanizmu.
     tryAgain: 'Nie udało się wysłać zapytania. Spróbuj ponownie za chwilę.',

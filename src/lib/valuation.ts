@@ -330,7 +330,49 @@ export function buildLeadRequest(input: { name: string; phone: string; values: F
 }
 
 // ── GA4: tylko zdarzenia i parametry nieosobowe ──
-export function trackValuation(event: 'wycena_view' | 'wycena_estimate_success' | 'wycena_estimate_no_numbers' | 'wycena_lead', params: Record<string, string> = {}): void {
+export type ValuationEvent =
+  | 'wycena_view' | 'wycena_estimate_success' | 'wycena_estimate_no_numbers' | 'wycena_lead'
+  // pomiar lejka (02.10.2026): dlaczego kalkulator daje 0 leadów - "nie chcą" czy "nie mogą"
+  | 'wycena_estimate_error'
+  | 'wycena_lead_panel_viewed' | 'wycena_lead_ts_ready' | 'wycena_lead_ts_failed'
+  | 'wycena_lead_submit_blocked' | 'wycena_lead_submit' | 'wycena_lead_submit_failed'
+
+// Klasa przeglądarki: kampanie Meta otwierają stronę w przeglądarce wbudowanej FB/IG (inne zachowanie Turnstile/ciasteczek).
+// Tylko trzy wartości - nigdy surowy User-Agent.
+export function inAppBrowserClass(ua: string | null | undefined): 'fb' | 'ig' | 'other' {
+  if (!ua) return 'other'
+  if (/FB_IAB|FBAN|FBAV|FB4A|FBIOS/i.test(ua)) return 'fb'
+  if (/Instagram/i.test(ua)) return 'ig'
+  return 'other'
+}
+
+// Przedział czasu zamiast surowej liczby (mniej unikalnych wartości parametru w GA4).
+export function bucketMs(ms: number): '<1s' | '1-3s' | '3-10s' | '10-30s' | '>30s' {
+  if (!Number.isFinite(ms) || ms < 1000) return '<1s'
+  if (ms < 3000) return '1-3s'
+  if (ms < 10000) return '3-10s'
+  if (ms < 30000) return '10-30s'
+  return '>30s'
+}
+
+// Po tylu ms bez tokenu Turnstile panel leada pokazuje wyjście awaryjne (Zadzwoń / Spróbuj ponownie).
+export const TS_STUCK_MS = 12000
+
+// Komunikat serwera bywa kodem maszynowym ("validation_error", "captcha_failed") - użytkownikowi nie pokazujemy kodu.
+export function isMachineCode(s: string | null | undefined): boolean {
+  return !!s && /^[a-z][a-z0-9_]*$/.test(s)
+}
+
+// Powód, dla którego formularz leada NIE wysłał żądania (front blokuje przed siecią - serwer tego nie widzi).
+export type LeadBlockReason = 'phone_invalid' | 'consent_missing' | 'turnstile_pending' | 'turnstile_failed'
+export function leadBlockReason(i: { phoneValid: boolean; consent: boolean; needsToken: boolean; hasToken: boolean; tokenFailed: boolean }): LeadBlockReason | null {
+  if (!i.phoneValid) return 'phone_invalid'
+  if (!i.consent) return 'consent_missing'
+  if (i.needsToken && !i.hasToken) return i.tokenFailed ? 'turnstile_failed' : 'turnstile_pending'
+  return null
+}
+
+export function trackValuation(event: ValuationEvent, params: Record<string, string> = {}): void {
   try {
     const w = typeof window !== 'undefined' ? (window as unknown as { gtag?: (...a: unknown[]) => void }) : undefined
     if (w && typeof w.gtag === 'function') w.gtag('event', event, params)

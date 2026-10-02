@@ -1,14 +1,15 @@
 "use client"
 import { useEffect, useRef, useState } from 'react'
-import { Calculator, CheckCircle, Phone } from 'lucide-react'
+import { Calculator, CheckCircle, MessageCircle, Phone } from 'lucide-react'
 import { submitLead } from '@/lib/api'
+import { trackContactEvent } from '@/lib/track'
 import Breadcrumb from '@/components/Breadcrumb'
 import WycenaModal from '@/components/WycenaModal'
 import Turnstile from './Turnstile'
 import {
   CONDITIONS, EMPTY_FORM, OFFICE_PHONE, PROPERTY_TYPES,
-  buildLeadRequest, buildPayload, isKolobrzeg, fieldApplies, formatPLN, formatRange, formatRetryAfter, isOutOfScope, isValidPhone,
-  readUtm, requestEstimate, submittedTooFast, trackValuation, validateForm,
+  TS_STUCK_MS, bucketMs, buildLeadRequest, buildPayload, inAppBrowserClass, isKolobrzeg, isMachineCode, fieldApplies, formatPLN, formatRange, formatRetryAfter, isOutOfScope, isValidPhone,
+  leadBlockReason, readUtm, requestEstimate, submittedTooFast, trackValuation, validateForm,
   type EstimateOutcome, type FormErrors, type FormValues,
 } from '@/lib/valuation'
 import { T } from './texts'
@@ -25,6 +26,8 @@ const errStyle: React.CSSProperties = { fontSize: 13, color: '#b91c1c', marginTo
 const h2: React.CSSProperties = { fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 22, color: '#0d2a5c', margin: '0 0 8px', lineHeight: 1.25 }
 
 const phoneHref = 'tel:+48731554341'
+const whatsappHref = `https://wa.me/48731554341?text=${encodeURIComponent(T.lead.whatsappText)}`
+const iabClass = () => (typeof navigator === 'undefined' ? 'other' : inAppBrowserClass(navigator.userAgent))
 
 function Field({ id, text, hintText, error, children }: { id: string; text: string; hintText?: string; error?: string; children: React.ReactNode }) {
   return (
@@ -87,10 +90,18 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
     inFlight.current = false
     if (TURNSTILE_SITE_KEY) { setTsToken(null); setTsReset(n => n + 1) } // token jest jednorazowy
     if (res.kind === 'invalid') {
-      // blad walidacji po stronie serwera - zostajemy w formularzu
-      setErrors({ area_m2: res.message ?? `${T.errors.invalid} ${OFFICE_PHONE}` })
+      // blad walidacji po stronie serwera - zostajemy w formularzu. Serwer zwraca kod maszynowy ("validation_error",
+      // "captcha_failed") - nie pokazujemy go użytkownikowi, tylko zrozumiały komunikat.
+      trackValuation('wycena_estimate_error', { kind: 'invalid', code: res.message && isMachineCode(res.message) ? res.message : 'other', iab: iabClass() })
+      const friendly = res.message === 'captcha_failed' ? `${T.errors.captchaFailed} ${OFFICE_PHONE}`
+        : res.message && !isMachineCode(res.message) ? res.message
+        : `${T.errors.invalid} ${OFFICE_PHONE}`
+      setErrors({ area_m2: friendly })
       setPhase('form')
       return
+    }
+    if (res.kind === 'error' || res.kind === 'rate_limited') {
+      trackValuation('wycena_estimate_error', { kind: res.kind, ...(res.kind === 'error' ? { reason: res.reason } : {}), iab: iabClass() })
     }
     if (res.kind === 'disabled') { setAvailable(false); setOutcome(null); setPhase('form'); return }
     setSubmittedValues(values)
@@ -310,8 +321,54 @@ function LeadPanel({ outcome, values }: { outcome: EstimateOutcome | null; value
   const [tsReset, setTsReset] = useState(0)
   const [tsNotice, setTsNotice] = useState(false)
   const [tsFailed, setTsFailed] = useState(false)
+  const [tsStuck, setTsStuck] = useState(false) // brak tokenu po TS_STUCK_MS - pokazujemy wyjście awaryjne
+  const [tsAttempt, setTsAttempt] = useState(0)
   const inFlight = useRef(false)
+  const formRef = useRef<HTMLFormElement>(null)
+  const mountedAt = useRef(Date.now())
+  const tsReadyLogged = useRef(false)
+  const tsFailLogged = useRef(false)
   const withNumbers = outcome?.kind === 'range'
+  const mode = outcome?.kind ?? 'none'
+
+  // Pomiar lejka: czy użytkownik w ogóle zobaczył panel leada (panel jest pod wynikiem, na telefonie daleko).
+  useEffect(() => {
+    const el = formRef.current
+    if (!el) return
+    if (typeof IntersectionObserver === 'undefined') { trackValuation('wycena_lead_panel_viewed', { mode, iab: iabClass() }); return }
+    const io = new IntersectionObserver(entries => {
+      if (entries.some(e => e.isIntersecting)) { trackValuation('wycena_lead_panel_viewed', { mode, iab: iabClass() }); io.disconnect() }
+    }, { threshold: 0.4 })
+    io.observe(el)
+    return () => io.disconnect()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Bez tokenu po TS_STUCK_MS widget Turnstile uznajemy za zawieszony (przeglądarka wbudowana FB/IG, blokada skryptów).
+  useEffect(() => {
+    if (!TURNSTILE_SITE_KEY || tsToken) { setTsStuck(false); return }
+    const t = setTimeout(() => {
+      setTsStuck(true)
+      if (!tsFailLogged.current) { tsFailLogged.current = true; trackValuation('wycena_lead_ts_failed', { reason: 'timeout', iab: iabClass() }) }
+    }, TS_STUCK_MS)
+    return () => clearTimeout(t)
+  }, [tsToken, tsAttempt])
+
+  function onTsToken(t: string | null) {
+    setTsToken(t)
+    if (!t) return
+    setTsNotice(false); setTsFailed(false); setTsStuck(false)
+    if (!tsReadyLogged.current) { tsReadyLogged.current = true; trackValuation('wycena_lead_ts_ready', { wait: bucketMs(Date.now() - mountedAt.current), iab: iabClass() }) }
+  }
+  function onTsFail() {
+    setTsFailed(true)
+    if (!tsFailLogged.current) { tsFailLogged.current = true; trackValuation('wycena_lead_ts_failed', { reason: 'error', iab: iabClass() }) }
+  }
+  function retryTurnstile() {
+    setTsFailed(false); setTsStuck(false); setTsNotice(false)
+    tsFailLogged.current = false
+    setTsReset(n => n + 1); setTsAttempt(n => n + 1)
+  }
 
   async function send(e: React.FormEvent) {
     e.preventDefault()
@@ -320,18 +377,27 @@ function LeadPanel({ outcome, values }: { outcome: EstimateOutcome | null; value
     if (!isValidPhone(phone)) next.phone = T.lead.errPhone
     if (!consent) next.consent = T.lead.errConsent
     setErrs(next)
+    // Pomiar: front blokuje przed siecią, więc serwer tych odrzuceń nie widzi - liczymy je tutaj (bez numeru, bez treści).
+    const block = leadBlockReason({ phoneValid: !next.phone, consent: !next.consent, needsToken: !!TURNSTILE_SITE_KEY, hasToken: !!tsToken, tokenFailed: tsFailed || tsStuck })
+    if (block) trackValuation('wycena_lead_submit_blocked', { reason: block, mode, iab: iabClass() })
     if (next.phone) { document.getElementById('wy-phone')?.focus(); return }
     if (next.consent) { document.getElementById('wy-consent')?.focus(); return }
     // Token Turnstile wymagany, gdy widget jest wlaczony: bez tokena NIE wysylamy po cichu - komunikat z prosba o ponowienie.
-    if (TURNSTILE_SITE_KEY && !tsToken) { if (tsFailed) setState('fail'); else setTsNotice(true); return }
+    if (TURNSTILE_SITE_KEY && !tsToken) { if (tsFailed || tsStuck) setState('fail'); else setTsNotice(true); return }
     setTsNotice(false)
     inFlight.current = true
     setState('sending')
+    trackValuation('wycena_lead_submit', { mode, iab: iabClass() })
     try {
       const r = await submitLead(buildLeadRequest({ name, phone, values, outcome, utm: readUtm(window.location.search), turnstileToken: tsToken, honeypot: hp }))
-      if (r?.ok) { setState('ok'); trackValuation('wycena_lead', { mode: outcome?.kind ?? 'none' }) } else setState('fail')
+      if (r?.ok) { setState('ok'); trackValuation('wycena_lead', { mode: outcome?.kind ?? 'none' }) }
+      else {
+        setState('fail')
+        trackValuation('wycena_lead_submit_failed', { reason: r && !r.ok ? r.reason : 'unknown', status: r && !r.ok && r.status ? String(r.status) : '', iab: iabClass() })
+      }
     } catch {
       setState('fail')
+      trackValuation('wycena_lead_submit_failed', { reason: 'exception', status: '', iab: iabClass() })
     } finally {
       inFlight.current = false
       if (TURNSTILE_SITE_KEY) { setTsToken(null); setTsReset(n => n + 1) } // token jest jednorazowy
@@ -349,7 +415,7 @@ function LeadPanel({ outcome, values }: { outcome: EstimateOutcome | null; value
   }
 
   return (
-    <form onSubmit={send} noValidate style={card} aria-labelledby="wy-lead-title">
+    <form ref={formRef} onSubmit={send} noValidate style={card} aria-labelledby="wy-lead-title">
       <h2 id="wy-lead-title" style={h2}>{withNumbers ? T.lead.titleRange : T.lead.titleFallback}</h2>
       <p style={{ color: '#374151', fontSize: 15, lineHeight: 1.7, margin: '0 0 16px' }}>{withNumbers ? T.lead.bodyRange : T.lead.bodyFallback}</p>
       <div className="wy-grid">
@@ -398,8 +464,19 @@ function LeadPanel({ outcome, values }: { outcome: EstimateOutcome | null; value
 
       {TURNSTILE_SITE_KEY && (
         <div style={{ marginTop: 16 }}>
-          <Turnstile siteKey={TURNSTILE_SITE_KEY} resetKey={tsReset} onToken={t => { setTsToken(t); if (t) { setTsNotice(false); setTsFailed(false) } }} onFail={() => setTsFailed(true)} />
+          <Turnstile siteKey={TURNSTILE_SITE_KEY} resetKey={tsReset} onToken={onTsToken} onFail={onTsFail} />
           {tsNotice && <p role="alert" style={errStyle}>{T.errors.turnstilePending}</p>}
+          {(tsStuck || tsFailed) && !tsToken && (
+            <div role="alert" style={{ marginTop: 12, padding: '12px 14px', border: '1px solid #fcd34d', background: '#fffbeb', borderRadius: 12 }}>
+              <p style={{ margin: '0 0 10px', fontSize: 14, color: '#92400e', fontWeight: 600 }}>{T.errors.turnstileStuck}</p>
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                <button type="button" className="wy-btn wy-btn-outline" style={{ flex: '1 1 180px', width: 'auto' }} onClick={retryTurnstile}>{T.errors.turnstileRetry}</button>
+                <a className="wy-btn" href={phoneHref} style={{ flex: '1 1 180px', width: 'auto', textDecoration: 'none' }} onClick={() => trackContactEvent('phone_click', 'wycena_lead_fallback')}>
+                  <Phone size={18} aria-hidden="true" /> {T.lead.callCta}
+                </a>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -409,6 +486,20 @@ function LeadPanel({ outcome, values }: { outcome: EstimateOutcome | null; value
         <button type="submit" className="wy-btn" disabled={state === 'sending'}>
           <Phone size={18} aria-hidden="true" /> {state === 'sending' ? T.lead.submitting : T.lead.submit}
         </button>
+      </div>
+
+      {/* Kanał bez formularza i bez zgody RODO po naszej stronie: rozmowę zaczyna klient (dotyk w przeglądarce FB/IG = jedno kliknięcie). */}
+      <div style={{ marginTop: 24, paddingTop: 18, borderTop: '1px solid #e2e8f0' }}>
+        <p style={{ margin: '0 0 4px', fontWeight: 700, fontSize: 15, color: '#0d2a5c' }}>{T.lead.altTitle}</p>
+        <p style={{ ...hint, margin: '0 0 12px' }}>{T.lead.altBody}</p>
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+          <a className="wy-btn wy-btn-outline" href={phoneHref} style={{ flex: '1 1 200px', width: 'auto', textDecoration: 'none' }} onClick={() => trackContactEvent('phone_click', 'wycena_lead')}>
+            <Phone size={18} aria-hidden="true" /> {T.lead.callCta}
+          </a>
+          <a className="wy-btn wy-btn-outline" href={whatsappHref} target="_blank" rel="noopener noreferrer" style={{ flex: '1 1 200px', width: 'auto', textDecoration: 'none' }} onClick={() => trackContactEvent('whatsapp_click', 'wycena_lead')}>
+            <MessageCircle size={18} aria-hidden="true" /> {T.lead.whatsappCta}
+          </a>
+        </div>
       </div>
     </form>
   )
