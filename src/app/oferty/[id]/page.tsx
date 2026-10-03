@@ -4,6 +4,7 @@
 // glownej, wiec balans przechyla sie bardziej w strone swiezosci danych.
 export const revalidate = 60
 
+import { serializeJsonLd } from '@/lib/jsonLd'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import SocialSidebar from '@/components/SocialSidebar'
@@ -14,7 +15,7 @@ import { getPublicOfferResult, getOffice, getPublicOffers } from '@/lib/api'
 import { notFound, permanentRedirect } from 'next/navigation'
 import type { Metadata } from 'next'
 
-const FALLBACK_OFFICE = { name: 'InvestRent', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
+const FALLBACK_OFFICE = { name: 'InvestRent Nieruchomości', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
 
 const BASE_URL = 'https://www.investrent.com.pl'
 
@@ -175,7 +176,7 @@ function OfferJsonLd({ offer }: { offer: any }) {
         : 'http://purl.org/goodrelations/v1#Sell',
     },
   }
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }} />
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(schema) }} />
 }
 
 // NAPRAWA (audyt SEO, punkt 8) - okruszki (Breadcrumb) byly juz widoczne
@@ -208,7 +209,7 @@ function VideoJsonLd({ offer }: { offer: any }) {
     uploadDate: offer.created_at,
     embedUrl: `https://www.youtube.com/embed/${youtubeId}`,
   }
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }} />
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(schema) }} />
 }
 
 function BreadcrumbJsonLd({ offer }: { offer: any }) {
@@ -221,7 +222,7 @@ function BreadcrumbJsonLd({ offer }: { offer: any }) {
       { '@type': 'ListItem', position: 3, name: offer.title ?? offer.ref_number, item: `${BASE_URL}/oferty/${offer.slug || offer.id}` },
     ],
   }
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }} />
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(schema) }} />
 }
 
 export default async function OfferPage({ params, searchParams }: { params: { id: string }; searchParams: { preview?: string } }) {

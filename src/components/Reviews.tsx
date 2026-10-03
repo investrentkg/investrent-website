@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { ChevronLeft, ChevronRight, Star, ExternalLink } from 'lucide-react'
 import AnimatedCounter from '@/components/AnimatedCounter'
 import ScrollReveal from '@/components/ScrollReveal'
+import { getVerifiedRating, type VerifiedRating } from '@/lib/schemaRating'
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://investrent-crm-production.up.railway.app'
 const GOOGLE_URL = 'https://www.google.com/maps/place/Invest+Rent+Nieruchomo%C5%9Bci/@54.1770073,15.5744432,17z/#reviews'
@@ -15,9 +16,12 @@ interface Review {
   time: string
 }
 
+// ZMIANA (03.10.2026): rating/total moga byc null - brak wiarygodnej, swiezej
+// oceny (patrz src/lib/schemaRating.ts). Widget pokazuje wtedy same opinie,
+// bez liczby (zamiast sztywnych 4.9 / 55).
 interface InitialData {
-  rating: number
-  total: number
+  rating: number | null
+  total: number | null
   reviews: Review[]
 }
 
@@ -68,8 +72,9 @@ export default function Reviews({ initial }: { initial?: InitialData | null }) {
   // JEDYNYM zrodlem prawdziwych danych.
   const hasInitial = !!(initial?.reviews && initial.reviews.length >= 2)
   const [reviews, setReviews] = useState<Review[]>(hasInitial ? initial!.reviews : FALLBACK)
-  const [rating, setRating]   = useState(hasInitial ? initial!.rating : 4.9)
-  const [total, setTotal]     = useState(hasInitial ? initial!.total : 55)
+  const [stats, setStats]     = useState<VerifiedRating | null>(
+    hasInitial && initial!.rating && initial!.total ? { rating: initial!.rating, total: initial!.total } : null
+  )
   const [active, setActive]   = useState(0)
   const [paused, setPaused]   = useState(false)
   const [isReal, setIsReal]   = useState(hasInitial)
@@ -81,8 +86,7 @@ export default function Reviews({ initial }: { initial?: InitialData | null }) {
       .then(d => {
         if (d.ok && d.reviews?.length >= 2) {
           setReviews(d.reviews)
-          setRating(d.rating)
-          setTotal(d.total)
+          setStats(getVerifiedRating(d)) // null gdy stale / za stare / zero - wtedy bez liczby
           setIsReal(true)
         }
       })
@@ -116,7 +120,9 @@ export default function Reviews({ initial }: { initial?: InitialData | null }) {
               Co sądzą o nas klienci?
             </h2>
             <p style={{ color: '#6b7280', fontSize: 14 }}>
-              {isReal ? `Prawdziwe opinie z Google · ${total} ocen · aktualizowane na bieżąco` : `Ponad ${total} opinii na Google · Zweryfikowane`}
+              {isReal
+                ? (stats ? `Prawdziwe opinie z Google · ${stats.total} ocen · aktualizowane na bieżąco` : 'Prawdziwe opinie z Google')
+                : 'Opinie klientów z Google'}
             </p>
           </div>
           {count > 1 && (
@@ -175,13 +181,19 @@ export default function Reviews({ initial }: { initial?: InitialData | null }) {
             </div>
           )}
           <div style={{ textAlign: 'center' as const }}>
-            <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 900, fontSize: 44, color: '#0d2a5c', lineHeight: 1 }}>
-              <AnimatedCounter value={String(rating)} duration={1200} />
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'center' }}><Stars n={5} /></div>
+            {stats && (
+              <>
+                <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 900, fontSize: 44, color: '#0d2a5c', lineHeight: 1 }}>
+                  <AnimatedCounter value={String(stats.rating)} duration={1200} />
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'center' }}><Stars n={5} /></div>
+              </>
+            )}
             <a href={GOOGLE_URL} target="_blank" rel="noopener noreferrer"
               style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: '#1a4fa0', fontWeight: 600, fontSize: 13, textDecoration: 'none', marginTop: 4 }}>
-              Na podstawie <AnimatedCounter value={String(total)} duration={1200} /> opinii w Google <ExternalLink size={13} />
+              {stats
+                ? <>Na podstawie <AnimatedCounter value={String(stats.total)} duration={1200} /> opinii w Google</>
+                : <>Zobacz opinie w Google</>}{' '}<ExternalLink size={13} />
             </a>
           </div>
         </div>

@@ -7,8 +7,10 @@ import type { PublicStats } from '@/types'
 
 interface HeroProps {
   stats: PublicStats | null
-  googleRating?: number
-  googleTotal?: number
+  // ZMIANA (03.10.2026): null/brak = brak wiarygodnej, swiezej oceny
+  // (patrz src/lib/schemaRating.ts) - kafelek z ocena jest wtedy ukrywany
+  // zamiast pokazywac sztywne "4.9/5".
+  googleRating?: number | null
 }
 
 // Każdy wiersz nagłówka jako lista słów, żeby móc odsłaniać je pojedynczo
@@ -32,7 +34,7 @@ const HEADLINE_LINES: { words: string[]; gold?: boolean }[] = [
   { words: ['w', 'Kołobrzegu'] },
 ]
 
-export default function Hero({ stats, googleRating = 4.9, googleTotal = 55 }: HeroProps) {
+export default function Hero({ stats, googleRating = null }: HeroProps) {
   const s = { active_offers: stats?.active_offers ?? 30, completed_transactions: Math.max(stats?.completed_transactions ?? 0, 150), team_size: stats?.team_size ?? 7 }
   const [isDesktop, setIsDesktop] = useState(false)
   const [videoReady, setVideoReady] = useState(false)
@@ -75,7 +77,7 @@ export default function Hero({ stats, googleRating = 4.9, googleTotal = 55 }: He
   const STATS = [
     { icon: <Handshake size={20} />, val: `${Math.max(s.completed_transactions, 150)}+`, label: 'transakcji' },
     { icon: <Clock size={20} />,     val: 'do 60 min',         label: 'odpowiedź' },
-    { icon: <Star size={20} />,      val: `${googleRating}/5`, label: 'ocena klientów' },
+    ...(googleRating ? [{ icon: <Star size={20} />, val: `${googleRating}/5`, label: 'ocena klientów' }] : []),
     { icon: <Award size={20} />,     val: 'Bezpłatna',         label: 'wycena' },
   ]
 

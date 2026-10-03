@@ -12,7 +12,9 @@ const POINTS = [
 
 const IMG = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80&fit=crop&h=600'
 
-export default function About() {
+// ZMIANA (04.10.2026): plakietka z ocena tylko przy wiarygodnych, swiezych danych
+// (src/lib/schemaRating.ts) - zamiast sztywnego "4.9/5".
+export default function About({ googleRating = null }: { googleRating?: number | null }) {
   const [isDesktop, setIsDesktop] = useState(false)
 
   useEffect(() => {
@@ -47,6 +49,7 @@ export default function About() {
                 style={{ objectFit: 'cover' }}
               />
             </div>
+            {googleRating ? (
             <ScrollReveal delay={280} style={{ position: 'absolute', bottom: 24, left: 24 }}>
             <div style={{
               background: 'white', borderRadius: 12, padding: '16px 20px',
@@ -57,11 +60,12 @@ export default function About() {
                 <Star size={22} color="white" fill="white" />
               </div>
               <div>
-                <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 16, color: '#0d2a5c' }}>4.9/5</div>
+                <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 16, color: '#0d2a5c' }}>{googleRating}/5</div>
                 <div style={{ fontSize: 12, color: '#6b7280' }}>ocena klientów (Google)</div>
               </div>
             </div>
             </ScrollReveal>
+            ) : null}
           </div>
           </ScrollReveal>
 
