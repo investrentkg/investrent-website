@@ -25,12 +25,8 @@ interface InitialData {
   reviews: Review[]
 }
 
-const FALLBACK: Review[] = [
-  { author: 'Aneta Radomska',    avatar: null, rating: 5, text: 'Nic dodać nic ująć 🤗 pełna profeska pod każdym względem… miła obsługa, pomocna, komunikacja na najwyższym poziomie….', time: 'w ostatnim tygodniu' },
-  { author: 'Wioletta Wiśniewska', avatar: null, rating: 5, text: 'Jesteśmy wdzięczni Pani Marcie za pomoc w sprzedaży mieszkania w Kołobrzegu. To bardzo cudowny człowiek któremu można zaufać — zawsze będę polecać Panią Martę.', time: 'w ostatnim tygodniu' },
-  { author: 'Paweł Kruk',         avatar: null, rating: 5, text: 'Z całego serca polecamy biuro nieruchomości Invest Rent, panią Martę Semak. Dzięki jej profesjonalizmowi i ogromnej życzliwości wykonaliśmy ważny krok — z Dolnego Śląska do Kołobrzegu. Cała transakcja przebiegła sprawnie i bez zbędnego stresu.', time: 'tydzień temu' },
-  { author: 'Lech Bugaj',          avatar: null, rating: 5, text: 'Jestem pod wrażeniem rzetelnego podejścia Pani Dagmary do obsługi transakcji — od pierwszego kontaktu aż do załatwienia wszelkich spraw po zakupie nieruchomości 👍', time: 'miesiąc temu' },
-]
+// ZMIANA (04.10.2026): usunieta stala tablica FALLBACK z 4 opiniami wpisanymi na sztywno -
+// przy braku danych z API nie pokazujemy wymyslonych/nieaktualnych opinii, tylko link do Google.
 
 function Stars({ n, center = false }: { n: number; center?: boolean }) {
   return (
@@ -71,7 +67,7 @@ export default function Reviews({ initial }: { initial?: InitialData | null }) {
   // w przegladarce ponizej staje sie tylko odswiezeniem "w tle", nie
   // JEDYNYM zrodlem prawdziwych danych.
   const hasInitial = !!(initial?.reviews && initial.reviews.length >= 2)
-  const [reviews, setReviews] = useState<Review[]>(hasInitial ? initial!.reviews : FALLBACK)
+  const [reviews, setReviews] = useState<Review[]>(hasInitial ? initial!.reviews : [])
   const [stats, setStats]     = useState<VerifiedRating | null>(
     hasInitial && initial!.rating && initial!.total ? { rating: initial!.rating, total: initial!.total } : null
   )
@@ -137,7 +133,8 @@ export default function Reviews({ initial }: { initial?: InitialData | null }) {
           )}
         </div>
 
-        {/* Karuzela */}
+        {/* Karuzela (tylko gdy mamy prawdziwe opinie z API) */}
+        {count > 0 && (
         <ScrollReveal>
         <div
           style={{ display: 'grid', gridTemplateColumns: `repeat(${visible}, 1fr)`, gap: 20, marginBottom: 40 }}
@@ -168,6 +165,7 @@ export default function Reviews({ initial }: { initial?: InitialData | null }) {
           ))}
         </div>
         </ScrollReveal>
+        )}
 
         {/* Wskaźniki + łączna ocena */}
         <ScrollReveal delay={150}>
