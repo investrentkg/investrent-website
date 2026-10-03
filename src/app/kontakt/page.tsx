@@ -5,6 +5,7 @@ import Contact from '@/components/Contact'
 import Breadcrumb from '@/components/Breadcrumb'
 import { JsonLd } from '@/components/JsonLd'
 import { getOffice } from '@/lib/api'
+import { getVerifiedRating } from '@/lib/schemaRating'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -28,11 +29,11 @@ export default async function KontaktPage() {
       .then(r => r.json()).catch(() => null),
   ])
   const office = officeData ?? FALLBACK_OFFICE
-  const googleRating: number = reviewsData?.rating ? reviewsData.rating : 4.9
-  const googleTotal: number = reviewsData?.total ? reviewsData.total : 55
+  // ZMIANA (03.10.2026): bez sztywnych fallbackow 4.9/55 - patrz schemaRating.ts.
+  const rating = getVerifiedRating(reviewsData)
   return (
     <>
-      <JsonLd office={office} googleRating={googleRating} googleTotal={googleTotal} />
+      <JsonLd office={office} rating={rating} />
       <Nav office={office} />
       <main>
         <div style={{ background: 'linear-gradient(135deg, #0d2a5c, #1a4fa0)', padding: '40px 0 32px' }}>
