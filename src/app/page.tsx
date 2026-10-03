@@ -46,7 +46,7 @@ import type { Office } from '@/types'
 // strona-glowna) ustawiono wlasne meta_title/meta_description, one nadal
 // maja pierwszenstwo nad tymi wartosciami domyslnymi.
 const DEFAULT_TITLE = 'Biuro nieruchomości Kołobrzeg | Invest Rent'
-const DEFAULT_DESCRIPTION = 'Biuro nieruchomości w Kołobrzegu i okolicach: sprzedaż, kupno i wynajem mieszkań oraz domów. Ocena 4,9/5 w Google, bezpłatna wycena, odpowiedź do 60 minut.'
+const DEFAULT_DESCRIPTION = 'Biuro nieruchomości w Kołobrzegu i okolicach: sprzedaż, kupno i wynajem mieszkań oraz domów. Bezpłatna wycena, odpowiedź do 60 minut.'
 export async function generateMetadata(): Promise<Metadata> {
   const content = await getPageContent('strona-glowna')
   return {
@@ -100,7 +100,7 @@ export default async function Home() {
         <Hero          stats={statsData} googleRating={rating?.rating ?? null} />
         <CallbackStrip />
         <OffersSection initialOffers={offersData} />
-        <About />
+        <About googleRating={rating?.rating ?? null} />
         <Services />
         <ValuationCTA />
         <Reviews initial={reviewsData?.ok ? { rating: rating?.rating ?? null, total: rating?.total ?? null, reviews: reviewsData.reviews } : null} />

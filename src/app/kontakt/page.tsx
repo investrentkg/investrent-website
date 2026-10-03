@@ -8,6 +8,11 @@ import { getOffice } from '@/lib/api'
 import { getVerifiedRating } from '@/lib/schemaRating'
 import type { Metadata } from 'next'
 
+// ZMIANA (04.10.2026): fetch opinii bez opcji = force-cache - strona mogla zamarznac do
+// kolejnego deployu, a swiezosc oceny (getVerifiedRating) liczy sie tylko w momencie
+// renderu. ISR co 5 minut (tak jak /, /o-nas), zeby stara ocena znikala z JSON-LD sama.
+export const revalidate = 300
+
 export const metadata: Metadata = {
   title: 'Kontakt',
   description: 'Skontaktuj się z biurem nieruchomości InvestRent w Kołobrzegu. Odpowiadamy do 60 minut. Tel: +48 731 554 341',
@@ -15,7 +20,7 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://www.investrent.com.pl/kontakt' },
 }
 
-const FALLBACK_OFFICE = { name: 'InvestRent', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
+const FALLBACK_OFFICE = { name: 'InvestRent Nieruchomości', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
 
 export default async function KontaktPage() {
   // NAPRAWA (audyt SEO 09.09.2026, punkt P0): /kontakt - najwazniejsza

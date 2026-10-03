@@ -23,7 +23,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'O nas',
-  description: 'Poznaj zespół InvestRent — biura nieruchomości z Kołobrzegu specjalizującego się w rynku nadmorskim. 150+ transakcji, ocena 4.9/5.',
+  description: 'Poznaj zespół InvestRent — biura nieruchomości z Kołobrzegu specjalizującego się w rynku nadmorskim. 150+ transakcji.',
   // NAPRAWA (audyt SEO 31.07.2026, punkt 3): brak kanonicznego URL na calej stronie.
   alternates: { canonical: 'https://www.investrent.com.pl/o-nas' },
 }
@@ -87,7 +87,7 @@ export default async function ONasPage() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 12 }}>
               {[
                 { val: `${trans}+`, label: 'Zrealizowanych transakcji' },
-                { val: '4.9/5',     label: 'Ocena klientów' },
+                ...(rating ? [{ val: `${rating.rating}/5`, label: 'Ocena klientów' }] : []),
                 { val: `${teamSize}`, label: 'Ekspertów w zespole' },
                 { val: 'Kołobrzeg', label: 'Siedziba biura' },
               ].map((st, i) => (

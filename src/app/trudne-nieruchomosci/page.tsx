@@ -1,3 +1,4 @@
+import { serializeJsonLd } from '@/lib/jsonLd'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import SocialSidebar from '@/components/SocialSidebar'
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
 }
 
 const FALLBACK_OFFICE = {
-  name: 'InvestRent', logo_url: '/logo.png',
+  name: 'InvestRent Nieruchomości', logo_url: '/logo.png',
   address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg',
   phone: '+48 731 554 341', email: 'biuro@investrent.com.pl',
   website: null, working_hours: null,
@@ -192,7 +193,7 @@ export default async function TrudneNieruchomosciPage() {
             </div>
           </div>
         </div>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd({
           '@context': 'https://schema.org',
           '@type': 'FAQPage',
           mainEntity: FAQ.map(f => ({
@@ -200,7 +201,7 @@ export default async function TrudneNieruchomosciPage() {
             name: f.q,
             acceptedAnswer: { '@type': 'Answer', text: f.a },
           })),
-        }).replace(/</g, '\\u003c') }} />
+        }) }} />
 
         <div id="kontakt-trudne"><Contact office={office} /></div>
       </main>

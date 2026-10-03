@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://www.investrent.com.pl/blog' },
 }
 
-const FALLBACK_OFFICE = { name: 'InvestRent', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
+const FALLBACK_OFFICE = { name: 'InvestRent Nieruchomości', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
 
 // Okladki z Unsplash ida przez optymalizator next/image (serwer Vercel pobiera obraz),
 // pozostale zrodla (nasz Supabase Storage) bez zmian - przeglad prawny runda 2 (25.09.2026).

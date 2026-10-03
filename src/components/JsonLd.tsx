@@ -1,6 +1,7 @@
 import type { Office } from '@/types'
 import type { VerifiedRating } from '@/lib/schemaRating'
 import { buildOfficeSchema } from '@/lib/officeSchema'
+import { serializeJsonLd } from '@/lib/jsonLd'
 
 // WYDZIELONE (31.08, audyt SEO Daniela: "investrent opinie" ma wysoka
 // pozycje ale zero klikniec - dedykowana strona /o-nas ma widget z
@@ -21,5 +22,5 @@ import { buildOfficeSchema } from '@/lib/officeSchema'
 // src/lib/officeSchema.ts (czysta funkcja, objeta testami).
 export function JsonLd({ office, rating }: { office: Office | null; rating?: VerifiedRating | null }) {
   const schema = buildOfficeSchema(office, rating)
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }} />
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(schema) }} />
 }

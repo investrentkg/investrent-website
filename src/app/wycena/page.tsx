@@ -1,3 +1,4 @@
+import { serializeJsonLd } from '@/lib/jsonLd'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import { getOffice } from '@/lib/api'
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
   openGraph: { title: T.metaTitle, description: CALC_ENABLED ? T.metaDescription : T.metaDescriptionOff, url: 'https://www.investrent.com.pl/wycena', type: 'website', locale: 'pl_PL' },
 }
 
-const FALLBACK_OFFICE = { name: 'InvestRent', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
+const FALLBACK_OFFICE = { name: 'InvestRent Nieruchomości', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
 
 // Tylko BreadcrumbList - jedyny znacznik, ktory dokladnie odpowiada tresci strony.
 // Celowo BEZ Product/Offer/AggregateRating (kalkulator nie jest produktem ani usluga z cena).
@@ -37,7 +38,7 @@ export default async function WycenaPage() {
     <>
       <Nav office={office} />
       <main id="glowna-tresc">
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(BREADCRUMBS) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(BREADCRUMBS) }} />
         <WycenaClient initialEnabled={CALC_ENABLED} />
       </main>
       <Footer office={office} />

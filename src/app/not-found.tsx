@@ -28,7 +28,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { MapPin, LayoutGrid, Ruler } from 'lucide-react'
 
-const FALLBACK_OFFICE = { name: 'InvestRent', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
+const FALLBACK_OFFICE = { name: 'InvestRent Nieruchomości', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
 
 function priceLabel(p: number | null, t: string) {
   if (!p) return 'Cena na zapytanie'
