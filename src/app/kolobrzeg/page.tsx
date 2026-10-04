@@ -7,6 +7,7 @@
 // komponentów, ten sam sposób pobierania danych z CRM).
 export const revalidate = 3600
 
+import { serializeJsonLd } from '@/lib/jsonLd'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import SocialSidebar from '@/components/SocialSidebar'
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://www.investrent.com.pl/kolobrzeg' },
 }
 
-const FALLBACK_OFFICE = { name: 'InvestRent', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
+const FALLBACK_OFFICE = { name: 'InvestRent Nieruchomości', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
 
 // Dzielnice/lokalizacje Kołobrzegu — realne, nie zmyślone. Opis celowo
 // jakościowy (charakter, typowa zabudowa), bez wymyślonych liczb cena/m² —
@@ -157,11 +158,11 @@ export default async function KolobrzegPage() {
           </div>
         </div>
 
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd({
           '@context': 'https://schema.org',
           '@type': 'FAQPage',
           mainEntity: FAQ.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
-        }).replace(/</g, '\\u003c') }} />
+        }) }} />
       </main>
       <Footer office={office} />
       <SocialSidebar office={office} />

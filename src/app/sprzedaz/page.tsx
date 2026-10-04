@@ -1,3 +1,4 @@
+import { serializeJsonLd } from '@/lib/jsonLd'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import SocialSidebar from '@/components/SocialSidebar'
@@ -5,8 +6,12 @@ import Contact from '@/components/Contact'
 import Breadcrumb from '@/components/Breadcrumb'
 import Link from 'next/link'
 import { getOffice } from '@/lib/api'
+import { getVerifiedRating } from '@/lib/schemaRating'
 import { DollarSign, Camera, Globe, FileCheck, Key, CheckCircle, ArrowRight, FileText, Building, Users, Shield } from 'lucide-react'
 import type { Metadata } from 'next'
+
+// ZMIANA (04.10.2026): fetch opinii bez opcji = force-cache (patrz kontakt/page.tsx) - ISR co 5 minut.
+export const revalidate = 300
 
 export const metadata: Metadata = {
   title: 'Sprzedaż nieruchomości Kołobrzeg',
@@ -15,7 +20,7 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://www.investrent.com.pl/sprzedaz' },
 }
 
-const FALLBACK_OFFICE = { name: 'InvestRent', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
+const FALLBACK_OFFICE = { name: 'InvestRent Nieruchomości', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
 
 const SERVICES = [
   { icon: DollarSign, title: 'Bezpłatna wycena',            desc: 'Dokładna analiza rynku i wycena Twojej nieruchomości bez zobowiązań. W ciągu 24h.' },
@@ -50,7 +55,9 @@ export default async function SprzedazPage() {
       .then(r => r.json()).catch(() => null),
   ])
   const office = officeData ?? FALLBACK_OFFICE
-  const googleTotal: number = reviewsData?.total ?? 55
+  // ZMIANA (04.10.2026): bez sztywnych 4.9/5 i 55 - ten sam obiekt co w JSON-LD (schemaRating.ts);
+  // gdy brak wiarygodnych, swiezych danych, kafelki z ocena sa pomijane.
+  const rating = getVerifiedRating(reviewsData)
   const cms: Record<string, string> = contentData?.blocks || {}
 
   return (
@@ -91,7 +98,7 @@ export default async function SprzedazPage() {
               {[
                 { val: '150+',   label: 'Zrealizowanych transakcji', sub: 'w Kołobrzegu i okolicach' },
                 { val: '45 dni', label: 'Średni czas sprzedaży',     sub: 'przy rynku: 90+ dni' },
-                { val: '4.9/5',  label: 'Ocena klientów',            sub: `${googleTotal} opinii Google` },
+                ...(rating ? [{ val: `${rating.rating}/5`, label: 'Ocena klientów', sub: `${rating.total} opinii Google` }] : []),
                 { val: '0 zł',   label: 'Wycena nieruchomości',      sub: 'bezpłatnie, bez zobowiązań' },
               ].map((s, i) => (
                 <div key={s.label} style={{ textAlign: 'center' as const, padding: '20px 16px', minWidth: 0 }}>
@@ -132,7 +139,7 @@ export default async function SprzedazPage() {
                 {[
                   { val: '150+',   label: 'Transakcji' },
                   { val: '45 dni', label: 'Średni czas' },
-                  { val: '4.9/5',  label: 'Ocena' },
+                  ...(rating ? [{ val: `${rating.rating}/5`, label: 'Ocena' }] : []),
                   { val: '0 zł',   label: 'Wycena' },
                 ].map(s => (
                   <div key={s.label} style={{ background: 'white', borderRadius: 14, padding: '24px 20px', textAlign: 'center' as const, border: '1px solid #e5e7eb' }}>
@@ -220,11 +227,11 @@ export default async function SprzedazPage() {
             </div>
           </div>
         </div>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd({
           '@context': 'https://schema.org',
           '@type': 'FAQPage',
           mainEntity: FAQ.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
-        }).replace(/</g, '\\u003c') }} />
+        }) }} />
 
         <div id="kontakt-sprzedaz"><Contact office={office} /></div>
       </main>

@@ -17,12 +17,13 @@ import { JsonLd } from '@/components/JsonLd'
 import Breadcrumb from '@/components/Breadcrumb'
 import MapEmbed from '@/components/ConsentEmbed'
 import { getTeam, getStats, getOffice } from '@/lib/api'
+import { getVerifiedRating } from '@/lib/schemaRating'
 import { MapPin, Phone, Mail, Shield, Heart, TrendingUp, Users, CheckCircle } from 'lucide-react'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'O nas',
-  description: 'Poznaj zespół InvestRent — biura nieruchomości z Kołobrzegu specjalizującego się w rynku nadmorskim. 150+ transakcji, ocena 4.9/5.',
+  description: 'Poznaj zespół InvestRent — biura nieruchomości z Kołobrzegu specjalizującego się w rynku nadmorskim. 150+ transakcji.',
   // NAPRAWA (audyt SEO 31.07.2026, punkt 3): brak kanonicznego URL na calej stronie.
   alternates: { canonical: 'https://www.investrent.com.pl/o-nas' },
 }
@@ -57,13 +58,16 @@ export default async function ONasPage() {
   // wzorzec ternary co juz dzialajacy gdzie indziej. Dodane tez
   // googleRating (wczesniej w ogole nie wyciagane na tej stronie), zeby
   // JsonLd ponizej mial prawdziwa, zywa ocene zamiast domyslnej.
-  const googleRating: number = reviewsData?.rating ? reviewsData.rating : 4.9
-  const googleTotal: number = reviewsData?.total ? reviewsData.total : 55
+  //
+  // ZMIANA (03.10.2026): sztywne fallbacki 4.9/55 usuniete - gdy brak
+  // wiarygodnych, swiezych danych (patrz schemaRating.ts), JSON-LD pomija
+  // aggregateRating, a widoczne liczby sa ukrywane.
+  const rating = getVerifiedRating(reviewsData)
   const cms: Record<string, string> = contentData?.blocks || {}
 
   return (
     <>
-      <JsonLd office={office} googleRating={googleRating} googleTotal={googleTotal} />
+      <JsonLd office={office} rating={rating} />
       <Nav office={office} />
       <main>
         <div style={{ background: 'linear-gradient(135deg, #0d2a5c, #1a4fa0)', padding: '56px 0 48px' }}>
@@ -83,7 +87,7 @@ export default async function ONasPage() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 12 }}>
               {[
                 { val: `${trans}+`, label: 'Zrealizowanych transakcji' },
-                { val: '4.9/5',     label: 'Ocena klientów' },
+                ...(rating ? [{ val: `${rating.rating}/5`, label: 'Ocena klientów' }] : []),
                 { val: `${teamSize}`, label: 'Ekspertów w zespole' },
                 { val: 'Kołobrzeg', label: 'Siedziba biura' },
               ].map((st, i) => (
@@ -107,7 +111,7 @@ export default async function ONasPage() {
                   {cms.mission_text || 'InvestRent Nieruchomości powstało z pasji do lokalnego rynku nadmorskiego i przekonania, że klienci zasługują na więcej niż standardową obsługę agencyjną. Specjalizujemy się w Kołobrzegu i całym Wybrzeżu Bałtyckim.'}
                 </p>
                 <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 12 }}>
-                  {['150+ transakcji w Kołobrzegu i okolicach','Średni czas sprzedaży: 45 dni (rynek: 90+ dni)','Pełna obsługa prawna i notarialna w cenie','Ekspozycja na głównych portalach i nie tylko',`Ocena klientów: 4.9/5 na podstawie ${googleTotal} opinii`].map(w => (
+                  {['150+ transakcji w Kołobrzegu i okolicach','Średni czas sprzedaży: 45 dni (rynek: 90+ dni)','Pełna obsługa prawna i notarialna w cenie','Ekspozycja na głównych portalach i nie tylko',...(rating ? [`Ocena klientów: ${rating.rating}/5 na podstawie ${rating.total} opinii`] : [])].map(w => (
                     <div key={w} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
                       <CheckCircle size={16} color="#10b981" style={{ flexShrink: 0, marginTop: 2 }} />
                       <span style={{ fontSize: 14, color: '#374151' }}>{w}</span>
@@ -134,7 +138,7 @@ export default async function ONasPage() {
         </div>
 
         <Team members={teamData?.data ?? []} />
-        <Reviews initial={reviewsData?.ok ? { rating: googleRating, total: googleTotal, reviews: reviewsData.reviews } : null} />
+        <Reviews initial={reviewsData?.ok ? { rating: rating?.rating ?? null, total: rating?.total ?? null, reviews: reviewsData.reviews } : null} />
 
         <div style={{ background: 'white', padding: '48px 0' }}>
           <div className="container">

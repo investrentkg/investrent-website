@@ -23,6 +23,7 @@ import Contact       from '@/components/Contact'
 import Footer        from '@/components/Footer'
 import MortgageCalcSection from '@/components/MortgageCalcSection'
 import SocialSidebar from '@/components/SocialSidebar'
+import { getVerifiedRating } from '@/lib/schemaRating'
 import type { Office } from '@/types'
 
 // NAPRAWA (audyt SEO 31.07.2026, punkt 3): strona glowna nie mial WLASNEGO
@@ -45,7 +46,7 @@ import type { Office } from '@/types'
 // strona-glowna) ustawiono wlasne meta_title/meta_description, one nadal
 // maja pierwszenstwo nad tymi wartosciami domyslnymi.
 const DEFAULT_TITLE = 'Biuro nieruchomości Kołobrzeg | Invest Rent'
-const DEFAULT_DESCRIPTION = 'Biuro nieruchomości w Kołobrzegu i okolicach: sprzedaż, kupno i wynajem mieszkań oraz domów. Ocena 4,9/5 w Google, bezpłatna wycena, odpowiedź do 60 minut.'
+const DEFAULT_DESCRIPTION = 'Biuro nieruchomości w Kołobrzegu i okolicach: sprzedaż, kupno i wynajem mieszkań oraz domów. Bezpłatna wycena, odpowiedź do 60 minut.'
 export async function generateMetadata(): Promise<Metadata> {
   const content = await getPageContent('strona-glowna')
   return {
@@ -80,23 +81,29 @@ export default async function Home() {
   // odpowiedź (ok:true) z rating:0/total:0 (np. Google chwilowo nie zwrócił
   // danych oceny), literalne 0 przechodziło przez `??` bez zmian i strona
   // pokazywała "0/5" / "0 opinii" - gorsze niż jakikolwiek fallback.
-  const googleRating: number = reviewsData?.rating ? reviewsData.rating : 4.9
-  const googleTotal: number  = reviewsData?.total  ? reviewsData.total  : 55
+  //
+  // ZMIANA (03.10.2026, zgodnosc schema.org z widocznymi danymi): sztywne
+  // fallbacki 4.9/55 USUNIETE - gdy API opinii zawiodlo, ma ok:false,
+  // stale:true albo updated_at starsze niz 14 dni, getVerifiedRating zwraca
+  // null: JSON-LD nie emituje aggregateRating, a widgety (Hero, Reviews)
+  // ukrywaja liczby zamiast pokazywac nieprawdziwe. Jeden obiekt `rating`
+  // zasila i JSON-LD, i widoczny widget (patrz src/lib/schemaRating.ts).
+  const rating = getVerifiedRating(reviewsData)
 
   const office = officeData ?? FALLBACK_OFFICE
 
   return (
     <>
-      <JsonLd office={office} googleRating={googleRating} googleTotal={googleTotal} />
+      <JsonLd office={office} rating={rating} />
       <Nav           office={office} />
       <main>
-        <Hero          stats={statsData} googleRating={googleRating} googleTotal={googleTotal} />
+        <Hero          stats={statsData} googleRating={rating?.rating ?? null} />
         <CallbackStrip />
         <OffersSection initialOffers={offersData} />
-        <About />
+        <About googleRating={rating?.rating ?? null} />
         <Services />
         <ValuationCTA />
-        <Reviews initial={reviewsData?.ok ? { rating: googleRating, total: googleTotal, reviews: reviewsData.reviews } : null} />
+        <Reviews initial={reviewsData?.ok ? { rating: rating?.rating ?? null, total: rating?.total ?? null, reviews: reviewsData.reviews } : null} />
         <Team          members={teamData?.data ?? []} />
         <Contact       office={office} />
         <MortgageCalcSection />
