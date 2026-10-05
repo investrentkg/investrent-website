@@ -24,7 +24,7 @@ import type { Metadata } from 'next'
 // Dane spolki z odpisu KRS/VIES z 25.09.2026 - do weryfikacji przed publikacja.
 
 // STAN NA (jedno miejsce): data ma byc zaktualizowana w dniu faktycznego wdrozenia na produkcje.
-const POLICY_DATE = '28.09.2026'
+const POLICY_DATE = '05.10.2026'
 
 // PRZELACZNIK OKRESOW KALKULATORA (wydanie 28.09.2026): true = wariant A (okresy 12/24 mies.), false = wariant B (ogolny: "nie dluzej niz konieczne").
 // MUSI byc zgodny z RETENTION_VARIANT_A w src/app/wycena/texts.ts (oba naraz: klauzula w kalkulatorze i /rodo musza mowic to samo).
@@ -166,6 +166,31 @@ export default async function RodoPage() {
                 Podstawą obsługi Państwa zapytania jest art. 6 ust. 1 lit. b RODO. Na marketing przez e-mail prosimy o odrębną, wyraźną zgodę (art. 6 ust. 1 lit. a RODO), którą udzielają Państwo w formularzu przez aktywne zaznaczenie jednego, opcjonalnego pola (kontakt e-mail); jest ona dobrowolna i niewymagana do obsługi zapytania. Kontaktu telefonicznego ani przez komunikator (np. WhatsApp) na podstawie tego formularza nie oferujemy. Na potrzeby wykazania zgody zapisujemy identyfikator zgłoszenia formularza (leadgen_id), identyfikator formularza, czas zgłoszenia i wersję formularza (art. 7 ust. 1 RODO). {/* Dowod zgody z importu Meta zweryfikowany w kodzie CRM origin/main 25.09.2026 (PR #472, consentRules.ts/metaLeadsImport.ts); zakres ostrozny; nie potwierdzono na zywym wpisie. Numer telefonu usuniety z listy pol formularza Meta (brak pola telefonu - potwierdzic liste pol). */}Zgodę można w każdej chwili cofnąć ze skutkiem na przyszłość. Meta udostępnia nam dane zebrane w formularzu do pobrania i w tym zakresie przetwarza je jako nasz podmiot przetwarzający, zgodnie z warunkami przetwarzania danych Meta; przy wyświetlaniu reklam Meta przetwarza dane we własnym imieniu lub na podstawie Controller Addendum (<a href="https://www.facebook.com/legal/controller_addendum" style={link} target="_blank" rel="noopener noreferrer">facebook.com/legal/controller_addendum</a>). Obowiązują informacje o prywatności Meta (<a href="https://www.facebook.com/privacy/policy" style={link} target="_blank" rel="noopener noreferrer">facebook.com/privacy/policy</a>).
               </P>
 
+              <section id="komentarze" style={{ scrollMarginTop: 96 }}>
+                <H2>Komentarze pod naszymi postami na Facebooku i Instagramie</H2>
+                <P>
+                  W skrócie: odpowiadamy na Państwa publiczne komentarze pod naszymi postami na Facebooku i Instagramie, a przy przygotowaniu szkicu odpowiedzi pomaga nam narzędzie AI. Odpowiedź zawsze zatwierdza człowiek.
+                </P>
+                <P>
+                  Gdy zostawiają Państwo publiczny komentarz pod postem na naszej stronie na Facebooku lub Instagramie (Invest Rent Nieruchomości, @invest.rent), pobieramy ten komentarz za pośrednictwem oficjalnego interfejsu API Meta do naszego wewnętrznego systemu CRM, aby móc na niego odpowiedzieć. Przetwarzamy przy tym treść komentarza oraz dane widoczne publicznie na Państwa profilu (imię i nazwisko lub nazwa, identyfikator profilu, data komentarza). Administratorem tych danych jest Investrent sp. z o.o. (dane kontaktowe wyżej). Dane pochodzą z Państwa publicznego komentarza.
+                </P>
+                <P>
+                  Podstawą przetwarzania jest nasz prawnie uzasadniony interes w prowadzeniu komunikacji z klientami i osobami zainteresowanymi, w terminowym odpowiadaniu na komentarze oraz w dbaniu o wizerunek firmy (art. 6 ust. 1 lit. f RODO).
+                </P>
+                <P>
+                  Do wstępnej klasyfikacji komentarza (np. pytanie, pochwała, reklamacja) i do przygotowania szkicu odpowiedzi nasi pracownicy mogą skorzystać ze wsparcia AI dostawcy Anthropic, PBC (USA), na zasadach opisanych w części „Wsparcie AI w wewnętrznym systemie CRM”. Z komentarza do Anthropic przekazujemy wyłącznie jego treść (skróconą do maksymalnie 1500 znaków, z automatycznie zamaskowanymi numerami telefonów, adresami e-mail oraz numerami PESEL, dokumentów i kont), bez nazwy konta, imienia, nazwiska i identyfikatora osoby komentującej. Poza treścią komentarza model otrzymuje dane kontaktowe naszego biura oraz informacje o ofercie, której dotyczy komentarz (np. jej cenę i status). Jeśli ktoś poda swoje imię w samej treści komentarza, może ono znaleźć się w przekazywanej treści. Imię w powitaniu szkicu dodaje nasz system dopiero po jego otrzymaniu.
+                </P>
+                <P>
+                  Odpowiedź zawsze wysyła pracownik po przeczytaniu i zatwierdzeniu jej treści; nikt nie wysyła jej automatycznie. Komentarze dotyczące ceny, spraw prawnych lub finansowych, reklamacje i treści agresywne zawsze obsługuje człowiek. Odbiorcami danych są dostawcy wymienieni w części „Odbiorcy danych” (w tym Meta jako operator platformy) oraz upoważnieni pracownicy. Korzystanie z danych uzyskanych za pośrednictwem interfejsu API Meta podlega zasadom platformy Meta (Meta Platform Terms) i jest ograniczone do celu opisanego powyżej.
+                </P>
+                <P>
+                  Dane z komentarza przechowujemy w naszym systemie nie dłużej, niż jest to konieczne do obsługi komunikacji, a na Państwa żądanie usuwamy je wcześniej. Jeśli komentarz dotyczy sprawy, która przechodzi w odrębną relację z Państwem (np. zapytanie o ofertę, reklamacja prowadząca do dalszego kontaktu), stosujemy okresy właściwe dla tej relacji. Usunięcie naszej kopii komentarza z systemu CRM nie usuwa samego komentarza z Facebooka ani Instagramu; o nim decydują Państwo na platformie Meta.
+                </P>
+                <P>
+                  Przysługują Państwu prawa opisane w części „Prawa osób, których dane dotyczą”, w tym prawo sprzeciwu wobec tego przetwarzania (art. 21 RODO) oraz prawo żądania usunięcia naszej kopii komentarza z systemu CRM. Prośby prosimy kierować na biuro@investrent.com.pl. Ze względu na dużą liczbę osób komentujących indywidualne powiadomienie każdej z nich nie jest możliwe bez niewspółmiernie dużego nakładu, dlatego obowiązek informacyjny realizujemy przez publikację niniejszej informacji (art. 14 ust. 5 lit. b RODO).
+                </P>
+              </section>
+
               <H2>Zasady kontaktu z Państwem</H2>
               <P>
                 Wiadomości marketingowe e-mail wysyłamy, gdy mamy do tego podstawę prawną, w szczególności Państwa zgodę, np. wyrażoną w opcjonalnym polu formularza na Facebooku lub Instagramie (patrz część o tych formularzach). Kalkulator wyceny nie zbiera zgód marketingowych i nie służy do marketingu; telefon do osoby, która zostawiła numer w kalkulatorze, dotyczy wyłącznie jej wyceny nieruchomości. Kontakty z osobami, które ogłaszają nieruchomości na portalach, opisujemy w części „Dane z publicznych ogłoszeń o nieruchomościach”. Marketingu przez komunikator (np. WhatsApp) nie prowadzimy; jeśli piszą Państwo do nas sami przez WhatsApp, odpowiadamy na konkretne zapytanie (art. 6 ust. 1 lit. b RODO). Odpowiedź lub oddzwonienie, o które wyraźnie Państwo prosili w konkretnym zapytaniu (poza oddzwonieniem po kalkulatorze wyceny, które opiera się na zgodzie), odbywa się na podstawie art. 6 ust. 1 lit. b RODO. Zgodę na marketing e-mail można cofnąć w każdej chwili, pisząc na adres biuro@investrent.com.pl; po cofnięciu nie otrzymają Państwo już marketingu tym kanałem.
@@ -195,7 +220,7 @@ export default async function RodoPage() {
                 <LI>Railway Corp. (USA) – działanie interfejsu API systemu CRM;</LI>
                 <LI>Supabase Inc. – baza danych i przechowywanie danych (lokalizacja serwerów – patrz „Hosting i techniczne udostępnianie strony”);</LI>
                 <LI>Brevo (Sendinblue SAS, Francja) – wysyłka wiadomości e-mail (powiadomienia dla naszych pracowników o zgłoszeniach, w tym imię, numer telefonu i treść zgłoszenia, oraz wiadomości do klientów);</LI>
-                <LI>Anthropic, PBC (USA) – dostawca AI dla kalkulatora wyceny (bez danych kontaktowych i adresu IP z kalkulatora), przetwarzania tekstów i tłumaczenia wiadomości;</LI>
+                <LI>Anthropic, PBC (USA) – dostawca AI dla kalkulatora wyceny (bez danych kontaktowych i adresu IP z kalkulatora), przetwarzania tekstów, tłumaczenia wiadomości oraz przygotowywania szkiców odpowiedzi na komentarze pod naszymi postami na Facebooku i Instagramie;</LI>
                 <LI>Cenogram (Arena Paweł Nguyen, Polska) – dane rynkowe do kalkulatora wyceny (parametry nieruchomości, bez danych kontaktowych);</LI>
                 <LI>OpenAI (USA) – zamiana nagrań głosowych pracowników na tekst (asystent głosowy w CRM);</LI>
                 <LI>Replicate (USA) – obróbka zdjęć ofert i automatyczne napisy do wideo naszych pracowników;</LI>
@@ -209,7 +234,7 @@ export default async function RodoPage() {
 
               <H3>Wsparcie AI w wewnętrznym systemie CRM</H3>
               <P>
-                Nasi pracownicy korzystają w wewnętrznym systemie CRM z funkcji AI firmy Anthropic, PBC (USA), np. do analizy notatek z rozmów, podpowiadania pasujących ofert, streszczeń stanu kontaktu, sprawdzania projektów umów i asystenta głosowego. Do Anthropic mogą być przy tym przekazywane treści Państwa zapytania, np. kryteria poszukiwań, notatki z rozmów (z zamaskowanymi numerami PESEL, dokumentów tożsamości i kont) oraz – przy sprawdzaniu projektu umowy – dane stron umowy i nieruchomości zawarte w projekcie (art. 6 ust. 1 lit. b i f RODO). Numery PESEL, dokumentów tożsamości i kont są automatycznie maskowane przed przekazaniem do Anthropic w notatkach, poleceniach głosowych i przy sprawdzaniu projektów umów. Anthropic przetwarza te treści w naszym imieniu jako podmiot przetwarzający; według warunków API dostawcy dane przekazane przez API nie są domyślnie wykorzystywane do trenowania jego modeli i są co do zasady usuwane w ciągu 30 dni, z wyjątkami (np. obowiązki prawne, badanie nadużyć). Warunki przetwarzania danych Anthropic (Data Processing Addendum): <a href="https://www.anthropic.com/legal/data-processing-addendum" target="_blank" rel="noopener noreferrer" style={link}>anthropic.com/legal/data-processing-addendum</a>. Wyniki służą wyłącznie wsparciu pracowników; decyzje podejmują ludzie.
+                Nasi pracownicy korzystają w wewnętrznym systemie CRM z funkcji AI firmy Anthropic, PBC (USA), np. do analizy notatek z rozmów, podpowiadania pasujących ofert, streszczeń stanu kontaktu, sprawdzania projektów umów, asystenta głosowego oraz przygotowywania szkiców odpowiedzi na komentarze pod naszymi postami na Facebooku i Instagramie. Do Anthropic mogą być przy tym przekazywane treści Państwa zapytania, np. kryteria poszukiwań, notatki z rozmów (z zamaskowanymi numerami PESEL, dokumentów tożsamości i kont) oraz – przy sprawdzaniu projektu umowy – dane stron umowy i nieruchomości zawarte w projekcie (art. 6 ust. 1 lit. b i f RODO). Numery PESEL, dokumentów tożsamości i kont są automatycznie maskowane przed przekazaniem do Anthropic w notatkach, poleceniach głosowych i przy sprawdzaniu projektów umów. Anthropic przetwarza te treści w naszym imieniu jako podmiot przetwarzający; według warunków API dostawcy dane przekazane przez API nie są domyślnie wykorzystywane do trenowania jego modeli i są co do zasady usuwane w ciągu 30 dni, z wyjątkami (np. obowiązki prawne, badanie nadużyć). Warunki przetwarzania danych Anthropic (Data Processing Addendum): <a href="https://www.anthropic.com/legal/data-processing-addendum" target="_blank" rel="noopener noreferrer" style={link}>anthropic.com/legal/data-processing-addendum</a>. Wyniki służą wyłącznie wsparciu pracowników; decyzje podejmują ludzie.
               </P>
 
               <H3>Tłumaczenie wiadomości</H3>

@@ -129,6 +129,31 @@ export default function DatenschutzPage() {
         {/* NOWY AKAPIT 01.10.2026 (RP): Tekst 2 z formularz_DE_v3_tekst_zgody_telefon_FINAL_2026_10_01.md, ZATWIERDZONY przez Krytyka (9/10) i Prawnika (rozstrzygniecie w tym samym pliku). Retencja bez nawiasu "12 Monate" - job retencji telefon/WhatsApp nie istnieje (zgodnie z decyzja Prawnika/Daniela 01.10.2026); nawias doda sie po wdrozeniu joba. Zdanie koncowe z "Wenn" wg sugestii stylistycznej Krytyka (9/10, nie blokujaca). */}
       </P>
 
+      <section id="kommentare" style={{ scrollMarginTop: 96 }}>
+        <H2>7a. Kommentare unter unseren Beiträgen auf Facebook und Instagram</H2>
+        <P>
+          Kurz gesagt: Wir beantworten öffentliche Kommentare unter unseren Beiträgen auf Facebook und Instagram. Beim Entwurf der Antwort unterstützt uns ein KI-Werkzeug; die Antwort prüft und gibt aber stets ein Mensch frei.
+        </P>
+        <P>
+          Wenn Sie einen öffentlichen Kommentar unter einem Beitrag auf unserer Seite bei Facebook oder Instagram (Invest Rent Nieruchomości, @invest.rent) hinterlassen, rufen wir diesen Kommentar über die offizielle Schnittstelle (API) von Meta in unser internes CRM-System ab, um darauf antworten zu können. Dabei verarbeiten wir den Inhalt des Kommentars sowie die auf Ihrem Profil öffentlich sichtbaren Angaben (Name bzw. Profilname, Profil-ID, Datum des Kommentars). Verantwortlicher ist Investrent sp. z o.o. (Kontaktdaten siehe oben). Die Daten stammen aus Ihrem öffentlichen Kommentar.
+        </P>
+        <P>
+          Rechtsgrundlage ist unser berechtigtes Interesse an der Kommunikation mit Kundinnen und Kunden sowie Interessierten, an einer zeitnahen Beantwortung von Kommentaren sowie an der Pflege unseres Markenauftritts (Art. 6 Abs. 1 lit. f DSGVO).
+        </P>
+        <P>
+          Zur ersten Einordnung eines Kommentars (z. B. Frage, Lob, Reklamation) und zur Erstellung eines Antwortentwurfs können unsere Mitarbeitenden KI-Unterstützung von Anthropic, PBC (USA) nutzen, wie im Abschnitt „KI-Unterstützung im internen CRM” beschrieben. Aus dem Kommentar übermitteln wir an Anthropic ausschließlich dessen Inhalt (gekürzt auf maximal 1.500 Zeichen; Telefonnummern, E-Mail-Adressen sowie PESEL-, Ausweis- und Kontonummern werden zuvor automatisch maskiert), ohne Profilnamen, Vor- und Nachnamen und Profil-ID der kommentierenden Person. Neben dem Kommentartext erhält das Modell die Kontaktdaten unseres Büros sowie Angaben zu dem Angebot, auf das sich der Kommentar bezieht (z. B. Preis und Status). Nennt jemand seinen Namen im Kommentartext selbst, kann dieser Teil der übermittelten Inhalte sein. Die Anrede im Antwortentwurf fügt unser System erst nach Erhalt des Entwurfs ein.
+        </P>
+        <P>
+          Die Antwort wird erst von unseren Mitarbeitenden gelesen, geprüft und freigegeben und danach versendet, nie automatisch. Kommentare zu Preisen, rechtlichen oder finanziellen Fragen, Reklamationen und aggressive Inhalte bearbeitet immer ein Mensch. Empfänger sind die unter „Empfänger der Daten und Auftragsverarbeiter” genannten Dienstleister (u. a. Meta als Plattformbetreiber) sowie unsere berechtigten Mitarbeitenden. Die über die Meta-API bezogenen Daten verarbeiten wir nach den Meta Platform Terms (Plattformbedingungen von Meta) und ausschließlich für den oben beschriebenen Zweck.
+        </P>
+        <P>
+          Wir speichern die Daten aus dem Kommentar nicht länger, als es für die Bearbeitung der Kommunikation erforderlich ist, und löschen sie auf Ihre Anfrage hin auch früher. Betrifft der Kommentar eine Angelegenheit, aus der sich eine eigenständige Beziehung zu Ihnen ergibt (z. B. eine Anfrage oder eine Reklamation mit weiterem Kontakt), gelten die für diese Beziehung maßgeblichen Fristen. Die Löschung unserer Kopie aus dem CRM-System löscht nicht den Kommentar selbst bei Facebook oder Instagram; darüber entscheiden Sie auf der Plattform von Meta.
+        </P>
+        <P>
+          Ihnen stehen die unter „Ihre Rechte” beschriebenen Rechte zu, insbesondere das Widerspruchsrecht (Art. 21 DSGVO) sowie das Recht, die Löschung unserer Kopie aus dem CRM-System zu verlangen; Anfragen richten Sie bitte an biuro@investrent.com.pl. Da sehr viele Personen kommentieren, ist eine individuelle Benachrichtigung jeder einzelnen Person nicht ohne unverhältnismäßigen Aufwand möglich; wir erfüllen die Informationspflicht daher durch Veröffentlichung dieser Information (Art. 14 Abs. 5 lit. b DSGVO).
+        </P>
+      </section>
+
       <H2>8. Kontaktaufnahme</H2>
       <P>
         Wir kontaktieren Sie grundsätzlich nur auf Ihre Anfrage bzw. mit Ihrer Einwilligung. Eine Ausnahme betrifft Personen, die selbst eine Immobilie auf einem Portal zum Verkauf inseriert haben: Bei ihnen rufen wir gelegentlich an, um uns nach der inserierten Immobilie und einer möglichen Zusammenarbeit zu erkundigen (Einzelheiten und Widerspruchsrecht: Abschnitt 10, „Daten aus öffentlichen Immobilienanzeigen“). Eine von Ihnen ausdrücklich erbetene Antwort, ein erbetener Rückruf oder eine Antwort auf Ihre konkrete Anfrage erfolgt auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO. Darüber hinausgehende Nachrichten zu Werbezwecken erhalten Sie nur, wenn Sie in den jeweiligen Kommunikationskanal zuvor ausdrücklich eingewilligt haben: per E-Mail auf Grundlage des optionalen Kontrollkästchens im Formular (siehe Abschnitt 7) oder telefonisch, per SMS oder über WhatsApp auf Grundlage der hierfür vorgesehenen gesonderten Einwilligung (siehe Abschnitt 7). Der Rückrufwunsch im (polnischsprachigen) Bewertungsrechner ist keine Werbeeinwilligung: Der Anruf betrifft ausschließlich die Bewertung Ihrer Immobilie (siehe polnische Fassung unter /rodo; insoweit ist die polnische Fassung maßgeblich). Werbung per Messenger (z. B. WhatsApp) führen wir nicht durch, es sei denn, Sie haben uns hierfür ausdrücklich Ihre Einwilligung erteilt (siehe Abschnitt 7); schreiben Sie uns von sich aus über WhatsApp (ein Dienst von Meta, der Daten nach eigenen Datenschutzhinweisen verarbeitet), antworten wir auf Ihre konkrete Anfrage (Art. 6 Abs. 1 lit. b DSGVO). Sie können Ihre Einwilligung jederzeit widerrufen (siehe Abschnitt 15); nach dem Widerruf erhalten Sie keine Werbung mehr über den betroffenen Kanal.
@@ -156,7 +181,7 @@ export default function DatenschutzPage() {
         <LI>Railway Corp. (USA) – Betrieb der Anwendungsschnittstelle (API) des CRM-Systems;</LI>
         <LI>Supabase Inc. – Datenbank und Speicher (Serverstandort siehe Abschnitt 3);</LI>
         <LI>Brevo (Sendinblue SAS, Frankreich) – Versand von E-Mails (Benachrichtigungen an unsere Mitarbeitenden, z. B. über neue Anfragen, sowie E-Mails an Kunden);</LI>
-        <LI>Anthropic, PBC (USA) – KI-Dienstleister für den Bewertungsrechner, die Textverarbeitung und die Übersetzung von Nachrichten;</LI>
+        <LI>Anthropic, PBC (USA) – KI-Dienstleister für den Bewertungsrechner, die Textverarbeitung, die Übersetzung von Nachrichten und die Erstellung von Antwortentwürfen auf Kommentare unter unseren Beiträgen auf Facebook und Instagram;</LI>
         <LI>OpenAI (USA) – Umwandlung von Sprachaufnahmen der Mitarbeitenden in Text (Sprachassistent im CRM);</LI>
         <LI>Replicate (USA) – Bildbearbeitung von Objektfotos und automatische Untertitel für Videos unserer Mitarbeitenden;</LI>
         <LI>Google (Gemini API, Google Ireland Limited bzw. Google LLC) – Erstellung von Objektplakaten aus Objektfotos;</LI>
@@ -169,7 +194,7 @@ export default function DatenschutzPage() {
 
       <H3>KI-Unterstützung im internen CRM</H3>
       <P>
-        Unsere Mitarbeitenden nutzen im internen CRM-System Funktionen von Anthropic, PBC (USA), um ihre Arbeit zu unterstützen: zur Auswertung von Gesprächsnotizen, für Vorschläge passender Objekte, für Zusammenfassungen zum Stand Ihrer Anfrage, zur Prüfung von Vertragsentwürfen und für einen Sprachassistenten. Dabei können Inhalte Ihrer Anfrage oder Ihres Vertragsverhältnisses an Anthropic übermittelt werden, z. B. Suchkriterien, Notizen zu Gesprächen, Sprachbefehle sowie – bei der Prüfung eines Vertragsentwurfs – die im Entwurf enthaltenen Angaben zu den Vertragsparteien und zum Objekt (Art. 6 Abs. 1 lit. b und f DSGVO).
+        Unsere Mitarbeitenden nutzen im internen CRM-System Funktionen von Anthropic, PBC (USA), um ihre Arbeit zu unterstützen: zur Auswertung von Gesprächsnotizen, für Vorschläge passender Objekte, für Zusammenfassungen zum Stand Ihrer Anfrage, zur Prüfung von Vertragsentwürfen, für einen Sprachassistenten sowie zur Erstellung von Antwortentwürfen auf Kommentare unter unseren Beiträgen auf Facebook und Instagram. Dabei können Inhalte Ihrer Anfrage oder Ihres Vertragsverhältnisses an Anthropic übermittelt werden, z. B. Suchkriterien, Notizen zu Gesprächen, Sprachbefehle sowie – bei der Prüfung eines Vertragsentwurfs – die im Entwurf enthaltenen Angaben zu den Vertragsparteien und zum Objekt (Art. 6 Abs. 1 lit. b und f DSGVO).
       </P>
       <P>
         Ihr Name wird für Objektvorschläge und Zusammenfassungen nicht als gesonderte Angabe übermittelt; in Freitexten wie Notizen oder Sprachbefehlen kann er jedoch vorkommen. Bei Notizen, Sprachbefehlen und der Prüfung von Vertragsentwürfen werden PESEL-, Ausweis- und Kontonummern vor der Übermittlung an Anthropic automatisch maskiert.
@@ -255,7 +280,7 @@ export default function DatenschutzPage() {
 
       <H2>17. Änderungen dieser Datenschutzerklärung</H2>
       <P>
-        Wir passen diese Datenschutzerklärung an, wenn sich die Verarbeitung oder die Rechtslage ändert. Stand: 01.10.2026{/* USTAWIC na dzien faktycznej publikacji przy merge */}. Für Nutzer, die diese Website in deutscher Sprache aufrufen, ist diese deutsche Fassung maßgeblich. Die polnische Fassung finden Sie unter <a href="/rodo" style={link}>/rodo</a>. Beide Fassungen beschreiben dieselben Verarbeitungen; der Bewertungsrechner ist nur auf Polnisch verfügbar und daher nur in der polnischen Fassung beschrieben.
+        Wir passen diese Datenschutzerklärung an, wenn sich die Verarbeitung oder die Rechtslage ändert. Stand: 05.10.2026. Für Nutzer, die diese Website in deutscher Sprache aufrufen, ist diese deutsche Fassung maßgeblich. Die polnische Fassung finden Sie unter <a href="/rodo" style={link}>/rodo</a>. Beide Fassungen beschreiben dieselben Verarbeitungen; der Bewertungsrechner ist nur auf Polnisch verfügbar und daher nur in der polnischen Fassung beschrieben.
         {/* ERLEDIGT (Przeglad 3.10, uwaga 18): klauzula wersji wiazacej wg prawnika. Daniel: data Stand = data zatwierdzenia/publikacji. */}
       </P>
 
