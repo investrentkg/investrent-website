@@ -24,7 +24,7 @@ import type { Metadata } from 'next'
 // Dane spolki z odpisu KRS/VIES z 25.09.2026 - do weryfikacji przed publikacja.
 
 // STAN NA (jedno miejsce): data ma byc zaktualizowana w dniu faktycznego wdrozenia na produkcje.
-const POLICY_DATE = '03.10.2026'
+const POLICY_DATE = '05.10.2026'
 
 // PRZELACZNIK OKRESOW KALKULATORA (wydanie 28.09.2026): true = wariant A (okresy 12/24 mies.), false = wariant B (ogolny: "nie dluzej niz konieczne").
 // MUSI byc zgodny z RETENTION_VARIANT_A w src/app/wycena/texts.ts (oba naraz: klauzula w kalkulatorze i /rodo musza mowic to samo).
@@ -169,13 +169,25 @@ export default async function RodoPage() {
               <section id="komentarze" style={{ scrollMarginTop: 96 }}>
                 <H2>Komentarze pod naszymi postami na Facebooku i Instagramie</H2>
                 <P>
-                  Gdy zostawiają Państwo publiczny komentarz pod postem na naszej stronie na Facebooku lub Instagramie (Invest Rent Nieruchomości, @invest.rent), pobieramy ten komentarz za pośrednictwem oficjalnego interfejsu API Meta do naszego wewnętrznego systemu CRM, aby móc na niego odpowiedzieć. Przetwarzamy przy tym treść komentarza oraz dane widoczne publicznie na Państwa profilu (imię i nazwisko lub nazwa, identyfikator profilu, data komentarza). Administratorem tych danych jest Investrent sp. z o.o. (dane kontaktowe wyżej); źródłem danych jest Państwa publiczny komentarz — nie otrzymujemy ich bezpośrednio od Państwa poza samą jego publikacją.
+                  W skrócie: odpowiadamy na Państwa publiczne komentarze pod naszymi postami na Facebooku i Instagramie, a przy przygotowaniu szkicu odpowiedzi pomaga nam narzędzie AI. Odpowiedź zawsze zatwierdza człowiek.
                 </P>
                 <P>
-                  Podstawą przetwarzania jest nasz prawnie uzasadniony interes w prowadzeniu komunikacji z klientami i osobami zainteresowanymi oraz w dbaniu o wizerunek firmy przez terminowe odpowiadanie na komentarze (art. 6 ust. 1 lit. f RODO). Do wstępnej klasyfikacji komentarza (np. pytanie, pochwała, reklamacja) i do przygotowania propozycji odpowiedzi nasi pracownicy mogą skorzystać ze wsparcia AI dostawcy Anthropic, PBC (USA), na zasadach opisanych w części „Wsparcie AI w wewnętrznym systemie CRM”; do klasyfikacji przekazujemy samą treść komentarza (skróconą do maksymalnie 1500 znaków), bez danych autora, a do przygotowania propozycji odpowiedzi dodatkowo samo imię osoby komentującej, bez nazwiska i identyfikatora profilu. Odpowiedź zawsze wysyła pracownik po przeczytaniu i zatwierdzeniu jej treści — nikt nie wysyła jej automatycznie; komentarze dotyczące ceny, spraw prawnych lub finansowych, reklamacje i treści agresywne zawsze obsługuje człowiek. Odbiorcami danych są dostawcy wymienieni w części „Odbiorcy danych” (w tym Meta jako operator platformy) oraz upoważnieni pracownicy. Korzystanie z danych uzyskanych w ten sposób za pośrednictwem interfejsu API Meta podlega zasadom platformy Meta (Meta Platform Terms) i jest ograniczone do celu opisanego powyżej.
+                  Gdy zostawiają Państwo publiczny komentarz pod postem na naszej stronie na Facebooku lub Instagramie (Invest Rent Nieruchomości, @invest.rent), pobieramy ten komentarz za pośrednictwem oficjalnego interfejsu API Meta do naszego wewnętrznego systemu CRM, aby móc na niego odpowiedzieć. Przetwarzamy przy tym treść komentarza oraz dane widoczne publicznie na Państwa profilu (imię i nazwisko lub nazwa, identyfikator profilu, data komentarza). Administratorem tych danych jest Investrent sp. z o.o. (dane kontaktowe wyżej). Dane pochodzą z Państwa publicznego komentarza.
                 </P>
                 <P>
-                  Dane z komentarza przechowujemy w naszym systemie nie dłużej, niż jest to konieczne do obsługi komunikacji, a na Państwa żądanie usuwamy je wcześniej. Jeśli komentarz dotyczy sprawy, która przechodzi w odrębną relację z Państwem (np. zapytanie o ofertę, reklamacja prowadząca do dalszego kontaktu), stosujemy okresy właściwe dla tej relacji. Usunięcie naszej kopii komentarza z systemu CRM nie usuwa samego komentarza z Facebooka ani Instagramu — o nim decydują Państwo na platformie Meta. Przysługują Państwu prawa opisane w części „Prawa osób, których dane dotyczą”, w tym prawo sprzeciwu wobec tego przetwarzania (art. 21 RODO) oraz prawo żądania usunięcia naszej kopii komentarza z systemu CRM — prośby prosimy kierować na biuro@investrent.com.pl. Ze względu na dużą liczbę osób komentujących indywidualne powiadomienie każdej z nich nie jest możliwe bez niewspółmiernie dużego nakładu; obowiązek informacyjny realizujemy przez publikację niniejszej informacji (art. 14 ust. 5 lit. b RODO).
+                  Podstawą przetwarzania jest nasz prawnie uzasadniony interes w prowadzeniu komunikacji z klientami i osobami zainteresowanymi, w terminowym odpowiadaniu na komentarze oraz w dbaniu o wizerunek firmy (art. 6 ust. 1 lit. f RODO).
+                </P>
+                <P>
+                  Do wstępnej klasyfikacji komentarza (np. pytanie, pochwała, reklamacja) i do przygotowania szkicu odpowiedzi nasi pracownicy mogą skorzystać ze wsparcia AI dostawcy Anthropic, PBC (USA), na zasadach opisanych w części „Wsparcie AI w wewnętrznym systemie CRM”. Do Anthropic przekazujemy wyłącznie treść komentarza (skróconą do maksymalnie 1500 znaków, z automatycznie zamaskowanymi numerami telefonów, adresami e-mail oraz numerami PESEL, dokumentów i kont), bez nazwy konta, imienia, nazwiska i identyfikatora osoby komentującej. Jeśli ktoś poda swoje imię w samej treści komentarza, może ono znaleźć się w przekazywanej treści. Imię w powitaniu szkicu dodaje nasz system dopiero po jego otrzymaniu.
+                </P>
+                <P>
+                  Odpowiedź zawsze wysyła pracownik po przeczytaniu i zatwierdzeniu jej treści; nikt nie wysyła jej automatycznie. Komentarze dotyczące ceny, spraw prawnych lub finansowych, reklamacje i treści agresywne zawsze obsługuje człowiek. Odbiorcami danych są dostawcy wymienieni w części „Odbiorcy danych” (w tym Meta jako operator platformy) oraz upoważnieni pracownicy. Korzystanie z danych uzyskanych za pośrednictwem interfejsu API Meta podlega zasadom platformy Meta (Meta Platform Terms) i jest ograniczone do celu opisanego powyżej.
+                </P>
+                <P>
+                  Dane z komentarza przechowujemy w naszym systemie nie dłużej, niż jest to konieczne do obsługi komunikacji, a na Państwa żądanie usuwamy je wcześniej. Jeśli komentarz dotyczy sprawy, która przechodzi w odrębną relację z Państwem (np. zapytanie o ofertę, reklamacja prowadząca do dalszego kontaktu), stosujemy okresy właściwe dla tej relacji. Usunięcie naszej kopii komentarza z systemu CRM nie usuwa samego komentarza z Facebooka ani Instagramu; o nim decydują Państwo na platformie Meta.
+                </P>
+                <P>
+                  Przysługują Państwu prawa opisane w części „Prawa osób, których dane dotyczą”, w tym prawo sprzeciwu wobec tego przetwarzania (art. 21 RODO) oraz prawo żądania usunięcia naszej kopii komentarza z systemu CRM. Prośby prosimy kierować na biuro@investrent.com.pl. Ze względu na dużą liczbę osób komentujących indywidualne powiadomienie każdej z nich nie jest możliwe bez niewspółmiernie dużego nakładu, dlatego obowiązek informacyjny realizujemy przez publikację niniejszej informacji (art. 14 ust. 5 lit. b RODO).
                 </P>
               </section>
 
@@ -208,7 +220,7 @@ export default async function RodoPage() {
                 <LI>Railway Corp. (USA) – działanie interfejsu API systemu CRM;</LI>
                 <LI>Supabase Inc. – baza danych i przechowywanie danych (lokalizacja serwerów – patrz „Hosting i techniczne udostępnianie strony”);</LI>
                 <LI>Brevo (Sendinblue SAS, Francja) – wysyłka wiadomości e-mail (powiadomienia dla naszych pracowników o zgłoszeniach, w tym imię, numer telefonu i treść zgłoszenia, oraz wiadomości do klientów);</LI>
-                <LI>Anthropic, PBC (USA) – dostawca AI dla kalkulatora wyceny (bez danych kontaktowych i adresu IP z kalkulatora), przetwarzania tekstów i tłumaczenia wiadomości;</LI>
+                <LI>Anthropic, PBC (USA) – dostawca AI dla kalkulatora wyceny (bez danych kontaktowych i adresu IP z kalkulatora), przetwarzania tekstów, tłumaczenia wiadomości oraz przygotowywania szkiców odpowiedzi na komentarze pod naszymi postami na Facebooku i Instagramie;</LI>
                 <LI>Cenogram (Arena Paweł Nguyen, Polska) – dane rynkowe do kalkulatora wyceny (parametry nieruchomości, bez danych kontaktowych);</LI>
                 <LI>OpenAI (USA) – zamiana nagrań głosowych pracowników na tekst (asystent głosowy w CRM);</LI>
                 <LI>Replicate (USA) – obróbka zdjęć ofert i automatyczne napisy do wideo naszych pracowników;</LI>
