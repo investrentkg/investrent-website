@@ -92,6 +92,14 @@ export const T = {
     // Jedna forma: dolna granica przedziału z backendu (15/20/50), bez odmiany zakresów i bez pozornej precyzji.
     comparables: (min: number, _max: number) =>
       `Do szacunku wykorzystaliśmy co najmniej ${min} ${min === 1 ? 'porównywalnej nieruchomości' : 'porównywalnych nieruchomości'} z Twojej miejscowości.`,
+    // Dwa zakresy (decyzja Daniela 05.10.2026; backtest RCN: wezszy ok. polowa, szerszy ok. 80% cen podobnych sprzedazy). Teksty wymagaja przegladu Krytyka przed publikacja.
+    coreTitle: 'Węższy zakres',
+    wideTitle: 'Szerszy zakres',
+    coreNote: 'W takich widełkach mieści się ok. połowa cen podobnych sprzedanych mieszkań.',
+    wideNote: 'W takich widełkach mieści się ok. 80% cen podobnych sprzedanych mieszkań.',
+    // Miejscowosc inna niz miasto domowe: bez deklaracji, jaka czesc sprzedazy sie miesci (brak backtestu).
+    coreNoteWider: 'Zakres orientacyjny. Dla Twojej miejscowości mamy mniej danych, więc nie podajemy, jaka część podobnych sprzedaży się w nim mieści.',
+    wideNoteWider: 'Szerszy zakres orientacyjny, bo dla Twojej miejscowości mamy mniej porównywalnych danych.',
     scopeNote: 'Widełki liczymy automatycznie z użyciem sztucznej inteligencji, na podstawie danych rynkowych (m.in. cen ofertowych z ogłoszeń i cen transakcyjnych) oraz kilku ogólnych danych z formularza. Nie widzimy zdjęć ani szczegółów stanu i standardu mieszkania, dlatego cena, za jaką je sprzedasz, może się wyraźnie różnić od widełek.',
     // v14: dopisek tylko przy miejscowosci innej niz miasto domowe (WycenaClient)
     scopeNoteWider: 'Dla Twojej miejscowości widełki są szersze, bo mamy tam mniej porównywalnych danych.',

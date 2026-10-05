@@ -266,18 +266,49 @@ function OutcomePanel({ outcome, scoped, wider, onAgain }: { outcome: EstimateOu
     return (
       <section style={card} aria-labelledby="wy-res-title">
         <h2 id="wy-res-title" style={h2}>{T.result.title}</h2>
-        <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 14, padding: '18px 20px', margin: '12px 0' }}>
-          <div style={{ fontSize: 14, color: '#475569' }}>{T.result.priceLabel}</div>
-          <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 'clamp(22px, 5vw, 30px)', color: '#0d2a5c', lineHeight: 1.2 }}>
-            {formatRange(outcome.range)}
-          </div>
-          {outcome.pricePerM2 && (
-            <div style={{ marginTop: 10, fontSize: 15, color: '#0d2a5c' }}>
-              <span style={{ color: '#475569' }}>{T.result.perM2Label}: </span>
-              <strong>{formatPLN(outcome.pricePerM2.low)} – {formatPLN(outcome.pricePerM2.high)}</strong>
+        {outcome.rangeCore && outcome.rangeWide ? (
+          <>
+            <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 14, padding: '18px 20px', margin: '12px 0 8px' }}>
+              <div style={{ fontSize: 14, color: '#475569' }}>{T.result.coreTitle}</div>
+              <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 'clamp(22px, 5vw, 30px)', color: '#0d2a5c', lineHeight: 1.2 }}>
+                {formatRange(outcome.rangeCore)}
+              </div>
+              {outcome.pricePerM2Core && (
+                <div style={{ marginTop: 10, fontSize: 15, color: '#0d2a5c' }}>
+                  <span style={{ color: '#475569' }}>{T.result.perM2Label}: </span>
+                  <strong>{formatPLN(outcome.pricePerM2Core.low)} – {formatPLN(outcome.pricePerM2Core.high)}</strong>
+                </div>
+              )}
+              <div style={{ marginTop: 8, fontSize: 13.5, color: '#475569', lineHeight: 1.5 }}>{wider ? T.result.coreNoteWider : T.result.coreNote}</div>
             </div>
-          )}
-        </div>
+            <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 14, padding: '14px 20px', margin: '0 0 12px' }}>
+              <div style={{ fontSize: 14, color: '#475569' }}>{T.result.wideTitle}</div>
+              <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 700, fontSize: 'clamp(18px, 4.2vw, 22px)', color: '#0d2a5c', lineHeight: 1.2 }}>
+                {formatRange(outcome.rangeWide)}
+              </div>
+              {outcome.pricePerM2Wide && (
+                <div style={{ marginTop: 8, fontSize: 14.5, color: '#0d2a5c' }}>
+                  <span style={{ color: '#475569' }}>{T.result.perM2Label}: </span>
+                  <strong>{formatPLN(outcome.pricePerM2Wide.low)} – {formatPLN(outcome.pricePerM2Wide.high)}</strong>
+                </div>
+              )}
+              <div style={{ marginTop: 8, fontSize: 13.5, color: '#475569', lineHeight: 1.5 }}>{wider ? T.result.wideNoteWider : T.result.wideNote}</div>
+            </div>
+          </>
+        ) : (
+          <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 14, padding: '18px 20px', margin: '12px 0' }}>
+            <div style={{ fontSize: 14, color: '#475569' }}>{T.result.priceLabel}</div>
+            <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 'clamp(22px, 5vw, 30px)', color: '#0d2a5c', lineHeight: 1.2 }}>
+              {formatRange(outcome.range)}
+            </div>
+            {outcome.pricePerM2 && (
+              <div style={{ marginTop: 10, fontSize: 15, color: '#0d2a5c' }}>
+                <span style={{ color: '#475569' }}>{T.result.perM2Label}: </span>
+                <strong>{formatPLN(outcome.pricePerM2.low)} – {formatPLN(outcome.pricePerM2.high)}</strong>
+              </div>
+            )}
+          </div>
+        )}
         <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '0 0 8px' }}><strong>{T.result.scopeNote}</strong></p>
         {wider && <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '0 0 8px' }}>{T.result.scopeNoteWider}</p>}
         {outcome.comparables && <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '0 0 8px' }}>{T.result.comparables(outcome.comparables.min, outcome.comparables.max)}</p>}
