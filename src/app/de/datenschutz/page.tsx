@@ -256,7 +256,7 @@ export default function DatenschutzPage() {
 
       <H2>17. Änderungen dieser Datenschutzerklärung</H2>
       <P>
-        Wir passen diese Datenschutzerklärung an, wenn sich die Verarbeitung oder die Rechtslage ändert. Stand: 01.10.2026{/* USTAWIC na dzien faktycznej publikacji przy merge */}. Für Nutzer, die diese Website in deutscher Sprache aufrufen, ist diese deutsche Fassung maßgeblich. Die polnische Fassung finden Sie unter <a href="/rodo" style={link}>/rodo</a>. Beide Fassungen beschreiben dieselben Verarbeitungen; der Bewertungsrechner ist nur auf Polnisch verfügbar und daher nur in der polnischen Fassung beschrieben.
+        Wir passen diese Datenschutzerklärung an, wenn sich die Verarbeitung oder die Rechtslage ändert. Stand: 07.10.2026{/* USTAWIC na dzien faktycznej publikacji przy merge */}. Für Nutzer, die diese Website in deutscher Sprache aufrufen, ist diese deutsche Fassung maßgeblich. Die polnische Fassung finden Sie unter <a href="/rodo" style={link}>/rodo</a>. Beide Fassungen beschreiben dieselben Verarbeitungen; der Bewertungsrechner ist nur auf Polnisch verfügbar und daher nur in der polnischen Fassung beschrieben.
         {/* ERLEDIGT (Przeglad 3.10, uwaga 18): klauzula wersji wiazacej wg prawnika. Daniel: data Stand = data zatwierdzenia/publikacji. */}
       </P>
 
