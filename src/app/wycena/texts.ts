@@ -70,7 +70,7 @@ export const T = {
     property_type: 'Rodzaj nieruchomości',
     property_type_placeholder: 'Wybierz…',
     city: 'Miejscowość',
-    city_hint: 'Domyślnie Kołobrzeg; możesz zacząć pisać nazwę. Dzielnicę lub osiedle Kołobrzegu (np. Podczele) wybierzesz niżej, w polu „Dzielnica lub osiedle”. Grzybowo, Bogucino, Budzistowo, Zieleniewo i Dźwirzyno to osobne miejscowości: wybierz je tutaj. Jeśli Twojej miejscowości nie ma na liście, wybierz „Inna lokalizacja”: widełek online nie podamy, ale w województwie zachodniopomorskim cenę oszacuje agent, a poza nim sprawdzimy, czy możemy pomóc. Zostaw numer lub zadzwoń.',
+    city_hint: 'Domyślnie Kołobrzeg; możesz zacząć pisać nazwę. Dzielnicę lub osiedle Kołobrzegu (np. Podczele) wybierzesz niżej, w polu „Dzielnica lub osiedle”. Grzybowo, Bogucino, Budzistowo, Zieleniewo i Dźwirzyno to osobne miejscowości: wybierz je tutaj. Nie ma Twojej miejscowości na liście? Wybierz „Inna lokalizacja”. Widełek online wtedy nie pokażemy, ale w województwie zachodniopomorskim cenę oszacuje agent; poza nim sprawdzimy, czy możemy pomóc. Numer zostawisz niżej, w formularzu kontaktowym.',
     district: 'Dzielnica lub osiedle',
     district_placeholder: 'Wybierz z listy…',
     district_hint: 'Wybierz dzielnicę lub osiedle z listy albo „Inna dzielnica”, jeśli Twojej nie ma na liście.',
@@ -108,7 +108,7 @@ export const T = {
     // Poza zakresem liczb online (dom, działka, miejscowość spoza listy) - to reguła, nie brak danych.
     outOfScopeTitle: 'Dla tej nieruchomości nie liczymy widełek online',
     outOfScopeBody:
-      `Widełki online liczymy dla mieszkań w Kołobrzegu i w wybranych miejscowościach regionu (lista w formularzu). Dla domów, działek i innych miejscowości w województwie zachodniopomorskim cenę oszacuje agent, bezpłatnie i bez zobowiązań: zostaw numer i zaznacz zgodę na telefon w sprawie wyceny, zadzwonimy tylko w tej sprawie. Jeśli nieruchomość jest poza tym województwem, napisz na biuro@investrent.com.pl lub zadzwoń pod ${OFFICE_PHONE}: sprawdzimy, czy możemy pomóc.`,
+      `Widełki online liczymy dla mieszkań w Kołobrzegu i w wybranych miejscowościach regionu (lista w formularzu). Dla domów, działek i innych miejscowości w województwie zachodniopomorskim cenę oszacuje agent, bezpłatnie i bez zobowiązań. Zostaw numer i zaznacz zgodę na telefon w sprawie wyceny: zadzwonimy tylko w tej sprawie. Jeśli nieruchomość jest poza tym województwem, napisz na biuro@investrent.com.pl lub zadzwoń pod ${OFFICE_PHONE}: sprawdzimy, czy możemy pomóc.`,
     // W zakresie, ale silnik nie ma dość porównań.
     noNumbersTitle: 'Nie mamy dość danych, żeby podać widełki',
     noNumbersBody:
@@ -192,14 +192,14 @@ export const T = {
     whatsappCta: 'Napisz na WhatsApp',
     whatsappText: 'Dzień dobry, korzystałem(am) z kalkulatora wyceny na stronie InvestRent i chcę omówić wynik.',
     doneTitle: 'Dziękujemy, otrzymaliśmy Twój numer',
-    doneBody: `Zwykle oddzwaniamy w ciągu 24\u00A0godzin, najczęściej szybciej. Wolisz zadzwonić do nas? Numer biura: ${OFFICE_PHONE}.`,
+    doneBody: `Agent oddzwoni na podany numer. Wolisz zadzwonić sam? Numer biura: ${OFFICE_PHONE}.`,
   },
 
   // Komunikaty konczace sie na "zadzwon:" - numer biura dopisuje komponent jako link tel:.
   errors: {
     disabled: 'Kalkulator jest chwilowo niedostępny. Zostaw numer poniżej lub zadzwoń:',
     // when = wynik formatRetryAfter(retry_after_seconds z backendu; okno 1 h dla luźnego limitu, 24 h dla limitu 3 wycen)
-    rateLimited: (when: string) => `Z tej sieci wykonano już maksymalną liczbę wycen. Spróbuj ponownie za około ${when}. Możesz też zostawić numer poniżej lub zadzwonić:`,
+    rateLimited: (when: string) => `Z Twojego połączenia wykonano już maksymalną liczbę wycen. Spróbuj ponownie za około ${when}. Możesz też zostawić numer poniżej lub zadzwonić:`,
     network: 'Nie udało się połączyć z kalkulatorem. Spróbuj ponownie za chwilę, a jeśli problem się powtórzy, sprawdź połączenie z internetem. Możesz też zostawić numer poniżej lub zadzwonić:',
     server: 'Coś poszło nie tak po naszej stronie. Spróbuj ponownie za chwilę. Możesz też zostawić numer poniżej lub zadzwonić:',
     turnstilePending: 'Weryfikacja antyspamowa jeszcze się ładuje. Poczekaj chwilę i spróbuj ponownie.',
