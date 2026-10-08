@@ -75,7 +75,10 @@ export const metadata: Metadata = {
     description: 'Kupno, sprzedaż i wynajem nieruchomości nad Bałtykiem. Odpowiadamy do 60 minut.',
     images: ['/hero.jpg'],
   },
-  robots: { index: true, follow: true },
+  // robots: celowo BEZ jawnego `index, follow` (08.10.2026, audyt: strona 404 miala DWA tagi robots naraz,
+  // `noindex` dodawany przez Next.js dla not-found oraz `index, follow` z tego layoutu). Brak tagu =
+  // domyślnie index, follow, więc zwykłe strony zachowują się tak samo; strony, które ustawiają własne
+  // robots (np. /oferty?agent_id=, podgląd oferty, wygasła oferta), nadal je nadpisują.
 }
 
 // NAPRAWA (audyt webmasterski, Daniel 30.07.2026): usunieto stad drugi,
