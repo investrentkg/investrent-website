@@ -4,6 +4,15 @@
 // typ tresci.
 export const revalidate = 300
 
+// ISR (08.10.2026): trasa z parametrem [slug] BEZ generateStaticParams jest w Next.js 14 renderowana
+// dynamicznie przy KAŻDYM żądaniu (Cache-Control: private, no-store, X-Vercel-Cache: MISS) mimo
+// `revalidate`. Pusta lista = żadna strona nie jest budowana z góry (bez zapytań do API w czasie
+// buildu), ale trasa przechodzi w tryb ISR: pierwszy wpis renderuje się na żądanie, a potem jest
+// serwowany z cache i odświeżany co `revalidate` s (stale-while-revalidate).
+export async function generateStaticParams() {
+  return []
+}
+
 import { serializeJsonLd } from '@/lib/jsonLd'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
