@@ -36,7 +36,7 @@ test('range niepoprawny -> no_numbers nawet gdy dwa zakresy poprawne (nigdy zgad
   assert.equal(interpretResponse(200, { ...two, range: { low: 5, high: 1 } }).kind, 'no_numbers')
 })
 test('teksty dwoch zakresow: miasto domowe z deklaracja pokrycia, inne miejscowosci bez liczb procentowych', () => {
-  assert.ok(T.result.coreNote.includes('ok. połowa')); assert.ok(T.result.wideNote.includes('ok. 80%'))
+  assert.ok(T.result.coreNote.includes('ok. połowa')); assert.ok(T.result.wideNote.includes('ok. 75%'))
   assert.ok(!/\d+\s?%|połowa/.test(T.result.coreNoteWider + T.result.wideNoteWider), 'poza miastem domowym bez deklaracji pokrycia')
   assert.equal(T.result.coreTitle, 'Węższy zakres'); assert.equal(T.result.wideTitle, 'Szerszy zakres')
 })
