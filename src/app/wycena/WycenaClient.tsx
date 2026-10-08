@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Calculator, CheckCircle, MessageCircle, Phone } from 'lucide-react'
 import { submitLead } from '@/lib/api'
+import { getAttribution } from '@/lib/attribution'
 import { trackContactEvent } from '@/lib/track'
 import Breadcrumb from '@/components/Breadcrumb'
 import WycenaModal from '@/components/WycenaModal'
@@ -140,7 +141,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
     setTsNotice(null)
     inFlight.current = true
     setPhase('loading')
-    const res = await requestEstimate(ESTIMATE_URL, buildPayload(values, honeypot, tsToken))
+    const res = await requestEstimate(ESTIMATE_URL, buildPayload(values, honeypot, tsToken, getAttribution()))
     inFlight.current = false
     if (TURNSTILE_SITE_KEY) { setTsToken(null); setTsReset(n => n + 1) } // token jest jednorazowy
     if (res.kind === 'invalid') {
@@ -513,7 +514,7 @@ function LeadPanel({ outcome, values, onDone }: { outcome: EstimateOutcome | nul
     setState('sending')
     trackValuation('wycena_lead_submit', { mode, iab: iabClass() })
     try {
-      const r = await submitLead(buildLeadRequest({ name, phone, values, outcome, utm: readUtm(window.location.search), turnstileToken: tsToken, honeypot: hp }))
+      const r = await submitLead(buildLeadRequest({ name, phone, values, outcome, utm: readUtm(window.location.search), attribution: getAttribution(), turnstileToken: tsToken, honeypot: hp }))
       if (r?.ok) { setState('ok'); trackValuation('wycena_lead', { mode: outcome?.kind ?? 'none' }) }
       else {
         setState('fail')

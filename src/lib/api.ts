@@ -1,4 +1,5 @@
 import { postLead, trackLeadSuccess } from '@/lib/leadSubmit'
+import { withAttribution, type Attribution } from '@/lib/attribution'
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://investrent-crm-production.up.railway.app'
 
@@ -223,11 +224,13 @@ export async function submitLead(payload: {
   preferred_city?: string
   hp_field?: string // honeypot (backend: niepusty = bot)
   turnstile_token?: string
+  attribution?: Attribution
 }) {
   // Nigdy nie rzuca (timeout 15 s, siec, odpowiedz nie-JSON) - zwraca { ok, reason? }.
   // Wywolujacy sprawdzaja tylko r?.ok, wiec dla nich nic sie nie zmienia poza tym,
   // ze formularz juz nie wisi na "Wysylanie...".
-  const result = await postLead(`${API}/api/public/leads`, payload)
+  // UTM z sessionStorage (tylko gdy istnieja i niepuste; bez nich cialo zadania bez zmian).
+  const result = await postLead(`${API}/api/public/leads`, withAttribution(payload))
   if (result.ok) trackLeadSuccess(payload.source)
   return result
 }
