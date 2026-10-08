@@ -70,7 +70,7 @@ export const T = {
     property_type: 'Rodzaj nieruchomości',
     property_type_placeholder: 'Wybierz…',
     city: 'Miejscowość',
-    city_hint: 'Domyślnie Kołobrzeg; możesz zacząć pisać nazwę. Dzielnicę lub osiedle Kołobrzegu (np. Podczele) wybierzesz niżej, w polu „Dzielnica lub osiedle”. Grzybowo, Bogucino, Budzistowo, Zieleniewo i Dźwirzyno to osobne miejscowości: wybierz je tutaj. Nie ma Twojej miejscowości na liście? Wybierz „Inna lokalizacja”. Widełek online wtedy nie pokażemy, ale w województwie zachodniopomorskim cenę oszacuje agent; poza nim sprawdzimy, czy możemy pomóc. Numer zostawisz niżej, w formularzu kontaktowym.',
+    city_hint: 'Domyślnie Kołobrzeg; możesz zacząć pisać nazwę. Grzybowo, Bogucino, Budzistowo, Zieleniewo i Dźwirzyno to osobne miejscowości: wybierz je tutaj. Nie ma Twojej miejscowości? Wybierz „Inna lokalizacja”: widełek online nie pokażemy, ale oddzwoni agent. Numer zostawisz po wysłaniu formularza, w następnym kroku.',
     district: 'Dzielnica lub osiedle',
     district_placeholder: 'Wybierz z listy…',
     district_hint: 'Wybierz dzielnicę lub osiedle z listy albo „Inna dzielnica”, jeśli Twojej nie ma na liście.',
