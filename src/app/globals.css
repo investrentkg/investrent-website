@@ -618,5 +618,22 @@ html, body {
 .wy-hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
 /* v12: link/przycisk "Zostaw numer telefonu" i podsumowania <details> - cel dotyku min. 44 px */
 .wy-linkbtn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; padding: 0 6px; background: none; border: none; font: inherit; color: #1a4fa0; text-decoration: underline; cursor: pointer; }
+/* D2: CTA do panelu kontaktu przy wyniku + przyklejony pasek (tylko telefon) */
+.wy-cta { margin: 14px auto 4px; max-width: 460px; }
+.wy-textlink { display: inline-flex; align-items: center; min-height: 44px; padding: 0 2px; font-size: 15px; color: #1a4fa0; font-weight: 600; text-decoration: underline; }
+.wy-sticky {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 9990;
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+  background: #fff; border-top: 1px solid #e2e8f0; box-shadow: 0 -6px 24px rgba(13,42,92,.12);
+}
+.wy-sticky .wy-btn { flex: 1 1 auto; width: auto; min-height: 48px; padding: 12px 16px; }
+.wy-sticky-call {
+  flex: none; display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px;
+  border-radius: 12px; border: 1.5px solid #0d2a5c; color: #0d2a5c; background: #fff; text-decoration: none;
+}
+.wy-sticky-call:focus-visible { outline: 3px solid #f5a623; outline-offset: 2px; }
+.wy-sticky-spacer { height: 76px; }
+@media (min-width: 768px) { .wy-sticky, .wy-sticky-spacer { display: none; } }
 .wy-details > summary { display: flex; align-items: center; min-height: 44px; cursor: pointer; color: #1a4fa0; font-weight: 600; text-decoration: underline; }
 .wy-details[open] > summary { margin-bottom: 8px; }
