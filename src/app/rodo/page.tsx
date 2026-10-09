@@ -121,7 +121,7 @@ export default async function RodoPage() {
               <P>
                 Zdjęcia ofert i pracowników oraz obrazy w wpisach blogowych są ładowane z magazynu naszego dostawcy bazy danych (Supabase Storage; art. 6 ust. 1 lit. f RODO); pojedyncze zdjęcia stockowe z Unsplash są dostarczane przez naszego dostawcę hostingu Vercel, więc Państwa przeglądarka nie łączy się w tym celu z Unsplash. Opinie Google pokazujemy bez zdjęć profilowych. Używane przez nas czcionki są serwowane z naszego własnego serwera. Okno czatu zapamiętuje jedynie w pamięci sesji przeglądarki (do zamknięcia karty), czy wyświetliliśmy już podpowiedź, bez danych osobowych.
               </P>
-              {/* COOKIES (09.10.2026): tekst Prawnika DOSLOWNIE - _wspolne_pliki\prawnik_baner_zgod_cookies_PL_DE_2026_10_09.md pkt 6 (PL). Usunieto zdanie "My sami nie stosujemy na stronie plikow cookies ani trwalej pamieci lokalnej" - nieprawdziwe (GA4 po zgodzie, ir_consent). Zmieniac razem z /de/datenschutz (sekcja 3). */}
+              {/* COOKIES (09.10.2026): tekst Prawnika (jedyna zmiana: zdanie o liscie cookies w panelu zastapione opisem kategorii - decyzja Dyrektora 09.10, listy jeszcze nie ma) - _wspolne_pliki\prawnik_baner_zgod_cookies_PL_DE_2026_10_09.md pkt 6 (PL). Usunieto zdanie "My sami nie stosujemy na stronie plikow cookies ani trwalej pamieci lokalnej" - nieprawdziwe (GA4 po zgodzie, ir_consent). Zmieniac razem z /de/datenschutz (sekcja 3). */}
               <H3>Pliki cookie i podobne technologie</H3>
               <P>
                 Nasza strona korzysta z plików cookie oraz podobnych technologii przechowywania informacji w Państwa urządzeniu. Dzielimy je na trzy kategorie:
@@ -132,7 +132,7 @@ export default async function RodoPage() {
                 <LI><strong>Marketingowe</strong> — pozwalają mierzyć skuteczność naszych kampanii reklamowych. Uruchamiane wyłącznie po wyrażeniu zgody.</LI>
               </UL>
               <P>
-                Zgodę mogą Państwo wyrazić, odrzucić lub dostosować przy pierwszej wizycie na stronie w banerze zgód, a także w dowolnym momencie później poprzez zmianę ustawień. Wybór jest zapamiętywany przez 12 miesięcy, po czym poprosimy o niego ponownie. Szczegółowa lista wykorzystywanych plików cookie wraz z czasem ich przechowywania dostępna jest w panelu zgód.
+                Zgodę mogą Państwo wyrazić, odrzucić lub dostosować przy pierwszej wizycie na stronie w banerze zgód, a także w dowolnym momencie później poprzez zmianę ustawień. Wybór jest zapamiętywany przez 12 miesięcy, po czym poprosimy o niego ponownie. Opis poszczególnych kategorii dostępny jest w panelu zgód.
               </P>
 
               <H2>Zapytania z formularzy, prośby o kontakt i czat na stronie</H2>
@@ -180,7 +180,7 @@ export default async function RodoPage() {
               </P>
               <P>
                 Jeśli za pośrednictwem naszego formularza kontaktowego Meta dla polskiego wybrzeża Bałtyku (m.in. Kołobrzeg, Mielno, Międzyzdroje) zamówią Państwo dopasowane oferty nieruchomości e-mailem, przetwarzamy podane dane (m.in. imię, adres e-mail, preferowaną lokalizację, budżet, metraż), aby obsłużyć zapytanie i przesłać zamówione oferty. Podstawą prawną jest art. 6 ust. 1 lit. b RODO (działania podjęte na Państwa żądanie przed zawarciem umowy) — nie jest do tego wymagana odrębna zgoda marketingowa. Wysyłamy wyłącznie oferty zgodne z podanymi w formularzu kryteriami, co do zasady w ciągu 30 dni od zgłoszenia; po tym okresie kolejne oferty wysyłamy wyłącznie za odrębną zgodą lub na nowe żądanie z Państwa strony. Mogą Państwo w każdej chwili sprzeciwić się dalszemu kontaktowi, np. odpowiadając na naszą wiadomość lub pisząc na biuro@investrent.com.pl; każda wiadomość zawiera odpowiednią informację. Dowód zgłoszenia (treść formularza, znacznik czasu, wersja formularza) przechowujemy do 3 lat, aby móc wykazać zgodność z prawem naszego kontaktu.
-                {/* WARIANT A (06.10.2026, RP): tekst Prawnika DOSLOWNIE - _wspolne_pliki\prawnik_wdrozenie_wariant_a_finalne_2026_10_06.md sekc. 1 (PL). Adaptacja zakresu "dla Kolobrzegu" -> region wg prawnik_wariant_a_region_nadmorski_2026_10_06.md; poczatek zdania ("formularza kontaktowego Meta dla polskiego wybrzeza Baltyku (m.in. ...) zamowia Panstwo") wg prawnik_review_pr39_diff_pelny_2026_10_06.md pkt 2 (bez podwojnego nawiasu) - zatwierdzone przez Prawnika. Tresc MUSI byc zgodna z naglowkiem i checkboxem zywego formularza Meta v5/v5b; numer/data wersji polityki (POLICY_DATE) NIE zmieniane. */}
+                {/* WARIANT A (06.10.2026, RP): tekst Prawnika (jedyna zmiana: zdanie o liscie cookies w panelu zastapione opisem kategorii - decyzja Dyrektora 09.10, listy jeszcze nie ma) - _wspolne_pliki\prawnik_wdrozenie_wariant_a_finalne_2026_10_06.md sekc. 1 (PL). Adaptacja zakresu "dla Kolobrzegu" -> region wg prawnik_wariant_a_region_nadmorski_2026_10_06.md; poczatek zdania ("formularza kontaktowego Meta dla polskiego wybrzeza Baltyku (m.in. ...) zamowia Panstwo") wg prawnik_review_pr39_diff_pelny_2026_10_06.md pkt 2 (bez podwojnego nawiasu) - zatwierdzone przez Prawnika. Tresc MUSI byc zgodna z naglowkiem i checkboxem zywego formularza Meta v5/v5b; numer/data wersji polityki (POLICY_DATE) NIE zmieniane. */}
               </P>
 
               <H2>Zasady kontaktu z Państwem</H2>

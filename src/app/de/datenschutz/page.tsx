@@ -99,7 +99,7 @@ export default function DatenschutzPage() {
         <LI><strong>Marketing</strong> — ermöglichen die Messung der Wirksamkeit unserer Werbekampagnen. Werden nur nach erteilter Einwilligung aktiviert.</LI>
       </UL>
       <P>
-        Sie können Ihre Einwilligung bei Ihrem ersten Besuch im Einwilligungsbanner erteilen, ablehnen oder anpassen sowie Ihre Auswahl jederzeit später über die Einstellungen ändern. Ihre Wahl wird 12 Monate lang gespeichert; danach fragen wir erneut. Eine detaillierte Liste der verwendeten Cookies mit Speicherdauer finden Sie im Einwilligungspanel.
+        Sie können Ihre Einwilligung bei Ihrem ersten Besuch im Einwilligungsbanner erteilen, ablehnen oder anpassen sowie Ihre Auswahl jederzeit später über die Einstellungen ändern. Ihre Wahl wird 12 Monate lang gespeichert; danach fragen wir erneut. Eine Beschreibung der einzelnen Kategorien finden Sie im Einwilligungspanel.
       </P>
 
       <H2>4. Anfragen über Formulare, Rückruf und Chat auf der Website</H2>
