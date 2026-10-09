@@ -336,6 +336,8 @@ export type ValuationEvent =
   | 'wycena_estimate_error'
   | 'wycena_lead_panel_viewed' | 'wycena_lead_ts_ready' | 'wycena_lead_ts_failed'
   | 'wycena_lead_submit_blocked' | 'wycena_lead_submit' | 'wycena_lead_submit_failed'
+  // D2 (09.10.2026): CTA do panelu kontaktu (placement: result | sticky), pojawienie się paska, wysyłka odłożona do czasu tokenu Turnstile
+  | 'wycena_cta_click' | 'wycena_sticky_shown' | 'wycena_lead_submit_queued'
 
 // Klasa przeglądarki: kampanie Meta otwierają stronę w przeglądarce wbudowanej FB/IG (inne zachowanie Turnstile/ciasteczek).
 // Tylko trzy wartości - nigdy surowy User-Agent.
