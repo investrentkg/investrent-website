@@ -5,10 +5,14 @@
 // musza byc aktualizowane co sekunde - odswiezanie co 5 minut (ISR) to
 // zero realnej straty dla uzytkownika, a zauwazalny zysk w czasie ladowania
 // (wiekszosc wejsc dostaje strone z cache, nie czeka na API).
-export const revalidate = 300
+// ZMIANA (09.10.2026): 300 -> 120 s. Licznik ofert przy agencie (sekcja
+// Eksperci) potrafil pokazywac stan sprzed aktywacji oferty; krotszy TTL
+// zmniejsza okno rozjazdu. Koszt dla backendu pomijalny: max 30 regeneracji/h,
+// a fetche i tak siedza w data cache (60 s).
+export const revalidate = 120
 
 import type { Metadata } from 'next'
-import { getPublicOffers, getTeam, getOffice, getStats, getPageContent } from '@/lib/api'
+import { getPublicOffers, getTeamWithOfferCounts, getOffice, getStats, getPageContent } from '@/lib/api'
 import Nav           from '@/components/Nav'
 import Hero          from '@/components/Hero'
 import CallbackStrip from '@/components/CallbackStrip'
@@ -70,7 +74,7 @@ const FALLBACK_OFFICE: Office = {
 export default async function Home() {
   const [offersData, teamData, officeData, statsData, reviewsData] = await Promise.all([
     getPublicOffers({ limit: 6 }),
-    getTeam(),
+    getTeamWithOfferCounts(),
     getOffice(),
     getStats(),
     fetch('https://investrent-crm-production.up.railway.app/api/public/google-reviews')

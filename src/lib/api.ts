@@ -163,6 +163,27 @@ export async function getTeam() {
   )
 }
 
+// Licznik "N ofert" przy agencie (Team.tsx) liczony z TEGO SAMEGO zrodla co lista
+// po kliknieciu (/oferty?agent_id=...): GET /api/public/offers?agent_id=...
+// (pagination.total), a nie z osobnego pola offer_count z /api/public/team.
+// Dwa rozne endpointy + dwa osobne cache (ISR strony + data cache fetchy) mogly
+// sie zbudowac w roznych momentach i pokazac rozne liczby (09.10.2026: licznik 5
+// vs lista 4). Teraz licznik i lista ida tym samym endpointem z tym samym filtrem
+// agent_id (inny tylko limit), wiec liczba z jednego momentu zawsze sie zgadza.
+// Gdy fetch listy sie nie uda - zostaje offer_count z /team (nigdy nie psujemy
+// renderowania). Koszt: 1 lekki fetch (limit=1) na czlonka zespolu, rownolegle,
+// przy kazdej regeneracji ISR (data cache 60 s).
+export async function getTeamWithOfferCounts() {
+  const team = await getTeam()
+  if (!team?.data?.length) return team
+  const data = await Promise.all(team.data.map(async (m) => {
+    const list = await getPublicOffers({ agent_id: m.id, limit: 1 })
+    const total = list?.pagination?.total
+    return typeof total === 'number' ? { ...m, offer_count: total } : m
+  }))
+  return { ...team, data }
+}
+
 // NOWE (31.08, audyt SEO - sugestia "brak snippetu z opiniami dla
 // zapytania 'investrent opinie'"). Widget opinii (Reviews.tsx) jest
 // komponentem klienckim ("use client") - dane realne doladowuja sie

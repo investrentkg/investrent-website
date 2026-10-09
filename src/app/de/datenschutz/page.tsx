@@ -85,8 +85,21 @@ export default function DatenschutzPage() {
         {/* Click-to-load wdrozony 25.09.2026 (src/components/ConsentEmbed.tsx): Google Maps (Contact, o-nas, oferty/[id]), YouTube (nocookie, IFrame API dopiero po kliknieciu), Vimeo (dnt=1). PRAWNIK: potwierdzic, ze klik = wystarczajaca zgoda (§ 25 Abs. 1 TDDDG / Art. 7). */}
       </P>
       <P>
-        Fotos von Objekten und Mitarbeitenden sowie Bilder in Blogbeiträgen werden aus dem Speicher unseres Datenbankanbieters (Supabase Storage) geladen (Art. 6 Abs. 1 lit. f DSGVO); einzelne Stockfotos von Unsplash werden über unseren Hosting-Anbieter Vercel ausgeliefert, sodass Ihr Browser dafür keine Verbindung zu Unsplash herstellt. Google-Bewertungen zeigen wir ohne Profilbilder. Die von uns verwendeten Schriftarten werden von unserem eigenen Server ausgeliefert. Wir selbst setzen auf dieser Website keine Cookies und speichern keine Daten im lokalen Speicher Ihres Browsers.
-        {/* Fakty 25.09.2026: grep src - brak document.cookie/localStorage/sessionStorage; next/font (self-hosted); zdjecia <Image unoptimized>/<img> ladowane bezposrednio z Supabase Storage; About.tsx i okladki bloga - Unsplash; Reviews Avatar <img src={avatar}> z API. GA4 tylko po ustawieniu env (usuniete z tekstu). */}
+        Fotos von Objekten und Mitarbeitenden sowie Bilder in Blogbeiträgen werden aus dem Speicher unseres Datenbankanbieters (Supabase Storage) geladen (Art. 6 Abs. 1 lit. f DSGVO); einzelne Stockfotos von Unsplash werden über unseren Hosting-Anbieter Vercel ausgeliefert, sodass Ihr Browser dafür keine Verbindung zu Unsplash herstellt. Google-Bewertungen zeigen wir ohne Profilbilder. Die von uns verwendeten Schriftarten werden von unserem eigenen Server ausgeliefert.
+        {/* Fakty 25.09.2026: next/font (self-hosted); zdjecia <Image unoptimized>/<img> ladowane bezposrednio z Supabase Storage; About.tsx i okladki bloga - Unsplash; Reviews Avatar <img src={avatar}> z API. 09.10.2026: usuniete zdanie "keine Cookies/kein lokaler Speicher" (nieprawdziwe: GA4 po zgodzie, ir_consent) - zastapione sekcja Cookies ponizej. */}
+      </P>
+      {/* COOKIES (09.10.2026): tekst Prawnika DOSLOWNIE - _wspolne_pliki\prawnik_baner_zgod_cookies_PL_DE_2026_10_09.md pkt 6 (DE). Zmieniac razem z /rodo (czesc "Hosting i techniczne udostepnianie strony"). Jako H3 w sekcji 3, zeby nie przenumerowywac odwolan (Abschnitt 3/8/10/11). */}
+      <H3>Cookies und ähnliche Technologien</H3>
+      <P>
+        Unsere Website verwendet Cookies und ähnliche Technologien zur Speicherung von Informationen auf Ihrem Endgerät. Wir unterscheiden drei Kategorien:
+      </P>
+      <UL>
+        <LI><strong>Notwendig</strong> — erforderlich für die ordnungsgemäße Funktion der Website (z. B. Speicherung Ihrer Auswahl im Einwilligungsbanner). Erfordern keine Einwilligung.</LI>
+        <LI><strong>Analyse</strong> — helfen uns zu verstehen, wie Sie unsere Website nutzen (z. B. Google Analytics 4). Werden nur nach erteilter Einwilligung aktiviert.</LI>
+        <LI><strong>Marketing</strong> — ermöglichen die Messung der Wirksamkeit unserer Werbekampagnen. Werden nur nach erteilter Einwilligung aktiviert.</LI>
+      </UL>
+      <P>
+        Sie können Ihre Einwilligung bei Ihrem ersten Besuch im Einwilligungsbanner erteilen, ablehnen oder anpassen sowie Ihre Auswahl jederzeit später über die Einstellungen ändern. Ihre Wahl wird 12 Monate lang gespeichert; danach fragen wir erneut. Eine Beschreibung der einzelnen Kategorien finden Sie im Einwilligungspanel.
       </P>
 
       <H2>4. Anfragen über Formulare, Rückruf und Chat auf der Website</H2>
@@ -256,7 +269,7 @@ export default function DatenschutzPage() {
 
       <H2>17. Änderungen dieser Datenschutzerklärung</H2>
       <P>
-        Wir passen diese Datenschutzerklärung an, wenn sich die Verarbeitung oder die Rechtslage ändert. Stand: 01.10.2026{/* USTAWIC na dzien faktycznej publikacji przy merge */}. Für Nutzer, die diese Website in deutscher Sprache aufrufen, ist diese deutsche Fassung maßgeblich. Die polnische Fassung finden Sie unter <a href="/rodo" style={link}>/rodo</a>. Beide Fassungen beschreiben dieselben Verarbeitungen; der Bewertungsrechner ist nur auf Polnisch verfügbar und daher nur in der polnischen Fassung beschrieben.
+        Wir passen diese Datenschutzerklärung an, wenn sich die Verarbeitung oder die Rechtslage ändert. Stand: 09.10.2026{/* USTAWIC na dzien faktycznej publikacji przy merge */}. Für Nutzer, die diese Website in deutscher Sprache aufrufen, ist diese deutsche Fassung maßgeblich. Die polnische Fassung finden Sie unter <a href="/rodo" style={link}>/rodo</a>. Beide Fassungen beschreiben dieselben Verarbeitungen; der Bewertungsrechner ist nur auf Polnisch verfügbar und daher nur in der polnischen Fassung beschrieben.
         {/* ERLEDIGT (Przeglad 3.10, uwaga 18): klauzula wersji wiazacej wg prawnika. Daniel: data Stand = data zatwierdzenia/publikacji. */}
       </P>
 
