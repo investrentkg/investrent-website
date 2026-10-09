@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import LegalShell, { H2, H3, P, UL, LI } from '@/components/legal/LegalShell'
+import CookieTable from '@/components/legal/CookieTable'
 
 // Niemieckie tlumaczenie polskiej polityki prywatnosci (/rodo) + uzupelnienia
 // dla odbiorcow z Niemiec (kalkulator wyceny AI, Cloudflare Turnstile, formularze
@@ -100,6 +101,12 @@ export default function DatenschutzPage() {
       </UL>
       <P>
         Sie können Ihre Einwilligung bei Ihrem ersten Besuch im Einwilligungsbanner erteilen, ablehnen oder anpassen sowie Ihre Auswahl jederzeit später über die Einstellungen ändern. Ihre Wahl wird 12 Monate lang gespeichert; danach fragen wir erneut. Eine Beschreibung der einzelnen Kategorien finden Sie im Einwilligungspanel.
+      </P>
+      {/* TABELA COOKIES (09.10.2026, rekomendacja Prawnika pkt d): zrodlo danych - src/components/legal/CookieTable.tsx (zweryfikowane w kodzie). TLUMACZENIE ROBOCZE (bez przegladu Prawnika). Zmieniac razem z /rodo. */}
+      <P>Eine detaillierte Liste der Cookies und der Einträge im Browserspeicher finden Sie unten.</P>
+      <CookieTable locale="de" />
+      <P>
+        Die Tabelle umfasst Einträge, die wir selbst setzen oder (Google Analytics 4) mit Ihrer Einwilligung. Eingebettete Inhalte Dritter (nach Klick auf „Karte laden“ bzw. „Video laden“) sowie Cloudflare Turnstile auf der polnischsprachigen Rechner-Seite können nach den Regeln dieser Anbieter eigene Informationen auf Ihrem Endgerät speichern; wir beschreiben sie oben unter „Eingebettete Inhalte Dritter (Zwei-Klick-Lösung)“ und in Abschnitt 6.
       </P>
 
       <H2>4. Anfragen über Formulare, Rückruf und Chat auf der Website</H2>

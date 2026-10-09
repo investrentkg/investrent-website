@@ -3,6 +3,7 @@ import Footer from '@/components/Footer'
 import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
 import { H2, H3, P, UL, LI } from '@/components/legal/LegalShell'
+import CookieTable from '@/components/legal/CookieTable'
 import { getOffice } from '@/lib/api'
 import { RETENTION_A_ITEMS } from '@/app/wycena/texts'
 import type { Metadata } from 'next'
@@ -133,6 +134,12 @@ export default async function RodoPage() {
               </UL>
               <P>
                 Zgodę mogą Państwo wyrazić, odrzucić lub dostosować przy pierwszej wizycie na stronie w banerze zgód, a także w dowolnym momencie później poprzez zmianę ustawień. Wybór jest zapamiętywany przez 12 miesięcy, po czym poprosimy o niego ponownie. Opis poszczególnych kategorii dostępny jest w panelu zgód.
+              </P>
+              {/* TABELA COOKIES (09.10.2026, rekomendacja Prawnika pkt d): zrodlo danych - src/components/legal/CookieTable.tsx (zweryfikowane w kodzie). Zmieniac razem z /de/datenschutz. */}
+              <P>Szczegółowa lista plików cookie i zapisów w pamięci przeglądarki znajduje się poniżej.</P>
+              <CookieTable locale="pl" />
+              <P>
+                Tabela obejmuje zapisy, które ustawiamy sami lub (Google Analytics 4) za Państwa zgodą. Treści osadzone od podmiotów trzecich (po kliknięciu „Załaduj mapę” lub „Załaduj wideo”) oraz Cloudflare Turnstile na stronie kalkulatora wyceny mogą zapisywać własne informacje na Państwa urządzeniu na zasadach tych dostawców; opisujemy je w częściach „Treści osadzone od podmiotów trzecich (dwuklik)” oraz „Ochrona przed automatycznymi wejściami (Cloudflare Turnstile)”.
               </P>
 
               <H2>Zapytania z formularzy, prośby o kontakt i czat na stronie</H2>
