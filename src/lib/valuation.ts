@@ -143,7 +143,9 @@ export function buildPayload(v: FormValues, honeypot = '', turnstileToken?: stri
 // ── Odpowiedz backendu ──
 export type Range = { low: number; high: number }
 export type EstimateOutcome =
-  | { kind: 'range'; range: Range; pricePerM2: Range | null; comparables: { min: number; max: number } | null; quality: string | null; disclaimer: string | null; message: string | null }
+  | { kind: 'range'; range: Range; pricePerM2: Range | null; comparables: { min: number; max: number } | null; quality: string | null; disclaimer: string | null; message: string | null
+      // Dwa zakresy (backend: range_core = wezszy, range_wide = szerszy). Brak/niespojnosc -> null i widok pokazuje pojedynczy `range` jak dotad.
+      rangeCore?: Range | null; rangeWide?: Range | null; pricePerM2Core?: Range | null; pricePerM2Wide?: Range | null }
   | { kind: 'no_numbers'; message: string | null; disclaimer: string | null }
   | { kind: 'rate_limited'; retryAfterSeconds: number | null }
   | { kind: 'disabled' }
@@ -180,9 +182,15 @@ export function interpretResponse(status: number, body: unknown): EstimateOutcom
     if (range) {
       const c = b.comparables as { min?: unknown; max?: unknown } | undefined
       const comparables = c && typeof c.min === 'number' && typeof c.max === 'number' ? { min: c.min, max: c.max } : null
+      // Dwa zakresy: tylko gdy oba poprawne i wezszy lezy w szerszym (inaczej ignorujemy oba - widok pokazuje `range`).
+      let rangeCore = asRange(b.range_core), rangeWide = asRange(b.range_wide)
+      if (!rangeCore || !rangeWide || rangeCore.low < rangeWide.low || rangeCore.high > rangeWide.high) { rangeCore = null; rangeWide = null }
+      const pCore = rangeCore ? asRange(b.price_per_m2_core) : null
+      const pWide = rangeCore ? asRange(b.price_per_m2_wide) : null
       return {
         kind: 'range', range, pricePerM2: asRange(b.price_per_m2), comparables,
         quality: str(b.quality), disclaimer: str(b.disclaimer), message: str(b.message),
+        rangeCore, rangeWide, pricePerM2Core: pCore && pWide ? pCore : null, pricePerM2Wide: pCore && pWide ? pWide : null,
       }
     }
     return { kind: 'no_numbers', message: null, disclaimer: str(b.disclaimer) }

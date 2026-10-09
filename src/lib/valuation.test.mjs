@@ -249,7 +249,7 @@ test('teksty v11.4: T-m (Railway 30 dni pierwsze), T-l (bez kopii DPF, bez Verce
   assert.ok(!T.fields.district_hint.includes('Centrum') && T.fields.district_hint.includes('Inna dzielnica')) // 28.09: Srodmiescie/Centrum/Stare Miasto NIE sa juz wylaczone
   // doneBody bez obietnicy wyniku
   const { OFFICE_PHONE } = await import('./valuation.ts') // v14 (ZNACZENIE ZMIENIONE): doneBody z terminem oddzwonienia i numerem biura z jednego zrodla
-  assert.equal(T.lead.doneBody, `Zwykle oddzwaniamy w ciągu 24\u00A0godzin, najczęściej szybciej. Wolisz zadzwonić do nas? Numer biura: ${OFFICE_PHONE}.`)
+  assert.equal(T.lead.doneBody, `Agent oddzwoni na podany numer. Wolisz zadzwonić sam? Numer biura: ${OFFICE_PHONE}.`)
   // Podczele: dzielnica Kolobrzegu, nie osobna miejscowosc
   assert.ok(!CITY_LIST.includes('Podczele')); assert.equal(canonicalCity('Podczele'), null)
 })
@@ -263,7 +263,7 @@ test('teksty v11.5: T-l2 (lista, Supabase UE), T-r, T-q, T-s, consentCall 3 drog
   assert.ok(!items.includes('Vercel (hosting strony): Data Privacy Framework oraz umowa powierzenia przetwarzania danych;')); assert.ok(!/Vercel[^.;]*(SCC|klauzul)/.test(items))
   assert.ok(items.includes('zadanie oddzwonienia z imieniem i odnośnikiem do karty w naszym systemie')); assert.ok(!items.includes('bez numeru telefonu, z odnośnikiem'))
   assert.ok(!items.includes('zadanie oddzwonienia z imieniem i numerem'))
-  assert.equal(T.fields.city_hint, 'Domyślnie Kołobrzeg; możesz zacząć pisać nazwę. Dzielnicę lub osiedle Kołobrzegu (np. Podczele) wybierzesz niżej, w polu „Dzielnica lub osiedle”. Grzybowo, Bogucino, Budzistowo, Zieleniewo i Dźwirzyno to osobne miejscowości: wybierz je tutaj. Jeśli Twojej miejscowości nie ma na liście, wybierz „Inna lokalizacja”: widełek online nie podamy, ale w województwie zachodniopomorskim cenę oszacuje agent, a poza nim sprawdzimy, czy możemy pomóc. Zostaw numer lub zadzwoń.')
+  assert.equal(T.fields.city_hint, 'Domyślnie Kołobrzeg; możesz zacząć pisać nazwę. Grzybowo, Bogucino, Budzistowo, Zieleniewo i Dźwirzyno to osobne miejscowości: wybierz je tutaj. Nie ma Twojej miejscowości? Wybierz „Inna lokalizacja”: widełek online nie pokażemy, ale oddzwoni agent. Numer zostawisz po wysłaniu formularza, w następnym kroku.')
   assert.ok(T.fields.district_hint.endsWith('jeśli Twojej nie ma na liście.'))
   assert.ok(T.metaDescription.length <= 160, 'metaDescription do 160 znakow'); assert.ok(!T.metaDescription.includes('Podaj kilka danych'))
   assert.ok(T.lead.consentCall.split(sp).join(' ').includes('Zgodę mogę cofnąć w każdej chwili: e-mailem (biuro@investrent.com.pl), telefonicznie (+48 731 554 341) lub mówiąc o tym agentowi podczas rozmowy.'))
@@ -363,7 +363,7 @@ test('teksty v14: numer biura w tekstach = OFFICE_PHONE (jedno zrodlo), doneBody
   assert.equal(norm(T.lead.doneBody).split(phone).length - 1, 1); assert.equal(norm(T.result.outOfScopeBody).split(phone).length - 1, 1)
   assert.equal(T.fields.floor_hint, 'Parter wpisz jako 0, a poziom poniżej parteru (suterenę) jako -1.')
   assert.equal(T.errors.disabled, 'Kalkulator jest chwilowo niedostępny. Zostaw numer poniżej lub zadzwoń:')
-  assert.ok(T.errors.rateLimited('2 h').startsWith('Z tej sieci wykonano już maksymalną liczbę wycen. Spróbuj ponownie za około 2 h.') && T.errors.rateLimited('2 h').endsWith('zadzwonić:'))
+  assert.ok(T.errors.rateLimited('2 h').startsWith('Z Twojego połączenia wykonano już maksymalną liczbę wycen. Spróbuj ponownie za około 2 h.') && T.errors.rateLimited('2 h').endsWith('zadzwonić:'))
   assert.ok(T.errors.invalid.endsWith('zadzwoń:') && T.errors.leadFail.endsWith('zadzwoń:'))
   assert.equal(T.lead.phoneHint, 'Podaj 9 cyfr (numer polski) albo numer zaczynający się od + i kierunkowego kraju, np. +49.')
   assert.equal(T.lead.errConsent, 'Zaznacz zgodę na telefon w sprawie wyceny. Bez niej nie możemy do Ciebie zadzwonić.')
