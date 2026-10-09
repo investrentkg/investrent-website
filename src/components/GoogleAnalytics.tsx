@@ -2,7 +2,7 @@
 import { useEffect, useRef } from 'react'
 import Script from 'next/script'
 import { useConsent } from '@/lib/consentStore'
-import { googleConsentArgs } from '@/lib/consent'
+import { googleConsentArgs, analyticsAllowed } from '@/lib/consent'
 
 // GA4 ładowany DOPIERO po zgodzie na analitykę (art. 399 PKE / § 25 TDDDG): przed zgodą nie ma żadnego połączenia
 // z googletagmanager.com, nie ma window.gtag (helpery track*/trackValuation są wtedy no-op), nie ma cookies _ga*.
@@ -11,7 +11,7 @@ import { googleConsentArgs } from '@/lib/consent'
 // (consentStore.setConsent). Zmiana kategorii/dostawcy = nowa wersja zgody (lib/consent.ts CONSENT_VERSION).
 export default function GoogleAnalytics({ gaId }: { gaId: string }) {
   const consent = useConsent()
-  const on = !!consent?.analytics
+  const on = analyticsAllowed(consent)
   const wasOn = useRef(false)
 
   useEffect(() => {

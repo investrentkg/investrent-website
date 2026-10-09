@@ -1,7 +1,7 @@
 "use client"
 import { useSyncExternalStore } from 'react'
 import {
-  CONSENT_STORAGE_KEY, makeConsent, readStoredConsent, writeStoredConsent, gaCookieNames, metaCookieNames,
+  CONSENT_STORAGE_KEY, CONSENT_CHANGE_EVENT, applyChoice, analyticsAllowed, marketingAllowed, readStoredConsent, writeStoredConsent, gaCookieNames, metaCookieNames,
   type ConsentChoice, type ConsentState,
 } from './consent'
 
@@ -38,15 +38,15 @@ function deleteCookies(names: string[]) {
 
 /** Zapisuje wybór. Przy wycofaniu zgody usuwa cookies danej kategorii (best effort). */
 export function setConsent(choice: ConsentChoice): ConsentState {
-  const prev = getConsent()
-  const next = makeConsent(choice)
+  const { next, clearGa, clearMeta } = applyChoice(getConsent(), choice)
   writeStoredConsent(storage(), next)
   state = next // także gdy storage niedostępny: wybór działa do końca wizyty
   try {
-    if (prev?.analytics && !next.analytics) deleteCookies(gaCookieNames(document.cookie))
-    if (prev?.marketing && !next.marketing) deleteCookies(metaCookieNames(document.cookie))
+    if (clearGa) deleteCookies(gaCookieNames(document.cookie))
+    if (clearMeta) deleteCookies(metaCookieNames(document.cookie))
   } catch { /* czyszczenie cookies nigdy nie może zepsuć strony */ }
   notify()
+  try { window.dispatchEvent(new CustomEvent(CONSENT_CHANGE_EVENT, { detail: next })) } catch { /* zdarzenie to tylko wygoda dla innych modulow */ }
   return next
 }
 
@@ -65,4 +65,17 @@ export function subscribeConsent(l: () => void): () => void {
 
 export function useConsent(): ConsentState | null | undefined {
   return useSyncExternalStore(subscribeConsent, getConsent, () => undefined)
+}
+
+/**
+ * Publiczny punkt zgody dla innych modułów (np. atrybucja UTM w sessionStorage/localStorage - website#42):
+ * zapis czegokolwiek w urządzeniu użytkownika poza koniecznym ma być za tym warunkiem.
+ * Zwraca false przed wyborem, po odrzuceniu i po stronie serwera. Nie rzuca.
+ */
+export function hasAnalyticsConsent(): boolean { return analyticsAllowed(getConsent()) }
+export function hasMarketingConsent(): boolean { return marketingAllowed(getConsent()) }
+
+/** Wywołuje cb po każdej zmianie wyboru (także z innej karty). Zwraca funkcję wypisującą. */
+export function onConsentChange(cb: (analytics: boolean, marketing: boolean) => void): () => void {
+  return subscribeConsent(() => { const s = getConsent(); cb(analyticsAllowed(s), marketingAllowed(s)) })
 }

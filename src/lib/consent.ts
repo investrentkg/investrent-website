@@ -85,3 +85,20 @@ export function metaCookieNames(cookieString: string): string[] {
 
 /** Czy pokazać kategorię "marketing": tylko gdy faktycznie coś marketingowego jest wdrożone (id piksela). Nie pytamy o zgodę na nic, czego nie ma. */
 export const marketingAvailable = (pixelId: string | undefined | null): boolean => !!pixelId && /^\d{6,20}$/.test(String(pixelId))
+
+/** Zdarzenie okna wysyłane po KAŻDEJ zmianie wyboru (detail: ConsentState). Inne moduły (np. atrybucja UTM) mogą nasłuchiwać zamiast odpytywać. */
+export const CONSENT_CHANGE_EVENT = 'ir-consent-change'
+
+/** Czy wolno uruchomić analitykę (GA4, zapis UTM do Web Storage itp.). Brak wyboru (null/undefined) = NIE. */
+export const analyticsAllowed = (s: ConsentState | null | undefined): boolean => !!s && s.analytics === true
+/** Czy wolno uruchomić marketing (piksel Meta itp.). Brak wyboru = NIE. */
+export const marketingAllowed = (s: ConsentState | null | undefined): boolean => !!s && s.marketing === true
+
+/**
+ * Przejście stanu przy zapisie wyboru: nowy stan + które cookies posprzątać (tylko przy WYCOFANIU kategorii,
+ * nie gdy kategoria nigdy nie była włączona). Czysta funkcja - testowalna bez przeglądarki.
+ */
+export function applyChoice(prev: ConsentState | null | undefined, choice: ConsentChoice, now: number = Date.now()): { next: ConsentState; clearGa: boolean; clearMeta: boolean } {
+  const next = makeConsent(choice, now)
+  return { next, clearGa: !!prev?.analytics && !next.analytics, clearMeta: !!prev?.marketing && !next.marketing }
+}

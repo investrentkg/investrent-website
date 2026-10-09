@@ -26,21 +26,21 @@ const css = `
 .irc-solid:hover{background:#163a7a}
 .irc-line{background:#fff;color:#0d2a5c}
 .irc-line:hover{background:#eef3fb}
-.irc-btn:focus-visible,.irc-sw input:focus-visible+span{outline:3px solid #f5a623;outline-offset:2px}
+.irc-btn:focus-visible,.irc-sw input:focus-visible+span{outline:3px solid #0d2a5c;outline-offset:2px;box-shadow:0 0 0 6px #f5a623}
 .irc-ov{position:fixed;inset:0;z-index:2147483001;background:rgba(13,42,92,.55);display:flex;align-items:center;justify-content:center;padding:16px}
-.irc-dlg{background:#fff;color:#0d2a5c;border-radius:12px;max-width:560px;width:100%;max-height:90vh;overflow:auto;padding:22px;font-family:var(--font-inter),system-ui,sans-serif}
+.irc-dlg{background:#fff;color:#0d2a5c;border-radius:12px;max-width:560px;width:100%;max-height:90vh;max-height:calc(100dvh - 32px);overflow:auto;padding:22px;font-family:var(--font-inter),system-ui,sans-serif}
 .irc-row{display:flex;gap:14px;align-items:flex-start;justify-content:space-between;padding:14px 0;border-top:1px solid #e5e7eb}
 .irc-row h3{margin:0 0 3px;font-size:14px;font-weight:800;font-family:var(--font-montserrat),Arial,sans-serif}
 .irc-row p{margin:0;font-size:12.5px;line-height:1.5;color:#4b5563}
 .irc-always{font-size:12px;font-weight:700;color:#15803d;white-space:nowrap;padding-top:2px}
-.irc-sw{position:relative;flex:none;display:inline-block;width:46px;height:26px}
+.irc-sw{position:relative;flex:none;display:inline-block;width:52px;height:44px;margin:-9px 0}
 .irc-sw input{position:absolute;inset:0;opacity:0;width:100%;height:100%;margin:0;cursor:pointer}
-.irc-sw span{position:absolute;inset:0;background:#9ca3af;border-radius:26px;transition:background .15s;pointer-events:none}
+.irc-sw span{position:absolute;left:3px;right:3px;top:9px;bottom:9px;background:#6b7280;border-radius:26px;transition:background .15s;pointer-events:none}
 .irc-sw span::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;background:#fff;border-radius:50%;transition:transform .15s}
 .irc-sw input:checked+span{background:#0d2a5c}
 .irc-sw input:checked+span::after{transform:translateX(20px)}
 @media (prefers-reduced-motion:reduce){.irc-sw span,.irc-sw span::after{transition:none}}
-@media (max-width:640px){.irc-act{width:100%}.irc-act .irc-btn{flex:1 1 100%}}
+@media (max-width:640px){.irc-bar{padding:12px 16px calc(12px + env(safe-area-inset-bottom));max-height:70vh;overflow:auto}.irc-in{gap:10px}.irc-h{font-size:14px}.irc-p{font-size:12.5px;line-height:1.45}.irc-act{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:8px}.irc-act .irc-btn{padding:0 8px;font-size:13.5px}.irc-act .irc-line{grid-column:1/-1;order:3}.irc-dlg .irc-act{display:flex;position:sticky;bottom:-22px;background:#fff;padding:10px 0 4px;border-top:1px solid #e5e7eb}.irc-dlg .irc-act .irc-btn{flex:1 1 100%}}
 `
 
 export default function ConsentManager() {
@@ -51,6 +51,7 @@ export default function ConsentManager() {
   const [analytics, setAnalytics] = useState(false)
   const [marketing, setMarketing] = useState(false)
   const dlgRef = useRef<HTMLDivElement>(null)
+  const barRef = useRef<HTMLDivElement>(null)
   const returnFocus = useRef<HTMLElement | null>(null)
 
   const openSettings = useCallback(() => {
@@ -84,6 +85,21 @@ export default function ConsentManager() {
     return () => document.removeEventListener('keydown', onKey)
   }, [open])
 
+  // Pasek zajmuje dół ekranu: przekazujemy jego wysokość w --consent-h, żeby launcher kontaktu (Zadzwoń/WhatsApp)
+  // i przyklejony pasek kalkulatora (.wy-sticky) stały NAD banerem, a nie pod nim (globals.css).
+  const barVisible = consent === null && !open
+  useEffect(() => {
+    const root = document.documentElement
+    const el = barRef.current
+    if (!barVisible || !el) { root.style.removeProperty('--consent-h'); return }
+    const set = () => root.style.setProperty('--consent-h', el.offsetHeight + 'px')
+    set()
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(set) : null
+    ro?.observe(el)
+    window.addEventListener('resize', set)
+    return () => { ro?.disconnect(); window.removeEventListener('resize', set); root.style.removeProperty('--consent-h') }
+  }, [barVisible])
+
   const choose = (c: { analytics: boolean; marketing: boolean }) => { setConsent(c); setOpen(false); returnFocus.current?.focus?.() }
 
   // undefined = SSR/hydracja (nic nie renderujemy, brak migotania); wybór jest = banner schowany, panel tylko na żądanie
@@ -94,7 +110,7 @@ export default function ConsentManager() {
     <>
       <style dangerouslySetInnerHTML={{ __html: css }} />
       {showBar && (
-        <div className="irc-bar" role="region" aria-label={t.title}>
+        <div className="irc-bar" role="region" aria-label={t.title} ref={barRef}>
           <div className="irc-in">
             <div className="irc-txt">
               <p className="irc-h">{t.title}</p>

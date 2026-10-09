@@ -5,6 +5,7 @@ import {
   CONSENT_STORAGE_KEY, CONSENT_VERSION, CONSENT_MAX_AGE_MS, REJECT_ALL, ACCEPT_ALL,
   makeConsent, parseConsent, serializeConsent, readStoredConsent, writeStoredConsent, googleConsentArgs,
   gaCookieNames, metaCookieNames, marketingAvailable,
+  CONSENT_CHANGE_EVENT, analyticsAllowed, marketingAllowed, applyChoice,
 } from './consent.ts'
 import { CONSENT_COPY, localeOfPath } from './consentCopy.ts'
 
@@ -90,4 +91,44 @@ test('język po ścieżce: /de i /de/... = niemiecki, reszta (także /dekoracje)
   }
   assert.equal(CONSENT_COPY.pl.privacyHref, '/rodo')
   assert.equal(CONSENT_COPY.de.privacyHref, '/de/datenschutz')
+})
+
+
+test('bramka: przed wyborem (null/undefined) NIC nie jest dozwolone - ani GA4, ani zapis UTM, ani marketing', () => {
+  for (const s of [null, undefined]) { assert.equal(analyticsAllowed(s), false); assert.equal(marketingAllowed(s), false) }
+  // uszkodzony/wygasły zapis => parseConsent daje null => nadal brak zgody
+  assert.equal(analyticsAllowed(parseConsent('{"v":1,"analytics":true,"marketing":true,"ts":1}', NOW)), false)
+  assert.equal(analyticsAllowed(parseConsent('nie-json', NOW)), false)
+})
+
+test('bramka: odrzucenie = brak ładowania; akceptacja analityki nie włącza marketingu i odwrotnie', () => {
+  const rej = makeConsent(REJECT_ALL, NOW)
+  assert.equal(analyticsAllowed(rej), false); assert.equal(marketingAllowed(rej), false)
+  const an = makeConsent({ analytics: true, marketing: false }, NOW)
+  assert.equal(analyticsAllowed(an), true); assert.equal(marketingAllowed(an), false)
+  const mk = makeConsent({ analytics: false, marketing: true }, NOW)
+  assert.equal(analyticsAllowed(mk), false); assert.equal(marketingAllowed(mk), true)
+  assert.equal(googleConsentArgs(rej).analytics_storage, 'denied')
+})
+
+test('zmiana wyboru: wycofanie analityki => sprzątanie _ga*; pierwsze odrzucenie nic nie sprzątą; zmiana marketingu nie rusza GA', () => {
+  const first = applyChoice(null, REJECT_ALL, NOW)
+  assert.deepEqual([first.clearGa, first.clearMeta], [false, false])
+  assert.equal(analyticsAllowed(first.next), false)
+  const on = applyChoice(first.next, ACCEPT_ALL, NOW + 1)
+  assert.deepEqual([on.clearGa, on.clearMeta], [false, false])
+  assert.equal(analyticsAllowed(on.next), true)
+  const off = applyChoice(on.next, REJECT_ALL, NOW + 2)
+  assert.deepEqual([off.clearGa, off.clearMeta], [true, true])
+  assert.equal(analyticsAllowed(off.next), false)
+  const onlyMk = applyChoice(on.next, { analytics: true, marketing: false }, NOW + 3)
+  assert.deepEqual([onlyMk.clearGa, onlyMk.clearMeta], [false, true])
+  // zapis z nowym ts, trwały i odczytywalny po zmianie
+  const mem = new Map(); const st = { getItem: k => mem.get(k) ?? null, setItem: (k, v) => mem.set(k, v) }
+  writeStoredConsent(st, on.next); writeStoredConsent(st, off.next)
+  assert.equal(analyticsAllowed(readStoredConsent(st, NOW + 5)), false)
+})
+
+test('zdarzenie zmiany zgody ma stałą nazwę (kontrakt dla website#42 / UTM)', () => {
+  assert.equal(CONSENT_CHANGE_EVENT, 'ir-consent-change')
 })
