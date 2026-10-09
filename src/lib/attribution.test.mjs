@@ -3,7 +3,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import {
   ATTRIBUTION_STORAGE_KEY, captureAttribution, getAttribution, mergeAttribution,
-  normalizeAttributionValue, parseAttribution, readStoredAttribution, withAttribution,
+  normalizeAttributionValue, parseAttribution, readStoredAttribution, withAttribution, registerMarketingConsentCheck,
 } from './attribution.ts'
 import { postLead } from './leadSubmit.ts'
 import { buildLeadRequest, buildPayload } from './valuation.ts'
@@ -121,4 +121,38 @@ test('end-to-end na poziomie wysylki: JSON body zadania ma attribution', async (
   assert.deepEqual(sent.attribution, { utm_source: 'facebook', utm_medium: 'test', fbclid_present: true })
   await postLead('http://x', withAttribution({ phone: '1' }, getAttribution(memStorage())), { fetchImpl })
   assert.deepEqual(sent, { phone: '1' })
+})
+
+test('zgoda marketingowa: bez zarejestrowanej bramki i bez zgody nic sie nie zapisuje ani nie odczytuje (sciezka domyslna)', () => {
+  const ss = memStorage()
+  globalThis.window = { sessionStorage: ss }
+  try {
+    registerMarketingConsentCheck(null)
+    assert.equal(captureAttribution('?utm_source=facebook'), null)
+    assert.equal(ss._m.size, 0)
+    registerMarketingConsentCheck(() => false)
+    assert.equal(captureAttribution('?utm_source=facebook&utm_campaign=x'), null)
+    assert.equal(ss._m.size, 0, 'bez zgody marketingowej nic w sessionStorage')
+    assert.equal(getAttribution(), null)
+    assert.deepEqual(withAttribution({ a: 1 }), { a: 1 })
+    registerMarketingConsentCheck(() => { throw new Error('boom') })
+    assert.equal(captureAttribution('?utm_source=facebook'), null)
+    assert.equal(ss._m.size, 0)
+  } finally { registerMarketingConsentCheck(null); delete globalThis.window }
+})
+
+test('zgoda marketingowa: ze zgoda zapis i dolaczanie dzialaja; po wycofaniu (klucz skasowany + bramka false) nic nie jest wysylane', () => {
+  const ss = memStorage()
+  globalThis.window = { sessionStorage: ss }
+  try {
+    let ok = true
+    registerMarketingConsentCheck(() => ok)
+    assert.deepEqual(captureAttribution('?utm_source=Facebook&utm_campaign=Wycena'), { utm_source: 'facebook', utm_campaign: 'wycena' })
+    assert.ok(ss._m.has(ATTRIBUTION_STORAGE_KEY))
+    assert.deepEqual(getAttribution(), { utm_source: 'facebook', utm_campaign: 'wycena' })
+    assert.deepEqual(withAttribution({ a: 1 }), { a: 1, attribution: { utm_source: 'facebook', utm_campaign: 'wycena' } })
+    ok = false // wycofanie zgody w innej karcie: klucz tej karty moze jeszcze istniec, ale nic nie jest odczytywane ani wysylane
+    assert.equal(getAttribution(), null)
+    assert.deepEqual(withAttribution({ a: 1 }), { a: 1 })
+  } finally { registerMarketingConsentCheck(null); delete globalThis.window }
 })

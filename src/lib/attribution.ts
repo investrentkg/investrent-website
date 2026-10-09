@@ -10,6 +10,10 @@
 // zablokowane dane witryny) - brak storage nigdy nie moze zepsuc formularza.
 // Wartosci UTM nie sa logowane (konsola/analityka).
 //
+// ZGODA (decyzja Dyrektora 09.10.2026, kategoria "Marketingowe" z banera website#35): zapis do sessionStorage i odczyt/wysylka do CRM
+// TYLKO gdy zgoda marketingowa (sprawdzana przez zarejestrowany "gate" - ten plik nie importuje Reacta/consentStore, zeby zostal testowalny w node).
+// Bez zgody: nic nie zapisujemy i niczego nie dolaczamy; po wycofaniu zgody klucz kasuje applyChoice z #35.
+//
 // OPCJA (NIE wdrozona - czeka na odpowiedz Prawnika, P7 ePrivacy): zapas w localStorage
 // z TTL 30 min na wypadek "otworz w przegladarce" z IAB Facebooka/Instagrama.
 export const ATTRIBUTION_FALLBACK_LOCALSTORAGE_TTL_MS = 0 // 0 = wylaczone; opcja: 30 * 60 * 1000 po decyzji Prawnika
@@ -67,6 +71,14 @@ export function mergeAttribution(stored: Attribution | null, incoming: Attributi
 
 type StorageLike = Pick<Storage, 'getItem' | 'setItem'>
 
+// Bramka zgody marketingowej. Domyslnie (brak rejestracji) = ODMOWA dla prawdziwego sessionStorage.
+// Dotyczy tylko sciezki domyslnej (storage nie podany); jawnie podany storage (testy) omija bramke.
+let marketingConsentCheck: (() => boolean) | null = null
+export function registerMarketingConsentCheck(fn: (() => boolean) | null): void { marketingConsentCheck = fn }
+function consentOk(): boolean {
+  try { return !!marketingConsentCheck && marketingConsentCheck() === true } catch { return false }
+}
+
 function getSessionStorage(): StorageLike | null {
   try {
     return typeof window !== 'undefined' && window.sessionStorage ? window.sessionStorage : null
@@ -95,7 +107,8 @@ export function readStoredAttribution(storage: StorageLike | null = getSessionSt
 }
 
 // Wywolywane przy wejsciu na dowolna strone. Zwraca aktualna atrybucje (po scaleniu).
-export function captureAttribution(search: string, storage: StorageLike | null = getSessionStorage()): Attribution | null {
+export function captureAttribution(search: string, storage?: StorageLike | null): Attribution | null {
+  if (storage === undefined) { if (!consentOk()) return null; storage = getSessionStorage() }
   const stored = readStoredAttribution(storage)
   const merged = mergeAttribution(stored, parseAttribution(search))
   if (merged && merged !== stored) {
@@ -105,7 +118,8 @@ export function captureAttribution(search: string, storage: StorageLike | null =
 }
 
 // Atrybucja do dolaczenia do zadania; null gdy brak (wtedy cialo zadania bez zmian).
-export function getAttribution(storage: StorageLike | null = getSessionStorage()): Attribution | null {
+export function getAttribution(storage?: StorageLike | null): Attribution | null {
+  if (storage === undefined) { if (!consentOk()) return null; storage = getSessionStorage() }
   return readStoredAttribution(storage)
 }
 
