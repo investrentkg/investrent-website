@@ -10,7 +10,7 @@
 // zablokowane dane witryny) - brak storage nigdy nie moze zepsuc formularza.
 // Wartosci UTM nie sa logowane (konsola/analityka).
 //
-// ZGODA (decyzja Dyrektora 09.10.2026, kategoria "Marketingowe" z banera website#35): zapis do sessionStorage i odczyt/wysylka do CRM
+// ZGODA (decyzja Dyrektora 09.10.2026, kategoria "Marketingowe" (klucz attribution, rozlaczny od Reklamowe/Pixel) z banera website#35): zapis do sessionStorage i odczyt/wysylka do CRM
 // TYLKO gdy zgoda marketingowa (sprawdzana przez zarejestrowany "gate" - ten plik nie importuje Reacta/consentStore, zeby zostal testowalny w node).
 // Bez zgody: nic nie zapisujemy i niczego nie dolaczamy; po wycofaniu zgody klucz kasuje applyChoice z #35.
 //

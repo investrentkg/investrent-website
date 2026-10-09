@@ -5,6 +5,7 @@ import {
   ATTRIBUTION_STORAGE_KEY, captureAttribution, getAttribution, mergeAttribution,
   normalizeAttributionValue, parseAttribution, readStoredAttribution, withAttribution, registerMarketingConsentCheck,
 } from './attribution.ts'
+import { attributionAllowed, adsAllowed, makeConsent } from './consent.ts'
 import { postLead } from './leadSubmit.ts'
 import { buildLeadRequest, buildPayload } from './valuation.ts'
 
@@ -154,5 +155,23 @@ test('zgoda marketingowa: ze zgoda zapis i dolaczanie dzialaja; po wycofaniu (kl
     ok = false // wycofanie zgody w innej karcie: klucz tej karty moze jeszcze istniec, ale nic nie jest odczytywane ani wysylane
     assert.equal(getAttribution(), null)
     assert.deepEqual(withAttribution({ a: 1 }), { a: 1 })
+  } finally { registerMarketingConsentCheck(null); delete globalThis.window }
+})
+test('rozłączność zgód: UTM zależy WYŁĄCZNIE od attribution (nie od ads); wycofanie attribution = brak odczytu', () => {
+  const ss = memStorage()
+  globalThis.window = { sessionStorage: ss }
+  try {
+    let st = { v: 3, analytics: false, attribution: false, ads: true, ts: 1 } // tylko Pixel (po wdrożeniu), bez Marketingowych
+    registerMarketingConsentCheck(() => attributionAllowed(st))
+    assert.equal(captureAttribution('?utm_source=facebook'), null)
+    assert.equal(ss._m.size, 0, 'zgoda ads bez attribution nie pozwala zapisać UTM')
+    st = { v: 3, analytics: false, attribution: true, ads: false, ts: 1 } // tylko UTM, bez Pixel
+    assert.equal(adsAllowed(st), false)
+    assert.deepEqual(captureAttribution('?utm_source=facebook'), { utm_source: 'facebook' })
+    assert.ok(getAttribution())
+    st = makeConsent({ analytics: true, attribution: false, ads: false }, 1) // wycofanie Marketingowych
+    assert.equal(getAttribution(), null)
+    st = makeConsent({ analytics: false, attribution: false, ads: false }, 1) // domyślnie oba wyłączone
+    assert.equal(captureAttribution('?utm_source=x'), null)
   } finally { registerMarketingConsentCheck(null); delete globalThis.window }
 })
