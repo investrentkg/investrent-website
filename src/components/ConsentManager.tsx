@@ -2,14 +2,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { useConsent, setConsent } from '@/lib/consentStore'
-import { ACCEPT_ALL, REJECT_ALL, CONSENT_OPEN_EVENT } from '@/lib/consent'
+import { ACCEPT_ALL, REJECT_ALL, ADS_AVAILABLE, CONSENT_OPEN_EVENT } from '@/lib/consent'
 import { CONSENT_COPY, localeOfPath } from '@/lib/consentCopy'
 
 // Baner zgód + panel ustawień (teksty zatwierdzone przez Prawnika - lib/consentCopy.ts; podstawa: art. 399 PKE, § 25 TDDDG, art. 6 ust. 1 lit. a RODO).
 // - pokazuje się, gdy brak ważnego wyboru (pierwsza wizyta, wygasły, zmieniona wersja);
 // - "Odrzuć wszystkie" i "Akceptuj wszystkie" mają tę samą wagę wizualną (odmowa tak łatwa jak zgoda);
 // - panel ustawień otwiera też przycisk w stopce (zdarzenie CONSENT_OPEN_EVENT) - wycofanie w każdej chwili;
-// - kategoria Marketingowe jest ZAWSZE widoczna (od website#42: zapis atrybucji reklamowej UTM), domyślnie wyłączona.
+// - dwa rozłączne przełączniki (Prawnik 09.10): Marketingowe (zapis atrybucji UTM, dane tylko wewnętrzne) i Reklamowe (przyszły Meta Pixel/CAPI);
+//   do wdrożenia piksela (ADS_AVAILABLE=false) przełącznik Reklamowe jest nieaktywny i zawsze wyłączony. Oba domyślnie wyłączone.
 
 const css = `
 .irc-bar{position:fixed;left:0;right:0;bottom:0;z-index:2147483000;background:#fff;color:#0d2a5c;border-top:3px solid #f5a623;box-shadow:0 -8px 30px rgba(13,42,92,.18);padding:16px 20px calc(16px + env(safe-area-inset-bottom));font-family:var(--font-inter),system-ui,sans-serif}
@@ -36,6 +37,7 @@ const css = `
 .irc-sw span{position:absolute;left:3px;right:3px;top:9px;bottom:9px;background:#6b7280;border-radius:26px;transition:background .15s;pointer-events:none}
 .irc-sw span::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;background:#fff;border-radius:50%;transition:transform .15s}
 .irc-sw input:checked+span{background:#0d2a5c}
+.irc-soon{font-size:13px;font-weight:700;color:#374151;background:#f3f4f6;border:1px solid #9ca3af;border-radius:999px;padding:3px 10px;white-space:nowrap}
 .irc-sw input:checked+span::after{transform:translateX(20px)}
 @media (prefers-reduced-motion:reduce){.irc-sw span,.irc-sw span::after{transition:none}}
 @media (min-width:641px){.irc-bar .irc-act .irc-btn{min-width:196px}.irc-dlg .irc-act{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.irc-dlg .irc-act .irc-btn{padding:0 8px;white-space:nowrap}}
@@ -48,7 +50,8 @@ export default function ConsentManager() {
   const t = CONSENT_COPY[localeOfPath(pathname)]
   const [open, setOpen] = useState(false)
   const [analytics, setAnalytics] = useState(false)
-  const [marketing, setMarketing] = useState(false)
+  const [attribution, setAttribution] = useState(false)
+  const [ads, setAds] = useState(false)
   const dlgRef = useRef<HTMLDivElement>(null)
   const barRef = useRef<HTMLDivElement>(null)
   const returnFocus = useRef<HTMLElement | null>(null)
@@ -56,7 +59,8 @@ export default function ConsentManager() {
   const openSettings = useCallback(() => {
     returnFocus.current = (document.activeElement as HTMLElement) ?? null
     setAnalytics(!!consent?.analytics)
-    setMarketing(!!consent?.marketing)
+    setAttribution(!!consent?.attribution)
+    setAds(ADS_AVAILABLE && !!consent?.ads)
     setOpen(true)
   }, [consent])
 
@@ -99,7 +103,7 @@ export default function ConsentManager() {
     return () => { ro?.disconnect(); window.removeEventListener('resize', set); root.style.removeProperty('--consent-h') }
   }, [barVisible])
 
-  const choose = (c: { analytics: boolean; marketing: boolean }) => { setConsent(c); setOpen(false); returnFocus.current?.focus?.() }
+  const choose = (c: { analytics: boolean; attribution: boolean; ads: boolean }) => { setConsent(c); setOpen(false); returnFocus.current?.focus?.() }
 
   // undefined = SSR/hydracja (nic nie renderujemy, brak migotania); wybór jest = banner schowany, panel tylko na żądanie
   const showBar = consent === null && !open
@@ -143,13 +147,20 @@ export default function ConsentManager() {
             </div>
             <div className="irc-row">
               <h3 id="irc-mk">{t.marketing.name}</h3>
-              <label className="irc-sw"><input type="checkbox" role="switch" aria-labelledby="irc-mk" checked={marketing} onChange={e => setMarketing(e.target.checked)} /><span /></label>
+              <label className="irc-sw"><input type="checkbox" role="switch" aria-labelledby="irc-mk" checked={attribution} onChange={e => setAttribution(e.target.checked)} /><span /></label>
               <p>{t.marketing.desc}</p>
+            </div>
+            <div className="irc-row">
+              <h3 id="irc-ad">{t.ads.name}</h3>
+              {ADS_AVAILABLE
+                ? <label className="irc-sw"><input type="checkbox" role="switch" aria-labelledby="irc-ad" checked={ads} onChange={e => setAds(e.target.checked)} /><span /></label>
+                : <span className="irc-soon">{t.ads.badge}</span>}
+              <p>{t.ads.desc}</p>
             </div>
             <div className="irc-act" style={{ marginTop: 16, justifyContent: 'flex-end' }}>
               <button type="button" className="irc-btn irc-line" onClick={() => choose(REJECT_ALL)}>{t.rejectAll}</button>
               <button type="button" className="irc-btn irc-line" onClick={() => choose(ACCEPT_ALL)}>{t.acceptAll}</button>
-              <button type="button" className="irc-btn irc-solid" onClick={() => choose({ analytics, marketing })}>{t.save}</button>
+              <button type="button" className="irc-btn irc-solid" onClick={() => choose({ analytics, attribution, ads })}>{t.save}</button>
             </div>
           </div>
         </div>
