@@ -3,6 +3,7 @@ import { Montserrat, Inter } from 'next/font/google'
 import ConsentManager from '@/components/ConsentManager'
 import GoogleAnalytics from '@/components/GoogleAnalytics'
 import './globals.css'
+import AttributionCapture from '@/components/AttributionCapture'
 
 const montserrat = Montserrat({
   subsets: ['latin', 'latin-ext'],
@@ -105,6 +106,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="pl" className={`${montserrat.variable} ${inter.variable}`}>
       <body>
+        <AttributionCapture />
         <div className="page-wrap">
           {children}
         </div>
