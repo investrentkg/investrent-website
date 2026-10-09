@@ -1,17 +1,18 @@
 import { serializeJsonLd } from '@/lib/jsonLd'
 import Nav from '@/components/Nav'
-import ReadAlso from '@/components/ReadAlso'
 import Footer from '@/components/Footer'
 import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
 import OffersPageClient from '@/app/oferty/OffersPageClient'
 import { getPublicOffers, getOffice } from '@/lib/api'
+import ReadAlso from '@/components/ReadAlso'
+import { RENTAL_INTRO, OWNER_HEADING } from './wynajemContent'
 import { KeyRound, Shield, Clock, Star, ArrowRight } from 'lucide-react'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Wynajem nieruchomości Kołobrzeg',
-  description: 'Mieszkania i lokale do wynajęcia w Kołobrzegu. Sprawdź nasze oferty najmu.',
+  title: 'Wynajem mieszkań w Kołobrzegu – oferty długoterminowe',
+  description: 'Mieszkania na wynajem w Kołobrzegu: oferty wynajmu długoterminowego, koszty, kaucja i umowa najmu. Sprawdź aktualne oferty biura InvestRent.',
   // NAPRAWA (audyt SEO 31.07.2026, punkt 3): brak kanonicznego URL na calej stronie.
   alternates: { canonical: 'https://www.investrent.com.pl/wynajem' },
 }
@@ -19,11 +20,11 @@ export const metadata: Metadata = {
 const FALLBACK_OFFICE = { name: 'InvestRent Nieruchomości', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
 
 const FAQ = [
-  { q: 'Czy pomoc w znalezieniu mieszkania na wynajem jest płatna?', a: 'Warunki zależą od konkretnej oferty — część mieszkań oznaczona jest jako "bez prowizji" dla najemcy. Zawsze jasno komunikujemy koszty przed umówieniem prezentacji, żeby nie było niespodzianek.' },
+  { q: 'Ile kosztuje wynajem mieszkania przez biuro?', a: 'W większości ofert wynagrodzenie biura od Najemcy wynosi równowartość jednego miesięcznego czynszu netto, powiększonego o należny podatek VAT; niektóre oferty są bez prowizji dla najemcy. Informację o kosztach konkretnej oferty otrzymasz przed umówieniem prezentacji.' },
   { q: 'Jakie dokumenty są potrzebne do podpisania umowy najmu?', a: 'Standardowo dowód osobisty i informacja o źródle dochodu (np. zaświadczenie o zatrudnieniu). Dokładną listę podajemy indywidualnie przy konkretnej ofercie, w zależności od wymagań właściciela.' },
   { q: 'Czy oferty na stronie są zweryfikowane i aktualne?', a: 'Tak, każda oferta przechodzi przez nasz zespół przed publikacją — sprawdzamy zgodność danych i regularnie aktualizujemy status dostępności, żeby nie tracić Twojego czasu na nieaktualne ogłoszenia.' },
   { q: 'Czy pomagacie też przy wynajmie krótkoterminowym / wakacyjnym?', a: 'Nasza oferta na tej stronie koncentruje się na wynajmie długoterminowym. Jeśli szukasz czegoś krótkoterminowego, skontaktuj się z nami bezpośrednio — sprawdzimy dostępne możliwości.' },
-  { q: 'Ile wynosi kaucja i kiedy jest zwracana?', a: 'Wysokość kaucji ustala właściciel indywidualnie dla każdej oferty (zwykle równowartość 1 miesięcznego czynszu). Kaucja jest zwrotna po zakończeniu najmu, o ile mieszkanie zostaje przekazane bez uszkodzeń wykraczających poza normalne zużycie.' },
+  { q: 'Ile wynosi kaucja i kiedy jest zwracana?', a: 'Wysokość kaucji ustala właściciel indywidualnie dla każdej oferty. Kaucja jest zwrotna po zakończeniu najmu, o ile mieszkanie zostaje przekazane bez uszkodzeń wykraczających poza normalne zużycie.' },
 ]
 
 export default async function WynajemPage() {
@@ -82,6 +83,26 @@ export default async function WynajemPage() {
           </div>
         </div>
         <OffersPageClient initialOffers={data?.data ?? []} initialTotal={data?.pagination?.total ?? 0} defaultTransaction="wynajem" />
+
+        {/* Treść opisowa (08.10.2026, SEO): wynajem długoterminowy i sezonowy, koszty, umowa, dzielnice */}
+        <div style={{ padding: '56px 0 8px', background: 'white' }}>
+          <div className="container" style={{ maxWidth: 760 }}>
+            {RENTAL_INTRO.map(sec => (
+              <section key={sec.heading} style={{ marginBottom: 32 }}>
+                <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 22, color: '#0d2a5c', marginBottom: 12 }}>{sec.heading}</h2>
+                {sec.paragraphs?.map(t => <p key={t} style={{ fontSize: 15, color: '#374151', lineHeight: 1.8, marginBottom: 12 }}>{t}</p>)}
+                {sec.bullets && (
+                  <ul style={{ paddingLeft: 20, margin: 0, display: 'flex', flexDirection: 'column' as const, gap: 8 }}>
+                    {sec.bullets.map(b => <li key={b} style={{ fontSize: 15, color: '#374151', lineHeight: 1.7 }}>{b}</li>)}
+                  </ul>
+                )}
+                {sec.heading === OWNER_HEADING && (
+                  <p style={{ marginTop: 4 }}><a href="/zarzadzanie-najmem" style={{ color: '#059669', fontWeight: 700, fontSize: 15 }}>Zarządzanie najmem w Kołobrzegu →</a></p>
+                )}
+              </section>
+            ))}
+          </div>
+        </div>
 
         {/* FAQ (Daniel 03.08, sugestia SEO) */}
         <div style={{ padding: '56px 0', background: '#f8fafc' }}>
