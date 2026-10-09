@@ -129,7 +129,7 @@ export default async function RodoPage() {
               <UL>
                 <LI><strong>Niezbędne</strong> — konieczne do prawidłowego działania strony (np. zapamiętanie Państwa wyboru w banerze zgód). Nie wymagają zgody.</LI>
                 <LI><strong>Analityczne</strong> — pomagają nam zrozumieć, jak korzystają Państwo ze strony (np. Google Analytics 4). Uruchamiane wyłącznie po wyrażeniu zgody.</LI>
-                <LI><strong>Marketingowe</strong> — pozwalają mierzyć skuteczność naszych kampanii reklamowych. Uruchamiane wyłącznie po wyrażeniu zgody.</LI>
+                <LI><strong>Marketingowe</strong> — pozwalają mierzyć skuteczność naszych kampanii reklamowych. Uruchamiane wyłącznie po wyrażeniu zgody. Jeśli wyrazili Państwo zgodę na kategorię Marketingowe, informacja o kampanii, z której Państwo przyszli (parametry UTM oraz znacznik wejścia z linku reklamowego Facebooka), może zostać dołączona do wysłanego przez Państwa zgłoszenia, wyłącznie w celu oceny skuteczności naszych kampanii; sama ta informacja nie zawiera Państwa danych osobowych.</LI>
               </UL>
               <P>
                 Zgodę mogą Państwo wyrazić, odrzucić lub dostosować przy pierwszej wizycie na stronie w banerze zgód, a także w dowolnym momencie później poprzez zmianę ustawień. Wybór jest zapamiętywany przez 12 miesięcy, po czym poprosimy o niego ponownie. Opis poszczególnych kategorii dostępny jest w panelu zgód.
