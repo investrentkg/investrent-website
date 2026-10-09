@@ -1,8 +1,8 @@
 // Teksty banera zgód PL/DE - ZATWIERDZONE PRZEZ PRAWNIKA (opinia 03.10.2026:
 // _wspolne_pliki/prawnik_opinia_baner_cookies_pixel_capi_2026_10_03.md, sekcja "Gotowy tekst"), wstawione DOSŁOWNIE.
 // Odstępstwa (do akceptacji Prawnika przy przeglądzie PR):
-//  1. introAnalyticsOnly: wariant pierwszej warstwy BEZ klauzuli o pomiarze reklam - używany dopóki nie jest wdrożony
-//     piksel Meta (nie pytamy o zgodę na to, czego nie ma; kategoria "marketing" też jest wtedy ukryta);
+//  1. marketing.desc: dopisane zdanie o zapisie atrybucji UTM (kampania, z której użytkownik przyszedł) - wg odpowiedzi Prawnika z 09.10.2026;
+//     zdanie o Meta Pixel/CAPI zostawione z opinii 03.10 (zakres zgody na przyszły piksel);
 //  2. save ("Zapisz wybór"/"Auswahl speichern") i privacyLabel - dodane etykiety UI, których opinia nie podaje.
 // Jedno źródło prawdy dla banera, panelu ustawień i przycisku w stopce.
 
@@ -10,10 +10,8 @@ export type ConsentLocale = 'pl' | 'de'
 
 export interface ConsentCopy {
   title: string
-  /** Pierwsza warstwa - pełny tekst Prawnika (z klauzulą o pomiarze reklam); gdy marketing dostępny. */
+  /** Pierwsza warstwa - pełny tekst Prawnika (z klauzulą o pomiarze reklam). */
   intro: string
-  /** Pierwsza warstwa bez klauzuli o reklamach (marketing jeszcze niewdrożony). */
-  introAnalyticsOnly: string
   rejectAll: string
   customize: string
   acceptAll: string
@@ -34,8 +32,6 @@ export const CONSENT_COPY: Record<ConsentLocale, ConsentCopy> = {
     title: 'Ustawienia prywatności',
     intro:
       'Używamy plików cookies, aby strona działała poprawnie oraz — za Państwa zgodą — do analizy ruchu na stronie i pomiaru skuteczności naszych reklam. Mogą Państwo zaakceptować wszystkie, odrzucić wszystkie poza niezbędnymi lub dostosować wybór.',
-    introAnalyticsOnly:
-      'Używamy plików cookies, aby strona działała poprawnie oraz — za Państwa zgodą — do analizy ruchu na stronie. Mogą Państwo zaakceptować wszystkie, odrzucić wszystkie poza niezbędnymi lub dostosować wybór.',
     rejectAll: 'Odrzuć wszystkie',
     customize: 'Dostosuj',
     acceptAll: 'Zaakceptuj wszystkie',
@@ -52,7 +48,7 @@ export const CONSENT_COPY: Record<ConsentLocale, ConsentCopy> = {
     },
     marketing: {
       name: 'Marketingowe',
-      desc: 'Meta Pixel i interfejs konwersji Meta (Meta Platforms Ireland Limited) pozwalają nam mierzyć skuteczność reklam na Facebooku i Instagramie oraz lepiej dopasować je do zainteresowanych osób; obejmuje to także przesyłanie zahaszowanych (nieczytelnych wprost) danych kontaktowych przy zgłoszeniu z formularza, np. kalkulatora wyceny. Dane mogą być przekazywane poza Europejski Obszar Gospodarczy (szczegóły w polityce prywatności).',
+      desc: 'Zapisujemy informację, z której kampanii reklamowej Państwo przyszli (parametry UTM), aby mierzyć skuteczność naszych kampanii; przy wysłaniu formularza dołączamy ją do zgłoszenia. Meta Pixel i interfejs konwersji Meta (Meta Platforms Ireland Limited) pozwalają nam mierzyć skuteczność reklam na Facebooku i Instagramie oraz lepiej dopasować je do zainteresowanych osób; obejmuje to także przesyłanie zahaszowanych (nieczytelnych wprost) danych kontaktowych przy zgłoszeniu z formularza, np. kalkulatora wyceny. Dane mogą być przekazywane poza Europejski Obszar Gospodarczy (szczegóły w polityce prywatności).',
     },
     withdraw: 'Zgodę mogą Państwo w każdej chwili zmienić lub wycofać w „Ustawieniach prywatności” (link w stopce strony).',
     privacyLabel: 'Polityka prywatności',
@@ -63,8 +59,6 @@ export const CONSENT_COPY: Record<ConsentLocale, ConsentCopy> = {
     title: 'Datenschutzeinstellungen',
     intro:
       'Wir verwenden Cookies, damit die Website ordnungsgemäß funktioniert, sowie — mit Ihrer Einwilligung — zur Analyse des Websitetraffics und zur Messung der Wirksamkeit unserer Werbung. Sie können alle akzeptieren, alle außer den notwendigen ablehnen oder Ihre Auswahl anpassen.',
-    introAnalyticsOnly:
-      'Wir verwenden Cookies, damit die Website ordnungsgemäß funktioniert, sowie — mit Ihrer Einwilligung — zur Analyse des Websitetraffics. Sie können alle akzeptieren, alle außer den notwendigen ablehnen oder Ihre Auswahl anpassen.',
     rejectAll: 'Alle ablehnen',
     customize: 'Einstellungen',
     acceptAll: 'Alle akzeptieren',
@@ -81,7 +75,7 @@ export const CONSENT_COPY: Record<ConsentLocale, ConsentCopy> = {
     },
     marketing: {
       name: 'Marketing',
-      desc: 'Meta Pixel und die Meta Conversions API (Meta Platforms Ireland Limited) ermöglichen uns, die Wirksamkeit unserer Werbung auf Facebook und Instagram zu messen und besser auf interessierte Personen auszurichten; dies umfasst auch die Übermittlung gehashter (nicht direkt lesbarer) Kontaktdaten bei einer Formularanfrage, z. B. im Bewertungsrechner. Daten können außerhalb des Europäischen Wirtschaftsraums verarbeitet werden (Einzelheiten in der Datenschutzerklärung).',
+      desc: 'Wir speichern, über welche Werbekampagne Sie zu uns gekommen sind (UTM-Parameter), um die Wirksamkeit unserer Kampagnen zu messen; bei einer Formularanfrage fügen wir diese Information Ihrer Anfrage bei. Meta Pixel und die Meta Conversions API (Meta Platforms Ireland Limited) ermöglichen uns, die Wirksamkeit unserer Werbung auf Facebook und Instagram zu messen und besser auf interessierte Personen auszurichten; dies umfasst auch die Übermittlung gehashter (nicht direkt lesbarer) Kontaktdaten bei einer Formularanfrage, z. B. im Bewertungsrechner. Daten können außerhalb des Europäischen Wirtschaftsraums verarbeitet werden (Einzelheiten in der Datenschutzerklärung).',
     },
     withdraw: 'Sie können Ihre Einwilligung jederzeit in den „Datenschutzeinstellungen” (Link in der Fußzeile) ändern oder widerrufen.',
     privacyLabel: 'Datenschutzerklärung',

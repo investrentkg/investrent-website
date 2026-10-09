@@ -10,7 +10,8 @@
 
 export const CONSENT_STORAGE_KEY = 'ir_consent'
 /** Zwiększyć, gdy zmienia się zakres kategorii/dostawców - wymusza ponowne pytanie. */
-export const CONSENT_VERSION = 1
+export const CONSENT_VERSION = 2
+// v2 (09.10.2026): kategoria Marketingowe jest zawsze widoczna (zapis atrybucji reklamowej UTM w website#42); zapisy z v1 = brak zgody, ponowne pytanie.
 /** Ponowne pytanie po 12 miesiącach (propozycja do opinii Prawnika). */
 export const CONSENT_MAX_AGE_MS = 365 * 24 * 60 * 60 * 1000
 /** Zdarzenie okna: otwiera ustawienia cookies (przycisk w stopce / w polityce). */
@@ -69,7 +70,7 @@ export function writeStoredConsent(storage: StorageLike | null | undefined, stat
 /** Argumenty `gtag('consent', 'update', ...)` (Consent Mode v2) dla danego stanu; null stan = wszystko odmowa. */
 export function googleConsentArgs(s: ConsentState | null): Record<'analytics_storage' | 'ad_storage' | 'ad_user_data' | 'ad_personalization', 'granted' | 'denied'> {
   // Google Analytics to wyłącznie analityka; reklamowe sygnały Google (ad_*) nie są używane - zawsze odmowa
-  // (zgoda "marketing" dotyczy piksela Meta, nie Google Ads).
+  // (zgoda "marketing" dotyczy atrybucji UTM i Meta, nie Google Ads).
   return { analytics_storage: s?.analytics ? 'granted' : 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' }
 }
 
@@ -83,8 +84,9 @@ export function metaCookieNames(cookieString: string): string[] {
   return (cookieString || '').split(';').map(p => p.split('=')[0].trim()).filter(n => n === '_fbp' || n === '_fbc')
 }
 
-/** Czy pokazać kategorię "marketing": tylko gdy faktycznie coś marketingowego jest wdrożone (id piksela). Nie pytamy o zgodę na nic, czego nie ma. */
-export const marketingAvailable = (pixelId: string | undefined | null): boolean => !!pixelId && /^\d{6,20}$/.test(String(pixelId))
+/** Klucz sessionStorage z atrybucją reklamową UTM (website#42, src/lib/attribution.ts: ATTRIBUTION_STORAGE_KEY). Kasowany po wycofaniu zgody marketingowej. */
+/** Utrzymać zgodnie z #42. */
+export const ATTRIBUTION_SESSION_KEY = 'ir_attr'
 
 /** Zdarzenie okna wysyłane po KAŻDEJ zmianie wyboru (detail: ConsentState). Inne moduły (np. atrybucja UTM) mogą nasłuchiwać zamiast odpytywać. */
 export const CONSENT_CHANGE_EVENT = 'ir-consent-change'
@@ -98,7 +100,7 @@ export const marketingAllowed = (s: ConsentState | null | undefined): boolean =>
  * Przejście stanu przy zapisie wyboru: nowy stan + które cookies posprzątać (tylko przy WYCOFANIU kategorii,
  * nie gdy kategoria nigdy nie była włączona). Czysta funkcja - testowalna bez przeglądarki.
  */
-export function applyChoice(prev: ConsentState | null | undefined, choice: ConsentChoice, now: number = Date.now()): { next: ConsentState; clearGa: boolean; clearMeta: boolean } {
+export function applyChoice(prev: ConsentState | null | undefined, choice: ConsentChoice, now: number = Date.now()): { next: ConsentState; clearGa: boolean; clearMeta: boolean; clearAttribution: boolean } {
   const next = makeConsent(choice, now)
-  return { next, clearGa: !!prev?.analytics && !next.analytics, clearMeta: !!prev?.marketing && !next.marketing }
+  return { next, clearGa: !!prev?.analytics && !next.analytics, clearMeta: !!prev?.marketing && !next.marketing, clearAttribution: !!prev?.marketing && !next.marketing }
 }

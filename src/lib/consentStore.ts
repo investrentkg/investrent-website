@@ -1,7 +1,7 @@
 "use client"
 import { useSyncExternalStore } from 'react'
 import {
-  CONSENT_STORAGE_KEY, CONSENT_CHANGE_EVENT, applyChoice, analyticsAllowed, marketingAllowed, readStoredConsent, writeStoredConsent, gaCookieNames, metaCookieNames,
+  CONSENT_STORAGE_KEY, CONSENT_CHANGE_EVENT, applyChoice, analyticsAllowed, marketingAllowed, readStoredConsent, writeStoredConsent, gaCookieNames, metaCookieNames, ATTRIBUTION_SESSION_KEY,
   type ConsentChoice, type ConsentState,
 } from './consent'
 
@@ -38,13 +38,15 @@ function deleteCookies(names: string[]) {
 
 /** Zapisuje wybór. Przy wycofaniu zgody usuwa cookies danej kategorii (best effort). */
 export function setConsent(choice: ConsentChoice): ConsentState {
-  const { next, clearGa, clearMeta } = applyChoice(getConsent(), choice)
+  const { next, clearGa, clearMeta, clearAttribution } = applyChoice(getConsent(), choice)
   writeStoredConsent(storage(), next)
   state = next // także gdy storage niedostępny: wybór działa do końca wizyty
   try {
     if (clearGa) deleteCookies(gaCookieNames(document.cookie))
     if (clearMeta) deleteCookies(metaCookieNames(document.cookie))
   } catch { /* czyszczenie cookies nigdy nie może zepsuć strony */ }
+  // Wycofanie zgody marketingowej: kasujemy zapisaną atrybucję UTM (website#42) z sessionStorage.
+  if (clearAttribution) { try { window.sessionStorage.removeItem(ATTRIBUTION_SESSION_KEY) } catch { /* brak sessionStorage */ } }
   notify()
   try { window.dispatchEvent(new CustomEvent(CONSENT_CHANGE_EVENT, { detail: next })) } catch { /* zdarzenie to tylko wygoda dla innych modulow */ }
   return next

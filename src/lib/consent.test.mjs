@@ -4,7 +4,7 @@ import assert from 'node:assert/strict'
 import {
   CONSENT_STORAGE_KEY, CONSENT_VERSION, CONSENT_MAX_AGE_MS, REJECT_ALL, ACCEPT_ALL,
   makeConsent, parseConsent, serializeConsent, readStoredConsent, writeStoredConsent, googleConsentArgs,
-  gaCookieNames, metaCookieNames, marketingAvailable,
+  gaCookieNames, metaCookieNames, ATTRIBUTION_SESSION_KEY,
   CONSENT_CHANGE_EVENT, analyticsAllowed, marketingAllowed, applyChoice,
 } from './consent.ts'
 import { CONSENT_COPY, localeOfPath } from './consentCopy.ts'
@@ -68,14 +68,29 @@ test('nazwy cookies do usunięcia po wycofaniu zgody (GA: _ga, _ga_<ID>, _gid, _
   assert.deepEqual(metaCookieNames(undefined), [])
 })
 
-test('kategoria marketing tylko gdy jest wdrożony piksel (poprawny numeric id)', () => {
-  assert.equal(marketingAvailable(undefined), false)
-  assert.equal(marketingAvailable(''), false)
-  assert.equal(marketingAvailable('abc'), false)
-  assert.equal(marketingAvailable('123'), false)
-  assert.equal(marketingAvailable('1234567890123456'), true)
+test('wersja zgody 2: zapis ze starą wersją (v1) = brak zgody, ponowne pytanie; domyślnie marketing wyłączony', () => {
+  assert.equal(CONSENT_VERSION, 2)
+  const old = JSON.stringify({ v: 1, analytics: true, marketing: true, ts: NOW })
+  assert.equal(parseConsent(old, NOW + 1000), null)
+  const st = { getItem: () => old, setItem() {} }
+  const s = readStoredConsent(st, NOW + 1000)
+  assert.equal(s, null)
+  assert.equal(analyticsAllowed(s), false)
+  assert.equal(marketingAllowed(s), false)
+  assert.equal(makeConsent({ analytics: true, marketing: false }, NOW).marketing, false)
+  assert.equal(marketingAllowed(makeConsent({ analytics: true, marketing: false }, NOW)), false)
+  assert.ok(parseConsent(serializeConsent(makeConsent(ACCEPT_ALL, NOW)), NOW + 1000)) // v2 działa
 })
 
+test('wycofanie zgody marketingowej => sprzątanie atrybucji UTM z sessionStorage; analityka i pierwsze odrzucenie jej nie ruszają', () => {
+  assert.equal(ATTRIBUTION_SESSION_KEY, 'ir_attr')
+  assert.equal(applyChoice(null, REJECT_ALL, NOW).clearAttribution, false)
+  const on = makeConsent(ACCEPT_ALL, NOW)
+  assert.equal(applyChoice(on, REJECT_ALL, NOW + 1).clearAttribution, true)
+  assert.equal(applyChoice(on, { analytics: true, marketing: false }, NOW + 1).clearAttribution, true)
+  assert.equal(applyChoice(on, { analytics: false, marketing: true }, NOW + 1).clearAttribution, false)
+  assert.equal(applyChoice(makeConsent({ analytics: true, marketing: false }, NOW), REJECT_ALL, NOW + 1).clearAttribution, false)
+})
 test('język po ścieżce: /de i /de/... = niemiecki, reszta (także /dekoracje) polski; komplet tekstów PL i DE', () => {
   assert.equal(localeOfPath('/de'), 'de')
   assert.equal(localeOfPath('/de/datenschutz'), 'de')
@@ -84,10 +99,11 @@ test('język po ścieżce: /de i /de/... = niemiecki, reszta (także /dekoracje)
   assert.equal(localeOfPath(null), 'pl')
   for (const loc of ['pl', 'de']) {
     const c = CONSENT_COPY[loc]
-    for (const k of ['title', 'intro', 'introAnalyticsOnly', 'rejectAll', 'customize', 'acceptAll', 'save', 'settingsTitle', 'footerButton', 'withdraw']) assert.ok(c[k] && c[k].length > 3, `${loc}.${k}`)
+    for (const k of ['title', 'intro', 'rejectAll', 'customize', 'acceptAll', 'save', 'settingsTitle', 'footerButton', 'withdraw']) assert.ok(c[k] && c[k].length > 3, `${loc}.${k}`)
     for (const k of ['necessary', 'analytics', 'marketing']) { assert.ok(c[k].name); assert.ok(c[k].desc.length > 20) }
     assert.ok(c.necessary.alwaysActive)
-    assert.ok(!/reklam|Werbung/.test(c.introAnalyticsOnly), 'wariant bez marketingu nie wspomina o reklamach')
+    assert.ok(/reklam|Werbung/.test(c.intro), 'pierwsza warstwa informuje o pomiarze reklam')
+    assert.ok(/UTM/.test(c.marketing.desc), 'opis Marketingowych wspomina o zapisie atrybucji UTM')
   }
   assert.equal(CONSENT_COPY.pl.privacyHref, '/rodo')
   assert.equal(CONSENT_COPY.de.privacyHref, '/de/datenschutz')
