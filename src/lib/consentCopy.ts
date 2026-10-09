@@ -1,8 +1,9 @@
 // Teksty banera zgód PL/DE - ZATWIERDZONE PRZEZ PRAWNIKA (opinia 03.10.2026:
 // _wspolne_pliki/prawnik_opinia_baner_cookies_pixel_capi_2026_10_03.md, sekcja "Gotowy tekst"), wstawione DOSŁOWNIE.
 // Odstępstwa (do akceptacji Prawnika przy przeglądzie PR):
-//  1. marketing.desc: dopisane zdanie o zapisie atrybucji UTM (kampania, z której użytkownik przyszedł) - wg odpowiedzi Prawnika z 09.10.2026;
-//     zdania o Meta Pixel/CAPI i transferze poza EOG USUNIĘTE (decyzja Dyrektora 09.10: do czasu wdrożenia piksela);
+//  1. marketing.desc: zdanie Prawnika z 09.10.2026 (doprecyzowanie pkt a: cel przed mechanizmem), PL dosłownie, DE tłumaczenie;
+//     zdania o Meta Pixel/CAPI i transferze poza EOG USUNIĘTE z Marketingowych; przełączniki rozdzielone (pkt c): Marketingowe (UTM) i Reklamowe (Meta) -
+//     ads.desc: tekst roboczy RP w czasie przyszłym/warunkowym (pkt b), do przeglądu Prawnika;
 //  2. save ("Zapisz wybór"/"Auswahl speichern") i privacyLabel - dodane etykiety UI, których opinia nie podaje.
 // Jedno źródło prawdy dla banera, panelu ustawień i przycisku w stopce.
 
@@ -19,7 +20,10 @@ export interface ConsentCopy {
   settingsTitle: string
   necessary: { name: string; alwaysActive: string; desc: string }
   analytics: { name: string; desc: string }
+  /** Marketingowe = zapis atrybucji UTM (dane wyłącznie wewnętrzne). */
   marketing: { name: string; desc: string }
+  /** Reklamowe = przyszły Meta Pixel/CAPI (udostępnianie danych Meta); do wdrożenia przełącznik nieaktywny. */
+  ads: { name: string; badge: string; desc: string }
   /** Zdanie o wycofaniu zgody; po nim link do polityki. */
   withdraw: string
   privacyLabel: string
@@ -48,7 +52,12 @@ export const CONSENT_COPY: Record<ConsentLocale, ConsentCopy> = {
     },
     marketing: {
       name: 'Marketingowe',
-      desc: 'Zapisujemy informację, z której kampanii reklamowej Państwo przyszli (parametry UTM), aby mierzyć skuteczność naszych kampanii; przy wysłaniu formularza dołączamy ją do zgłoszenia.',
+      desc: 'pozwalają nam mierzyć skuteczność kampanii reklamowych, np. zapisując, z jakiej kampanii przyszedł użytkownik.',
+    },
+    ads: {
+      name: 'Reklamowe (Meta)',
+      badge: 'planowane',
+      desc: 'obecnie nic tu nie uruchamiamy. Ewentualne udostępnianie danych Meta Platforms Ireland Limited w celu pomiaru reklam na Facebooku i Instagramie będzie wymagało Państwa odrębnej zgody.',
     },
     withdraw: 'Zgodę mogą Państwo w każdej chwili zmienić lub wycofać w „Ustawieniach prywatności” (link w stopce strony).',
     privacyLabel: 'Polityka prywatności',
@@ -75,7 +84,12 @@ export const CONSENT_COPY: Record<ConsentLocale, ConsentCopy> = {
     },
     marketing: {
       name: 'Marketing',
-      desc: 'Wir speichern, über welche Werbekampagne Sie zu uns gekommen sind (UTM-Parameter), um die Wirksamkeit unserer Kampagnen zu messen; bei einer Formularanfrage fügen wir diese Information Ihrer Anfrage bei.',
+      desc: 'ermöglichen uns, die Wirksamkeit unserer Werbekampagnen zu messen, z. B. indem gespeichert wird, über welche Kampagne Sie zu uns gekommen sind.',
+    },
+    ads: {
+      name: 'Werbung (Meta)',
+      badge: 'geplant',
+      desc: 'derzeit läuft hier nichts. Eine etwaige Weitergabe von Daten an Meta Platforms Ireland Limited zur Messung von Werbung auf Facebook und Instagram erfordert Ihre gesonderte Einwilligung.',
     },
     withdraw: 'Sie können Ihre Einwilligung jederzeit in den „Datenschutzeinstellungen” (Link in der Fußzeile) ändern oder widerrufen.',
     privacyLabel: 'Datenschutzerklärung',
