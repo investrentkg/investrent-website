@@ -489,7 +489,7 @@ test('D2 (CTA do panelu kontaktu): teksty bez obietnic dokładności, presji i w
   assert.ok(!/wycena_cta_click'[^)]*(phone|name|full_name)/.test(src), 'zdarzenia CTA bez danych osobowych')
   assert.ok(src.includes('<ContactFallback placement="wycena_lead_fail"'), 'po bledzie wysylki: Zadzwon/WhatsApp zamiast slepego bledu')
   assert.ok(src.includes('<ContactFallback placement="wycena_lead_fallback"'), 'brak Turnstile: Zadzwon/WhatsApp w komunikacie')
-  assert.ok(!/setState\('fail'\)[^\n]*\n[^\n]*return/.test(src.slice(src.indexOf('async function attempt'), src.indexOf('inFlight.current = true'))), 'brak tokenu NIE konczy sie slepym bledem wysylki')
+  { const start = src.indexOf('async function attempt'); const end = src.indexOf('inFlight.current = true', start); assert.ok(start > 0 && end > start, 'znaleziono cialo attempt'); assert.ok(!src.slice(start, end).includes("setState('fail')"), 'przed wysylka (walidacja, brak tokenu) nigdy setState(fail): brak tokenu NIE konczy sie slepym bledem wysylki') }
   const { buildLeadRequest: blr } = await import('./valuation.ts')
   const r = blr({ name: 'Test', phone: '731 554 341', values: ok, outcome: null, utm: '', turnstileToken: 'tok', honeypot: '' })
   assert.deepEqual(Object.keys(r).sort(), ['client_type', 'full_name', 'hp_field', 'notes', 'phone', 'preferred_city', 'source', 'turnstile_token'])
