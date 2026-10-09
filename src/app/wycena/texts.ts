@@ -120,7 +120,7 @@ export const T = {
   },
 
   lead: {
-    titleRange:'Chcesz omówić wynik z agentem?',
+    titleRange: 'Chcesz omówić wynik z agentem?',
     bodyRange: 'Zdjęcia, szczegóły stanu i standardu mieszkania oraz to, czy pochodzi ono z rynku pierwotnego, czy wtórnego, oceni agent po kontakcie. Jeśli chcesz szacunku od agenta, zostaw numer telefonu i zaznacz zgodę na telefon w sprawie wyceny: agent zadzwoni, omówi z Tobą wynik i oszacuje cenę, bezpłatnie i bez zobowiązań.',
     titleFallback: 'Zostaw numer, a agent zadzwoni w sprawie wyceny',
     bodyFallback: 'Zaznacz zgodę na telefon w sprawie wyceny. Agent zadzwoni i powie, jak może pomóc: dla mieszkań, domów i działek w województwie zachodniopomorskim oszacuje cenę, bezpłatnie i bez zobowiązań. To nie jest operat.',
