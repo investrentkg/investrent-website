@@ -96,7 +96,7 @@ export default function DatenschutzPage() {
       <UL>
         <LI><strong>Notwendig</strong> — erforderlich für die ordnungsgemäße Funktion der Website (z. B. Speicherung Ihrer Auswahl im Einwilligungsbanner). Erfordern keine Einwilligung.</LI>
         <LI><strong>Analyse</strong> — helfen uns zu verstehen, wie Sie unsere Website nutzen (z. B. Google Analytics 4). Werden nur nach erteilter Einwilligung aktiviert.</LI>
-        <LI><strong>Marketing</strong> — ermöglichen die Messung der Wirksamkeit unserer Werbekampagnen. Werden nur nach erteilter Einwilligung aktiviert.</LI>
+        <LI><strong>Marketing</strong> — ermöglichen die Messung der Wirksamkeit unserer Werbekampagnen. Werden nur nach erteilter Einwilligung aktiviert. Haben Sie in die Kategorie Marketing eingewilligt, können die Angaben zu der Kampagne, über die Sie zu uns gekommen sind (UTM-Parameter sowie eine Kennzeichnung, dass der Besuch über einen Werbelink auf Facebook erfolgte), Ihrer abgesendeten Anfrage beigefügt werden, ausschließlich zur Bewertung der Wirksamkeit unserer Kampagnen; diese Angaben selbst enthalten keine personenbezogenen Daten von Ihnen.</LI>
       </UL>
       <P>
         Sie können Ihre Einwilligung bei Ihrem ersten Besuch im Einwilligungsbanner erteilen, ablehnen oder anpassen sowie Ihre Auswahl jederzeit später über die Einstellungen ändern. Ihre Wahl wird 12 Monate lang gespeichert; danach fragen wir erneut. Eine Beschreibung der einzelnen Kategorien finden Sie im Einwilligungspanel.
