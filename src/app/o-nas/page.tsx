@@ -16,7 +16,7 @@ import Reviews from '@/components/Reviews'
 import { JsonLd } from '@/components/JsonLd'
 import Breadcrumb from '@/components/Breadcrumb'
 import MapEmbed from '@/components/ConsentEmbed'
-import { getTeam, getStats, getOffice } from '@/lib/api'
+import { getTeamWithOfferCounts, getStats, getOffice } from '@/lib/api'
 import { getVerifiedRating } from '@/lib/schemaRating'
 import { MapPin, Phone, Mail, Shield, Heart, TrendingUp, Users, CheckCircle } from 'lucide-react'
 import type { Metadata } from 'next'
@@ -39,7 +39,7 @@ const VALUES = [
 
 export default async function ONasPage() {
   const [teamData, statsData, officeData, reviewsData, contentData] = await Promise.all([
-    getTeam(), getStats(), getOffice(),
+    getTeamWithOfferCounts(), getStats(), getOffice(),
     fetch('https://investrent-crm-production.up.railway.app/api/public/google-reviews')
       .then(r => r.json()).catch(() => null),
     // NOWE (Daniel 03.08): edytowalna tresc z CRM - bezpieczny fallback do
