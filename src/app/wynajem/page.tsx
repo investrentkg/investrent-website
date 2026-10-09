@@ -1,5 +1,6 @@
 import { serializeJsonLd } from '@/lib/jsonLd'
 import Nav from '@/components/Nav'
+import ReadAlso from '@/components/ReadAlso'
 import Footer from '@/components/Footer'
 import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
@@ -96,6 +97,7 @@ export default async function WynajemPage() {
             </div>
           </div>
         </div>
+        <ReadAlso />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd({
           '@context': 'https://schema.org',
           '@type': 'FAQPage',

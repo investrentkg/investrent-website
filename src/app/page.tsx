@@ -14,6 +14,7 @@ export const revalidate = 120
 import type { Metadata } from 'next'
 import { getPublicOffers, getTeamWithOfferCounts, getOffice, getStats, getPageContent } from '@/lib/api'
 import Nav           from '@/components/Nav'
+import ReadAlso from '@/components/ReadAlso'
 import Hero          from '@/components/Hero'
 import CallbackStrip from '@/components/CallbackStrip'
 import OffersSection from '@/components/OffersSection'
@@ -111,6 +112,7 @@ export default async function Home() {
         <Team          members={teamData?.data ?? []} />
         <Contact       office={office} />
         <MortgageCalcSection />
+        <ReadAlso />
       </main>
       <Footer        office={office} />
 
