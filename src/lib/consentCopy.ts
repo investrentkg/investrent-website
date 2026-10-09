@@ -2,7 +2,7 @@
 // _wspolne_pliki/prawnik_opinia_baner_cookies_pixel_capi_2026_10_03.md, sekcja "Gotowy tekst"), wstawione DOSŁOWNIE.
 // Odstępstwa (do akceptacji Prawnika przy przeglądzie PR):
 //  1. marketing.desc: dopisane zdanie o zapisie atrybucji UTM (kampania, z której użytkownik przyszedł) - wg odpowiedzi Prawnika z 09.10.2026;
-//     zdanie o Meta Pixel/CAPI zostawione z opinii 03.10 (zakres zgody na przyszły piksel);
+//     zdania o Meta Pixel/CAPI i transferze poza EOG USUNIĘTE (decyzja Dyrektora 09.10: do czasu wdrożenia piksela);
 //  2. save ("Zapisz wybór"/"Auswahl speichern") i privacyLabel - dodane etykiety UI, których opinia nie podaje.
 // Jedno źródło prawdy dla banera, panelu ustawień i przycisku w stopce.
 
@@ -48,7 +48,7 @@ export const CONSENT_COPY: Record<ConsentLocale, ConsentCopy> = {
     },
     marketing: {
       name: 'Marketingowe',
-      desc: 'Zapisujemy informację, z której kampanii reklamowej Państwo przyszli (parametry UTM), aby mierzyć skuteczność naszych kampanii; przy wysłaniu formularza dołączamy ją do zgłoszenia. Meta Pixel i interfejs konwersji Meta (Meta Platforms Ireland Limited) pozwalają nam mierzyć skuteczność reklam na Facebooku i Instagramie oraz lepiej dopasować je do zainteresowanych osób; obejmuje to także przesyłanie zahaszowanych (nieczytelnych wprost) danych kontaktowych przy zgłoszeniu z formularza, np. kalkulatora wyceny. Dane mogą być przekazywane poza Europejski Obszar Gospodarczy (szczegóły w polityce prywatności).',
+      desc: 'Zapisujemy informację, z której kampanii reklamowej Państwo przyszli (parametry UTM), aby mierzyć skuteczność naszych kampanii; przy wysłaniu formularza dołączamy ją do zgłoszenia.',
     },
     withdraw: 'Zgodę mogą Państwo w każdej chwili zmienić lub wycofać w „Ustawieniach prywatności” (link w stopce strony).',
     privacyLabel: 'Polityka prywatności',
@@ -75,7 +75,7 @@ export const CONSENT_COPY: Record<ConsentLocale, ConsentCopy> = {
     },
     marketing: {
       name: 'Marketing',
-      desc: 'Wir speichern, über welche Werbekampagne Sie zu uns gekommen sind (UTM-Parameter), um die Wirksamkeit unserer Kampagnen zu messen; bei einer Formularanfrage fügen wir diese Information Ihrer Anfrage bei. Meta Pixel und die Meta Conversions API (Meta Platforms Ireland Limited) ermöglichen uns, die Wirksamkeit unserer Werbung auf Facebook und Instagram zu messen und besser auf interessierte Personen auszurichten; dies umfasst auch die Übermittlung gehashter (nicht direkt lesbarer) Kontaktdaten bei einer Formularanfrage, z. B. im Bewertungsrechner. Daten können außerhalb des Europäischen Wirtschaftsraums verarbeitet werden (Einzelheiten in der Datenschutzerklärung).',
+      desc: 'Wir speichern, über welche Werbekampagne Sie zu uns gekommen sind (UTM-Parameter), um die Wirksamkeit unserer Kampagnen zu messen; bei einer Formularanfrage fügen wir diese Information Ihrer Anfrage bei.',
     },
     withdraw: 'Sie können Ihre Einwilligung jederzeit in den „Datenschutzeinstellungen” (Link in der Fußzeile) ändern oder widerrufen.',
     privacyLabel: 'Datenschutzerklärung',
