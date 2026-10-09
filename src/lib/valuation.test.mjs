@@ -478,3 +478,19 @@ test('teksty zgód i wersja zgody nietknięte przez pakiet pomiaru/CTA (bez nowe
   assert.ok(T.lead.bodyRange.startsWith('Zdjęcia, szczegóły stanu i standardu mieszkania'))
   assert.ok(T.lead.altTitle && T.lead.callCta && T.lead.whatsappCta && T.errors.turnstileStuck && T.errors.turnstileRetry)
 })
+
+test('D2 (CTA do panelu kontaktu): teksty bez obietnic dokładności, presji i wysyłki wyniku; zdarzenia GA4 bez danych osobowych; payload leada bez nowych pól', async () => {
+  const { T } = await import('../app/wycena/texts.ts')
+  const cta = [...Object.values(T.cta), T.errors.turnstileQueued].join(' ')
+  assert.ok(!/dokładn|gwarant|pewn|tylko dziś|ostatni|szybko|natychmiast|SMS|marketing|wyślemy wynik|wyślij wynik/i.test(cta), 'CTA: bez obietnicy dokładności, presji czasu i wysyłki wyniku')
+  assert.equal(T.cta.primary, 'Omów wynik z agentem')
+  const src = fs.readFileSync(new URL('../app/wycena/WycenaClient.tsx', import.meta.url), 'utf8')
+  assert.ok(src.includes("trackValuation('wycena_cta_click'") && src.includes("trackValuation('wycena_sticky_shown'") && src.includes("trackValuation('wycena_lead_submit_queued'"))
+  assert.ok(!/wycena_cta_click'[^)]*(phone|name|full_name)/.test(src), 'zdarzenia CTA bez danych osobowych')
+  assert.ok(src.includes('<ContactFallback placement="wycena_lead_fail"'), 'po bledzie wysylki: Zadzwon/WhatsApp zamiast slepego bledu')
+  assert.ok(src.includes('<ContactFallback placement="wycena_lead_fallback"'), 'brak Turnstile: Zadzwon/WhatsApp w komunikacie')
+  { const start = src.indexOf('async function attempt'); const end = src.indexOf('inFlight.current = true', start); assert.ok(start > 0 && end > start, 'znaleziono cialo attempt'); assert.ok(!src.slice(start, end).includes("setState('fail')"), 'przed wysylka (walidacja, brak tokenu) nigdy setState(fail): brak tokenu NIE konczy sie slepym bledem wysylki') }
+  const { buildLeadRequest: blr } = await import('./valuation.ts')
+  const r = blr({ name: 'Test', phone: '731 554 341', values: ok, outcome: null, utm: '', turnstileToken: 'tok', honeypot: '' })
+  assert.deepEqual(Object.keys(r).sort(), ['client_type', 'full_name', 'hp_field', 'notes', 'phone', 'preferred_city', 'source', 'turnstile_token'])
+})

@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from 'next'
 import { Montserrat, Inter } from 'next/font/google'
-import Script from 'next/script'
+import ConsentManager from '@/components/ConsentManager'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 import './globals.css'
+import AttributionCapture from '@/components/AttributionCapture'
 
 const montserrat = Montserrat({
   subsets: ['latin', 'latin-ext'],
@@ -75,7 +77,10 @@ export const metadata: Metadata = {
     description: 'Kupno, sprzedaż i wynajem nieruchomości nad Bałtykiem. Odpowiadamy do 60 minut.',
     images: ['/hero.jpg'],
   },
-  robots: { index: true, follow: true },
+  // robots: celowo BEZ jawnego `index, follow` (08.10.2026, audyt: strona 404 miala DWA tagi robots naraz,
+  // `noindex` dodawany przez Next.js dla not-found oraz `index, follow` z tego layoutu). Brak tagu =
+  // domyślnie index, follow, więc zwykłe strony zachowują się tak samo; strony, które ustawiają własne
+  // robots (np. /oferty?agent_id=, podgląd oferty, wygasła oferta), nadal je nadpisują.
 }
 
 // NAPRAWA (audyt webmasterski, Daniel 30.07.2026): usunieto stad drugi,
@@ -88,6 +93,8 @@ export const metadata: Metadata = {
 // patrz tez poprawka bledengo URL (Railway zamiast prawdziwej domeny) tam.
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  // UWAGA (03.10.2026): wbrew komentarzowi niżej zmienna NEXT_PUBLIC_GA_MEASUREMENT_ID JEST ustawiona na produkcji (GA4 działa);
+  // od teraz skrypt GA nie jest ładowany bez zgody użytkownika (ConsentManager + GoogleAnalytics).
   // NOWE (31.07.2026, przygotowanie pod Google Search Console/Analytics,
   // Daniel: "chce sie polaczyc z narzedziami Google"): skrypt Google
   // Analytics (GA4) jest tu juz w pelni przygotowany, ale CELOWO nieaktywny
@@ -99,22 +106,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="pl" className={`${montserrat.variable} ${inter.variable}`}>
       <body>
+        <AttributionCapture />
         <div className="page-wrap">
           {children}
         </div>
-        {gaId && (
-          <>
-            <Script src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} strategy="afterInteractive" />
-            <Script id="google-analytics" strategy="afterInteractive">
-              {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', '${gaId}');
-              `}
-            </Script>
-          </>
-        )}
+        {/* ZMIANA (03.10.2026, baner zgód): GA4 ładuje się dopiero po zgodzie na analitykę (art. 399 PKE / § 25 TDDDG), patrz components/GoogleAnalytics.tsx. */}
+        {gaId && <GoogleAnalytics gaId={gaId} />}
+        <ConsentManager />
       </body>
     </html>
   )

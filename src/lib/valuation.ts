@@ -7,6 +7,7 @@
 // Kontrakt backendu (budowany rownolegle) - patrz opis PR.
 
 import { CALCULATOR_CONFIG, canonicalCity, canonicalDistrict, isHomeCity, isRestrictedDistrict } from './localities.ts'
+import { isEmptyAttribution, type Attribution } from './attribution.ts'
 
 export const ESTIMATE_TIMEOUT_MS = 45000 // wycena uruchamia silnik AI - dluzej niz zwykly lead
 // Numer biura - ta sama wartosc co LEAD_FALLBACK_PHONE (leadSubmit.ts).
@@ -53,6 +54,7 @@ export type EstimatePayload = {
   condition?: Condition
   website: string // honeypot - w UI zawsze puste (pole ukryte), wypelnia je tylko bot
   turnstile_token?: string
+  attribution?: Attribution // opcjonalne; tylko gdy sa parametry kampanii (PR-1 backendu)
 }
 
 function parseNum(s: string): number {
@@ -121,7 +123,7 @@ export function validateForm(v: FormValues): FormErrors {
   return e
 }
 
-export function buildPayload(v: FormValues, honeypot = '', turnstileToken?: string | null): EstimatePayload {
+export function buildPayload(v: FormValues, honeypot = '', turnstileToken?: string | null, attribution?: Attribution | null): EstimatePayload {
   const p: EstimatePayload = {
     property_type: v.property_type as PropertyType,
     city: canonicalCity(v.city) ?? v.city.trim(),
@@ -129,6 +131,7 @@ export function buildPayload(v: FormValues, honeypot = '', turnstileToken?: stri
     website: honeypot,
   }
   if (turnstileToken) p.turnstile_token = turnstileToken
+  if (attribution && !isEmptyAttribution(attribution)) p.attribution = attribution
   const dist = isKolobrzeg(v.city) ? canonicalDistrict(v.district) : null
   if (dist && dist !== CALCULATOR_CONFIG.otherDistrict) p.district = dist
   if (fieldApplies(v.property_type, 'rooms') && v.rooms.trim()) p.rooms = parseNum(v.rooms)
@@ -324,7 +327,7 @@ export function buildLeadNotes(v: FormValues, o: EstimateOutcome | null, utm: st
 export const CALCULATOR_LEAD_SOURCE = 'wycena_lp'
 
 // v12: honeypot `hp_field` (backend #555: niepusty = bot) zawsze wysylany, w UI pusty; `turnstile_token` dolaczany, gdy widget go wydal (gdy nie wydal - komponent nie wysyla leada).
-export function buildLeadRequest(input: { name: string; phone: string; values: FormValues; outcome: EstimateOutcome | null; utm: string; turnstileToken?: string | null; honeypot?: string }) {
+export function buildLeadRequest(input: { name: string; phone: string; values: FormValues; outcome: EstimateOutcome | null; utm: string; turnstileToken?: string | null; honeypot?: string; attribution?: Attribution | null }) {
   return {
     full_name: input.name.trim() || 'Właściciel',
     phone: input.phone.trim(),
@@ -334,6 +337,7 @@ export function buildLeadRequest(input: { name: string; phone: string; values: F
     notes: buildLeadNotes(input.values, input.outcome, input.utm, {}),
     hp_field: input.honeypot ?? '',
     ...(input.turnstileToken ? { turnstile_token: input.turnstileToken } : {}),
+    ...(input.attribution && !isEmptyAttribution(input.attribution) ? { attribution: input.attribution } : {}),
   }
 }
 
@@ -344,6 +348,8 @@ export type ValuationEvent =
   | 'wycena_estimate_error'
   | 'wycena_lead_panel_viewed' | 'wycena_lead_ts_ready' | 'wycena_lead_ts_failed'
   | 'wycena_lead_submit_blocked' | 'wycena_lead_submit' | 'wycena_lead_submit_failed'
+  // D2 (09.10.2026): CTA do panelu kontaktu (placement: result | sticky), pojawienie się paska, wysyłka odłożona do czasu tokenu Turnstile
+  | 'wycena_cta_click' | 'wycena_sticky_shown' | 'wycena_lead_submit_queued'
 
 // Klasa przeglądarki: kampanie Meta otwierają stronę w przeglądarce wbudowanej FB/IG (inne zachowanie Turnstile/ciasteczek).
 // Tylko trzy wartości - nigdy surowy User-Agent.

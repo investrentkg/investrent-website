@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Calculator, CheckCircle, MessageCircle, Phone } from 'lucide-react'
 import { submitLead } from '@/lib/api'
+import { getAttribution } from '@/lib/attribution'
 import { trackContactEvent } from '@/lib/track'
 import Breadcrumb from '@/components/Breadcrumb'
 import WycenaModal from '@/components/WycenaModal'
@@ -28,6 +29,8 @@ const h2: React.CSSProperties = { fontFamily: 'var(--font-montserrat)', fontWeig
 const phoneHref = 'tel:+48731554341'
 const whatsappHref = `https://wa.me/48731554341?text=${encodeURIComponent(T.lead.whatsappText)}`
 const iabClass = () => (typeof navigator === 'undefined' ? 'other' : inAppBrowserClass(navigator.userAgent))
+// Przyklejony pasek jest tylko na telefonie (CSS: ukryty od 768 px) - pomiar i podniesienie launchera tylko tam.
+const isPhoneWidth = () => typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 767px)').matches
 
 function Field({ id, text, hintText, error, children }: { id: string; text: string; hintText?: string; error?: string; children: React.ReactNode }) {
   return (
@@ -60,9 +63,61 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
   const [submittedValues, setSubmittedValues] = useState<FormValues>(EMPTY_FORM)
   const inFlight = useRef(false)
   const resultRef = useRef<HTMLDivElement>(null)
+  // D2: CTA do panelu kontaktu + przyklejony pasek (telefon), gdy panel nie jest w polu widzenia
+  const leadWrapRef = useRef<HTMLDivElement>(null)
+  const [leadInView, setLeadInView] = useState(false)
+  const [ctaInView, setCtaInView] = useState(false)
+  const [armed, setArmed] = useState(false)
+  const [leadDone, setLeadDone] = useState(false)
+  const stickyLogged = useRef(false)
+  const showSticky = available && phase === 'after' && !!outcome && armed && !leadInView && !ctaInView && !leadDone
 
   useEffect(() => { trackValuation('wycena_view') }, [])
-  useEffect(() => { if (phase === 'after') resultRef.current?.focus() }, [phase])
+  useEffect(() => {
+    if (phase !== 'after') return
+    // D2: wynik z przyciskiem kontaktu ma trafić na pierwszy ekran (baner nad formularzem zajmuje większość telefonu): focus dla czytników + przewinięcie na górę wyniku
+    resultRef.current?.focus({ preventScroll: true })
+    resultRef.current?.scrollIntoView({ behavior: 'instant', block: 'start' })
+  }, [phase])
+  useEffect(() => {
+    if (phase !== 'after') { setLeadInView(false); setCtaInView(false); setArmed(false); return }
+    // krótkie uzbrojenie: obserwatory potrzebują chwili na pierwszy odczyt, inaczej pasek mignąłby przy samym wyniku
+    setArmed(false)
+    const armTimer = window.setTimeout(() => setArmed(true), 700)
+    const lead = leadWrapRef.current
+    const cta = document.getElementById('wy-result-cta')
+    if (typeof IntersectionObserver === 'undefined') return
+    // pasek pokazujemy dopiero, gdy ani CTA przy wyniku, ani panel kontaktu nie są w polu widzenia (bez dubla przycisku na pierwszym ekranie)
+    // panel liczymy jako "dotarty", gdy jego początek wejdzie w górne ~65% ekranu albo użytkownik przewinął go już w górę (pasek nie wraca pod panelem)
+    const ioLead = new IntersectionObserver(entries => {
+      const e = entries[entries.length - 1]
+      setLeadInView(e.isIntersecting || e.boundingClientRect.bottom <= 0)
+    }, { rootMargin: '0px 0px -35% 0px', threshold: 0 })
+    const ioCta = new IntersectionObserver(entries => setCtaInView(entries.some(e => e.isIntersecting)), { threshold: 0.5 })
+    if (lead) ioLead.observe(lead)
+    if (cta) ioCta.observe(cta)
+    return () => { window.clearTimeout(armTimer); ioLead.disconnect(); ioCta.disconnect() }
+  }, [phase, outcome])
+  useEffect(() => {
+    if (!showSticky || !isPhoneWidth()) return
+    // pomiar: pasek liczymy jako pokazany, dopiero gdy był widoczny co najmniej chwilę (nie przy mignięciu podczas przewijania)
+    const logTimer = window.setTimeout(() => {
+      if (!stickyLogged.current) { stickyLogged.current = true; trackValuation('wycena_sticky_shown', { mode: outcome?.kind ?? 'none', iab: iabClass() }) }
+    }, 800)
+    // launcher kontaktu (prawy dolny róg) nie może zasłaniać paska ani być przez niego zasłonięty
+    const root = document.documentElement
+    root.style.setProperty('--fab-bottom', '88px')
+    return () => { window.clearTimeout(logTimer); root.style.removeProperty('--fab-bottom') }
+  }, [showSticky, outcome])
+
+  function goToLead(placement: 'result' | 'sticky') {
+    trackValuation('wycena_cta_click', { placement, mode: outcome?.kind ?? 'none', iab: iabClass() })
+    const el = leadWrapRef.current
+    if (!el) return
+    // bez animacji ("instant"): niezawodne w przeglądarkach wbudowanych FB/IG i zgodne z prefers-reduced-motion
+    el.scrollIntoView({ behavior: 'instant', block: 'start' })
+    document.getElementById('wy-phone')?.focus({ preventScroll: true })
+  }
 
   function set<K extends keyof FormValues>(k: K, v: FormValues[K]) {
     setValues(prev => ({ ...prev, [k]: v }))
@@ -86,7 +141,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
     setTsNotice(null)
     inFlight.current = true
     setPhase('loading')
-    const res = await requestEstimate(ESTIMATE_URL, buildPayload(values, honeypot, tsToken))
+    const res = await requestEstimate(ESTIMATE_URL, buildPayload(values, honeypot, tsToken, getAttribution()))
     inFlight.current = false
     if (TURNSTILE_SITE_KEY) { setTsToken(null); setTsReset(n => n + 1) } // token jest jednorazowy
     if (res.kind === 'invalid') {
@@ -112,6 +167,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
   }
 
   function reset() {
+    setLeadDone(false)
     setOutcome(null)
     setPhase('form')
   }
@@ -233,9 +289,11 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
         )}
 
         {available && phase === 'after' && outcome && (
-          <div ref={resultRef} tabIndex={-1} style={{ outline: 'none', display: 'flex', flexDirection: 'column', gap: 24 }}>
-            <OutcomePanel outcome={outcome} scoped={!isOutOfScope(submittedValues)} wider={!isKolobrzeg(submittedValues.city)} onAgain={reset} />
-            <LeadPanel outcome={outcome} values={submittedValues} />
+          <div ref={resultRef} tabIndex={-1} style={{ outline: 'none', display: 'flex', flexDirection: 'column', gap: 24, scrollMarginTop: 88 }}>
+            <OutcomePanel outcome={outcome} scoped={!isOutOfScope(submittedValues)} wider={!isKolobrzeg(submittedValues.city)} onAgain={reset} onCta={() => goToLead('result')} />
+            <div ref={leadWrapRef} id="wy-lead" style={{ scrollMarginTop: 88 }}>
+              <LeadPanel outcome={outcome} values={submittedValues} onDone={() => setLeadDone(true)} />
+            </div>
           </div>
         )}
 
@@ -249,8 +307,19 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
             </details>
           </section>
         )}
+        {showSticky && <div className="wy-sticky-spacer" aria-hidden="true" />}
       </div>
     </div>
+    {showSticky && (
+      <div className="wy-sticky" role="region" aria-label={T.cta.stickyRegion}>
+        <button type="button" className="wy-btn" onClick={() => goToLead('sticky')}>
+          {outcome?.kind === 'range' ? T.cta.primary : T.cta.primaryNoNumbers}
+        </button>
+        <a className="wy-sticky-call" href={phoneHref} aria-label={T.lead.callCta} onClick={() => trackContactEvent('phone_click', 'wycena_sticky')}>
+          <Phone size={22} aria-hidden="true" />
+        </a>
+      </div>
+    )}
     <WycenaModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
     </>
   )
@@ -261,7 +330,35 @@ function PhoneLink() {
 }
 
 // v14: front ZAWSZE pokazuje teksty z texts.ts; pola backendu outcome.message i outcome.disclaimer sa ignorowane (API bez zmian). Jedno zastrzezenie: disclaimerTop (zawsze widoczny przy wyniku) + zdanie o czynnikach ceny.
-function OutcomePanel({ outcome, scoped, wider, onAgain }: { outcome: EstimateOutcome; scoped: boolean; wider: boolean; onAgain: () => void }) {
+// D2: CTA widoczne od razu przy wyniku (prowadzi do panelu kontaktu niżej; zgoda i klauzula zostają w panelu) + wyjście bez formularza.
+function ResultCta({ label, onClick }: { label: string; onClick: () => void }) {
+  return (
+    <div className="wy-cta" id="wy-result-cta">
+      <button type="button" className="wy-btn" onClick={onClick}>{label}</button>
+      <p style={{ ...hint, margin: '8px 0 0', textAlign: 'center' }}>{T.cta.hint}</p>
+      <div style={{ display: 'flex', gap: '0 14px', flexWrap: 'wrap', justifyContent: 'center', marginTop: 2 }}>
+        <a className="wy-textlink" href={phoneHref} onClick={() => trackContactEvent('phone_click', 'wycena_cta')}>{T.lead.callCta}</a>
+        <a className="wy-textlink" href={whatsappHref} target="_blank" rel="noopener noreferrer" onClick={() => trackContactEvent('whatsapp_click', 'wycena_cta')}>{T.lead.whatsappCta}</a>
+      </div>
+    </div>
+  )
+}
+
+// Telefon i WhatsApp: kanał bez formularza i bez zgody po naszej stronie (rozmowę zaczyna klient). Używany też jako wyjście awaryjne.
+function ContactFallback({ placement }: { placement: string }) {
+  return (
+    <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+      <a className="wy-btn wy-btn-outline" href={phoneHref} style={{ flex: '1 1 180px', width: 'auto', textDecoration: 'none' }} onClick={() => trackContactEvent('phone_click', placement)}>
+        <Phone size={18} aria-hidden="true" /> {T.lead.callCta}
+      </a>
+      <a className="wy-btn wy-btn-outline" href={whatsappHref} target="_blank" rel="noopener noreferrer" style={{ flex: '1 1 180px', width: 'auto', textDecoration: 'none' }} onClick={() => trackContactEvent('whatsapp_click', placement)}>
+        <MessageCircle size={18} aria-hidden="true" /> {T.lead.whatsappCta}
+      </a>
+    </div>
+  )
+}
+
+function OutcomePanel({ outcome, scoped, wider, onAgain, onCta }: { outcome: EstimateOutcome; scoped: boolean; wider: boolean; onAgain: () => void; onCta: () => void }) {
   if (outcome.kind === 'range') {
     return (
       <section style={card} aria-labelledby="wy-res-title">
@@ -309,7 +406,8 @@ function OutcomePanel({ outcome, scoped, wider, onAgain }: { outcome: EstimateOu
             )}
           </div>
         )}
-        <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '0 0 8px' }}><strong>{T.result.scopeNote}</strong></p>
+        <ResultCta label={T.cta.primary} onClick={onCta} />
+        <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '14px 0 8px' }}><strong>{T.result.scopeNote}</strong></p>
         {wider && <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '0 0 8px' }}>{T.result.scopeNoteWider}</p>}
         {outcome.comparables && <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '0 0 8px' }}>{T.result.comparables(outcome.comparables.min, outcome.comparables.max)}</p>}
         <p style={{ color: '#7c2d12', background: '#fff7ed', border: '1px solid #fed7aa', borderRadius: 10, padding: '10px 14px', fontSize: 14, lineHeight: 1.6, margin: '12px 0 0' }}>
@@ -324,6 +422,7 @@ function OutcomePanel({ outcome, scoped, wider, onAgain }: { outcome: EstimateOu
       <section style={card} aria-labelledby="wy-res-title">
         <h2 id="wy-res-title" style={h2}>{scoped ? T.result.noNumbersTitle : T.result.outOfScopeTitle}</h2>
         <p style={{ color: '#374151', fontSize: 15, lineHeight: 1.7, margin: 0 }}>{scoped ? T.result.noNumbersBody : T.result.outOfScopeBody}</p>
+        <ResultCta label={T.cta.primaryNoNumbers} onClick={onCta} />
         <button type="button" className="wy-linkbtn" style={{ marginTop: 8, marginLeft: -6 }} onClick={onAgain}>{T.result.again}</button>
       </section>
     )
@@ -341,7 +440,7 @@ function OutcomePanel({ outcome, scoped, wider, onAgain }: { outcome: EstimateOu
   )
 }
 
-function LeadPanel({ outcome, values }: { outcome: EstimateOutcome | null; values: FormValues }) {
+function LeadPanel({ outcome, values, onDone }: { outcome: EstimateOutcome | null; values: FormValues; onDone?: () => void }) {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [consent, setConsent] = useState(false) // zgoda 1 (wymagana) - NIEZAZNACZONA domyslnie
@@ -354,6 +453,8 @@ function LeadPanel({ outcome, values }: { outcome: EstimateOutcome | null; value
   const [tsFailed, setTsFailed] = useState(false)
   const [tsStuck, setTsStuck] = useState(false) // brak tokenu po TS_STUCK_MS - pokazujemy wyjście awaryjne
   const [tsAttempt, setTsAttempt] = useState(0)
+  const [queued, setQueued] = useState(false) // D2: numer i zgoda są, brakuje tokenu Turnstile - wysyłka rusza sama po jego wydaniu
+  const fallbackRef = useRef<HTMLDivElement>(null)
   const inFlight = useRef(false)
   const formRef = useRef<HTMLFormElement>(null)
   const mountedAt = useRef(Date.now())
@@ -401,8 +502,20 @@ function LeadPanel({ outcome, values }: { outcome: EstimateOutcome | null; value
     setTsReset(n => n + 1); setTsAttempt(n => n + 1)
   }
 
-  async function send(e: React.FormEvent) {
+  function send(e: React.FormEvent) {
     e.preventDefault()
+    void attempt(false)
+  }
+
+  // Wysyłka odłożona (D2): zgłoszenie rusza samo, gdy widget wyda token. Anulowana, gdy widget uznano za zawieszony (wtedy panel pokazuje wyjście awaryjne).
+  useEffect(() => {
+    if (queued && (tsStuck || tsFailed)) { setQueued(false); setTsNotice(false); return }
+    if (queued && tsToken) void attempt(true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [queued, tsToken, tsStuck, tsFailed])
+  useEffect(() => { if (state === 'ok') onDone?.() }, [state]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  async function attempt(fromQueue: boolean) {
     if (inFlight.current) return
     const next: typeof errs = {}
     if (!isValidPhone(phone)) next.phone = T.lead.errPhone
@@ -410,17 +523,29 @@ function LeadPanel({ outcome, values }: { outcome: EstimateOutcome | null; value
     setErrs(next)
     // Pomiar: front blokuje przed siecią, więc serwer tych odrzuceń nie widzi - liczymy je tutaj (bez numeru, bez treści).
     const block = leadBlockReason({ phoneValid: !next.phone, consent: !next.consent, needsToken: !!TURNSTILE_SITE_KEY, hasToken: !!tsToken, tokenFailed: tsFailed || tsStuck })
-    if (block) trackValuation('wycena_lead_submit_blocked', { reason: block, mode, iab: iabClass() })
-    if (next.phone) { document.getElementById('wy-phone')?.focus(); return }
-    if (next.consent) { document.getElementById('wy-consent')?.focus(); return }
-    // Token Turnstile wymagany, gdy widget jest wlaczony: bez tokena NIE wysylamy po cichu - komunikat z prosba o ponowienie.
-    if (TURNSTILE_SITE_KEY && !tsToken) { if (tsFailed || tsStuck) setState('fail'); else setTsNotice(true); return }
+    if (block && !fromQueue) trackValuation('wycena_lead_submit_blocked', { reason: block, mode, iab: iabClass() })
+    if (next.phone) { setQueued(false); setTsNotice(false); document.getElementById('wy-phone')?.focus(); return }
+    if (next.consent) { setQueued(false); setTsNotice(false); document.getElementById('wy-consent')?.focus(); return }
+    // Token Turnstile wymagany, gdy widget jest wlaczony. Bez tokena NIE wysylamy po cichu i nie pokazujemy slepego bledu:
+    //  - widget zawieszony/zepsuty (np. przegladarka wbudowana FB/IG): jasny komunikat + Zadzwon/WhatsApp (pokazujemy je i przewijamy do nich),
+    //  - widget jeszcze sie laduje: komunikat i wysylka odlozona do czasu tokenu.
+    if (TURNSTILE_SITE_KEY && !tsToken) {
+      if (tsFailed || tsStuck) {
+        setQueued(false); setTsNotice(false)
+        fallbackRef.current?.scrollIntoView({ behavior: 'instant', block: 'center' })
+        return
+      }
+      setTsNotice(true)
+      if (!queued) { setQueued(true); trackValuation('wycena_lead_submit_queued', { mode, iab: iabClass() }) }
+      return
+    }
+    setQueued(false)
     setTsNotice(false)
     inFlight.current = true
     setState('sending')
     trackValuation('wycena_lead_submit', { mode, iab: iabClass() })
     try {
-      const r = await submitLead(buildLeadRequest({ name, phone, values, outcome, utm: readUtm(window.location.search), turnstileToken: tsToken, honeypot: hp }))
+      const r = await submitLead(buildLeadRequest({ name, phone, values, outcome, utm: readUtm(window.location.search), attribution: getAttribution(), turnstileToken: tsToken, honeypot: hp }))
       if (r?.ok) { setState('ok'); trackValuation('wycena_lead', { mode: outcome?.kind ?? 'none' }) }
       else {
         setState('fail')
@@ -496,42 +621,40 @@ function LeadPanel({ outcome, values }: { outcome: EstimateOutcome | null; value
       {TURNSTILE_SITE_KEY && (
         <div style={{ marginTop: 16 }}>
           <Turnstile siteKey={TURNSTILE_SITE_KEY} resetKey={tsReset} onToken={onTsToken} onFail={onTsFail} />
-          {tsNotice && <p role="alert" style={errStyle}>{T.errors.turnstilePending}</p>}
+          {tsNotice && <p role="status" style={{ ...errStyle, color: queued ? '#334155' : errStyle.color }}>{queued ? T.errors.turnstileQueued : T.errors.turnstilePending}</p>}
           {(tsStuck || tsFailed) && !tsToken && (
-            <div role="alert" style={{ marginTop: 12, padding: '12px 14px', border: '1px solid #fcd34d', background: '#fffbeb', borderRadius: 12 }}>
-              <p style={{ margin: '0 0 10px', fontSize: 14, color: '#92400e', fontWeight: 600 }}>{T.errors.turnstileStuck}</p>
-              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                <button type="button" className="wy-btn wy-btn-outline" style={{ flex: '1 1 180px', width: 'auto' }} onClick={retryTurnstile}>{T.errors.turnstileRetry}</button>
-                <a className="wy-btn" href={phoneHref} style={{ flex: '1 1 180px', width: 'auto', textDecoration: 'none' }} onClick={() => trackContactEvent('phone_click', 'wycena_lead_fallback')}>
-                  <Phone size={18} aria-hidden="true" /> {T.lead.callCta}
-                </a>
-              </div>
+            <div ref={fallbackRef} role="alert" style={{ marginTop: 12, padding: '12px 14px', border: '1px solid #fcd34d', background: '#fffbeb', borderRadius: 12 }}>
+              <p style={{ margin: '0 0 6px', fontSize: 14, color: '#92400e', fontWeight: 600 }}>{T.errors.turnstileStuck}</p>
+              <p style={{ margin: '0 0 10px', fontSize: 14, color: '#475569' }}>{T.lead.altBody}</p>
+              <ContactFallback placement="wycena_lead_fallback" />
+              <button type="button" className="wy-linkbtn" style={{ marginTop: 6 }} onClick={retryTurnstile}>{T.errors.turnstileRetry}</button>
             </div>
           )}
         </div>
       )}
 
-      {state === 'fail' && <p role="alert" style={{ ...errStyle, marginTop: 16 }}>{T.errors.leadFail} <PhoneLink /></p>}
+      {state === 'fail' && (
+        <div role="alert" style={{ marginTop: 16 }}>
+          <p style={{ ...errStyle, margin: '0 0 10px' }}>{T.errors.leadFail} <PhoneLink /></p>
+          <ContactFallback placement="wycena_lead_fail" />
+        </div>
+      )}
 
       <div style={{ marginTop: 20 }}>
-        <button type="submit" className="wy-btn" disabled={state === 'sending'}>
-          <Phone size={18} aria-hidden="true" /> {state === 'sending' ? T.lead.submitting : T.lead.submit}
+        <button type="submit" className="wy-btn" disabled={state === 'sending' || queued}>
+          <Phone size={18} aria-hidden="true" /> {state === 'sending' || queued ? T.lead.submitting : T.lead.submit}
         </button>
       </div>
 
       {/* Kanał bez formularza i bez zgody RODO po naszej stronie: rozmowę zaczyna klient (dotyk w przeglądarce FB/IG = jedno kliknięcie). */}
-      <div style={{ marginTop: 24, paddingTop: 18, borderTop: '1px solid #e2e8f0' }}>
-        <p style={{ margin: '0 0 4px', fontWeight: 700, fontSize: 15, color: '#0d2a5c' }}>{T.lead.altTitle}</p>
-        <p style={{ ...hint, margin: '0 0 12px' }}>{T.lead.altBody}</p>
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-          <a className="wy-btn wy-btn-outline" href={phoneHref} style={{ flex: '1 1 200px', width: 'auto', textDecoration: 'none' }} onClick={() => trackContactEvent('phone_click', 'wycena_lead')}>
-            <Phone size={18} aria-hidden="true" /> {T.lead.callCta}
-          </a>
-          <a className="wy-btn wy-btn-outline" href={whatsappHref} target="_blank" rel="noopener noreferrer" style={{ flex: '1 1 200px', width: 'auto', textDecoration: 'none' }} onClick={() => trackContactEvent('whatsapp_click', 'wycena_lead')}>
-            <MessageCircle size={18} aria-hidden="true" /> {T.lead.whatsappCta}
-          </a>
+      {/* gdy weryfikacja antyspamowa nie działa, te same przyciski są już w żółtym komunikacie wyżej - bez dubla */}
+      {!((tsStuck || tsFailed) && !tsToken) && (
+        <div style={{ marginTop: 24, paddingTop: 18, borderTop: '1px solid #e2e8f0' }}>
+          <p style={{ margin: '0 0 4px', fontWeight: 700, fontSize: 15, color: '#0d2a5c' }}>{T.lead.altTitle}</p>
+          <p style={{ ...hint, margin: '0 0 12px' }}>{T.lead.altBody}</p>
+          <ContactFallback placement="wycena_lead" />
         </div>
-      </div>
+      )}
     </form>
   )
 }

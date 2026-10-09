@@ -1,4 +1,5 @@
 import { postLead, trackLeadSuccess } from '@/lib/leadSubmit'
+import { withAttribution, type Attribution } from '@/lib/attribution'
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://investrent-crm-production.up.railway.app'
 
@@ -12,9 +13,73 @@ const INTERNAL_HEADERS: Record<string, string> = process.env.INTERNAL_SERVICE_AP
   ? { 'x-internal-service-key': process.env.INTERNAL_SERVICE_API_KEY, 'x-tenant-slug': 'investrent' }
   : {}
 
+// ═══════════════════════════════════════════════════════════════════
+// ODPORNOŚĆ NA BŁĘDY BACKENDU (08.10.2026, SEO: 30 z 63 adresów z sitemap.xml
+// dawało na przemian 200 i 404). PRZYCZYNA (potwierdzona w logach Railway):
+// backend odpowiadał na zapytania serwera Next.js kodem 429 (limit 100/min z
+// jednego IP, a cały ruch SSR idzie z jednego adresu Vercela), a ta warstwa
+// traktowała KAŻDY błąd jak „brak zasobu" -> notFound() -> prawdziwe HTTP 404
+// widziane przez Google (i potencjalnie zapisane w cache ISR).
+//
+// ZASADA: 404 oznacza WYŁĄCZNIE jednoznaczne „nie istnieje" od backendu
+// (HTTP 404/410). Każdy inny problem (429, 5xx, timeout, błąd sieci) to
+// „serwer danych chwilowo niedostępny" i NIE może skończyć się 404:
+//  - najpierw krótkie ponowienia (cold start Railway, chwilowe 5xx),
+//  - potem UpstreamUnavailableError -> Next.js nie zapisuje 404; przy
+//    odświeżaniu ISR dalej serwuje ostatnią poprawną wersję strony, a przy
+//    pierwszym renderze zwraca 5xx (Google ponowi próbę, zamiast uznać
+//    stronę za usuniętą).
+// UWAGA: ponowienia NIE pomogą przy wyczerpanym limicie 429 (okno 60 s) -
+// to wymaga zwolnienia zaufanych wywołań serwer-serwer z limitu po stronie
+// backendu (osobny PR w investrent-crm).
+// ═══════════════════════════════════════════════════════════════════
+export class UpstreamUnavailableError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'UpstreamUnavailableError'
+  }
+}
+
+const RETRY_STATUSES = new Set([429, 502, 503, 504])
+const MAX_ATTEMPTS = 3
+const ATTEMPT_TIMEOUT_MS = 8000
+const MAX_RETRY_WAIT_MS = 2000 // renderowanie SSR nie może czekać na reset całego okna limitu
+
+function retryWaitMs(attempt: number, retryAfter: string | null): number {
+  const fromHeader = retryAfter ? Number(retryAfter) * 1000 : NaN
+  const base = Number.isFinite(fromHeader) ? fromHeader : 300 * 2 ** (attempt - 1) // 300 ms, 600 ms
+  const jitter = Math.floor(Math.random() * 150)
+  return Math.min(base + jitter, MAX_RETRY_WAIT_MS)
+}
+
+function sleep(ms: number) {
+  return new Promise<void>(resolve => setTimeout(resolve, ms))
+}
+
+// Zwraca Response (także 4xx, w tym 404/410 - decyzja po stronie wywołującego).
+// Dla 429/502/503/504 i błędów sieci ponawia; po wyczerpaniu prób rzuca
+// UpstreamUnavailableError (nigdy nie „udaje" braku zasobu).
+async function fetchWithRetry(url: string, init: RequestInit = {}): Promise<Response> {
+  let lastReason = 'brak odpowiedzi'
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    let retryAfter: string | null = null
+    try {
+      const res = await fetch(url, { ...init, signal: init.signal ?? AbortSignal.timeout(ATTEMPT_TIMEOUT_MS) })
+      if (!RETRY_STATUSES.has(res.status)) return res
+      lastReason = `HTTP ${res.status}`
+      retryAfter = res.headers.get('retry-after')
+    } catch (err) {
+      lastReason = err instanceof Error ? err.name : 'błąd sieci'
+    }
+    if (attempt < MAX_ATTEMPTS) await sleep(retryWaitMs(attempt, retryAfter))
+  }
+  console.error(`[api] backend niedostępny po ${MAX_ATTEMPTS} próbach (${lastReason}): ${url.replace(API, '')}`)
+  throw new UpstreamUnavailableError(`${lastReason}: ${url.replace(API, '')}`)
+}
+
 async function apiFetch<T>(path: string, options?: RequestInit, signal?: AbortSignal): Promise<T | null> {
   try {
-    const res = await fetch(`${API}${path}`, { ...options, signal, headers: { ...INTERNAL_HEADERS, ...(options?.headers || {}) } })
+    const res = await fetchWithRetry(`${API}${path}`, { ...options, signal, headers: { ...INTERNAL_HEADERS, ...(options?.headers || {}) } })
     if (!res.ok) return null
     return res.json() as Promise<T>
   } catch {
@@ -61,26 +126,26 @@ export type PublicOfferResult =
   | { status: 'not_found' }
 
 export async function getPublicOfferResult(id: string, previewToken?: string): Promise<PublicOfferResult> {
-  try {
-    const url = previewToken
-      ? `${API}/api/public/offers/${id}?preview=${encodeURIComponent(previewToken)}`
-      : `${API}/api/public/offers/${id}`
-    // Tryb podgladu (13.09.2026) NIE korzysta z ISR/revalidate cache Next.js -
-    // to link roboczy do jeszcze niezatwierdzonej oferty, tresc moze sie
-    // zmienic miedzy kolejnymi odswiezeniami podczas przegladu, backend i tak
-    // juz zwraca dla niego 'Cache-Control: no-store' (patrz routes/public.ts).
-    const res = previewToken
-      ? await fetch(url, { headers: INTERNAL_HEADERS, cache: 'no-store' })
-      : await fetch(url, { headers: INTERNAL_HEADERS, next: { revalidate: 60 } })
-    if (res.status === 410) {
-      const body = await res.json().catch(() => null)
-      return { status: 'gone', context: body?.offer_context || { property_type: null, transaction_type: null, address_city: null } }
-    }
-    if (!res.ok) return { status: 'not_found' }
-    return { status: 'ok', data: await res.json() }
-  } catch {
-    return { status: 'not_found' }
+  const url = previewToken
+    ? `${API}/api/public/offers/${id}?preview=${encodeURIComponent(previewToken)}`
+    : `${API}/api/public/offers/${id}`
+  // Tryb podgladu (13.09.2026) NIE korzysta z ISR/revalidate cache Next.js -
+  // to link roboczy do jeszcze niezatwierdzonej oferty, tresc moze sie
+  // zmienic miedzy kolejnymi odswiezeniami podczas przegladu, backend i tak
+  // juz zwraca dla niego 'Cache-Control: no-store' (patrz routes/public.ts).
+  const res = previewToken
+    ? await fetchWithRetry(url, { headers: INTERNAL_HEADERS, cache: 'no-store' })
+    : await fetchWithRetry(url, { headers: INTERNAL_HEADERS, next: { revalidate: 60 } })
+  if (res.status === 410) {
+    const body = await res.json().catch(() => null)
+    return { status: 'gone', context: body?.offer_context || { property_type: null, transaction_type: null, address_city: null } }
   }
+  // TYLKO jednoznaczne 404 oznacza "oferta nie istnieje". Inne bledy (429/5xx/
+  // timeout) to chwilowa niedostepnosc backendu - rzucamy blad zamiast zwracac
+  // 'not_found', zeby strona nie dala Google falszywego 404 (patrz naglowek).
+  if (res.status === 404) return { status: 'not_found' }
+  if (!res.ok) throw new UpstreamUnavailableError(`oferta ${id}: HTTP ${res.status}`)
+  return { status: 'ok', data: await res.json() }
 }
 
 export async function getPublicOffer(id: string) {
@@ -96,6 +161,27 @@ export async function getTeam() {
     '/api/public/team',
     { next: { revalidate: 60 } }    // ISR 1 min
   )
+}
+
+// Licznik "N ofert" przy agencie (Team.tsx) liczony z TEGO SAMEGO zrodla co lista
+// po kliknieciu (/oferty?agent_id=...): GET /api/public/offers?agent_id=...
+// (pagination.total), a nie z osobnego pola offer_count z /api/public/team.
+// Dwa rozne endpointy + dwa osobne cache (ISR strony + data cache fetchy) mogly
+// sie zbudowac w roznych momentach i pokazac rozne liczby (09.10.2026: licznik 5
+// vs lista 4). Teraz licznik i lista ida tym samym endpointem z tym samym filtrem
+// agent_id (inny tylko limit), wiec liczba z jednego momentu zawsze sie zgadza.
+// Gdy fetch listy sie nie uda - zostaje offer_count z /team (nigdy nie psujemy
+// renderowania). Koszt: 1 lekki fetch (limit=1) na czlonka zespolu, rownolegle,
+// przy kazdej regeneracji ISR (data cache 60 s).
+export async function getTeamWithOfferCounts() {
+  const team = await getTeam()
+  if (!team?.data?.length) return team
+  const data = await Promise.all(team.data.map(async (m) => {
+    const list = await getPublicOffers({ agent_id: m.id, limit: 1 })
+    const total = list?.pagination?.total
+    return typeof total === 'number' ? { ...m, offer_count: total } : m
+  }))
+  return { ...team, data }
 }
 
 // NOWE (31.08, audyt SEO - sugestia "brak snippetu z opiniami dla
@@ -159,11 +245,13 @@ export async function submitLead(payload: {
   preferred_city?: string
   hp_field?: string // honeypot (backend: niepusty = bot)
   turnstile_token?: string
+  attribution?: Attribution
 }) {
   // Nigdy nie rzuca (timeout 15 s, siec, odpowiedz nie-JSON) - zwraca { ok, reason? }.
   // Wywolujacy sprawdzaja tylko r?.ok, wiec dla nich nic sie nie zmienia poza tym,
   // ze formularz juz nie wisi na "Wysylanie...".
-  const result = await postLead(`${API}/api/public/leads`, payload)
+  // UTM z sessionStorage (tylko gdy istnieja i niepuste; bez nich cialo zadania bez zmian).
+  const result = await postLead(`${API}/api/public/leads`, withAttribution(payload))
   if (result.ok) trackLeadSuccess(payload.source)
   return result
 }
@@ -177,8 +265,11 @@ export async function getPublicBlogPosts() {
 }
 
 export async function getPublicBlogPost(slug: string) {
-  return apiFetch<import('@/types').BlogPost>(
-    `/api/public/blog/${slug}`,
-    { next: { revalidate: 300 } }
-  )
+  // null = jednoznaczne 404 (wpis nie istnieje). Chwilowa niedostepnosc
+  // backendu (429/5xx/timeout) rzuca UpstreamUnavailableError - NIE zwraca
+  // null, bo wywolujacy zamieniłby to na notFound() (falszywe 404 dla Google).
+  const res = await fetchWithRetry(`${API}/api/public/blog/${slug}`, { headers: INTERNAL_HEADERS, next: { revalidate: 300 } })
+  if (res.status === 404) return null
+  if (!res.ok) throw new UpstreamUnavailableError(`blog ${slug}: HTTP ${res.status}`)
+  return (await res.json()) as import('@/types').BlogPost
 }

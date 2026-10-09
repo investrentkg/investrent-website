@@ -5,7 +5,8 @@ import { MetadataRoute } from 'next'
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: { userAgent: '*', allow: '/' },
+    // /podglad/ = linki podglądu roboczych ofert (token w adresie, noindex) - crawlery w ogóle tam nie wchodzą.
+    rules: { userAgent: '*', allow: '/', disallow: ['/podglad/'] },
     sitemap: 'https://www.investrent.com.pl/sitemap.xml',
   }
 }

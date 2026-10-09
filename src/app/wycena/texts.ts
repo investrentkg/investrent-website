@@ -116,6 +116,17 @@ export const T = {
     again: 'Wyceń inną nieruchomość',
   },
 
+  // D2 (09.10.2026): CTA do panelu kontaktu przy wyniku + przyklejony pasek na telefonie. PROPOZYCJE TEKSTOW - DO KRYTYKA I PRAWNIKA (PR oznaczony
+  // "NIE SCALAC przed Krytykiem i Prawnikiem"). Zasady: bez obietnicy dokladnosci wyceny, bez nacisku i presji czasu, bez nowych zgod
+  // (zgoda i klauzula zostaja w panelu kontaktu bez zmian, CONSENT_VERSION bez zmian). CTA nie obiecuje wysylki wyniku na numer (nie wysylamy
+  // wiadomosci z wynikiem; zgoda dotyczy rozmowy telefonicznej), dlatego "Omow wynik z agentem", a nie "Wyslij wynik na numer".
+  cta: {
+    primary: 'Omów wynik z agentem',
+    primaryNoNumbers: 'Poproś agenta o kontakt',
+    hint: 'Agent oddzwoni po zostawieniu numeru. Bezpłatnie i bez zobowiązań.',
+    stickyRegion: 'Kontakt w sprawie wyniku',
+  },
+
   lead: {
     titleRange: 'Chcesz omówić wynik z agentem?',
     bodyRange: 'Zdjęcia, szczegóły stanu i standardu mieszkania oraz to, czy pochodzi ono z rynku pierwotnego, czy wtórnego, oceni agent po kontakcie. Jeśli chcesz szacunku od agenta, zostaw numer telefonu i zaznacz zgodę na telefon w sprawie wyceny: agent zadzwoni, omówi z Tobą wynik i oszacuje cenę, bezpłatnie i bez zobowiązań.',
@@ -206,6 +217,8 @@ export const T = {
     // Wyjście awaryjne, gdy widget Turnstile w panelu leada nie wydał tokenu (przeglądarka FB/IG, blokada skryptów).
     turnstileStuck: 'Weryfikacja antyspamowa się nie załadowała, więc nie możemy teraz wysłać formularza.',
     turnstileRetry: 'Spróbuj ponownie',
+    // D2: numer wpisany, a weryfikacja jeszcze się ładuje - zgłoszenie wyślemy samo, gdy będzie gotowa (PROPOZYCJA, DO KRYTYKA I PRAWNIKA)
+    turnstileQueued: 'Weryfikacja antyspamowa jeszcze się ładuje. Wyślemy Twoje zgłoszenie automatycznie, gdy będzie gotowa.',
     captchaFailed: 'Weryfikacja antyspamowa nie powiodła się. Odśwież stronę i spróbuj ponownie. Jeśli to nie pomoże, zadzwoń:',
     invalid: 'Któreś z pól ma nieprawidłową wartość. Sprawdź formularz i spróbuj ponownie. Jeśli to nie pomoże, zadzwoń:',
     // Zbyt szybkie wysłanie formularza (próg czasowy) - neutralny komunikat, bez ujawniania mechanizmu.
