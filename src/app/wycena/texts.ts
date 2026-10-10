@@ -54,9 +54,9 @@ export const T = {
     'Ile jest warte mieszkanie w Kołobrzegu lub w okolicy? Widełki ceny online, bezpłatnie i bez podawania telefonu. Domy i działki wycenia agent.',
   metaDescriptionOff:
     'Wycena mieszkania w Kołobrzegu: zostaw numer telefonu, a agent InvestRent zadzwoni i oszacuje cenę.',
-  h1: 'Orientacyjna wycena mieszkania w Kołobrzegu online',
+  h1: 'Kalkulator wartości mieszkania w Kołobrzegu: szacunkowa cena online',
   h1Off: 'Wycena mieszkania w Kołobrzegu z pomocą agenta',
-  intro: 'Ile jest warte Twoje mieszkanie w Kołobrzegu lub okolicy? Podaj kilka danych, a po chwili pokażemy orientacyjne widełki ceny i ceny za m². Liczymy je automatycznie, z użyciem sztucznej inteligencji, na podstawie danych rynkowych, dla mieszkań w Kołobrzegu i w wybranych miejscowościach regionu (lista w formularzu). Numeru telefonu podawać nie musisz.',
+  intro: 'Odpowiedz na kilka pytań, a po chwili pokażemy szacunkowy przedział ceny i cenę za m². To nasz automatyczny szacunek, nie operat rzeczoznawcy. Dokładniejszą ocenę przygotuje agent po rozmowie z Tobą. Numeru telefonu podawać nie musisz.',
   introOff: 'Kalkulator online jest chwilowo niedostępny. Zostaw numer telefonu, a agent zadzwoni i oszacuje cenę, bezpłatnie i bez zobowiązań.',
   callInstead: 'Wolisz, żebyśmy zadzwonili?',
   callInsteadLink: 'Zostaw numer telefonu',
@@ -86,15 +86,15 @@ export const T = {
   formErrorSummary: 'Uzupełnij lub popraw zaznaczone pola.',
 
   result: {
-    title: 'Orientacyjne widełki ceny',
+    title: 'Szacunkowy przedział ceny',
     priceLabel: 'Zakres ceny',
     perM2Label: 'Cena za m²',
     // Jedna forma: dolna granica przedziału z backendu (15/20/50), bez odmiany zakresów i bez pozornej precyzji.
     comparables: (min: number, _max: number) =>
       `Do szacunku wykorzystaliśmy co najmniej ${min} ${min === 1 ? 'porównywalnej nieruchomości' : 'porównywalnych nieruchomości'} z Twojej miejscowości.`,
     // Dwa zakresy (decyzja Daniela 05.10.2026; backtest RCN: wezszy ok. polowa, szerszy ok. 75% cen podobnych sprzedazy). Teksty wymagaja przegladu Krytyka przed publikacja.
-    coreTitle: 'Węższy zakres',
-    wideTitle: 'Szerszy zakres',
+    coreTitle: 'Najbardziej prawdopodobny przedział',
+    wideTitle: 'Szerszy przedział, w którym mieści się większość cen',
     coreNote: 'W takich widełkach mieści się ok. połowa cen podobnych sprzedanych mieszkań.',
     wideNote: 'W takich widełkach mieści się ok. 75% cen podobnych sprzedanych mieszkań.',
     // Miejscowosc inna niz miasto domowe: bez deklaracji, jaka czesc sprzedazy sie miesci (brak backtestu).
@@ -123,7 +123,7 @@ export const T = {
   cta: {
     primary: 'Omów wynik z agentem',
     primaryNoNumbers: 'Poproś agenta o kontakt',
-    hint: 'Agent oddzwoni po zostawieniu numeru. Bezpłatnie i bez zobowiązań.',
+    hint: 'Agent oddzwoni po zostawieniu numeru. Bezpłatnie i bez zobowiązań. Agent doprecyzuje wycenę na podstawie szczegółów, których kalkulator nie zna (stan, widok, piętro).',
     stickyRegion: 'Kontakt w sprawie wyniku',
   },
 
