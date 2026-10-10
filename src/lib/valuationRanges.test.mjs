@@ -38,7 +38,7 @@ test('range niepoprawny -> no_numbers nawet gdy dwa zakresy poprawne (nigdy zgad
 test('teksty dwoch zakresow: miasto domowe z deklaracja pokrycia, inne miejscowosci bez liczb procentowych', () => {
   assert.ok(T.result.coreNote.includes('ok. połowa')); assert.ok(T.result.wideNote.includes('ok. 75%'))
   assert.ok(!/\d+\s?%|połowa/.test(T.result.coreNoteWider + T.result.wideNoteWider), 'poza miastem domowym bez deklaracji pokrycia')
-  assert.equal(T.result.coreTitle, 'Węższy zakres'); assert.equal(T.result.wideTitle, 'Szerszy zakres')
+  assert.equal(T.result.coreTitle, 'Najbardziej prawdopodobny przedział'); assert.equal(T.result.wideTitle, 'Szerszy przedział, w którym mieści się większość cen')
 })
 test('widok: dwa zakresy renderowane z texts.ts, fallback do pojedynczego range, brak pol backendu label_*', () => {
   const src = fs.readFileSync(new URL('../app/wycena/WycenaClient.tsx', import.meta.url), 'utf8')

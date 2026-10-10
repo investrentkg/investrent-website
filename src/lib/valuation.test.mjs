@@ -244,7 +244,7 @@ test('teksty v11.4: T-m (Railway 30 dni pierwsze), T-l (bez kopii DPF, bez Verce
   assert.ok(items.includes('Vercel, Railway, Anthropic, Cloudflare i Google (kalendarz pracowników): na podstawie powyższych zabezpieczeń;'))
   assert.ok(!items.includes('Vercel opiera się')); assert.ok(!items.includes('Supabase opiera się')); assert.ok(!items.includes('Brevo opiera się'))
   // T-o, T-n
-  assert.ok(T.intro.includes('w Kołobrzegu i w wybranych miejscowościach regionu (lista w formularzu)')); assert.ok(!T.disclaimerMore.includes('z wyjątkiem Śródmieścia'))
+  assert.ok(!T.intro.includes('lista w formularzu')); assert.ok(!T.disclaimerMore.includes('z wyjątkiem Śródmieścia'))
   assert.ok(T.result.outOfScopeBody.includes('w Kołobrzegu i w wybranych miejscowościach regionu (lista w formularzu)'))
   assert.ok(!T.fields.district_hint.includes('Centrum') && T.fields.district_hint.includes('Inna dzielnica')) // 28.09: Srodmiescie/Centrum/Stare Miasto NIE sa juz wylaczone
   // doneBody bez obietnicy wyniku
@@ -282,7 +282,7 @@ test('teksty v11.6: cel [2] dla wspolpracy, Cenogram, Vercel w DPF, T-t (punkty)
   assert.ok(items.includes('rozmowa o sprzedaży lub wynajmie Twojej nieruchomości z pomocą naszego biura, jeśli poprosisz o taką rozmowę — działania na Twoje żądanie przed zawarciem umowy (art. 6 ust. 1 lit. b RODO);') && items.includes('umowa, jeśli do niej dojdzie — wykonanie umowy (art. 6 ust. 1 lit. b RODO) oraz obowiązki prawne wynikające z przepisów, np. podatkowych (art. 6 ust. 1 lit. c RODO);'), 'v14: cel [2] rozbity na dwa punkty (rozmowa / umowa)')
   assert.ok(items.includes('oraz dane rynkowe: Cenogram (Polska); do obu trafiają wyłącznie dane nieruchomości')); assert.ok(how.includes('Anthropic) i dostawcy danych rynkowych (Cenogram)'))
   assert.ok(items.includes('Vercel, Railway, Anthropic, Cloudflare i Google (kalendarz pracowników): na podstawie powyższych zabezpieczeń;'))
-  assert.equal(T.h1, 'Orientacyjna wycena mieszkania w Kołobrzegu online'); assert.ok(!/bezpłatn/i.test(T.h1))
+  assert.equal(T.h1, 'Kalkulator wartości mieszkania w Kołobrzegu: szacunkowa cena online'); assert.ok(!/bezpłatn/i.test(T.h1))
   assert.ok(T.result.outOfScopeBody.includes('cenę oszacuje agent, bezpłatnie i bez zobowiązań') && T.result.outOfScopeBody.includes('sprawdzimy, czy możemy pomóc'), 'v14: region = agent szacuje cene; poza wojewodztwem = sprawdzimy, czy mozemy pomoc')
   assert.ok(!how.includes('bez danych kontaktowych i adresu IP; nie zawierają'))
   assert.equal(T.how.body.filter(b => b.startsWith('Adres IP')).length, 1)
@@ -320,7 +320,7 @@ test('teksty v11.8 (decyzje Daniela 26.09): T-k lista nie dzwonimy, T-c2 rozmowa
 test('teksty v13: wstep krotki (zakres tez we wstepie od 28.09), okresy WARIANT A wlaczony (B tylko awaryjnie), streszczenie zgody na wierzchu z trzema drogami cofniecia', async () => {
   const { T, RETENTION_VARIANT_A, RETENTION_A_ITEMS, RETENTION_A_HOW, RETENTION_B_ITEMS, RETENTION_B_HOW } = await import('../app/wycena/texts.ts')
   const sp = String.fromCharCode(160)
-  assert.ok(T.intro.split(/[.?] /).length <= 5, 'wstep: max 5 zdan (28.09: zakres wrocil do wstepu wg Krytyka pkt 1)'); assert.ok(T.intro.includes('sztucznej inteligencji'))
+  assert.ok(T.intro.split(/[.?] /).length <= 5, 'wstep: max 5 zdan (28.09: zakres wrocil do wstepu wg Krytyka pkt 1)'); assert.ok(T.disclaimerTop.includes('sztucznej inteligencji'), 'informacja o AI zostaje w disclaimerTop (wstep jej juz nie zawiera, decyzja Daniela 10.10)'); assert.equal(T.intro, 'Odpowiedz na kilka pytań, a po chwili pokażemy szacunkowy przedział ceny i cenę za m². To nasz automatyczny szacunek, nie operat rzeczoznawcy. Dokładniejszą ocenę przygotuje agent po rozmowie z Tobą. Numeru telefonu podawać nie musisz.'); assert.equal(T.result.title, 'Szacunkowy przedział ceny'); assert.equal(T.cta.hint, 'Agent oddzwoni po zostawieniu numeru. Bezpłatnie i bez zobowiązań. Agent doprecyzuje wycenę na podstawie szczegółów, których kalkulator nie zna (stan, widok, piętro).')
   assert.ok(T.disclaimerMore.startsWith('Poza Kołobrzegiem widełki są szersze')); assert.ok(T.result.scopeNoteWider.startsWith('Dla Twojej miejscowości widełki są szersze'))
   assert.equal(RETENTION_VARIANT_A, true) // v13: ZNACZENIE ZMIENIONE (dawniej false = wariant B); wariant B jest niezgodny z art. 13 ust. 2 lit. a RODO (Prawnik 28.09)
   const items = T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]).join(' ').split(sp).join(' ')
