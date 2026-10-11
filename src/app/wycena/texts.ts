@@ -96,7 +96,7 @@ export const T = {
     // 11.10.2026 (Krytyk PR #53): tytuly bez liczb; liczby tylko w notkach, jedna notacja (ok. 50% / ok. 75%).
     coreTitle: 'Typowy przedział',
     wideTitle: 'Szerszy przedział',
-    coreNote: 'W takim przedziale mieści się ok. 50% cen podobnych sprzedanych mieszkań.',
+    coreNote: 'W takim przedziale mieści się ok. połowa cen podobnych sprzedanych mieszkań.',
     wideNote: 'W takim przedziale mieści się ok. 75% cen podobnych sprzedanych mieszkań.',
     // Miejscowosc inna niz miasto domowe: osobne tytuly i notki, bez deklaracji, jaka czesc sprzedazy sie miesci (brak backtestu).
     coreTitleWider: 'Przedział orientacyjny',
