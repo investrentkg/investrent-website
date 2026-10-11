@@ -263,7 +263,7 @@ test('teksty v11.5: T-l2 (lista, Supabase UE), T-r, T-q, T-s, consentCall 3 drog
   assert.ok(!items.includes('Vercel (hosting strony): Data Privacy Framework oraz umowa powierzenia przetwarzania danych;')); assert.ok(!/Vercel[^.;]*(SCC|klauzul)/.test(items))
   assert.ok(items.includes('zadanie oddzwonienia z imieniem i odnośnikiem do karty w naszym systemie')); assert.ok(!items.includes('bez numeru telefonu, z odnośnikiem'))
   assert.ok(!items.includes('zadanie oddzwonienia z imieniem i numerem'))
-  assert.equal(T.fields.city_hint, 'Domyślnie Kołobrzeg; możesz zacząć pisać nazwę. Grzybowo, Bogucino, Budzistowo, Zieleniewo i Dźwirzyno to osobne miejscowości: wybierz je tutaj. Nie ma Twojej miejscowości? Wybierz „Inna lokalizacja”: widełek online nie pokażemy, ale oddzwoni agent. Numer zostawisz po wysłaniu formularza, w następnym kroku.')
+  assert.equal(T.fields.city_hint, 'Domyślnie Kołobrzeg; możesz zacząć pisać nazwę. Grzybowo, Bogucino, Budzistowo, Zieleniewo i Dźwirzyno to osobne miejscowości: wybierz je tutaj. Nie ma Twojej miejscowości? Wybierz „Inna lokalizacja”: przedziału ceny online nie pokażemy, ale oddzwoni agent. Numer zostawisz po wysłaniu formularza, w następnym kroku.')
   assert.ok(T.fields.district_hint.endsWith('jeśli Twojej nie ma na liście.'))
   assert.ok(T.metaDescription.length <= 160, 'metaDescription do 160 znakow'); assert.ok(!T.metaDescription.includes('Podaj kilka danych'))
   assert.ok(T.lead.consentCall.split(sp).join(' ').includes('Zgodę mogę cofnąć w każdej chwili: e-mailem (biuro@investrent.com.pl), telefonicznie (+48 731 554 341) lub mówiąc o tym agentowi podczas rozmowy.'))
@@ -282,7 +282,7 @@ test('teksty v11.6: cel [2] dla wspolpracy, Cenogram, Vercel w DPF, T-t (punkty)
   assert.ok(items.includes('rozmowa o sprzedaży lub wynajmie Twojej nieruchomości z pomocą naszego biura, jeśli poprosisz o taką rozmowę — działania na Twoje żądanie przed zawarciem umowy (art. 6 ust. 1 lit. b RODO);') && items.includes('umowa, jeśli do niej dojdzie — wykonanie umowy (art. 6 ust. 1 lit. b RODO) oraz obowiązki prawne wynikające z przepisów, np. podatkowych (art. 6 ust. 1 lit. c RODO);'), 'v14: cel [2] rozbity na dwa punkty (rozmowa / umowa)')
   assert.ok(items.includes('oraz dane rynkowe: Cenogram (Polska); do obu trafiają wyłącznie dane nieruchomości')); assert.ok(how.includes('Anthropic) i dostawcy danych rynkowych (Cenogram)'))
   assert.ok(items.includes('Vercel, Railway, Anthropic, Cloudflare i Google (kalendarz pracowników): na podstawie powyższych zabezpieczeń;'))
-  assert.equal(T.h1, 'Kalkulator wartości mieszkania w Kołobrzegu: szacunkowa cena online'); assert.ok(!/bezpłatn/i.test(T.h1))
+  assert.equal(T.h1, 'Kalkulator wyceny mieszkania w Kołobrzegu: przedział ceny online'); assert.ok(!/bezpłatn/i.test(T.h1))
   assert.ok(T.result.outOfScopeBody.includes('cenę oszacuje agent, bezpłatnie i bez zobowiązań') && T.result.outOfScopeBody.includes('sprawdzimy, czy możemy pomóc'), 'v14: region = agent szacuje cene; poza wojewodztwem = sprawdzimy, czy mozemy pomoc')
   assert.ok(!how.includes('bez danych kontaktowych i adresu IP; nie zawierają'))
   assert.equal(T.how.body.filter(b => b.startsWith('Adres IP')).length, 1)
@@ -320,8 +320,8 @@ test('teksty v11.8 (decyzje Daniela 26.09): T-k lista nie dzwonimy, T-c2 rozmowa
 test('teksty v13: wstep krotki (zakres tez we wstepie od 28.09), okresy WARIANT A wlaczony (B tylko awaryjnie), streszczenie zgody na wierzchu z trzema drogami cofniecia', async () => {
   const { T, RETENTION_VARIANT_A, RETENTION_A_ITEMS, RETENTION_A_HOW, RETENTION_B_ITEMS, RETENTION_B_HOW } = await import('../app/wycena/texts.ts')
   const sp = String.fromCharCode(160)
-  assert.ok(T.intro.split(/[.?] /).length <= 5, 'wstep: max 5 zdan (28.09: zakres wrocil do wstepu wg Krytyka pkt 1)'); assert.ok(T.disclaimerTop.includes('sztucznej inteligencji'), 'informacja o AI zostaje w disclaimerTop (wstep jej juz nie zawiera, decyzja Daniela 10.10)'); assert.equal(T.intro, 'Odpowiedz na kilka pytań, a po chwili pokażemy szacunkowy przedział ceny i cenę za m². To nasz automatyczny szacunek, nie operat rzeczoznawcy. Dokładniejszą ocenę przygotuje agent po rozmowie z Tobą. Numeru telefonu podawać nie musisz.'); assert.equal(T.result.title, 'Szacunkowy przedział ceny'); assert.equal(T.cta.hint, 'Agent oddzwoni po zostawieniu numeru, bezpłatnie i bez zobowiązań, i doprecyzuje szacunek na podstawie tego, czego kalkulator nie widzi: stanu wnętrza, widoku i standardu wykończenia.'); assert.equal(T.metaTitle, 'Wycena mieszkania w Kołobrzegu: kalkulator, szacunkowa cena'); assert.equal(T.metaDescription, 'Kalkulator wyceny mieszkania w Kołobrzegu: szacunkowy przedział ceny online, bezpłatnie i bez podawania telefonu. Domy i działki wycenia agent.'); assert.ok(!/widełk/i.test(T.metaTitle + T.metaDescription), 'meta bez slowa widelki (Meta dociaga meta-description do reklamy)')
-  assert.ok(T.disclaimerMore.startsWith('Poza Kołobrzegiem widełki są szersze')); assert.ok(T.result.scopeNoteWider.startsWith('Dla Twojej miejscowości widełki są szersze'))
+  assert.ok(T.intro.split(/[.?] /).length <= 5, 'wstep: max 5 zdan (28.09: zakres wrocil do wstepu wg Krytyka pkt 1)'); assert.ok(T.disclaimerTop.includes('sztucznej inteligencji'), 'informacja o AI zostaje w disclaimerTop (wstep jej juz nie zawiera, decyzja Daniela 10.10)'); assert.equal(T.intro, 'Odpowiedz na kilka pytań, a po chwili pokażemy szacunkowy przedział ceny i cenę za m² (o ile mamy dość danych). To nasz automatyczny szacunek, nie operat rzeczoznawcy (taki dokument bywa potrzebny na przykład w banku). Dokładniejszy szacunek przygotuje agent po rozmowie z Tobą. Numeru telefonu podawać nie musisz.'); assert.equal(T.result.title, 'Szacunkowy przedział ceny'); assert.equal(T.cta.hint, 'Agent oddzwoni po zostawieniu numeru, bezpłatnie i bez zobowiązań. W rozmowie doprecyzuje szacunek o to, czego kalkulator nie widzi: stan wnętrza, widok i standard wykończenia.'); assert.equal(T.cta.hintNoNumbers, 'Agent oddzwoni po zostawieniu numeru, bezpłatnie i bez zobowiązań.'); assert.equal(T.metaTitle, 'Wycena mieszkania w Kołobrzegu online: kalkulator ceny'); assert.equal(T.metaDescription, 'Ile może być warte Twoje mieszkanie w Kołobrzegu? Szacunkowy przedział ceny online, bezpłatnie i bez podawania telefonu. Domy i działki wycenia agent.'); assert.ok(!/widełk/i.test(T.metaTitle + T.metaDescription), 'meta bez slowa widelki (Meta dociaga meta-description do reklamy)')
+  assert.ok(T.disclaimerMore.startsWith('Poza Kołobrzegiem przedział jest szerszy')); assert.ok(T.result.scopeNoteWider.startsWith('Dla Twojej miejscowości przedział jest szerszy'))
   assert.equal(RETENTION_VARIANT_A, true) // v13: ZNACZENIE ZMIENIONE (dawniej false = wariant B); wariant B jest niezgodny z art. 13 ust. 2 lit. a RODO (Prawnik 28.09)
   const items = T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]).join(' ').split(sp).join(' ')
   assert.ok(!items.includes(RETENTION_B_ITEMS[0])); assert.ok(items.includes('12 miesięcy') && items.includes('24 miesiące'), 'wariant A z konkretnymi okresami')
@@ -374,10 +374,10 @@ test('walidacja v14: komunikat braku dzielnicy wg tabeli', () => {
 })
 test('teksty v14 (runda 5 Krytyka): etykiety wyniku bez "Orientacyjny", scopeNote i disclaimerFallback bez dublowania disclaimerTop, brak zdania "mają charakter orientacyjny"', async () => {
   const { T } = await import('../app/wycena/texts.ts')
-  assert.equal(T.result.priceLabel, 'Zakres ceny'); assert.equal(T.result.perM2Label, 'Cena za m²')
+  assert.equal(T.result.priceLabel, 'Przedział ceny'); assert.equal(T.result.perM2Label, 'Cena za m²')
   assert.ok(T.result.scopeNote.includes('oraz kilku ogólnych danych z formularza. Nie widzimy zdjęć ani szczegółów stanu i standardu mieszkania') && T.result.scopeNote.startsWith('Przedział liczymy automatycznie') && T.result.scopeNote.endsWith('może się wyraźnie różnić od przedziału.') && !/operat/.test(T.result.scopeNote), 'zdanie o operacie zostaje tylko w disclaimerTop')
   assert.equal(T.result.disclaimerFallback, 'Cena, jaką uzyskasz, zależy m.in. od stanu technicznego, standardu wykończenia, widoku z okien i sytuacji na rynku.')
-  assert.ok(!T.how.body.join(' ').includes('mają charakter orientacyjny')); assert.ok(T.how.body[1].startsWith('Widełki są zaokrąglone. Nie zastępują'))
+  assert.ok(!T.how.body.join(' ').includes('mają charakter orientacyjny')); assert.ok(T.how.body[1].startsWith('Przedział jest zaokrąglony. Nie zastępuje'))
   assert.equal(T.disclaimerTop, 'Wynik jest orientacyjny, nie jest operatem szacunkowym rzeczoznawcy majątkowego ani wiążącą ofertą ceny. Liczymy go automatycznie z użyciem sztucznej inteligencji.') // v14 P6 + Prawnik 28.09 (notatka 22): "ani wiążącą ofertą ceny"
 })
 test('panel wyniku v14: front NIE renderuje pol backendu outcome.message / outcome.disclaimer (tylko teksty z texts.ts); disclaimerTop zawsze przy wyniku; scopeNoteWider warunkowo; "Wyceń inną" jako link', () => {
@@ -493,4 +493,20 @@ test('D2 (CTA do panelu kontaktu): teksty bez obietnic dokładności, presji i w
   const { buildLeadRequest: blr } = await import('./valuation.ts')
   const r = blr({ name: 'Test', phone: '731 554 341', values: ok, outcome: null, utm: '', turnstileToken: 'tok', honeypot: '' })
   assert.deepEqual(Object.keys(r).sort(), ['client_type', 'full_name', 'hp_field', 'notes', 'phone', 'preferred_city', 'source', 'turnstile_token'])
+})
+
+test('slownik 11.10 (Krytyk PR #53): "widelki"/"zakres" tylko w klauzuli retencji (statystyka); disclaimerTop zostaje orientacyjny; submit i etykiety bez "orientacyjna wycena"', async () => {
+  const { T, RETENTION_A_ITEMS_ACTIVE, RETENTION_A_ITEMS_PLANNED } = await import('../app/wycena/texts.ts')
+  const strings = []
+  const walk = (o) => { if (typeof o === 'string') strings.push(o); else if (Array.isArray(o)) o.forEach(walk); else if (o && typeof o === 'object') Object.values(o).forEach(walk) }
+  walk(T)
+  const hit = strings.filter(x => /widełk/i.test(x))
+  for (const x of hit) assert.ok(RETENTION_A_ITEMS_ACTIVE.includes(x) || RETENTION_A_ITEMS_PLANNED.includes(x), 'widelki poza klauzula retencji: ' + x.slice(0, 80))
+  const ekran = [T.h1, T.intro, T.disclaimerMore, T.requiredNote, T.submit, T.fields.city_hint, ...Object.values(T.result).filter(v => typeof v === 'string'), ...T.how.body.slice(0, 2), T.cta.hint, T.cta.hintNoNumbers].join(' ')
+  assert.ok(!/zakres/i.test(ekran), 'ekran wyniku i formularza bez slowa "zakres"')
+  assert.equal(T.submit, 'Pokaż szacunkowy przedział ceny')
+  assert.equal(T.result.coreTitle, 'Typowy przedział'); assert.equal(T.result.wideTitle, 'Szerszy przedział')
+  assert.equal(T.result.coreTitleWider, 'Przedział orientacyjny'); assert.equal(T.result.wideTitleWider, 'Szerszy przedział orientacyjny')
+  assert.ok(!/\d|połowa|3\/4/.test(T.result.coreTitle + T.result.wideTitle + T.result.coreTitleWider + T.result.wideTitleWider), 'tytuly bez liczb')
+  assert.ok(T.disclaimerTop.startsWith('Wynik jest orientacyjny'))
 })

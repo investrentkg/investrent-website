@@ -331,11 +331,11 @@ function PhoneLink() {
 
 // v14: front ZAWSZE pokazuje teksty z texts.ts; pola backendu outcome.message i outcome.disclaimer sa ignorowane (API bez zmian). Jedno zastrzezenie: disclaimerTop (zawsze widoczny przy wyniku) + zdanie o czynnikach ceny.
 // D2: CTA widoczne od razu przy wyniku (prowadzi do panelu kontaktu niżej; zgoda i klauzula zostają w panelu) + wyjście bez formularza.
-function ResultCta({ label, onClick }: { label: string; onClick: () => void }) {
+function ResultCta({ label, hintText = T.cta.hint, onClick }: { label: string; hintText?: string; onClick: () => void }) {
   return (
     <div className="wy-cta" id="wy-result-cta">
       <button type="button" className="wy-btn" onClick={onClick}>{label}</button>
-      <p style={{ ...hint, margin: '8px 0 0', textAlign: 'center' }}>{T.cta.hint}</p>
+      <p style={{ ...hint, margin: '8px 0 0', textAlign: 'center' }}>{hintText}</p>
       <div style={{ display: 'flex', gap: '0 14px', flexWrap: 'wrap', justifyContent: 'center', marginTop: 2 }}>
         <a className="wy-textlink" href={phoneHref} onClick={() => trackContactEvent('phone_click', 'wycena_cta')}>{T.lead.callCta}</a>
         <a className="wy-textlink" href={whatsappHref} target="_blank" rel="noopener noreferrer" onClick={() => trackContactEvent('whatsapp_click', 'wycena_cta')}>{T.lead.whatsappCta}</a>
@@ -366,7 +366,7 @@ function OutcomePanel({ outcome, scoped, wider, onAgain, onCta }: { outcome: Est
         {outcome.rangeCore && outcome.rangeWide ? (
           <>
             <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 14, padding: '18px 20px', margin: '12px 0 8px' }}>
-              <div style={{ fontSize: 14, color: '#475569' }}>{T.result.coreTitle}</div>
+              <div style={{ fontSize: 14, color: '#475569' }}>{wider ? T.result.coreTitleWider : T.result.coreTitle}</div>
               <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 'clamp(22px, 5vw, 30px)', color: '#0d2a5c', lineHeight: 1.2 }}>
                 {formatRange(outcome.rangeCore)}
               </div>
@@ -379,7 +379,7 @@ function OutcomePanel({ outcome, scoped, wider, onAgain, onCta }: { outcome: Est
               <div style={{ marginTop: 8, fontSize: 13.5, color: '#475569', lineHeight: 1.5 }}>{wider ? T.result.coreNoteWider : T.result.coreNote}</div>
             </div>
             <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 14, padding: '14px 20px', margin: '0 0 12px' }}>
-              <div style={{ fontSize: 14, color: '#475569' }}>{T.result.wideTitle}</div>
+              <div style={{ fontSize: 14, color: '#475569' }}>{wider ? T.result.wideTitleWider : T.result.wideTitle}</div>
               <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 700, fontSize: 'clamp(18px, 4.2vw, 22px)', color: '#0d2a5c', lineHeight: 1.2 }}>
                 {formatRange(outcome.rangeWide)}
               </div>
@@ -422,7 +422,7 @@ function OutcomePanel({ outcome, scoped, wider, onAgain, onCta }: { outcome: Est
       <section style={card} aria-labelledby="wy-res-title">
         <h2 id="wy-res-title" style={h2}>{scoped ? T.result.noNumbersTitle : T.result.outOfScopeTitle}</h2>
         <p style={{ color: '#374151', fontSize: 15, lineHeight: 1.7, margin: 0 }}>{scoped ? T.result.noNumbersBody : T.result.outOfScopeBody}</p>
-        <ResultCta label={T.cta.primaryNoNumbers} onClick={onCta} />
+        <ResultCta label={T.cta.primaryNoNumbers} hintText={T.cta.hintNoNumbers} onClick={onCta} />
         <button type="button" className="wy-linkbtn" style={{ marginTop: 8, marginLeft: -6 }} onClick={onAgain}>{T.result.again}</button>
       </section>
     )

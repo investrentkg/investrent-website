@@ -36,15 +36,15 @@ test('range niepoprawny -> no_numbers nawet gdy dwa zakresy poprawne (nigdy zgad
   assert.equal(interpretResponse(200, { ...two, range: { low: 5, high: 1 } }).kind, 'no_numbers')
 })
 test('teksty dwoch zakresow: miasto domowe z deklaracja pokrycia, inne miejscowosci bez liczb procentowych', () => {
-  assert.equal(T.result.coreNote, 'W takim przedziale mieści się ok. połowa cen podobnych sprzedanych mieszkań.'); assert.equal(T.result.wideNote, 'W takim przedziale mieści się ok. 75% cen podobnych sprzedanych mieszkań.')
+  assert.equal(T.result.coreNote, 'W takim przedziale mieści się ok. 50% cen podobnych sprzedanych mieszkań.'); assert.equal(T.result.wideNote, 'W takim przedziale mieści się ok. 75% cen podobnych sprzedanych mieszkań.')
   assert.ok(!/\d+\s?%|połowa/.test(T.result.coreNoteWider + T.result.wideNoteWider), 'poza miastem domowym bez deklaracji pokrycia')
-  assert.equal(T.result.coreTitle, 'Typowy przedział (ok. połowa podobnych cen)'); assert.equal(T.result.wideTitle, 'Szerszy przedział (ok. 3/4 podobnych cen)')
+  assert.equal(T.result.coreTitle, 'Typowy przedział'); assert.equal(T.result.wideTitle, 'Szerszy przedział'); assert.equal(T.result.coreTitleWider, 'Przedział orientacyjny'); assert.equal(T.result.wideTitleWider, 'Szerszy przedział orientacyjny')
 })
 test('widok: dwa zakresy renderowane z texts.ts, fallback do pojedynczego range, brak pol backendu label_*', () => {
   const src = fs.readFileSync(new URL('../app/wycena/WycenaClient.tsx', import.meta.url), 'utf8')
   const jsx = src.split('\n').filter(l => !l.trim().startsWith('//')).join('\n')
   const range = jsx.slice(jsx.indexOf("outcome.kind === 'range'"), jsx.indexOf("outcome.kind === 'no_numbers'"))
-  for (const s of ['outcome.rangeCore && outcome.rangeWide', '{T.result.coreTitle}', '{T.result.wideTitle}', 'formatRange(outcome.rangeCore)', 'formatRange(outcome.rangeWide)', 'formatRange(outcome.range)', '{T.result.priceLabel}', '{T.disclaimerTop}']) assert.ok(range.includes(s), 'brak: ' + s)
+  for (const s of ['outcome.rangeCore && outcome.rangeWide', '{wider ? T.result.coreTitleWider : T.result.coreTitle}', '{wider ? T.result.wideTitleWider : T.result.wideTitle}', 'formatRange(outcome.rangeCore)', 'formatRange(outcome.rangeWide)', 'formatRange(outcome.range)', '{T.result.priceLabel}', '{T.disclaimerTop}']) assert.ok(range.includes(s), 'brak: ' + s)
   assert.ok(!/label_core|label_wide/.test(jsx), 'front pokazuje wlasne teksty, nie pola label_* backendu')
   assert.equal(formatRange({ low: 680000, high: 930000 }).includes('–'), true)
 })

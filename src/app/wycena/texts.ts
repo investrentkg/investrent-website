@@ -49,28 +49,28 @@ export const RETENTION_B_HOW = [
 
 export const T = {
   // title bez doklejania marki: page.tsx uzywa title.absolute (layout ma szablon '%s | InvestRent Nieruchomości')
-  metaTitle: 'Wycena mieszkania w Kołobrzegu: kalkulator, szacunkowa cena',
+  metaTitle: 'Wycena mieszkania w Kołobrzegu online: kalkulator ceny',
   metaDescription:
-    'Kalkulator wyceny mieszkania w Kołobrzegu: szacunkowy przedział ceny online, bezpłatnie i bez podawania telefonu. Domy i działki wycenia agent.',
+    'Ile może być warte Twoje mieszkanie w Kołobrzegu? Szacunkowy przedział ceny online, bezpłatnie i bez podawania telefonu. Domy i działki wycenia agent.',
   metaDescriptionOff:
     'Wycena mieszkania w Kołobrzegu: zostaw numer telefonu, a agent InvestRent zadzwoni i oszacuje cenę.',
-  h1: 'Kalkulator wartości mieszkania w Kołobrzegu: szacunkowa cena online',
+  h1: 'Kalkulator wyceny mieszkania w Kołobrzegu: przedział ceny online',
   h1Off: 'Wycena mieszkania w Kołobrzegu z pomocą agenta',
-  intro: 'Odpowiedz na kilka pytań, a po chwili pokażemy szacunkowy przedział ceny i cenę za m². To nasz automatyczny szacunek, nie operat rzeczoznawcy. Dokładniejszą ocenę przygotuje agent po rozmowie z Tobą. Numeru telefonu podawać nie musisz.',
+  intro: 'Odpowiedz na kilka pytań, a po chwili pokażemy szacunkowy przedział ceny i cenę za m² (o ile mamy dość danych). To nasz automatyczny szacunek, nie operat rzeczoznawcy (taki dokument bywa potrzebny na przykład w banku). Dokładniejszy szacunek przygotuje agent po rozmowie z Tobą. Numeru telefonu podawać nie musisz.',
   introOff: 'Kalkulator online jest chwilowo niedostępny. Zostaw numer telefonu, a agent zadzwoni i oszacuje cenę, bezpłatnie i bez zobowiązań.',
   callInstead: 'Wolisz, żebyśmy zadzwonili?',
   callInsteadLink: 'Zostaw numer telefonu',
   disclaimerTop: 'Wynik jest orientacyjny, nie jest operatem szacunkowym rzeczoznawcy majątkowego ani wiążącą ofertą ceny. Liczymy go automatycznie z użyciem sztucznej inteligencji.',
   // 28.09.2026 (recenzja Krytyka 6/10, pkt 1-2): zakres jest tez we wstepie; zakres wg decyzji Daniela 27.09 (caly Kolobrzeg + wybrane miejscowosci, backend #570).
-  disclaimerMore: 'Poza Kołobrzegiem widełki są szersze, bo mamy mniej porównywalnych danych. Domów, działek i miejscowości spoza listy nie liczymy online.',
+  disclaimerMore: 'Poza Kołobrzegiem przedział jest szerszy, bo mamy mniej porównywalnych danych. Domów, działek i miejscowości spoza listy nie liczymy online.',
 
   formTitle: 'Dane nieruchomości',
-  requiredNote: 'Pola z gwiazdką (*) są wymagane. Dla mieszkania w Kołobrzegu wymagana jest także dzielnica lub osiedle. Pozostałe pola możesz pominąć, ale pomagają zawęzić widełki.',
+  requiredNote: 'Pola z gwiazdką (*) są wymagane. Dla mieszkania w Kołobrzegu wymagana jest także dzielnica lub osiedle. Pozostałe pola możesz pominąć, ale pomagają zawęzić przedział.',
   fields: {
     property_type: 'Rodzaj nieruchomości',
     property_type_placeholder: 'Wybierz…',
     city: 'Miejscowość',
-    city_hint: 'Domyślnie Kołobrzeg; możesz zacząć pisać nazwę. Grzybowo, Bogucino, Budzistowo, Zieleniewo i Dźwirzyno to osobne miejscowości: wybierz je tutaj. Nie ma Twojej miejscowości? Wybierz „Inna lokalizacja”: widełek online nie pokażemy, ale oddzwoni agent. Numer zostawisz po wysłaniu formularza, w następnym kroku.',
+    city_hint: 'Domyślnie Kołobrzeg; możesz zacząć pisać nazwę. Grzybowo, Bogucino, Budzistowo, Zieleniewo i Dźwirzyno to osobne miejscowości: wybierz je tutaj. Nie ma Twojej miejscowości? Wybierz „Inna lokalizacja”: przedziału ceny online nie pokażemy, ale oddzwoni agent. Numer zostawisz po wysłaniu formularza, w następnym kroku.',
     district: 'Dzielnica lub osiedle',
     district_placeholder: 'Wybierz z listy…',
     district_hint: 'Wybierz dzielnicę lub osiedle z listy albo „Inna dzielnica”, jeśli Twojej nie ma na liście.',
@@ -81,38 +81,41 @@ export const T = {
     condition: 'Stan nieruchomości (opcjonalnie)',
     condition_placeholder: 'Nie wybrano',
   },
-  submit: 'Pokaż orientacyjną wycenę',
+  submit: 'Pokaż szacunkowy przedział ceny',
   submitting: 'Liczymy szacunek… To może potrwać do minuty.',
   formErrorSummary: 'Uzupełnij lub popraw zaznaczone pola.',
 
   result: {
     title: 'Szacunkowy przedział ceny',
-    priceLabel: 'Zakres ceny',
+    priceLabel: 'Przedział ceny',
     perM2Label: 'Cena za m²',
     // Jedna forma: dolna granica przedziału z backendu (15/20/50), bez odmiany zakresów i bez pozornej precyzji.
     comparables: (min: number, _max: number) =>
       `Do szacunku wykorzystaliśmy co najmniej ${min} ${min === 1 ? 'porównywalnej nieruchomości' : 'porównywalnych nieruchomości'} z Twojej miejscowości.`,
     // Dwa zakresy (decyzja Daniela 05.10.2026; backtest RCN: wezszy ok. polowa, szerszy ok. 75% cen podobnych sprzedazy). Teksty wymagaja przegladu Krytyka przed publikacja.
-    coreTitle: 'Typowy przedział (ok. połowa podobnych cen)',
-    wideTitle: 'Szerszy przedział (ok. 3/4 podobnych cen)',
-    coreNote: 'W takim przedziale mieści się ok. połowa cen podobnych sprzedanych mieszkań.',
+    // 11.10.2026 (Krytyk PR #53): tytuly bez liczb; liczby tylko w notkach, jedna notacja (ok. 50% / ok. 75%).
+    coreTitle: 'Typowy przedział',
+    wideTitle: 'Szerszy przedział',
+    coreNote: 'W takim przedziale mieści się ok. 50% cen podobnych sprzedanych mieszkań.',
     wideNote: 'W takim przedziale mieści się ok. 75% cen podobnych sprzedanych mieszkań.',
-    // Miejscowosc inna niz miasto domowe: bez deklaracji, jaka czesc sprzedazy sie miesci (brak backtestu).
-    coreNoteWider: 'Zakres orientacyjny. Dla Twojej miejscowości mamy mniej danych, więc nie podajemy, jaka część podobnych sprzedaży się w nim mieści.',
-    wideNoteWider: 'Szerszy zakres orientacyjny, bo dla Twojej miejscowości mamy mniej porównywalnych danych.',
+    // Miejscowosc inna niz miasto domowe: osobne tytuly i notki, bez deklaracji, jaka czesc sprzedazy sie miesci (brak backtestu).
+    coreTitleWider: 'Przedział orientacyjny',
+    wideTitleWider: 'Szerszy przedział orientacyjny',
+    coreNoteWider: 'Dla Twojej miejscowości mamy mniej danych, więc nie podajemy, jaka część podobnych sprzedaży mieści się w tym przedziale.',
+    wideNoteWider: 'Szerszy przedział, bo dla Twojej miejscowości mamy mniej porównywalnych danych.',
     scopeNote: 'Przedział liczymy automatycznie z użyciem sztucznej inteligencji, na podstawie danych rynkowych (m.in. cen ofertowych z ogłoszeń i cen transakcyjnych) oraz kilku ogólnych danych z formularza. Nie widzimy zdjęć ani szczegółów stanu i standardu mieszkania, dlatego cena, za jaką je sprzedasz, może się wyraźnie różnić od przedziału.',
     // v14: dopisek tylko przy miejscowosci innej niz miasto domowe (WycenaClient)
-    scopeNoteWider: 'Dla Twojej miejscowości widełki są szersze, bo mamy tam mniej porównywalnych danych.',
+    scopeNoteWider: 'Dla Twojej miejscowości przedział jest szerszy, bo mamy tam mniej porównywalnych danych.',
     disclaimerFallback:
       'Cena, jaką uzyskasz, zależy m.in. od stanu technicznego, standardu wykończenia, widoku z okien i sytuacji na rynku.',
     // Poza zakresem liczb online (dom, działka, miejscowość spoza listy) - to reguła, nie brak danych.
-    outOfScopeTitle: 'Dla tej nieruchomości nie liczymy widełek online',
+    outOfScopeTitle: 'Dla tej nieruchomości nie liczymy przedziału ceny online',
     outOfScopeBody:
-      `Widełki online liczymy dla mieszkań w Kołobrzegu i w wybranych miejscowościach regionu (lista w formularzu). Dla domów, działek i innych miejscowości w województwie zachodniopomorskim cenę oszacuje agent, bezpłatnie i bez zobowiązań. Zostaw numer i zaznacz zgodę na telefon w sprawie wyceny: zadzwonimy tylko w tej sprawie. Jeśli nieruchomość jest poza tym województwem, napisz na biuro@investrent.com.pl lub zadzwoń pod ${OFFICE_PHONE}: sprawdzimy, czy możemy pomóc.`,
+      `Przedział ceny online liczymy dla mieszkań w Kołobrzegu i w wybranych miejscowościach regionu (lista w formularzu). Dla domów, działek i innych miejscowości w województwie zachodniopomorskim cenę oszacuje agent, bezpłatnie i bez zobowiązań. Zostaw numer i zaznacz zgodę na telefon w sprawie wyceny: zadzwonimy tylko w tej sprawie. Jeśli nieruchomość jest poza tym województwem, napisz na biuro@investrent.com.pl lub zadzwoń pod ${OFFICE_PHONE}: sprawdzimy, czy możemy pomóc.`,
     // W zakresie, ale silnik nie ma dość porównań.
-    noNumbersTitle: 'Nie mamy dość danych, żeby podać widełki',
+    noNumbersTitle: 'Nie mamy dość danych, żeby podać przedział ceny',
     noNumbersBody:
-      'Dla tej nieruchomości mamy za mało porównywalnych danych rynkowych, żeby rzetelnie wyznaczyć widełki. Zostaw numer telefonu i zaznacz zgodę na telefon w sprawie wyceny: agent zadzwoni i oszacuje cenę.',
+      'Dla tej nieruchomości mamy za mało porównywalnych danych rynkowych, żeby rzetelnie wyznaczyć przedział ceny. Zostaw numer telefonu i zaznacz zgodę na telefon w sprawie wyceny: agent zadzwoni i oszacuje cenę.',
     again: 'Wyceń inną nieruchomość',
   },
 
@@ -123,7 +126,9 @@ export const T = {
   cta: {
     primary: 'Omów wynik z agentem',
     primaryNoNumbers: 'Poproś agenta o kontakt',
-    hint: 'Agent oddzwoni po zostawieniu numeru, bezpłatnie i bez zobowiązań, i doprecyzuje szacunek na podstawie tego, czego kalkulator nie widzi: stanu wnętrza, widoku i standardu wykończenia.',
+    hint: 'Agent oddzwoni po zostawieniu numeru, bezpłatnie i bez zobowiązań. W rozmowie doprecyzuje szacunek o to, czego kalkulator nie widzi: stan wnętrza, widok i standard wykończenia.',
+    // Stany bez liczb (poza zakresem, za malo danych): nie ma szacunku do doprecyzowania.
+    hintNoNumbers: 'Agent oddzwoni po zostawieniu numeru, bezpłatnie i bez zobowiązań.',
     stickyRegion: 'Kontakt w sprawie wyniku',
   },
 
@@ -231,8 +236,8 @@ export const T = {
     moreSummary: 'Więcej: co zapisujemy i jak długo',
     // v14 (28.09.2026, FINAL po rundzie 5 Krytyka): metoda osobno, prywatnosc krotko; punkt 7 = retencja (bez dubletu naglowka "Jak dlugo" i zdania o cofnieciu)
     body: [
-      'Porównujemy dane Twojej nieruchomości z cenami transakcyjnymi i ofertowymi podobnych nieruchomości z Twojej okolicy. Szacunek liczymy automatycznie z użyciem sztucznej inteligencji, bez oględzin. Ceny ofertowe bywają wyższe od faktycznie zapłaconych. W mniejszych miejscowościach widełki są szersze, bo danych jest mniej.',
-      'Widełki są zaokrąglone. Nie zastępują operatu szacunkowego sporządzanego przez rzeczoznawcę majątkowego (np. do kredytu, sądu lub urzędu). Szacunek z kalkulatora do niczego Cię nie zobowiązuje. Szacunek agenta to rozmowa o Twojej nieruchomości; on także nie jest operatem szacunkowym.',
+      'Porównujemy dane Twojej nieruchomości z cenami transakcyjnymi i ofertowymi podobnych nieruchomości z Twojej okolicy. Szacunek liczymy automatycznie z użyciem sztucznej inteligencji, bez oględzin. Ceny ofertowe bywają wyższe od faktycznie zapłaconych. W mniejszych miejscowościach przedział jest szerszy, bo danych jest mniej.',
+      'Przedział jest zaokrąglony. Nie zastępuje operatu szacunkowego sporządzanego przez rzeczoznawcę majątkowego (np. do kredytu, sądu lub urzędu). Szacunek z kalkulatora do niczego Cię nie zobowiązuje. Szacunek agenta to rozmowa o Twojej nieruchomości; on także nie jest operatem szacunkowym.',
       'Do dostawcy sztucznej inteligencji (Anthropic) i dostawcy danych rynkowych (Cenogram) trafiają wyłącznie dane nieruchomości, bez Twoich danych kontaktowych i adresu IP.',
       'Bez numeru: w naszej bazie zapisujemy dane nieruchomości i wynik, bez danych kontaktowych i bez adresu IP.',
       'Z numerem: zapisujemy w naszym systemie także Twoje imię, numer, dane nieruchomości i wynik oraz dowód zgody na telefon (wersja zgody, kanał, czas). Imię trafia też e-mailem do pracowników biura, razem z odnośnikiem do zgłoszenia w naszym systemie; numeru w e-mailu nie ma. Do kalendarza Google pracownika (jeśli ma połączony kalendarz firmowy) trafia tylko imię i odnośnik do zgłoszenia w naszym systemie, bez numeru.',
