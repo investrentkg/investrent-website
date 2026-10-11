@@ -49,9 +49,9 @@ export const RETENTION_B_HOW = [
 
 export const T = {
   // title bez doklejania marki: page.tsx uzywa title.absolute (layout ma szablon '%s | InvestRent Nieruchomości')
-  metaTitle: 'Wycena mieszkania w Kołobrzegu online: orientacyjna cena',
+  metaTitle: 'Wycena mieszkania w Kołobrzegu: kalkulator, szacunkowa cena',
   metaDescription:
-    'Ile jest warte mieszkanie w Kołobrzegu lub w okolicy? Widełki ceny online, bezpłatnie i bez podawania telefonu. Domy i działki wycenia agent.',
+    'Kalkulator wyceny mieszkania w Kołobrzegu: szacunkowy przedział ceny online, bezpłatnie i bez podawania telefonu. Domy i działki wycenia agent.',
   metaDescriptionOff:
     'Wycena mieszkania w Kołobrzegu: zostaw numer telefonu, a agent InvestRent zadzwoni i oszacuje cenę.',
   h1: 'Kalkulator wartości mieszkania w Kołobrzegu: szacunkowa cena online',
@@ -93,14 +93,14 @@ export const T = {
     comparables: (min: number, _max: number) =>
       `Do szacunku wykorzystaliśmy co najmniej ${min} ${min === 1 ? 'porównywalnej nieruchomości' : 'porównywalnych nieruchomości'} z Twojej miejscowości.`,
     // Dwa zakresy (decyzja Daniela 05.10.2026; backtest RCN: wezszy ok. polowa, szerszy ok. 75% cen podobnych sprzedazy). Teksty wymagaja przegladu Krytyka przed publikacja.
-    coreTitle: 'Najbardziej prawdopodobny przedział',
-    wideTitle: 'Szerszy przedział, w którym mieści się większość cen',
-    coreNote: 'W takich widełkach mieści się ok. połowa cen podobnych sprzedanych mieszkań.',
-    wideNote: 'W takich widełkach mieści się ok. 75% cen podobnych sprzedanych mieszkań.',
+    coreTitle: 'Typowy przedział (ok. połowa podobnych cen)',
+    wideTitle: 'Szerszy przedział (ok. 3/4 podobnych cen)',
+    coreNote: 'W takim przedziale mieści się ok. połowa cen podobnych sprzedanych mieszkań.',
+    wideNote: 'W takim przedziale mieści się ok. 75% cen podobnych sprzedanych mieszkań.',
     // Miejscowosc inna niz miasto domowe: bez deklaracji, jaka czesc sprzedazy sie miesci (brak backtestu).
     coreNoteWider: 'Zakres orientacyjny. Dla Twojej miejscowości mamy mniej danych, więc nie podajemy, jaka część podobnych sprzedaży się w nim mieści.',
     wideNoteWider: 'Szerszy zakres orientacyjny, bo dla Twojej miejscowości mamy mniej porównywalnych danych.',
-    scopeNote: 'Widełki liczymy automatycznie z użyciem sztucznej inteligencji, na podstawie danych rynkowych (m.in. cen ofertowych z ogłoszeń i cen transakcyjnych) oraz kilku ogólnych danych z formularza. Nie widzimy zdjęć ani szczegółów stanu i standardu mieszkania, dlatego cena, za jaką je sprzedasz, może się wyraźnie różnić od widełek.',
+    scopeNote: 'Przedział liczymy automatycznie z użyciem sztucznej inteligencji, na podstawie danych rynkowych (m.in. cen ofertowych z ogłoszeń i cen transakcyjnych) oraz kilku ogólnych danych z formularza. Nie widzimy zdjęć ani szczegółów stanu i standardu mieszkania, dlatego cena, za jaką je sprzedasz, może się wyraźnie różnić od przedziału.',
     // v14: dopisek tylko przy miejscowosci innej niz miasto domowe (WycenaClient)
     scopeNoteWider: 'Dla Twojej miejscowości widełki są szersze, bo mamy tam mniej porównywalnych danych.',
     disclaimerFallback:
@@ -123,7 +123,7 @@ export const T = {
   cta: {
     primary: 'Omów wynik z agentem',
     primaryNoNumbers: 'Poproś agenta o kontakt',
-    hint: 'Agent oddzwoni po zostawieniu numeru. Bezpłatnie i bez zobowiązań. Agent doprecyzuje wycenę na podstawie szczegółów, których kalkulator nie zna (stan, widok, piętro).',
+    hint: 'Agent oddzwoni po zostawieniu numeru, bezpłatnie i bez zobowiązań, i doprecyzuje szacunek na podstawie tego, czego kalkulator nie widzi: stanu wnętrza, widoku i standardu wykończenia.',
     stickyRegion: 'Kontakt w sprawie wyniku',
   },
 

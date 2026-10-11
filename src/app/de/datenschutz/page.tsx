@@ -277,7 +277,7 @@ export default function DatenschutzPage() {
 
       <H2>17. Änderungen dieser Datenschutzerklärung</H2>
       <P>
-        Wir passen diese Datenschutzerklärung an, wenn sich die Verarbeitung oder die Rechtslage ändert. Stand: 09.10.2026{/* TODO-DATA-WDROZENIA (10.10.2026, RP): w DNIU SCALENIA podstawic faktyczna date wdrozenia (zmiana tresci: dopisek o cofnieciu zgody na telefon); jednakowo z POLICY_DATE w src/app/rodo/page.tsx. Teraz jeszcze stara data 09.10.2026. */}. Für Nutzer, die diese Website in deutscher Sprache aufrufen, ist diese deutsche Fassung maßgeblich. Die polnische Fassung finden Sie unter <a href="/rodo" style={link}>/rodo</a>. Beide Fassungen beschreiben dieselben Verarbeitungen; der Bewertungsrechner ist nur auf Polnisch verfügbar und daher nur in der polnischen Fassung beschrieben.
+        Wir passen diese Datenschutzerklärung an, wenn sich die Verarbeitung oder die Rechtslage ändert. Stand: 11.10.2026{/* TODO-DATA-WDROZENIA (11.10.2026, RP): zmiana tresci - dopisek o cofnieciu zgody na telefon; jednakowo z POLICY_DATE w src/app/rodo/page.tsx. POTWIERDZIC DATE W DNIU SCALENIA (jesli scalenie nie nastapi 11.10 - zmienic w obu plikach). */}. Für Nutzer, die diese Website in deutscher Sprache aufrufen, ist diese deutsche Fassung maßgeblich. Die polnische Fassung finden Sie unter <a href="/rodo" style={link}>/rodo</a>. Beide Fassungen beschreiben dieselben Verarbeitungen; der Bewertungsrechner ist nur auf Polnisch verfügbar und daher nur in der polnischen Fassung beschrieben.
         {/* ERLEDIGT (Przeglad 3.10, uwaga 18): klauzula wersji wiazacej wg prawnika. Daniel: data Stand = data zatwierdzenia/publikacji. */}
       </P>
 

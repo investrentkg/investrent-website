@@ -25,8 +25,8 @@ import type { Metadata } from 'next'
 // Dane spolki z odpisu KRS/VIES z 25.09.2026 - do weryfikacji przed publikacja.
 
 // STAN NA (jedno miejsce): data ma byc zaktualizowana w dniu faktycznego wdrozenia na produkcje.
-// TODO-DATA-WDROZENIA (10.10.2026, RP): dopisek o cofnieciu zgody na telefon zmienia tresc polityki - w DNIU SCALENIA podstawic faktyczna date wdrozenia (tu i w src/app/de/datenschutz/page.tsx, zdanie "Stand:"; w PL i DE jednakowo). Wartosc ponizej to jeszcze stara data (09.10.2026).
-const POLICY_DATE = '09.10.2026'
+// TODO-DATA-WDROZENIA (11.10.2026, RP): dopisek o cofnieciu zgody na telefon zmienia tresc polityki; data ustawiona na 11.10.2026 (tu i w src/app/de/datenschutz/page.tsx, zdanie "Stand:"; w PL i DE jednakowo). POTWIERDZIC DATE W DNIU SCALENIA (jesli scalenie nie nastapi 11.10 - zmienic w obu plikach).
+const POLICY_DATE = '11.10.2026'
 
 // PRZELACZNIK OKRESOW KALKULATORA (wydanie 28.09.2026): true = wariant A (okresy 12/24 mies.), false = wariant B (ogolny: "nie dluzej niz konieczne").
 // MUSI byc zgodny z RETENTION_VARIANT_A w src/app/wycena/texts.ts (oba naraz: klauzula w kalkulatorze i /rodo musza mowic to samo).
