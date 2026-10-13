@@ -35,9 +35,11 @@ const STATIC_PAGES = [
 ]
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  // Bez lastModified dla stron statycznych: new Date() udawalo zmiane tresci przy kazdym odczycie,
+  // a Google uczy sie ignorowac lastmod z takiej mapy. Daty zostaja tam, gdzie sa prawdziwe
+  // (oferty: created_at, blog: published_at).
   const staticEntries: MetadataRoute.Sitemap = STATIC_PAGES.map(p => ({
     url: `${BASE_URL}${p.path}`,
-    lastModified: new Date(),
     changeFrequency: p.changeFrequency,
     priority: p.priority,
   }))
