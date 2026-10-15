@@ -145,8 +145,10 @@ export type Range = { low: number; high: number }
 export type EstimateOutcome =
   | { kind: 'range'; range: Range; pricePerM2: Range | null; comparables: { min: number; max: number } | null; quality: string | null; disclaimer: string | null; message: string | null
       // Dwa zakresy (backend: range_core = wezszy, range_wide = szerszy). Brak/niespojnosc -> null i widok pokazuje pojedynczy `range` jak dotad.
-      rangeCore?: Range | null; rangeWide?: Range | null; pricePerM2Core?: Range | null; pricePerM2Wide?: Range | null }
-  | { kind: 'no_numbers'; message: string | null; disclaimer: string | null }
+      rangeCore?: Range | null; rangeWide?: Range | null; pricePerM2Core?: Range | null; pricePerM2Wide?: Range | null
+      // podpisany token wyceny z /estimate (bez PII, wazny ok. 2 h): wiaze zgloszenie telefonu z wycena (POST /api/public/valuation/callback); brak pola = tryb awaryjny
+      valuationToken?: string }
+  | { kind: 'no_numbers'; message: string | null; disclaimer: string | null; valuationToken?: string }
   | { kind: 'rate_limited'; retryAfterSeconds: number | null }
   | { kind: 'disabled' }
   | { kind: 'invalid'; message: string | null }
@@ -191,11 +193,12 @@ export function interpretResponse(status: number, body: unknown): EstimateOutcom
         kind: 'range', range, pricePerM2: asRange(b.price_per_m2), comparables,
         quality: str(b.quality), disclaimer: str(b.disclaimer), message: str(b.message),
         rangeCore, rangeWide, pricePerM2Core: pCore && pWide ? pCore : null, pricePerM2Wide: pCore && pWide ? pWide : null,
+        ...(str(b.valuation_token) ? { valuationToken: str(b.valuation_token) as string } : {}),
       }
     }
-    return { kind: 'no_numbers', message: null, disclaimer: str(b.disclaimer) }
+    return { kind: 'no_numbers', message: null, disclaimer: str(b.disclaimer), ...(str(b.valuation_token) ? { valuationToken: str(b.valuation_token) as string } : {}) }
   }
-  if (b.mode === 'no_numbers') return { kind: 'no_numbers', message: str(b.message), disclaimer: str(b.disclaimer) }
+  if (b.mode === 'no_numbers') return { kind: 'no_numbers', message: str(b.message), disclaimer: str(b.disclaimer), ...(str(b.valuation_token) ? { valuationToken: str(b.valuation_token) as string } : {}) }
   return { kind: 'error', reason: 'invalid_response' }
 }
 
@@ -282,7 +285,7 @@ export function readUtm(search: string): string {
   } catch { return '' }
 }
 
-export type ConsentRecord = { at?: string }
+export type ConsentRecord = { at?: string; version?: string }
 
 // Kiedy mozna ponowic po 429: backend zwraca retry_after_seconds z faktycznego okna (30 zapytan/h albo 3 wyceny/24 h na IP).
 export function formatRetryAfter(seconds: number | null): string {
@@ -298,7 +301,7 @@ export function formatRetryAfter(seconds: number | null): string {
 // UWAGA: endpoint publiczny nie podpisuje wpisow (podpis HMAC ma tylko serwer); wartosc dowodowa = wersja tekstu w repo + czas zapisu notatki po stronie CRM.
 export function buildConsentMarker(c: ConsentRecord): string {
   // v11: jedyny kanal to telefon-wycena (zgoda na oddzwonienie w sprawie wyceny); marketingu w kalkulatorze nie ma (v12).
-  return `[Zgoda-kalkulator] kanał=telefon-wycena; czas=${c.at ?? new Date().toISOString()}; wersja=${CONSENT_VERSION}`
+  return `[Zgoda-kalkulator] kanał=telefon-wycena; czas=${c.at ?? new Date().toISOString()}; wersja=${c.version ?? CONSENT_VERSION}`
 }
 
 // Notatka musi zmiescic sie w NOTES_MAX (backend obcina po 500 znakach). Kolejnosc = priorytet: znacznik zgody PIERWSZY, UTM ostatni
@@ -327,14 +330,14 @@ export function buildLeadNotes(v: FormValues, o: EstimateOutcome | null, utm: st
 export const CALCULATOR_LEAD_SOURCE = 'wycena_lp'
 
 // v12: honeypot `hp_field` (backend #555: niepusty = bot) zawsze wysylany, w UI pusty; `turnstile_token` dolaczany, gdy widget go wydal (gdy nie wydal - komponent nie wysyla leada).
-export function buildLeadRequest(input: { name: string; phone: string; values: FormValues; outcome: EstimateOutcome | null; utm: string; turnstileToken?: string | null; honeypot?: string; attribution?: Attribution | null }) {
+export function buildLeadRequest(input: { name: string; phone: string; values: FormValues; outcome: EstimateOutcome | null; utm: string; turnstileToken?: string | null; honeypot?: string; attribution?: Attribution | null; consentVersion?: string }) {
   return {
     full_name: input.name.trim() || 'Właściciel',
     phone: input.phone.trim(),
     source: CALCULATOR_LEAD_SOURCE,
     client_type: 'seller',
     preferred_city: input.values.city.trim(),
-    notes: buildLeadNotes(input.values, input.outcome, input.utm, {}),
+    notes: buildLeadNotes(input.values, input.outcome, input.utm, input.consentVersion ? { version: input.consentVersion } : {}),
     hp_field: input.honeypot ?? '',
     ...(input.turnstileToken ? { turnstile_token: input.turnstileToken } : {}),
     ...(input.attribution && !isEmptyAttribution(input.attribution) ? { attribution: input.attribution } : {}),
