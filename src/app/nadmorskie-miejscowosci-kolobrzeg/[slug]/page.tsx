@@ -12,7 +12,7 @@ import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
 import { getOffice, getPublicOffers } from '@/lib/api'
 import { HUB, LOCALITIES, BEACH_RANGE, getLocality } from '@/content/miejscowosci'
-import { summarizeCity, formatOffersCount, formatPriceCell } from '@/lib/localityOffers'
+import { summarizeCity, formatOffersCount, formatPriceCell, formatRcnCell } from '@/lib/localityOffers'
 import type { Metadata } from 'next'
 
 const BASE_URL = 'https://www.investrent.com.pl'
@@ -72,6 +72,7 @@ export default async function LocalityPage({ params }: { params: { slug: string 
               <li>Odległość od plaży: {BEACH_RANGE}</li>
               <li>Aktualne oferty w naszym katalogu: {formatOffersCount(s.count)}</li>
               <li>Ceny ofertowe z naszej bazy: {formatPriceCell(s)}</li>
+              <li>Ceny transakcyjne (RCN, dane do 01.2026): {formatRcnCell(l.rcn)}</li>
             </ul>
             <p style={{ ...p, fontSize: 13, color: '#6b7280' }}>Ceny to ceny ofertowe z naszej bazy, nie transakcyjne ani poziom rynku; zakres pokazujemy tylko przy co najmniej 3 ofertach.</p>
             <p style={p}>Aktualnych propozycji zapytaj w biurze — oferta zmienia się na bieżąco.</p>

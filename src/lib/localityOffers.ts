@@ -48,6 +48,30 @@ export function summarizeCity(offers: OfferLike[], cityNames: string[]): CitySum
   }
 }
 
+// Ceny TRANSAKCYJNE z Rejestru Cen Nieruchomości (RCN, przez Cenogram): mediana tylko przy próbie >= 10 (decyzja 15.10.2026).
+export const MIN_SAMPLE_FOR_RCN_MEDIAN = 10
+
+export interface RcnSample {
+  /** Liczba transakcji lokali mieszkalnych na wolnym rynku w okresie. */
+  n: number
+  /** Mediana zł/m² z narzędzia; używana tylko gdy n >= MIN_SAMPLE_FOR_RCN_MEDIAN. */
+  medianPerM2: number | null
+  /** Zakres dat transakcji, np. 10.2024-12.2025. */
+  period: string
+  /** Poziom agregacji, np. gmina (gdy nie jest to sama miejscowość). */
+  level?: string
+}
+
+export function formatRcnCell(s: RcnSample | null): string {
+  if (!s) return '—'
+  if (s.n < MIN_SAMPLE_FOR_RCN_MEDIAN || s.medianPerM2 == null) {
+    const word = s.n === 1 ? 'transakcja' : s.n >= 2 && s.n <= 4 ? 'transakcje' : 'transakcji'
+    return `brak wystarczającej próby (${s.n} ${word})`
+  }
+  const lvl = s.level ? `${s.level}: ` : ''
+  return `${lvl}mediana ok. ${formatThousands(s.medianPerM2)} tys. zł/m² (${s.n} transakcji, ${s.period})`
+}
+
 /** „18,9" z 18900 - tys. zł za m², jedno miejsce po przecinku, przecinek dziesiętny. */
 export function formatThousands(perM2: number): string {
   return (Math.round(perM2 / 100) / 10).toFixed(1).replace('.', ',')

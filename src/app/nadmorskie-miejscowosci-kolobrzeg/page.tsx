@@ -11,7 +11,7 @@ import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
 import { getOffice, getPublicOffers } from '@/lib/api'
 import { HUB, LOCALITIES, BEACH_RANGE } from '@/content/miejscowosci'
-import { summarizeCity, formatOffersCount, formatPriceCell } from '@/lib/localityOffers'
+import { summarizeCity, formatOffersCount, formatPriceCell, formatRcnCell } from '@/lib/localityOffers'
 import type { Metadata } from 'next'
 
 const BASE_URL = 'https://www.investrent.com.pl'
@@ -82,6 +82,7 @@ export default async function HubPage() {
                   <tr><th style={{ ...td, fontWeight: 600 }} scope="row">Odległość od plaży</th>{rows.map(({ l }) => <td key={l.slug} style={td}>{BEACH_RANGE}</td>)}</tr>
                   <tr><th style={{ ...td, fontWeight: 600 }} scope="row">Aktualne oferty w naszym katalogu</th>{rows.map(({ l, s }) => <td key={l.slug} style={td}>{formatOffersCount(s.count)}</td>)}</tr>
                   <tr><th style={{ ...td, fontWeight: 600 }} scope="row">Ceny ofertowe z naszej bazy</th>{rows.map(({ l, s }) => <td key={l.slug} style={td}>{formatPriceCell(s)}</td>)}</tr>
+                  <tr><th style={{ ...td, fontWeight: 600 }} scope="row">Ceny transakcyjne (RCN, dane do 01.2026)</th>{rows.map(({ l }) => <td key={l.slug} style={td}>{formatRcnCell(l.rcn)}</td>)}</tr>
                 </tbody>
               </table>
             </div>

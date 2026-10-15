@@ -1,7 +1,7 @@
 // Uruchom: node --test src/lib/localityOffers.test.mjs   (Node >= 22.6, natywne strip-types)
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { foldCity, summarizeCity, formatThousands, formatOffersCount, formatPriceCell, MIN_SAMPLE_FOR_PRICE } from './localityOffers.ts'
+import { foldCity, summarizeCity, formatThousands, formatOffersCount, formatPriceCell, MIN_SAMPLE_FOR_PRICE, formatRcnCell, MIN_SAMPLE_FOR_RCN_MEDIAN } from './localityOffers.ts'
 
 const o = (city, p) => ({ address_city: city, price_per_m2: p })
 
@@ -42,4 +42,13 @@ test('formatowanie: tysiące, liczebniki, komórka ceny', () => {
   assert.equal(formatPriceCell({ count: 0, price: null }), '—')
   assert.equal(formatPriceCell({ count: 2, price: null }), 'zbyt mało ofert do zakresu')
   assert.equal(formatPriceCell({ count: 3, price: { min: 18900, max: 23400, median: 20400, n: 3 } }), 'od ok. 18,9 do 23,4 tys. zł/m², mediana ok. 20,4 (3 oferty)')
+})
+
+test('RCN: mediana tylko przy próbie >= 10; poziom gminy opisany; brak próby nazwany wprost', () => {
+  assert.equal(MIN_SAMPLE_FOR_RCN_MEDIAN, 10)
+  assert.equal(formatRcnCell(null), '—')
+  assert.equal(formatRcnCell({ n: 3, medianPerM2: null, period: 'od 10.2024' }), 'brak wystarczającej próby (3 transakcje)')
+  assert.equal(formatRcnCell({ n: 7, medianPerM2: 18500, period: 'od 10.2024' }), 'brak wystarczającej próby (7 transakcji)')
+  assert.equal(formatRcnCell({ n: 49, medianPerM2: 12578, period: '10.2024–12.2025' }), 'mediana ok. 12,6 tys. zł/m² (49 transakcji, 10.2024–12.2025)')
+  assert.equal(formatRcnCell({ n: 158, medianPerM2: 12462, period: '01.2025–01.2026', level: 'gmina' }), 'gmina: mediana ok. 12,5 tys. zł/m² (158 transakcji, 01.2025–01.2026)')
 })

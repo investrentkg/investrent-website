@@ -4,6 +4,8 @@
 // i liczb o transakcjach/klientach; ceny tylko „ofertowe z naszej bazy" (kod pokazuje je wyłącznie przy próbie >= 3).
 // Treść jest w danych (nie w komponentach): w produkcie SaaS każde biuro ma własny zestaw (docelowo z CRM).
 
+import type { RcnSample } from '@/lib/localityOffers'
+
 export type LocalityStatus = 'draft' | 'approved'
 
 export interface LocalityContent {
@@ -19,6 +21,8 @@ export interface LocalityContent {
   residents: string | null
   bus: string
   school: string | null
+  /** Ceny transakcyjne z RCN (do 01.2026); null = brak danych. */
+  rcn: RcnSample | null
   /** Podstrona jest indeksowalna i w sitemap TYLKO przy 'approved'. */
   status: LocalityStatus
   /** Akapit w sekcji miejscowości na hubie i na podstronie. */
@@ -38,9 +42,11 @@ export const LOCALITIES: LocalityContent[] = [
     residents: null,
     bus: 'Express Bus, PKS',
     school: null,
+    // RCN (Cenogram), lokale mieszkalne, wolny rynek, obręb Grzybowo, 2024-10-04..2025-12-19: 49 transakcji, mediana 12 578 zł/m2
+    rcn: { n: 49, medianPerM2: 12578, period: '10.2024–12.2025' },
     status: 'draft',
     summary:
-      'Grzybowo to wieś tuż za miastem — ok. 8 km i ok. 13 minut autem od centrum Kołobrzegu, w gminie Kołobrzeg. Przez miejscowość kursują autobusy Express Bus i PKS. Działamy tu szeroko: od apartamentów, przez pensjonaty, po budynki do wykończenia. Przykłady z oferty to obiekty inwestycyjne; jedna z ofert znajduje się ok. 900 m od morza.',
+      'Grzybowo to wieś tuż za miastem — ok. 8 km i ok. 13 minut autem od centrum Kołobrzegu, w gminie Kołobrzeg. Przez miejscowość kursują autobusy Express Bus i PKS. To aktywny rynek nowych apartamentów: w Rejestrze Cen Nieruchomości od października 2024 do grudnia 2025 jest 49 transakcji lokali mieszkalnych na wolnym rynku, w większości z rynku pierwotnego, o średniej powierzchni ok. 54 m². Działamy tu szeroko: od apartamentów, przez pensjonaty, po budynki do wykończenia. Przykłady z naszej oferty to obiekty inwestycyjne; jedna z ofert znajduje się ok. 900 m od morza.',
   },
   {
     slug: 'sianozety',
@@ -52,6 +58,8 @@ export const LOCALITIES: LocalityContent[] = [
     residents: 'ok. 720',
     bus: 'linia Ustronie – Kołobrzeg',
     school: 'w Ustroniu Morskim',
+    // RCN, obręb Sianożęty od 2024-10-01: 3 transakcje -> brak mediany
+    rcn: { n: 3, medianPerM2: null, period: 'od 10.2024' },
     status: 'draft',
     summary:
       'Sianożęty to niewielka miejscowość w gminie Ustronie Morskie, ok. 13 km od centrum Kołobrzegu (ok. 16 minut autem), sąsiadująca z Ustroniem Morskim. Mieszka tu ok. 720 osób, a od 1998 roku ich liczba wzrosła o blisko 60%. Dominuje zabudowa apartamentowa, hotele i pensjonaty. Najbliższa szkoła podstawowa jest w Ustroniu Morskim; przynależność do obwodu potwierdza gmina.',
@@ -66,6 +74,8 @@ export const LOCALITIES: LocalityContent[] = [
     residents: 'ok. 2,4 tys.',
     bus: 'linia Ustronie – Kołobrzeg',
     school: 'w miejscowości',
+    // RCN, poziom GMINY Ustronie Morskie (obejmuje Sianożęty), 2025-01-16..2026-01-22: 158 transakcji, mediana 12 462 zł/m2
+    rcn: { n: 158, medianPerM2: 12462, period: '01.2025–01.2026', level: 'gmina' },
     status: 'draft',
     summary:
       'Ustronie Morskie leży ok. 14 km od centrum Kołobrzegu — samochodem ok. 17 minut. Wieś liczy ok. 2,4 tys. mieszkańców, a w sezonie liczba osób na miejscu wyraźnie rośnie. Zabudowa to przede wszystkim apartamenty, hotele i pensjonaty. Do Kołobrzegu jeździ autobus przez Sianożęty, Bagicz i Podczele; w miejscowości działa szkoła podstawowa, są sklepy i gabinety lekarza rodzinnego, a liceum jest w Kołobrzegu.',
@@ -80,6 +90,8 @@ export const LOCALITIES: LocalityContent[] = [
     residents: 'ok. 660',
     bus: 'Express Bus, PKS',
     school: 'w miejscowości',
+    // RCN, obręb Dźwirzyno od 2024-10-01: 7 transakcji -> brak mediany (próba < 10)
+    rcn: { n: 7, medianPerM2: null, period: 'od 10.2024' },
     status: 'draft',
     summary:
       'Dźwirzyno leży w gminie Kołobrzeg, ok. 14 km od centrum miasta (ok. 22 minuty autem), między morzem a jeziorem Resko Przymorskie. Stałych mieszkańców jest ok. 660, a latem miejscowość żyje turystyką. Do Kołobrzegu kursują autobusy Express Bus i PKS; w miejscowości są szkoła podstawowa i sklepy. W ofercie bywa apartament w kameralnym kompleksie, kilka minut spacerem od plaży.',
@@ -95,7 +107,7 @@ export const HUB = {
   intro:
     'Kołobrzeg jest największym i najlepiej rozwiniętym rynkiem nieruchomości na tym odcinku wybrzeża: ma pełną infrastrukturę i najszerszą ofertę, także w naszym katalogu. Wokół miasta leżą mniejsze miejscowości o innym charakterze — spokojniejsze, bardziej zielone, o mniejszej skali i innym typie zabudowy. Dla części kupujących to dobre uzupełnienie rynku kołobrzeskiego, a nie jego zamiennik. Poniżej porównujemy cztery z nich — Ustronie Morskie, Sianożęty, Dźwirzyno i Grzybowo — na podstawie faktów, które sprawdzamy w pracy: dojazd, komunikacja, szkoły, plaża i aktualna oferta.',
   tableNote:
-    'Ceny w tabeli to ceny ofertowe z naszej bazy, nie ceny transakcyjne ani poziom całego rynku. Zakres cen pokazujemy tylko przy co najmniej 3 ofertach; próby są małe, więc traktuj je jako orientację.',
+    'Ceny ofertowe pochodzą z naszej bazy ofert (nie są cenami transakcyjnymi ani poziomem całego rynku); zakres pokazujemy tylko przy co najmniej 3 ofertach. Ceny transakcyjne pochodzą z Rejestru Cen Nieruchomości (RCN; dane do stycznia 2026 — rejestr publikuje z opóźnieniem) i dotyczą lokali mieszkalnych na wolnym rynku; medianę podajemy tylko przy próbie co najmniej 10 transakcji. Wartości z różnych miejscowości nie są wprost porównywalne: różnią się strukturą (nowe apartamenty i rynek wtórny, powierzchnia lokali).',
   buyersHeading: 'Kto kupuje w tych miejscowościach',
   buyers:
     'Kupują osoby z całej Polski, a także Niemcy. Mają różne potrzeby: inną skalę miejscowości, inny typ zabudowy, inną okolicę. Przy wyborze najczęściej liczą się dwie rzeczy: odległość od morza i odległość od Kołobrzegu.',
