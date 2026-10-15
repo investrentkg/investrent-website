@@ -126,6 +126,15 @@ export default async function KolobrzegPage() {
         </div>
         <OffersPageClient initialOffers={data?.data ?? []} initialTotal={data?.pagination?.total ?? 0} />
 
+        {/* Okolica: link do huba nadmorskich miejscowości (SEO, 15.10.2026) */}
+        <div style={{ padding: '32px 0 0', background: 'white' }}>
+          <div className="container">
+            <a href="/nadmorskie-miejscowosci-kolobrzeg" style={{ display: 'block', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 12, padding: '18px 20px', color: '#1a4fa0', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}>
+              Nadmorskie miejscowości pod Kołobrzegiem: porównanie Ustronia Morskiego, Sianożęt, Dźwirzyna i Grzybowa →
+            </a>
+          </div>
+        </div>
+
         {/* Poczytaj więcej — linkowanie wewnętrzne do bloga (SEO, 21.09) */}
         <div style={{ padding: '48px 0', background: 'white' }}>
           <div className="container">

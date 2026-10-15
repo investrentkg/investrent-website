@@ -6,6 +6,7 @@
 
 import { MetadataRoute } from 'next'
 import { getPublicOffers, getPublicBlogPosts } from '@/lib/api'
+import { LOCALITIES } from '@/content/miejscowosci'
 
 const BASE_URL = 'https://www.investrent.com.pl'
 
@@ -16,6 +17,7 @@ const STATIC_PAGES = [
   // "nieruchomosci kolobrzeg" (informacyjna, nie duplikuje "biuro
   // nieruchomosci kolobrzeg" ktora zostaje przypisana do strony glownej).
   { path: '/kolobrzeg', priority: 0.85, changeFrequency: 'weekly' as const },
+  { path: '/nadmorskie-miejscowosci-kolobrzeg', priority: 0.7, changeFrequency: 'weekly' as const },
   { path: '/kupno', priority: 0.8, changeFrequency: 'weekly' as const },
   { path: '/sprzedaz', priority: 0.8, changeFrequency: 'weekly' as const },
   { path: '/wynajem', priority: 0.8, changeFrequency: 'weekly' as const },
@@ -38,7 +40,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Bez lastModified dla stron statycznych: new Date() udawalo zmiane tresci przy kazdym odczycie,
   // a Google uczy sie ignorowac lastmod z takiej mapy. Daty zostaja tam, gdzie sa prawdziwe
   // (oferty: created_at, blog: published_at).
-  const staticEntries: MetadataRoute.Sitemap = STATIC_PAGES.map(p => ({
+  // Podstrony miejscowości trafiają do sitemap TYLKO ze statusem 'approved' (domyślnie 'draft' = noindex, poza mapą).
+  const localityPages = LOCALITIES.filter(l => l.status === 'approved').map(l => ({ path: `/nadmorskie-miejscowosci-kolobrzeg/${l.slug}`, priority: 0.6, changeFrequency: 'monthly' as const }))
+  const staticEntries: MetadataRoute.Sitemap = [...STATIC_PAGES, ...localityPages].map(p => ({
     url: `${BASE_URL}${p.path}`,
     changeFrequency: p.changeFrequency,
     priority: p.priority,
