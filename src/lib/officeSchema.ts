@@ -57,11 +57,11 @@ export function buildOfficeSchema(office: Office | null, rating?: VerifiedRating
       { "@type": "City", "name": "Trzebiatów" },
     ],
     // NOWE (24.09.2026): godziny otwarcia - te same, ktore sa widoczne na
-    // stronie (Contact.tsx: "Pon-Pt 8:00-16:00 - Sob 9:00-14:00"). Przy zmianie
+    // stronie (Contact.tsx: "Pon-Pt 8:00-16:00 - Sob 10:00-15:00"). Przy zmianie
     // godzin zaktualizowac OBA miejsca.
     "openingHoursSpecification": [
       { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "opens": "08:00", "closes": "16:00" },
-      { "@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "09:00", "closes": "14:00" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "10:00", "closes": "15:00" },
     ],
     // sameAs tylko z profili faktycznie ustawionych w Ustawieniach biura (CRM).
     ...(sameAs.length > 0 ? { "sameAs": sameAs } : {}),
