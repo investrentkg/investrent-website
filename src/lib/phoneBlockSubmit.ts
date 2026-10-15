@@ -4,6 +4,7 @@
 //  - w przeciwnym razie (tryb awaryjny): dotychczasowy POST /api/public/leads (submitLead) z wynikiem wyceny w notes.
 // Zwraca { ok } bez rzucania; na porazce sieciowej callbacku probuje trybu awaryjnego (jeden zapis, nie dwa).
 import type { EstimateOutcome, FormValues } from './valuation'
+import { normalizePhoneForSend } from './valuation.ts'
 
 export type PhoneRequestInput = {
   phone: string
@@ -43,7 +44,7 @@ export async function sendPhoneRequest(input: PhoneRequestInput, deps: PhoneRequ
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           valuation_token: input.valuationToken,
-          phone: input.phone.trim(),
+          phone: normalizePhoneForSend(input.phone),
           consent: { checked: true, version: input.consentVersion },
           ...(Object.keys(u).length ? { utm: u } : {}),
           ...(input.turnstileToken ? { turnstile_token: input.turnstileToken } : {}),

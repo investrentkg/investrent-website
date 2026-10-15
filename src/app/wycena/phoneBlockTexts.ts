@@ -23,9 +23,10 @@ export const PHONE_BLOCK_TEXTS = {
   title: 'Bezpłatna, dokładniejsza wycena od agenta',
   // Wymiana wartosci: co klient dostaje po kontakcie. Bez terminu oddzwonienia, bez obietnicy dokladnosci.
   exchange: 'Szeroki przedział widzisz powyżej bez żadnych warunków. Jeśli chcesz, agent doprecyzuje szacunek: poda węższy przedział oraz cenę za m² wraz z porównaniem. Bezpłatnie i bez zobowiązań.',
-  phoneHint: 'Podaj 9 cyfr (numer polski) albo numer zaczynający się od + i kierunkowego kraju, np. +49.',
+  phoneHint: 'Podaj 9 cyfr (numer polski) albo numer międzynarodowy zaczynający się od + lub 00 i kierunkowego kraju, np. +49 albo 0049.',
+  phonePlaceholder: 'np. 512 345 678 lub +49 171 1234567',
   sending: 'Wysyłamy…',
-  errPhone: 'Wpisz numer telefonu: 9 cyfr (numer polski) albo numer zaczynający się od + i kierunkowego kraju.',
+  errPhone: 'Wpisz poprawny numer telefonu: 9 cyfr (numer polski) albo numer międzynarodowy z + lub 00 i kierunkowym kraju, np. +49 albo 0049.',
   // Potwierdzenie bez terminu oddzwonienia.
   doneTitle: 'Dziękujemy, zgłoszenie zapisane',
   doneBody: 'Agent skontaktuje się z Tobą telefonicznie w sprawie dokładniejszej wyceny.',

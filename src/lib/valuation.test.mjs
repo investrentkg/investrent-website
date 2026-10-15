@@ -365,7 +365,7 @@ test('teksty v14: numer biura w tekstach = OFFICE_PHONE (jedno zrodlo), doneBody
   assert.equal(T.errors.disabled, 'Kalkulator jest chwilowo niedostępny. Zostaw numer poniżej lub zadzwoń:')
   assert.ok(T.errors.rateLimited('2 h').startsWith('Z Twojego połączenia wykonano już maksymalną liczbę wycen. Spróbuj ponownie za około 2 h.') && T.errors.rateLimited('2 h').endsWith('zadzwonić:'))
   assert.ok(T.errors.invalid.endsWith('zadzwoń:') && T.errors.leadFail.endsWith('zadzwoń:'))
-  assert.equal(T.lead.phoneHint, 'Podaj 9 cyfr (numer polski) albo numer zaczynający się od + i kierunkowego kraju, np. +49.')
+  assert.equal(T.lead.phoneHint, 'Podaj 9 cyfr (numer polski) albo numer międzynarodowy zaczynający się od + lub 00 i kierunkowego kraju, np. +49 albo 0049.')
   assert.equal(T.lead.errConsent, 'Zaznacz zgodę na telefon w sprawie wyceny. Bez niej nie możemy do Ciebie zadzwonić.')
   assert.equal(T.how.moreSummary, 'Więcej: co zapisujemy i jak długo')
 })

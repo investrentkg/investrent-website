@@ -2,8 +2,9 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import { sendPhoneRequest, utmObject } from './phoneBlockSubmit.ts'
-import { sendFunnelStep, utmFromSearch, FUNNEL_URL } from './funnel.ts'
-import { interpretResponse, buildLeadRequest, EMPTY_FORM } from './valuation.ts'
+import { scrollDeltaAboveBanner } from './wycenaFlags.ts'
+import { sendFunnelStep, utmFromSearch, safeUtmValue, FUNNEL_URL } from './funnel.ts'
+import { interpretResponse, buildLeadRequest, EMPTY_FORM, isValidPhone, normalizePhoneForSend } from './valuation.ts'
 
 const base = { phone: '512 345 678', valuationToken: 'tok.abc', consentVersion: 'wycena-2026-10-15-v1', values: { ...EMPTY_FORM, city: 'Kołobrzeg', property_type: 'mieszkanie', area_m2: '50' }, outcome: null, utm: 'utm_source=meta utm_campaign=kol', turnstileToken: null, honeypot: '' }
 const okRes = (body = { ok: true }, status = 200) => ({ ok: status < 300, status, json: async () => body })
@@ -77,10 +78,12 @@ test('lead awaryjny: klucze bez zmian; wersja zgody w znaczniku mozna nadpisac (
   assert.ok(b.notes.includes('wersja=wycena-2026-10-15-v1'))
 })
 
-test('licznik lejka: wylaczony = nic; wlaczony = fetch keepalive (credentials omit) z JSON {step, utm_source, utm_campaign, variant, reason} bez danych osobowych; fallback sendBeacon; nie rzuca', async () => {
+test('licznik lejka: wylaczony = nic; wlaczony = JEDYNY transport fetch keepalive (credentials omit), bez danych osobowych; sendBeacon nigdy nie jest uzywany', async () => {
   let sent = 0
   assert.equal(sendFunnelStep('entry', {}, { enabled: false, fetchImpl: () => { sent++; return Promise.resolve({}) } }), false)
   assert.equal(sent, 0)
+  let beaconCalls = 0
+  Object.defineProperty(globalThis, 'navigator', { value: { sendBeacon: () => { beaconCalls++; return true } }, configurable: true })
   let captured = null
   const fetchImpl = (u, i) => { captured = { u, i }; return Promise.resolve({}) }
   assert.equal(sendFunnelStep('entry', {}, { enabled: true, search: '?utm_source=meta&utm_campaign=kol&phone=512345678&fbclid=x', fetchImpl }), true)
@@ -91,17 +94,70 @@ test('licznik lejka: wylaczony = nic; wlaczony = fetch keepalive (credentials om
   assert.ok(!/512345678|fbclid/.test(captured.i.body), 'bez telefonu i fbclid')
   sendFunnelStep('reject', { variant: 'phone_block', reason: 'rate_limited' }, { enabled: true, search: '', fetchImpl })
   assert.deepEqual(JSON.parse(captured.i.body), { step: 'reject', variant: 'phone_block', reason: 'rate_limited' })
-  // brak fetch -> sendBeacon
+  // brak fetch: NIE ma zapasu w postaci sendBeacon
   const g = globalThis.fetch; globalThis.fetch = undefined
-  let blobText = null
-  try {
-    assert.equal(sendFunnelStep('submit', {}, { enabled: true, search: '', beacon: (u, b) => { blobText = b; return true } }), true)
-    assert.equal(JSON.parse(await blobText.text()).step, 'submit')
-  } finally { globalThis.fetch = g }
+  try { assert.equal(sendFunnelStep('submit', {}, { enabled: true, search: '' }), false) } finally { globalThis.fetch = g }
+  assert.equal(beaconCalls, 0, 'sendBeacon nie jest uzywany')
+  assert.ok(!/sendBeacon/.test(fs.readFileSync(new URL('./funnel.ts', import.meta.url), 'utf8').split('\n').filter(l => !l.trim().startsWith('//') && !l.trim().startsWith('*') && !l.trim().startsWith('/*')).join('\n')))
   // wyjatek transportu nie wychodzi na zewnatrz
   assert.equal(sendFunnelStep('entry', {}, { enabled: true, search: '', fetchImpl: () => { throw new Error('boom') } }), false)
   assert.doesNotThrow(() => sendFunnelStep('entry', {}, { enabled: true, search: '', fetchImpl: () => Promise.reject(new Error('x')) }))
-  assert.deepEqual(utmFromSearch('?utm_source=' + 'x'.repeat(100)), { utm_source: 'x'.repeat(64) })
+})
+
+test('licznik lejka: UTM tylko biala lista kluczy i wartosci [a-z0-9_-] (po zlowercase) max 40; inaczej POMIJAMY pole (bez obcinania)', () => {
+  const ok = utmFromSearch('?utm_source=Meta&utm_medium=cpc&utm_campaign=Kol-04_2026&utm_content=ad1&utm_term=mieszkanie&foo=bar&phone=512345678')
+  assert.deepEqual(ok, { utm_source: 'meta', utm_medium: 'cpc', utm_campaign: 'kol-04_2026', utm_content: 'ad1', utm_term: 'mieszkanie' })
+  const bad = {
+    email: 'jan.kowalski@example.com', phone: '512 345 678', phoneDigits: '512345678', spaces: 'kampania jesien', polish: 'wycena-kołobrzeg',
+    dot: 'a.b', plus: 'a+b', long: 'a'.repeat(41), slash: 'a/b', empty: '',
+  }
+  for (const [k, v] of Object.entries(bad)) {
+    assert.equal(safeUtmValue(v), v === '512345678' ? '512345678' : null, k) // same cyfry sa poprawnym tokenem [a-z0-9] (nie rozpoznajemy "to telefon"), reszta odrzucona
+    const q = new URLSearchParams({ utm_source: v }).toString()
+    const out = utmFromSearch('?' + q)
+    if (safeUtmValue(v)) assert.deepEqual(out, { utm_source: safeUtmValue(v) }); else assert.deepEqual(out, {}, 'pole pominiete: ' + k)
+  }
+  assert.equal(safeUtmValue('a'.repeat(40)), 'a'.repeat(40))
+  assert.equal(safeUtmValue('a'.repeat(41)), null, 'za dlugie = pominiete, nie obciete')
+  assert.equal(safeUtmValue('ABC'), 'abc')
+  assert.deepEqual(utmFromSearch('?utm_source=' + 'x'.repeat(100)), {})
+  assert.deepEqual(utmFromSearch('?utm_source=jan%40example.com&utm_campaign=ok'), { utm_campaign: 'ok' })
+})
+
+test('walidacja numeru: krajowe 9 cyfr, miedzynarodowe z + i z 00 (spacje/myslniki/nawiasy), niepoprawne odrzucone; 00 normalizowane do + przy wysylce', () => {
+  const good = ['512 345 678', '512-345-678', '(512) 345 678', '512345678', '+48 512 345 678', '+48512345678', '+49 171 1234567', '0048 512 345 678', '0049 171 1234567', '0048512345678', '+420 777 123 456']
+  const bad = ['', '12345', '1234567', '+48', '+0 512345678', 'abc', '512 345 67a', '00', '0049', '+4912', '++48512345678', '0000 512 345 678', '512 345 678 90 12 34 56 78']
+  for (const g of good) assert.ok(isValidPhone(g), 'powinien byc poprawny: ' + g)
+  for (const b of bad) assert.ok(!isValidPhone(b), 'powinien byc odrzucony: ' + b)
+  // dotychczasowa wyrozumialosc: 8-15 cyfr BEZ + (np. 49 171 1234567) nadal przyjmowane - nie zawezamy, zeby nie tracic zgloszen; komunikat prosi o + lub 00
+  for (const lenient of ['49 171 1234567', '51234567']) assert.ok(isValidPhone(lenient), 'wyrozumialosc: ' + lenient)
+  assert.equal(normalizePhoneForSend(' 0048 512 345 678 '), '+48512345678')
+  assert.equal(normalizePhoneForSend('0049 171 1234567'), '+491711234567')
+  assert.equal(normalizePhoneForSend('+48 512 345 678'), '+48 512 345 678')
+  assert.equal(normalizePhoneForSend(' 512 345 678 '), '512 345 678')
+  const r = buildLeadRequest({ name: '', phone: '0048 512 345 678', values: { ...EMPTY_FORM, city: 'Kołobrzeg' }, outcome: null, utm: '' })
+  assert.equal(r.phone, '+48512345678')
+})
+
+test('komunikat i placeholder numeru zgodne z walidacja (9 cyfr, + albo 00)', async () => {
+  const m = await import('../app/wycena/phoneBlockTexts.ts')
+  const { T } = await import('../app/wycena/texts.ts')
+  for (const s of [m.PHONE_BLOCK_TEXTS.phoneHint, m.PHONE_BLOCK_TEXTS.errPhone, T.lead.phoneHint, T.lead.errPhone]) {
+    assert.ok(/9 cyfr/.test(s) && /\+/.test(s) && /00/.test(s), s)
+  }
+  assert.ok(isValidPhone('512 345 678') && isValidPhone('+49 171 1234567'), 'przyklady z placeholdera sa poprawne')
+  assert.ok(m.PHONE_BLOCK_TEXTS.phonePlaceholder.includes('512 345 678') && m.PHONE_BLOCK_TEXTS.phonePlaceholder.includes('+49'))
+})
+
+test('cele dotyku >= 44 px: CSS pola, przycisku, linkow tekstowych/inline i etykiety ma jawne min-height/padding; blok uzywa tych klas', () => {
+  const css = fs.readFileSync(new URL('../app/globals.css', import.meta.url), 'utf8')
+  const rule = (sel) => { const m = css.match(new RegExp(sel.replace(/[.]/g, '\\.') + '\\s*\\{([^}]*)\\}')); assert.ok(m, 'brak reguly ' + sel); return m[1] }
+  const minH = (body) => Number((body.match(/min-height:\s*(\d+)px/) || [])[1] || 0)
+  for (const sel of ['.wy-field', '.wy-btn', '.wy-linkbtn', '.wy-textlink', '.wy-consent-label', '.wy-inline-link']) assert.ok(minH(rule(sel)) >= 44, sel + ' min-height >= 44')
+  const sticky = css.match(/\.wy-sticky \.wy-btn\s*\{([^}]*)\}/)[1]; assert.ok(minH(sticky) >= 44)
+  assert.ok(/\.wy-details\s*>\s*summary\s*\{[^}]*min-height:\s*44px/.test(css), 'summary klauzuli >= 44')
+  const block = fs.readFileSync(new URL('../app/wycena/PhoneBlock.tsx', import.meta.url), 'utf8')
+  assert.ok(block.includes('className="wy-field"') && block.includes('className="wy-btn"') && block.includes('className="wy-inline-link"') && block.includes('className="wy-textlink"'))
 })
 test('strona: blok telefonu tylko za flaga, pod przedzialem (leadSlot przed noty zakresu), osobna karta kontaktu pomijana tylko gdy blok aktywny; teksty zgod nietkniete', () => {
   const src = fs.readFileSync(new URL('../app/wycena/WycenaClient.tsx', import.meta.url), 'utf8')
@@ -113,4 +169,12 @@ test('strona: blok telefonu tylko za flaga, pod przedzialem (leadSlot przed noty
   assert.ok(!/type="checkbox"/.test(block), 'bez checkboxa: jawne dzialanie = klikniecie przycisku (opinia Prawnika 15.10)')
   assert.ok(block.includes('{L.clickNotice}') && block.includes('{L.clauseBeforeLink}') && block.includes('{L.notAppraisal}'))
   assert.ok(block.includes('CALLBACK_ON') && block.includes('sendPhoneRequest'))
+})
+
+test('fokus pola nad banerem cookies: przewiniecie tylko, gdy dol pola jest pod banerem (z marginesem 24 px)', () => {
+  assert.equal(scrollDeltaAboveBanner(675, 812, 275), 675 - (812 - 275 - 24)) // pole pod banerem
+  assert.equal(scrollDeltaAboveBanner(400, 812, 275), 0) // nad banerem
+  assert.equal(scrollDeltaAboveBanner(675, 812, 0), 0) // brak banera
+  assert.equal(scrollDeltaAboveBanner(520, 812, 275), 7) // tuz pod marginesem
+  assert.equal(scrollDeltaAboveBanner(500, 812, Number.NaN), 0)
 })
