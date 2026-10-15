@@ -7,6 +7,10 @@ import { trackContactEvent } from '@/lib/track'
 import Breadcrumb from '@/components/Breadcrumb'
 import WycenaModal from '@/components/WycenaModal'
 import Turnstile from './Turnstile'
+import PhoneBlock from './PhoneBlock'
+import { PHONE_BLOCK_TEXTS } from './phoneBlockTexts'
+import { PHONE_BLOCK_ON } from '@/lib/wycenaFlags'
+import { sendFunnelStep } from '@/lib/funnel'
 import {
   CONDITIONS, EMPTY_FORM, OFFICE_PHONE, PROPERTY_TYPES,
   TS_STUCK_MS, bucketMs, buildLeadRequest, buildPayload, inAppBrowserClass, isKolobrzeg, isMachineCode, fieldApplies, formatPLN, formatRange, formatRetryAfter, isOutOfScope, isValidPhone,
@@ -70,9 +74,17 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
   const [armed, setArmed] = useState(false)
   const [leadDone, setLeadDone] = useState(false)
   const stickyLogged = useRef(false)
+  const funnelVariant = PHONE_BLOCK_ON ? { variant: 'phone_block' } : {}
+  const startLogged = useRef(false)
   const showSticky = available && phase === 'after' && !!outcome && armed && !leadInView && !ctaInView && !leadDone
 
-  useEffect(() => { trackValuation('wycena_view') }, [])
+  useEffect(() => { trackValuation('wycena_view'); sendFunnelStep('entry', funnelVariant) }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  // licznik lejka (flaga NEXT_PUBLIC_WYCENA_FUNNEL, domyslnie wylaczony): consent_screen = pojawienie sie bloku/panelu telefonu po wyniku
+  const consentLogged = useRef(false)
+  useEffect(() => {
+    if (phase !== 'after') { consentLogged.current = false; return }
+    if (!consentLogged.current && (outcome?.kind === 'range' || outcome?.kind === 'no_numbers')) { consentLogged.current = true; sendFunnelStep('consent_screen', funnelVariant) }
+  }, [phase, outcome]) // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (phase !== 'after') return
     // D2: wynik z przyciskiem kontaktu ma trafić na pierwszy ekran (baner nad formularzem zajmuje większość telefonu): focus dla czytników + przewinięcie na górę wyniku
@@ -120,6 +132,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
   }
 
   function set<K extends keyof FormValues>(k: K, v: FormValues[K]) {
+    if (!startLogged.current) { startLogged.current = true; sendFunnelStep('start', funnelVariant) }
     setValues(prev => ({ ...prev, [k]: v }))
     if (errors[k]) setErrors(prev => ({ ...prev, [k]: undefined }))
   }
@@ -151,18 +164,21 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
       const friendly = res.message === 'captcha_failed' ? `${T.errors.captchaFailed} ${OFFICE_PHONE}`
         : res.message && !isMachineCode(res.message) ? res.message
         : `${T.errors.invalid} ${OFFICE_PHONE}`
+      sendFunnelStep('reject', { ...funnelVariant, reason: res.message === 'captcha_failed' ? 'captcha' : 'invalid' })
       setErrors({ area_m2: friendly })
       setPhase('form')
       return
     }
     if (res.kind === 'error' || res.kind === 'rate_limited') {
       trackValuation('wycena_estimate_error', { kind: res.kind, ...(res.kind === 'error' ? { reason: res.reason } : {}), iab: iabClass() })
+      sendFunnelStep('reject', { ...funnelVariant, reason: res.kind === 'rate_limited' ? 'rate_limited' : res.kind === 'error' ? res.reason : 'error' })
     }
     if (res.kind === 'disabled') { setAvailable(false); setOutcome(null); setPhase('form'); return }
     setSubmittedValues(values)
     setOutcome(res)
     if (res.kind === 'range') trackValuation('wycena_estimate_success', { property_type: values.property_type })
     else if (res.kind === 'no_numbers') trackValuation('wycena_estimate_no_numbers', { property_type: values.property_type })
+    if (res.kind === 'range' || res.kind === 'no_numbers') sendFunnelStep('valuation', funnelVariant)
     setPhase('after')
   }
 
@@ -174,16 +190,17 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
 
   return (
     <>
-    <div style={{ background: 'linear-gradient(135deg, #0d2a5c, #1a4fa0)', padding: '32px 0 36px' }}>
+    <div className="wy-hero" style={{ background: 'linear-gradient(135deg, #0d2a5c, #1a4fa0)', padding: '32px 0 36px' }}>
       <div className="container" style={{ maxWidth: 860 }}>
         <Breadcrumb light={true} crumbs={[{ label: 'Strona główna', href: '/' }, { label: 'Wycena nieruchomości' }]} />
         <h1 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 'clamp(26px, 5vw, 38px)', color: 'white', letterSpacing: '-1px', lineHeight: 1.15, marginBottom: 14 }}>
           {available ? T.h1 : T.h1Off}
         </h1>
-        <p style={{ color: 'rgba(255,255,255,.9)', fontSize: 16, lineHeight: 1.7, maxWidth: 620, margin: 0 }}>{available ? T.intro : T.introOff}</p>
+        <p className={available ? 'wy-intro-full' : undefined} style={{ color: 'rgba(255,255,255,.9)', fontSize: 16, lineHeight: 1.7, maxWidth: 620, margin: 0 }}>{available ? T.intro : T.introOff}</p>
+        {available && <p className="wy-intro-short" style={{ color: 'rgba(255,255,255,.9)', fontSize: 15, lineHeight: 1.55, maxWidth: 620, margin: 0 }}>{PHONE_BLOCK_TEXTS.mobileIntroShort}</p>}
       </div>
     </div>
-    <div style={{ background: '#f8fafc', padding: '32px 0 64px' }}>
+    <div className="wy-pad" style={{ background: '#f8fafc', padding: '32px 0 64px' }}>
       <div className="container" style={{ maxWidth: 860, display: 'flex', flexDirection: 'column', gap: 24 }}>
 
         {!available && <LeadPanel outcome={null} values={EMPTY_FORM} />}
@@ -290,10 +307,18 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
 
         {available && phase === 'after' && outcome && (
           <div ref={resultRef} tabIndex={-1} style={{ outline: 'none', display: 'flex', flexDirection: 'column', gap: 24, scrollMarginTop: 88 }}>
-            <OutcomePanel outcome={outcome} scoped={!isOutOfScope(submittedValues)} wider={!isKolobrzeg(submittedValues.city)} onAgain={reset} onCta={() => goToLead('result')} />
-            <div ref={leadWrapRef} id="wy-lead" style={{ scrollMarginTop: 88 }}>
-              <LeadPanel outcome={outcome} values={submittedValues} onDone={() => setLeadDone(true)} />
-            </div>
+            {/* flaga NEXT_PUBLIC_WYCENA_PHONE_BLOCK: dla wyniku z liczbami blok telefonu jest BEZPOSREDNIO pod przedzialem (w karcie wyniku), bez osobnej karty kontaktu pod spodem */}
+            <OutcomePanel outcome={outcome} scoped={!isOutOfScope(submittedValues)} wider={!isKolobrzeg(submittedValues.city)} onAgain={reset} onCta={() => goToLead('result')}
+              leadSlot={PHONE_BLOCK_ON && outcome?.kind === 'range' ? (
+                <div ref={leadWrapRef} id="wy-lead" style={{ scrollMarginTop: 88 }}>
+                  <PhoneBlock outcome={outcome} values={submittedValues} onDone={() => { setLeadDone(true); sendFunnelStep('submit', funnelVariant) }} />
+                </div>
+              ) : undefined} />
+            {!(PHONE_BLOCK_ON && outcome?.kind === 'range') && (
+              <div ref={leadWrapRef} id="wy-lead" style={{ scrollMarginTop: 88 }}>
+                <LeadPanel outcome={outcome} values={submittedValues} onDone={() => { setLeadDone(true); sendFunnelStep('submit', funnelVariant) }} />
+              </div>
+            )}
           </div>
         )}
 
@@ -358,7 +383,7 @@ function ContactFallback({ placement }: { placement: string }) {
   )
 }
 
-function OutcomePanel({ outcome, scoped, wider, onAgain, onCta }: { outcome: EstimateOutcome; scoped: boolean; wider: boolean; onAgain: () => void; onCta: () => void }) {
+function OutcomePanel({ outcome, scoped, wider, onAgain, onCta, leadSlot }: { outcome: EstimateOutcome; scoped: boolean; wider: boolean; onAgain: () => void; onCta: () => void; leadSlot?: React.ReactNode }) {
   if (outcome.kind === 'range') {
     return (
       <section style={card} aria-labelledby="wy-res-title">
@@ -406,7 +431,7 @@ function OutcomePanel({ outcome, scoped, wider, onAgain, onCta }: { outcome: Est
             )}
           </div>
         )}
-        <ResultCta label={T.cta.primary} onClick={onCta} />
+        {leadSlot ?? <ResultCta label={T.cta.primary} onClick={onCta} />}
         <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '14px 0 8px' }}><strong>{T.result.scopeNote}</strong></p>
         {wider && <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '0 0 8px' }}>{T.result.scopeNoteWider}</p>}
         {outcome.comparables && <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '0 0 8px' }}>{T.result.comparables(outcome.comparables.min, outcome.comparables.max)}</p>}
@@ -592,7 +617,7 @@ function LeadPanel({ outcome, values, onDone }: { outcome: EstimateOutcome | nul
               aria-invalid={!!errs.consent} aria-describedby={describedBy('wy-consent', false, !!errs.consent)}
               onChange={e => { setConsent(e.target.checked); if (errs.consent) setErrs(p => ({ ...p, consent: undefined })) }}
               style={{ width: 22, height: 22, marginTop: 2, flexShrink: 0, accentColor: '#0d2a5c' }} />
-            <label htmlFor="wy-consent" style={{ fontSize: 14, color: '#374151', lineHeight: 1.6 }}>{T.lead.consentCall} <strong>{T.lead.consentCallRequired}</strong></label>
+            <label htmlFor="wy-consent" className="wy-consent-label" style={{ fontSize: 14, color: '#374151', lineHeight: 1.6 }}>{T.lead.consentCall} <strong>{T.lead.consentCallRequired}</strong></label>
           </div>
           {errs.consent && <div id="wy-consent-err" role="alert" style={{ ...errStyle, marginLeft: 34 }}>{errs.consent}</div>}
         </div>
