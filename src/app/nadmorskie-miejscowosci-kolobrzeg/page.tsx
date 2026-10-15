@@ -9,7 +9,8 @@ import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
-import { getOffice, getPublicOffers } from '@/lib/api'
+import { getOffice } from '@/lib/api'
+import { loadAllOffers } from '@/lib/allOffers'
 import { HUB, LOCALITIES, BEACH_RANGE } from '@/content/miejscowosci'
 import { summarizeCity, formatOffersCount, formatPriceCell, formatRcnCell } from '@/lib/localityOffers'
 import type { Metadata } from 'next'
@@ -24,24 +25,9 @@ export const metadata: Metadata = {
 
 const FALLBACK_OFFICE = { name: '', logo_url: '/logo.png', address: '', phone: '', email: '', website: null, working_hours: null }
 
-// Oferty pobieramy stronami (limit 24 = maksimum API); 5 stron = 120 ofert z zapasem ponad skalę biura.
-async function loadAllOffers() {
-  const out: Array<{ address_city: string; price_per_m2: number | null }> = []
-  try {
-    for (let page = 1; page <= 5; page++) {
-      const res = await getPublicOffers({ page, limit: 24 })
-      if (!res) break
-      out.push(...res.data)
-      if (page >= (res.pagination?.pages ?? 1)) break
-    }
-  } catch {
-    // brak API: tabela pokaże „zapytaj w biurze", strona nie wywala się
-  }
-  return out
-}
-
 export default async function HubPage() {
-  const [office, offers] = await Promise.all([getOffice(), loadAllOffers()])
+  const [office, loaded] = await Promise.all([getOffice(), loadAllOffers()])
+  const { offers, complete } = loaded
   const o = office ?? FALLBACK_OFFICE
   const rows = LOCALITIES.map(l => ({ l, s: summarizeCity(offers, l.cityNames) }))
   const th: React.CSSProperties = { textAlign: 'left', padding: '10px 12px', fontSize: 13, color: '#0d2a5c', background: '#eff6ff', whiteSpace: 'nowrap' }
@@ -80,8 +66,8 @@ export default async function HubPage() {
                   <tr><th style={{ ...td, fontWeight: 600 }} scope="row">Autobus</th>{rows.map(({ l }) => <td key={l.slug} style={td}>{l.bus}</td>)}</tr>
                   <tr><th style={{ ...td, fontWeight: 600 }} scope="row">Szkoła podstawowa</th>{rows.map(({ l }) => <td key={l.slug} style={td}>{l.school ?? '—'}</td>)}</tr>
                   <tr><th style={{ ...td, fontWeight: 600 }} scope="row">Odległość od plaży</th>{rows.map(({ l }) => <td key={l.slug} style={td}>{BEACH_RANGE}</td>)}</tr>
-                  <tr><th style={{ ...td, fontWeight: 600 }} scope="row">Aktualne oferty w naszym katalogu</th>{rows.map(({ l, s }) => <td key={l.slug} style={td}>{formatOffersCount(s.count)}</td>)}</tr>
-                  <tr><th style={{ ...td, fontWeight: 600 }} scope="row">Ceny ofertowe z naszej bazy</th>{rows.map(({ l, s }) => <td key={l.slug} style={td}>{formatPriceCell(s)}</td>)}</tr>
+                  <tr><th style={{ ...td, fontWeight: 600 }} scope="row">Aktualne oferty w naszym katalogu</th>{rows.map(({ l, s }) => <td key={l.slug} style={td}>{complete ? formatOffersCount(s.count) : 'zapytaj w biurze'}</td>)}</tr>
+                  <tr><th style={{ ...td, fontWeight: 600 }} scope="row">Ceny ofertowe z naszej bazy</th>{rows.map(({ l, s }) => <td key={l.slug} style={td}>{complete ? formatPriceCell(s) : '—'}</td>)}</tr>
                   <tr><th style={{ ...td, fontWeight: 600 }} scope="row">Ceny transakcyjne (RCN, dane do 01.2026)</th>{rows.map(({ l }) => <td key={l.slug} style={td}>{formatRcnCell(l.rcn)}</td>)}</tr>
                 </tbody>
               </table>

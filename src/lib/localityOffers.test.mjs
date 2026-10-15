@@ -47,8 +47,25 @@ test('formatowanie: tysiące, liczebniki, komórka ceny', () => {
 test('RCN: mediana tylko przy próbie >= 10; poziom gminy opisany; brak próby nazwany wprost', () => {
   assert.equal(MIN_SAMPLE_FOR_RCN_MEDIAN, 10)
   assert.equal(formatRcnCell(null), '—')
-  assert.equal(formatRcnCell({ n: 3, medianPerM2: null, period: 'od 10.2024' }), 'brak wystarczającej próby (3 transakcje)')
-  assert.equal(formatRcnCell({ n: 7, medianPerM2: 18500, period: 'od 10.2024' }), 'brak wystarczającej próby (7 transakcji)')
+  assert.equal(formatRcnCell({ n: 3, medianPerM2: null, period: 'od 10.2024' }), 'brak wystarczającej próby (3 transakcje, od 10.2024)')
+  assert.equal(formatRcnCell({ n: 7, medianPerM2: 18500, period: 'od 10.2024' }), 'brak wystarczającej próby (7 transakcji, od 10.2024)')
   assert.equal(formatRcnCell({ n: 49, medianPerM2: 12578, period: '10.2024–12.2025' }), 'mediana ok. 12,6 tys. zł/m² (49 transakcji, 10.2024–12.2025)')
   assert.equal(formatRcnCell({ n: 158, medianPerM2: 12462, period: '01.2025–01.2026', level: 'gmina' }), 'gmina: mediana ok. 12,5 tys. zł/m² (158 transakcji, 01.2025–01.2026)')
+})
+
+test('RCN: próg dokładnie 9 (brak mediany) i 10 (jest mediana)', () => {
+  assert.equal(formatRcnCell({ n: 9, medianPerM2: 15000, period: '2025' }), 'brak wystarczającej próby (9 transakcji, 2025)')
+  assert.equal(formatRcnCell({ n: 10, medianPerM2: 15000, period: '2025' }), 'mediana ok. 15,0 tys. zł/m² (10 transakcji, 2025)')
+})
+
+test('summarizeCity: działki i garaże nie wchodzą do próby cen, ale liczą się w count', () => {
+  const offers = [
+    { address_city: 'Grzybowo', price_per_m2: 500, property_type: 'dzialka' },
+    { address_city: 'Grzybowo', price_per_m2: 4900, property_type: 'dom' },
+    { address_city: 'Grzybowo', price_per_m2: 6700, property_type: 'dom' },
+    { address_city: 'Grzybowo', price_per_m2: 12000, property_type: 'mieszkanie' },
+  ]
+  const r = summarizeCity(offers, ['Grzybowo'])
+  assert.equal(r.count, 4)
+  assert.deepEqual(r.price, { min: 4900, max: 12000, median: 6700, n: 3 })
 })

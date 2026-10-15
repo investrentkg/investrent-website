@@ -11,6 +11,9 @@ export interface OfferLike {
   property_type?: string | null
 }
 
+/** Typy, których cena za m² nie jest porównywalna z lokalami/domami (grunty, garaże) - nie wchodzą do próby cen. */
+export const PRICE_EXCLUDED_TYPES = ['dzialka', 'garaz']
+
 export interface CitySummary {
   count: number
   /** Zakres cen ofertowych za m² - tylko gdy próba >= MIN_SAMPLE_FOR_PRICE. */
@@ -38,6 +41,7 @@ export function summarizeCity(offers: OfferLike[], cityNames: string[]): CitySum
   const wanted = new Set(cityNames.map(foldCity))
   const own = offers.filter(o => wanted.has(foldCity(o.address_city)))
   const prices = own
+    .filter(o => !PRICE_EXCLUDED_TYPES.includes(String(o.property_type ?? '')))
     .map(o => Number(o.price_per_m2))
     .filter(n => Number.isFinite(n) && n > 0)
     .sort((a, b) => a - b)
@@ -66,7 +70,7 @@ export function formatRcnCell(s: RcnSample | null): string {
   if (!s) return '—'
   if (s.n < MIN_SAMPLE_FOR_RCN_MEDIAN || s.medianPerM2 == null) {
     const word = s.n === 1 ? 'transakcja' : s.n >= 2 && s.n <= 4 ? 'transakcje' : 'transakcji'
-    return `brak wystarczającej próby (${s.n} ${word})`
+    return `brak wystarczającej próby (${s.n} ${word}, ${s.period})`
   }
   const lvl = s.level ? `${s.level}: ` : ''
   return `${lvl}mediana ok. ${formatThousands(s.medianPerM2)} tys. zł/m² (${s.n} transakcji, ${s.period})`

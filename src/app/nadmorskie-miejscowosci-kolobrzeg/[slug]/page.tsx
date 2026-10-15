@@ -10,7 +10,8 @@ import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
-import { getOffice, getPublicOffers } from '@/lib/api'
+import { getOffice } from '@/lib/api'
+import { loadAllOffers } from '@/lib/allOffers'
 import { HUB, LOCALITIES, BEACH_RANGE, getLocality } from '@/content/miejscowosci'
 import { summarizeCity, formatOffersCount, formatPriceCell, formatRcnCell } from '@/lib/localityOffers'
 import type { Metadata } from 'next'
@@ -37,15 +38,7 @@ export default async function LocalityPage({ params }: { params: { slug: string 
   const l = getLocality(params.slug)
   if (!l) notFound()
   const office = await getOffice()
-  let offers: Array<{ address_city: string; price_per_m2: number | null }> = []
-  try {
-    for (let page = 1; page <= 5; page++) {
-      const res = await getPublicOffers({ page, limit: 24 })
-      if (!res) break
-      offers = offers.concat(res.data)
-      if (page >= (res.pagination?.pages ?? 1)) break
-    }
-  } catch { /* bez API: „zapytaj w biurze" */ }
+  const { offers, complete } = await loadAllOffers()
   const s = summarizeCity(offers, l.cityNames)
   const p: React.CSSProperties = { fontSize: 15, color: '#374151', lineHeight: 1.8, marginBottom: 12 }
   const h2: React.CSSProperties = { fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 22, color: '#0d2a5c', margin: '28px 0 10px' }
@@ -70,8 +63,8 @@ export default async function LocalityPage({ params }: { params: { slug: string 
               <li>Gmina: {l.gmina}{l.residents ? ` · mieszkańcy (spis 2021): ${l.residents}` : ''}</li>
               <li>Autobus: {l.bus}{l.school ? ` · szkoła podstawowa: ${l.school}` : ''}</li>
               <li>Odległość od plaży: {BEACH_RANGE}</li>
-              <li>Aktualne oferty w naszym katalogu: {formatOffersCount(s.count)}</li>
-              <li>Ceny ofertowe z naszej bazy: {formatPriceCell(s)}</li>
+              <li>Aktualne oferty w naszym katalogu: {complete ? formatOffersCount(s.count) : 'zapytaj w biurze'}</li>
+              <li>Ceny ofertowe z naszej bazy: {complete ? formatPriceCell(s) : '—'}</li>
               <li>Ceny transakcyjne (RCN, dane do 01.2026): {formatRcnCell(l.rcn)}</li>
             </ul>
             <p style={{ ...p, fontSize: 13, color: '#6b7280' }}>Ceny to ceny ofertowe z naszej bazy, nie transakcyjne ani poziom rynku; zakres pokazujemy tylko przy co najmniej 3 ofertach.</p>
