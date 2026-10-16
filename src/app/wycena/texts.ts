@@ -139,7 +139,7 @@ export const T = {
     bodyFallback: 'Zaznacz zgodę na telefon w sprawie wyceny. Agent zadzwoni i powie, jak może pomóc: dla mieszkań, domów i działek w województwie zachodniopomorskim oszacuje cenę, bezpłatnie i bez zobowiązań. To nie jest operat.',
     name: 'Imię (opcjonalnie)',
     phone: 'Numer telefonu',
-    phoneHint: 'Podaj 9 cyfr (numer polski) albo numer zaczynający się od + i kierunkowego kraju, np. +49.',
+    phoneHint: 'Podaj 9 cyfr (numer polski) albo numer międzynarodowy zaczynający się od + lub 00 i kierunkowego kraju, np. +49 albo 0049.',
     // Teksty zgód i klauzuli = wersja CONSENT_VERSION (lib/valuation.ts). Zmiana JAKIEGOKOLWIEK z tych tekstów = nowy numer wersji.
     // Snapshot brzmienia wersji = ten plik w git (do leada trafia tylko znacznik wersji). Zakres zgody współdefiniują TEŻ zdania NAD polem zgody: lead.bodyRange (początek: co ocenia agent po kontakcie) i lead.bodyFallback (P8, Prawnik 28.09).
     // Zatwierdzenie treści: Krytyk + przegląd AI (kancelaria nieangażowana wg decyzji Daniela 25.09; ryzyko przyjęte świadomie).
@@ -199,7 +199,7 @@ export const T = {
     optionalLabel: '(opcjonalnie)',
     submit: 'Proszę o kontakt',
     submitting: 'Wysyłanie…',
-    errPhone: 'Wpisz numer telefonu: 9 cyfr (numer polski) albo numer zaczynający się od + i kierunkowego kraju, np. +49.',
+    errPhone: 'Wpisz poprawny numer telefonu: 9 cyfr (numer polski) albo numer międzynarodowy z + lub 00 i kierunkowym kraju, np. +49 albo 0049.',
     errConsent: 'Zaznacz zgodę na telefon w sprawie wyceny. Bez niej nie możemy do Ciebie zadzwonić.',
     // Alternatywa bez formularza (nie jest częścią zgody - to osobny kanał, rozmowę zaczyna klient).
     altTitle: 'Wolisz porozmawiać od razu?',

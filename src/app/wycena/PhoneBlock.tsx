@@ -105,14 +105,14 @@ export default function PhoneBlock({ outcome, values, onDone }: { outcome: Estim
       <p style={{ margin: '0 0 12px', ...hintStyle }}>{L.notAppraisal}</p>
 
       <label htmlFor="wy-phone" style={{ display: 'block', fontWeight: 600, fontSize: 14, color: '#0d2a5c', marginBottom: 6 }}>{L.label} *</label>
-      <input id="wy-phone" className="wy-field" type="tel" inputMode="tel" autoComplete="tel" required aria-required="true"
+      <input id="wy-phone" className="wy-field" type="tel" inputMode="tel" autoComplete="tel" placeholder={P.phonePlaceholder} required aria-required="true"
         value={phone} aria-invalid={!!errs.phone} aria-describedby={errs.phone ? 'wy-phone-err wy-phone-hint wy-pb-notice' : 'wy-phone-hint wy-pb-notice'}
         onChange={e => { setPhone(e.target.value); if (errs.phone) setErrs({}) }} />
       <div id="wy-phone-hint" style={hintStyle}>{P.phoneHint}</div>
       {errs.phone && <div id="wy-phone-err" role="alert" style={errStyle}>{errs.phone}</div>}
       <p id="wy-pb-notice" style={{ margin: '10px 0 0', color: '#374151', fontSize: 14, lineHeight: 1.6 }}>{L.clickNotice}</p>
       <p style={{ ...hintStyle, margin: '8px 0 0' }}>
-        {L.clauseBeforeLink}<a href={L.clauseLinkHref} target="_blank" rel="noopener noreferrer" style={{ color: '#1a4fa0', textDecoration: 'underline' }}>{L.clauseLinkLabel}</a>{L.clauseAfterLink}
+        {L.clauseBeforeLink}<a href={L.clauseLinkHref} className="wy-inline-link" target="_blank" rel="noopener noreferrer" style={{ color: '#1a4fa0', textDecoration: 'underline' }}>{L.clauseLinkLabel}</a>{L.clauseAfterLink}
       </p>
       <div className="wy-hp" aria-hidden="true">
         <label>Nie wypełniaj tego pola
