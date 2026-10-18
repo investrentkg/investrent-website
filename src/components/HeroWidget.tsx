@@ -94,7 +94,7 @@ export default function HeroWidget() {
                 style={{ flexDirection: 'column' as const, justifyContent: 'center', gap: 10, color: '#10b981' }}
               />
               <div style={{ color: 'white', fontWeight: 700, fontSize: 17, marginTop: 8, marginBottom: 6 }}>Wysłano!</div>
-              <div style={{ color: 'rgba(255,255,255,.6)', fontSize: 13 }}>Oddzwonimy do 60 minut</div>
+              <div style={{ color: 'rgba(255,255,255,.6)', fontSize: 13 }}>Oddzwonimy najpóźniej w ciągu 24 godzin</div>
             </div>
           ) : (
             <>

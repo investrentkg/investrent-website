@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react'
 
 interface AnimatedCounterProps {
-  value: string        // np. "300+", "4.9/5", "do 60 min", "Bezpłatna"
+  value: string        // np. "300+", "4.9/5", "do 24 godz.", "Bezpłatna"
   duration?: number    // ms
   startDelay?: number  // ms — opóźnienie startu liczenia OD momentu wejścia w pole widoku
                         // (do sekwencyjnego, jeden-po-drugim odliczania kilku liczników obok siebie)
@@ -10,7 +10,7 @@ interface AnimatedCounterProps {
 
 // Wyciąga pierwszą liczbę (całkowitą lub z przecinkiem) z tekstu, żeby ją animować,
 // zachowując resztę tekstu (prefiks/sufiks) bez zmian. Jeśli nie ma liczby
-// (np. "Bezpłatna", "do 60 min" — tu liczba jest, animujemy tylko ją), wyświetla statycznie.
+// (np. "Bezpłatna", "do 24 godz." — tu liczba jest, animujemy tylko ją), wyświetla statycznie.
 function parseValue(value: string): { prefix: string; number: number; decimals: number; suffix: string } | null {
   const match = value.match(/^(\D*)(\d+(?:[.,]\d+)?)(.*)$/)
   if (!match) return null

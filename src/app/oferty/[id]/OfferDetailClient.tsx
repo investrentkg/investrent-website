@@ -293,7 +293,7 @@ function ContactForm({ refNumber }: { refNumber: string }) {
     <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 14, padding: '28px', textAlign: 'center' as const }}>
       <div style={{ fontSize: 36, marginBottom: 10 }}>✓</div>
       <div style={{ fontWeight: 700, color: '#065f46', fontSize: 17 }}>Zapytanie wysłane!</div>
-      <div style={{ color: '#047857', fontSize: 13, marginTop: 5 }}>Skontaktujemy się do 60 minut</div>
+      <div style={{ color: '#047857', fontSize: 13, marginTop: 5 }}>Skontaktujemy się jak najszybciej, nie później niż w ciągu 24 godzin</div>
     </div>
   )
   return (
@@ -310,7 +310,7 @@ function ContactForm({ refNumber }: { refNumber: string }) {
           style={{ border: '1px solid #e5e7eb', borderRadius: 10, padding: '11px 14px', fontSize: 13, outline: 'none', resize: 'none' as const, fontFamily: 'inherit' }} />
         <button onClick={submit} disabled={status === 'loading'}
           style={{ background: 'linear-gradient(135deg,#1a4fa0,#0d2a5c)', color: 'white', border: 'none', borderRadius: 10, padding: '13px', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
-          {status === 'loading' ? 'Wysyłanie…' : '📩 Wyślij zapytanie — odpiszemy do 60 min'}
+          {status === 'loading' ? 'Wysyłanie…' : '📩 Wyślij zapytanie — odpiszemy najpóźniej w ciągu 24 godzin'}
         </button>
         {status === 'error' && <p style={{ color: '#dc2626', fontSize: 12, textAlign: 'center' as const }}>Błąd — spróbuj ponownie</p>}
         <PrivacyNote />
@@ -464,7 +464,7 @@ export default function OfferDetailClient({ offer }: { offer: OfferDetail }) {
             <div style={{ marginTop: 14, display: 'flex', flexDirection: 'column' as const, gap: 8 }}>
               {[
                 { icon: Shield, text: 'Bezpieczna transakcja', sub: 'Weryfikujemy stan prawny' },
-                { icon: Clock,  text: 'Odpowiadamy do 60 min', sub: 'Szybki kontakt gwarantowany' },
+                { icon: Clock,  text: 'Odpowiadamy jak najszybciej', sub: 'Najpóźniej w ciągu 24 godzin' },
                 { icon: Award,  text: 'Doświadczeni eksperci',  sub: 'Kołobrzeg i okolice' },
               ].map(b => {
                 const Icon = b.icon

@@ -62,7 +62,7 @@ export default function WycenaModal({ isOpen, onClose }: Props) {
               <CheckCircle size={36} color="#16a34a" />
             </div>
             <h3 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 22, color: '#0d2a5c', marginBottom: 8 }}>Dziękujemy!</h3>
-            <p style={{ color: '#64748b', fontSize: 15, lineHeight: 1.7, marginBottom: 24 }}>Nasz ekspert skontaktuje się z Tobą w ciągu <strong>60 minut</strong> i bezpłatnie wyceni Twoją nieruchomość.</p>
+            <p style={{ color: '#64748b', fontSize: 15, lineHeight: 1.7, marginBottom: 24 }}>Nasz ekspert skontaktuje się z Tobą jak najszybciej, nie później niż w ciągu 24 godzin, i bezpłatnie wyceni Twoją nieruchomość.</p>
             <button onClick={onClose} style={{ background: '#0d2a5c', color: 'white', border: 'none', borderRadius: 12, padding: '12px 32px', fontSize: 14, fontWeight: 700, cursor: 'pointer', width: '100%' }}>
               Zamknij
             </button>
@@ -74,7 +74,7 @@ export default function WycenaModal({ isOpen, onClose }: Props) {
             </div>
             <h3 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 22, color: '#0d2a5c', marginBottom: 6 }}>Bezpłatna wycena nieruchomości</h3>
             <p style={{ color: '#64748b', fontSize: 14, lineHeight: 1.7, marginBottom: 24 }}>
-              Zostaw numer — ekspert oddzwoni w ciągu 60 minut i bezpłatnie wyceni Twoją nieruchomość. Bez zobowiązań.
+              Zostaw numer — ekspert oddzwoni jak najszybciej, nie później niż w ciągu 24 godzin, i bezpłatnie wyceni Twoją nieruchomość. Bez zobowiązań.
             </p>
             <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 12 }}>
               <input type="text" placeholder="Imię i nazwisko (opcjonalnie)" aria-label="Imię i nazwisko (opcjonalnie)" value={name} onChange={e => setName(e.target.value)}
@@ -89,7 +89,7 @@ export default function WycenaModal({ isOpen, onClose }: Props) {
               <PrivacyNote color="#94a3b8" size={11} />
             </div>
             <div style={{ display: 'flex', gap: 16, marginTop: 20, paddingTop: 16, borderTop: '1px solid #f1f5f9' }}>
-              {[{ val: '0 zł', label: 'Wycena' }, { val: '60 min', label: 'Odpowiedź' }, { val: '150+', label: 'Transakcji' }].map(s => (
+              {[{ val: '0 zł', label: 'Wycena' }, { val: 'do 24 godz.', label: 'Odpowiedź' }, { val: '150+', label: 'Transakcji' }].map(s => (
                 <div key={s.label} style={{ flex: 1, textAlign: 'center' as const }}>
                   <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 18, color: '#0d2a5c' }}>{s.val}</div>
                   <div style={{ fontSize: 11, color: '#94a3b8' }}>{s.label}</div>

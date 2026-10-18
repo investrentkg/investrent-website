@@ -40,7 +40,7 @@ export default function ValuationCTA() {
               <Award size={18} /> Chcę bezpłatną wycenę
             </a>
             <span className="text-white/40 text-[12px] text-center">
-              Odpowiadamy do 60 minut · +48 731 554 341
+              Odpowiadamy najpóźniej w ciągu 24 godzin · +48 731 554 341
             </span>
           </div>
         </div>

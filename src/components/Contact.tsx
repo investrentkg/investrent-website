@@ -70,7 +70,7 @@ export default function Contact({ office }: { office: Office | null }) {
               <MessageSquare size={12} /> Skontaktuj się
             </div>
             <h2 className="heading text-[36px] text-navy leading-[1.1] mb-4">
-              Odpowiemy<br />do 60 minut
+              Odpowiemy jak najszybciej,<br />nie później niż w ciągu 24 godzin
             </h2>
             <p className="text-slate-500 text-[14px] leading-[1.8] mb-7">
               Zostaw numer lub napisz wiadomość — nasz doradca skontaktuje się z Tobą
@@ -123,7 +123,7 @@ export default function Contact({ office }: { office: Office | null }) {
                   style={{ flexDirection: 'column' as const, justifyContent: 'center', gap: 10, color: '#10b981', marginBottom: 8 }}
                 />
                 <div className="font-bold text-navy text-lg mb-2">Wysłano!</div>
-                <div className="text-slate-500 text-sm">Skontaktujemy się z Tobą do 60 minut.</div>
+                <div className="text-slate-500 text-sm">Skontaktujemy się z Tobą jak najszybciej, nie później niż w ciągu 24 godzin.</div>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="flex flex-col gap-2.5">
@@ -146,7 +146,7 @@ export default function Contact({ office }: { office: Office | null }) {
                 <button type="submit" disabled={status === 'loading'}
                   className="btn-navy justify-center text-[14px] py-4 mt-1 disabled:opacity-60">
                   <Send size={15} />
-                  {status === 'loading' ? 'Wysyłanie…' : 'Wyślij — odpiszemy do 60 min'}
+                  {status === 'loading' ? 'Wysyłanie…' : 'Wyślij — odpiszemy najpóźniej w ciągu 24 godzin'}
                 </button>
                 {validationError && (
                   <p className="text-red-500 text-[12px] text-center">{validationError}</p>
