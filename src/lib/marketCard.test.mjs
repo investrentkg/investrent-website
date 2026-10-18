@@ -164,9 +164,14 @@ test('teksty karty: DOSLOWNIE wersje finalne zatwierdzone przez Daniela 18.10.20
   assert.deepEqual(mc.CONTACT_WINDOW_LABELS, { rano: 'Rano', poludnie: 'W południe', wieczor: 'Wieczorem' })
   // odmiana: 1 oferta, 2-4 oferty, 5+ ofert (12-14 ofert, 22 oferty)
   const w = (n) => T.smallSample(n)
-  assert.equal(w(1), 'Mała próba: w wybranym stanie jest 1 oferta (poniżej 8). Wynik jest orientacyjny.')
-  for (const n of [2, 3, 4, 22]) assert.match(w(n), new RegExp(`jest ${n} oferty \\(poniżej 8\\)`))
-  for (const n of [0, 5, 7, 12, 13, 14, 25]) assert.match(w(n), new RegExp(`jest ${n} ofert \\(poniżej 8\\)`))
+  assert.equal(w(1), 'Mała próba: w wybranym stanie mamy tylko 1 oferta (poniżej 8). Wynik jest orientacyjny.')
+  for (const n of [2, 3, 4, 22]) assert.match(w(n), new RegExp(`mamy tylko ${n} oferty \\(poniżej 8\\)`))
+  for (const n of [0, 5, 7, 12, 13, 14, 25]) assert.match(w(n), new RegExp(`mamy tylko ${n} ofert \\(poniżej 8\\)`))
+  // transakcje: 1 -> "jest tylko 1 transakcja"; 2-4 (i 22, 23) -> "sa tylko n transakcje"; reszta (0, 5-21, 25+) -> "jest tylko n transakcji"
+  const tx = (n) => T.transactionsSmallSample(n)
+  assert.equal(tx(1), 'Mała próba: jest tylko 1 transakcja (poniżej 8). Wynik jest orientacyjny.')
+  for (const n of [2, 3, 4, 22, 23]) assert.equal(tx(n), `Mała próba: są tylko ${n} transakcje (poniżej 8). Wynik jest orientacyjny.`)
+  for (const n of [0, 5, 12, 14, 21, 25]) assert.equal(tx(n), `Mała próba: jest tylko ${n} transakcji (poniżej 8). Wynik jest orientacyjny.`)
 })
 
 test('teksty karty i bloku: bez "bezplatn", bez obietnic terminu, bez trendu; forma bezposrednia (nie "Panstwo")', async () => {

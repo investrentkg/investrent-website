@@ -11,6 +11,14 @@ export function offerWord(n: number): string {
   return m10 >= 2 && m10 <= 4 && !(m100 >= 12 && m100 <= 14) ? 'oferty' : 'ofert'
 }
 
+/** Polska odmiana rzeczownika i czasownika dla transakcji: "jest tylko 1 transakcja", "są tylko 3 transakcje", "jest tylko 5 transakcji". */
+export function transactionsPhrase(n: number): string {
+  const m10 = n % 10
+  const m100 = n % 100
+  if (n === 1) return 'jest tylko 1 transakcja'
+  return m10 >= 2 && m10 <= 4 && !(m100 >= 12 && m100 <= 14) ? `są tylko ${n} transakcje` : `jest tylko ${n} transakcji`
+}
+
 export const MARKET_CARD_TEXTS = {
   blockTitle: 'Dokładniejszy wynik',
   blockIntro: 'Poniżej widzisz ceny ofert i ceny transakcyjne w okolicy. Agent może na tej podstawie doprecyzować szacunek.',
@@ -30,7 +38,8 @@ export const MARKET_CARD_TEXTS = {
   noTransactions: 'Nie mamy wystarczających danych o cenach transakcyjnych dla tego segmentu.',
   conditionLabel: 'Stan mieszkania (filtruje tylko ceny ofert)',
   conditionAll: 'Wszystkie',
-  smallSample: (n: number) => `Mała próba: w wybranym stanie jest ${n} ${offerWord(n)} (poniżej 8). Wynik jest orientacyjny.`,
+  smallSample: (n: number) => `Mała próba: w wybranym stanie mamy tylko ${n} ${offerWord(n)} (poniżej 8). Wynik jest orientacyjny.`,
+  transactionsSmallSample: (n: number) => `Mała próba: ${transactionsPhrase(n)} (poniżej 8). Wynik jest orientacyjny.`,
   conditionCounts: (n: number, all: number | undefined) => (all != null ? `Ofert w wybranym stanie: ${n} (wszystkich: ${all}).` : `Ofert w wybranym stanie: ${n}.`),
   loading: 'Ładowanie danych rynkowych…',
   place: { ulica: 'Twoja ulica', dzielnica: (p: string | null) => (p ? `dzielnica ${p}` : 'Twoja dzielnica'), miasto: (p: string | null) => (p ? `miasto ${p}` : 'miasto') },
