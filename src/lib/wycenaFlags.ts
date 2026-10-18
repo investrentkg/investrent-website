@@ -1,3 +1,4 @@
+import { marketCardActive } from './wycenaConsentText.ts'
 // Flagi funkcji /wycena (Next.js inlinuje WYLACZNIE literalne odwolania process.env.NEXT_PUBLIC_*, dlatego kazda flaga ma wlasny odczyt).
 // Wszystkie DOMYSLNIE WYLACZONE: merge nie zmienia produkcji. Wlaczenie = ustawienie zmiennej na "on" w Vercel + redeploy.
 
@@ -7,3 +8,8 @@ export const PHONE_BLOCK_ON: boolean = process.env.NEXT_PUBLIC_WYCENA_PHONE_BLOC
 export const CALLBACK_ON: boolean = process.env.NEXT_PUBLIC_WYCENA_CALLBACK === 'on'
 /** Wywolania licznika lejka (POST /api/public/valuation/funnel-step, CRM #1066). Wlaczamy po migracji i fladze CRM PUBLIC_FUNNEL_STEPS_ENABLED. */
 export const FUNNEL_ON: boolean = process.env.NEXT_PUBLIC_WYCENA_FUNNEL === 'on'
+
+/** Karta rynku (ceny ofert + ceny transakcyjne) i okno kontaktu w bloku telefonu (S2). Dziala WYLACZNIE razem z gotowym tekstem zgody (wycenaConsentText.ts). */
+export const MARKET_CARD_FLAG: boolean = process.env.NEXT_PUBLIC_WYCENA_MARKET_CARD === 'on'
+/** Flaga ON ORAZ gotowy tekst zgody; bez tekstu karta i checkbox sie nie pojawiaja nawet przy fladze ON. */
+export const MARKET_CARD_ACTIVE: boolean = marketCardActive(MARKET_CARD_FLAG)

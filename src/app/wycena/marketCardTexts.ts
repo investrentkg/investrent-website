@@ -1,0 +1,32 @@
+// Teksty karty rynku i bloku "dokladniejszy wynik" (flaga NEXT_PUBLIC_WYCENA_MARKET_CARD). DO PRZEGLADU KRYTYKA (nie sa tekstem prawnym).
+// Zasady: po "Panstwo", neutralnie i krotko; bez slowa "bezplatnie", bez obietnic terminu oddzwonienia i liczb/wynikow, bez twierdzen o trendzie rynku.
+// TRESC ZGODY NIE JEST TUTAJ: jedno miejsce to src/lib/wycenaConsentText.ts (placeholder do czasu dostarczenia tekstu K1).
+export const MARKET_CARD_TEXTS = {
+  blockTitle: 'Dokładniejszy wynik',
+  blockIntro: 'Poniżej Państwo zobaczą ceny ofert i ceny transakcyjne w okolicy. Agent może na tej podstawie doprecyzować szacunek.',
+  offersTitle: 'Ceny ofert w okolicy',
+  offersCount: (n: number) => `Liczba unikalnych ofert: ${n}`,
+  offersMedian: 'Mediana ceny za m²',
+  offersRange: 'Zakres środkowej połowy ofert',
+  transactionsTitle: 'Ceny transakcyjne w okolicy',
+  transactionsAsOf: (mmrrrr: string) => `stan na ${mmrrrr}`,
+  transactionsCount: (n: number) => `Liczba transakcji: ${n}`,
+  transactionsMedian: 'Mediana ceny za m²',
+  transactionsRange: 'Zakres środkowej połowy transakcji',
+  transactionsNote: 'Wszystkie standardy, rejestr nie zawiera stanu.',
+  separateNote: 'Ceny ofert i ceny transakcyjne pokazujemy osobno.',
+  noData: 'Brak wystarczających danych rynkowych dla tej nieruchomości, aby pokazać ceny ofert i ceny transakcyjne.',
+  noOffers: 'Brak wystarczających danych o cenach ofert dla tego segmentu.',
+  noTransactions: 'Brak wystarczających danych o cenach transakcyjnych dla tego segmentu.',
+  conditionLabel: 'Stan mieszkania (dotyczy cen ofert)',
+  conditionAll: 'Wszystkie',
+  smallSample: (n: number) => `Mała próba: w wybranym stanie jest ${n} ${n === 1 ? 'oferta' : 'ofert'} (poniżej 8). Wynik jest orientacyjny.`,
+  conditionCounts: (n: number, all: number | undefined) => (all != null ? `Ofert w wybranym stanie: ${n} (wszystkich: ${all}).` : `Ofert w wybranym stanie: ${n}.`),
+  loading: 'Ładowanie danych rynkowych…',
+  place: { ulica: 'Państwa ulica', dzielnica: (p: string | null) => (p ? `dzielnica ${p}` : 'Państwa dzielnica'), miasto: (p: string | null) => (p ? `miasto ${p}` : 'miasto') },
+  contactIntro: 'Aby agent mógł się skontaktować, proszę podać numer telefonu i wybrać porę kontaktu.',
+  windowLabel: 'Preferowana pora kontaktu',
+  windowNone: 'Bez preferencji',
+  submit: 'Wyślij numer',
+  errConsent: 'Aby wysłać numer, proszę zaznaczyć zgodę.',
+} as const

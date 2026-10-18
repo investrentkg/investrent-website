@@ -14,6 +14,8 @@ export type PhoneRequestInput = {
   utm: string                       // "utm_source=x utm_campaign=y" (readUtm)
   turnstileToken?: string | null
   honeypot?: string
+  /** okno kontaktu (S2/S3): wysylane jako contact_window; CRM zapisze je dopiero po S3 (do tego czasu pole jest ignorowane) */
+  contactWindow?: string | null
 }
 export type PhoneRequestResult = { ok: true; via: 'callback' | 'lead' } | { ok: false; reason: string }
 export type PhoneRequestDeps = {
@@ -46,6 +48,7 @@ export async function sendPhoneRequest(input: PhoneRequestInput, deps: PhoneRequ
           phone: input.phone.trim(),
           consent: { checked: true, version: input.consentVersion },
           ...(Object.keys(u).length ? { utm: u } : {}),
+          ...(input.contactWindow ? { contact_window: input.contactWindow } : {}),
           ...(input.turnstileToken ? { turnstile_token: input.turnstileToken } : {}),
           hp_field: input.honeypot ?? '',
         }),
