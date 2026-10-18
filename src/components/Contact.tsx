@@ -73,8 +73,8 @@ export default function Contact({ office }: { office: Office | null }) {
               Odpowiemy jak najszybciej,<br />nie później niż w ciągu 24 godzin
             </h2>
             <p className="text-slate-500 text-[14px] leading-[1.8] mb-7">
-              Zostaw numer lub napisz wiadomość — nasz doradca skontaktuje się z Tobą
-              jeszcze dzisiaj. Bezpłatna konsultacja bez zobowiązań.
+              Zostaw numer lub napisz wiadomość.
+              Bezpłatna konsultacja bez zobowiązań.
             </p>
             <div className="flex flex-col gap-4 mb-7">
               {[

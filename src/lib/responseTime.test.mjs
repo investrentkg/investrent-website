@@ -27,3 +27,30 @@ test('komunikat czatu dosłownie (wariant A) i użyty w widgecie', () => {
   assert.ok(!/w kilka minut/i.test(w))
   assert.equal((w.match(/\{CHAT_RESPONSE_NOTE\}/g) || []).length, 2)
 })
+// Straznik: w serwowanych tekstach (src, public) nie wolno przywracac starych obietnic czasu.
+// Jawna lista wyjatkow: rozpoznawanie starej wartosci z CRM (LEGACY_HOME_DESCRIPTIONS) i jego test.
+// Komentarze (// i /* */) oraz pliki *.test.mjs sa pomijane.
+test('brak starych obietnic czasu w calym src i public', async () => {
+  const { readdirSync, statSync } = await import('node:fs')
+  const { join, relative, sep } = await import('node:path')
+  const root = new URL('../../', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')
+  const EXCEPTIONS = new Set(['src/lib/homeMeta.ts'])
+  const BAD = /jeszcze dzi[sś]|dzisiaj|tego samego dnia|60 ?min|w dni robocze i w weekendy|gwarantowan/i
+  const EXT = /\.(tsx?|jsx?|mjs|json|md|html|txt|xml|webmanifest)$/
+  const hits = []
+  const walk = (dir) => {
+    for (const name of readdirSync(dir)) {
+      const full = join(dir, name)
+      if (statSync(full).isDirectory()) { walk(full); continue }
+      const rel = relative(root, full).split(sep).join('/')
+      if (!EXT.test(name) || /\.test\.mjs$/.test(name) || EXCEPTIONS.has(rel)) continue
+      const text = readFileSync(full, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')
+      text.split(/\r?\n/).forEach((line, i) => {
+        const code = line.replace(/(^|\s)\/\/.*$/, '$1')
+        if (BAD.test(code)) hits.push(`${rel}:${i + 1}`)
+      })
+    }
+  }
+  walk(join(root, 'src')); walk(join(root, 'public'))
+  assert.deepEqual(hits, [])
+})

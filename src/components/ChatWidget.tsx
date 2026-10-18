@@ -203,13 +203,13 @@ export default function ChatWidget() {
           <div style={{ background: 'linear-gradient(135deg, #1a4fa0, #0d2a5c)', padding: '16px 20px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'rgba(255,255,255,.2)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 🏠
               </div>
-              <div>
+              <div style={{ minWidth: 0 }}>
                 <div style={{ color: 'white', fontWeight: 700, fontSize: 14 }}>InvestRent</div>
                 <div style={{ color: 'rgba(255,255,255,.7)', fontSize: 12, display: 'flex', alignItems: 'center', gap: 4 }}>
-                  <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#10b981' }} />
+                  <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#10b981', flexShrink: 0 }} />
                   {CHAT_RESPONSE_NOTE}
                 </div>
               </div>

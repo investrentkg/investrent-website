@@ -38,7 +38,7 @@ export default function CallbackStrip() {
                 Oddzwonimy najpóźniej w ciągu 24 godzin
               </div>
               <div style={{ color: 'rgba(255,255,255,.8)', fontSize: 12 }}>
-                Zostaw numer — nasz doradca oddzwoni do Ciebie jeszcze dziś
+                Zostaw numer — nasz doradca do Ciebie oddzwoni
               </div>
             </div>
           </div>
