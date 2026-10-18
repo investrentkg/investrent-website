@@ -77,6 +77,16 @@ test('nic nie jest wysylane na serwer ani do cookie: modul nie uzywa document.co
   for (const w of ['document.cookie', 'fetch(', 'sendBeacon', 'XMLHttpRequest', 'sessionStorage']) assert.equal(src.includes(w), false, w)
 })
 
+test('etykieta linku cofniecia w UI jest IDENTYCZNA jak w tekstach polityki (PL i DE)', () => {
+  const ui = readFileSync(new URL('../components/ConsentEmbed.tsx', import.meta.url), 'utf8')
+  const pl = readFileSync(new URL('../app/rodo/page.tsx', import.meta.url), 'utf8')
+  const de = readFileSync(new URL('../app/de/datenschutz/page.tsx', import.meta.url), 'utf8')
+  const PL = 'Wyłącz mapę Google / cofnij zgodę'
+  const DE = 'Google-Karte deaktivieren / Einwilligung widerrufen'
+  assert.ok(ui.includes(`revokeMap: '${PL}'`) && pl.includes(`„${PL}”`))
+  assert.ok(ui.includes(`revokeMap: '${DE}'`) && de.includes(`„${DE}“`))
+})
+
 // --- Render komponentu (SSR): przed wyborem zadnego iframe/URL Google (zero zadan do Google) ---
 test('render komponentu MapEmbed bez zapisanego wyboru: przycisk "Zaladuj mape", BRAK iframe i maps.google.com', async () => {
   const require = createRequire(import.meta.url)

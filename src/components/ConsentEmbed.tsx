@@ -53,7 +53,7 @@ const COPY: Record<Locale, {
     policy: 'Datenschutzerklärung',
     policyHref: '/de/datenschutz',
     openInMaps: 'In Google Maps öffnen',
-    revokeMap: 'Google Maps deaktivieren / Einwilligung widerrufen',
+    revokeMap: 'Google-Karte deaktivieren / Einwilligung widerrufen',
   },
 }
 
