@@ -9,13 +9,16 @@ import { getOffice } from '@/lib/api'
 import { getVerifiedRating } from '@/lib/schemaRating'
 import { DollarSign, Camera, Globe, FileCheck, Key, CheckCircle, ArrowRight, FileText, Building, Users, Shield } from 'lucide-react'
 import type { Metadata } from 'next'
+import { SPRZEDAZ_TITLE, SPRZEDAZ_H1, SPRZEDAZ_META_DESCRIPTION, FOREIGN_H2, FOREIGN_TEXT_B, VALUATION_CTA_LABEL, NEW_FAQ } from '@/lib/sprzedazSeo'
 
 // ZMIANA (04.10.2026): fetch opinii bez opcji = force-cache (patrz kontakt/page.tsx) - ISR co 5 minut.
 export const revalidate = 300
 
 export const metadata: Metadata = {
-  title: 'Sprzedaż nieruchomości Kołobrzeg',
-  description: 'Sprzedaj nieruchomość w Kołobrzegu szybko i za dobrą cenę. Bezpłatna wycena, pełna obsługa po-sprzedażowa.',
+  // SEO krok 2 (18.10.2026): teksty z src/lib/sprzedazSeo.ts (fraza "sprzedaz mieszkania Kolobrzeg").
+  // absolute: layout.tsx ma title.template '%s | InvestRent Nieruchomości', a tytuł Marketingu ma już markę.
+  title: { absolute: SPRZEDAZ_TITLE },
+  description: SPRZEDAZ_META_DESCRIPTION,
   // NAPRAWA (audyt SEO 31.07.2026, punkt 3): brak kanonicznego URL na calej stronie.
   alternates: { canonical: 'https://www.investrent.com.pl/sprzedaz' },
 }
@@ -38,13 +41,15 @@ const POST_SALE = [
   { icon: Shield,   title: 'Ubezpieczenie nieruchomości', desc: 'Pomoc w wyborze i zawarciu ubezpieczenia dla kupującego. Ochrona od pierwszego dnia po zakupie.' },
 ]
 
-const FAQ = [
+const FAQ_BASE = [
   { q: 'Ile kosztuje wycena nieruchomości?', a: 'Bezpłatna wycena nie kosztuje nic i nie zobowiązuje do niczego. Analizujemy realne, aktualne transakcje z Twojej okolicy, nie tylko ceny ofertowe konkurencji, żeby dać Ci wycenę opartą na faktach rynkowych.' },
   { q: 'Ile trwa sprzedaż nieruchomości?', a: 'To zależy od lokalizacji, ceny i stanu nieruchomości, ale nasz średni czas sprzedaży to około 45 dni — znacznie krócej niż średnia rynkowa w Kołobrzegu (90+ dni). Wynika to głównie z realistycznej wyceny na starcie i szerokiej widoczności oferty.' },
   { q: 'Ile kosztuje prowizja za sprzedaż?', a: 'Pracujemy w modelu 3% prowizji netto, płatnej po skutecznej sprzedaży — nie pobieramy żadnych opłat z góry ani za samą wycenę czy sesję zdjęciową.' },
   { q: 'Co jeśli moja nieruchomość ma jakieś prawne komplikacje (hipoteka, brak księgi wieczystej, sprawa spadkowa)?', a: 'To akurat nasza specjalność — zobacz stronę Trudne nieruchomości. Weryfikujemy stan prawny na starcie i pomagamy uporządkować formalności, zanim zaczniemy szukać kupującego.', linkLabel: 'Trudne nieruchomości', linkHref: '/trudne-nieruchomosci' },
   { q: 'Czy muszę być obecny przy prezentacjach nieruchomości?', a: 'Nie musisz — możemy prowadzić prezentacje samodzielnie, informując Cię na bieżąco o zainteresowaniu i feedbacku od oglądających. Wielu naszych klientów sprzedaje nieruchomość, mieszkając w innym mieście.' },
 ]
+
+const FAQ: { q: string; a: string; linkLabel?: string; linkHref?: string }[] = [...FAQ_BASE, ...NEW_FAQ]
 
 export default async function SprzedazPage() {
   const [officeData, reviewsData, contentData] = await Promise.all([
@@ -75,7 +80,7 @@ export default async function SprzedazPage() {
           <div className="container" style={{ position: 'relative', zIndex: 1 }}>
             <Breadcrumb light={true} crumbs={[{ label: 'Strona główna', href: '/' }, { label: 'Sprzedaż' }]} />
             <h1 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 44, color: 'white', letterSpacing: '-1.5px', lineHeight: 1.08, marginBottom: 18 }}>
-              {cms.intro_heading ? cms.intro_heading : <>Sprzedaj swoją nieruchomość<br />szybko i za dobrą cenę</>}
+              {cms.intro_heading ? cms.intro_heading : SPRZEDAZ_H1}
             </h1>
             <p style={{ color: 'rgba(255,255,255,.9)', fontSize: 16, maxWidth: 540, lineHeight: 1.8, marginBottom: 32 }}>
               {cms.intro_paragraph || 'Zajmujemy się wszystkim — od bezpłatnej wyceny, przez profesjonalne zdjęcia i ekspozycję na portalach, aż po dokumentację po-sprzedażową.'}
@@ -108,6 +113,17 @@ export default async function SprzedazPage() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+
+        {/* SEO krok 2 (18.10.2026): promocja za granica - tekst B zaakceptowany przez Daniela dosłownie + przycisk do /wycena */}
+        <div style={{ background: 'white', padding: '48px 0', borderBottom: '1px solid #e5e7eb' }}>
+          <div className="container" style={{ maxWidth: 760, textAlign: 'center' as const }}>
+            <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 26, color: '#0d2a5c', marginBottom: 14, lineHeight: 1.25 }}>{FOREIGN_H2}</h2>
+            <p style={{ fontSize: 15, color: '#374151', lineHeight: 1.8, marginBottom: 24 }}>{FOREIGN_TEXT_B}</p>
+            <Link href="/wycena" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#92400e', color: 'white', fontWeight: 800, fontSize: 15, padding: '14px 32px', borderRadius: 12, textDecoration: 'none' }}>
+              {VALUATION_CTA_LABEL} <ArrowRight size={17} />
+            </Link>
           </div>
         </div>
 
@@ -225,6 +241,9 @@ export default async function SprzedazPage() {
                 </div>
               ))}
             </div>
+            <p style={{ textAlign: 'center' as const, marginTop: 28, fontSize: 14, color: '#6b7280' }}>
+              Zobacz także: <Link href="/wycena" style={{ color: '#92400e', fontWeight: 700, textDecoration: 'underline' }}>orientacyjna wycena mieszkania</Link>
+            </p>
           </div>
         </div>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd({
