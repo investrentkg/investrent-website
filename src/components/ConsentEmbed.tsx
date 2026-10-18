@@ -1,11 +1,14 @@
 "use client"
-import { useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { clearMapConsent, getMapStorage, readMapConsent, writeMapConsent } from '@/lib/mapConsent'
 
 // Click-to-load dla tresci osadzanych od Google/YouTube/Vimeo (§ 25 TDDDG, art. 6
 // RODO): dopoki uzytkownik nie kliknie przycisku, NIE jest ladowany zaden zasob
 // zewnetrzny (iframe, skrypt). Stan "zaladowano" zyje tylko w pamieci komponentu
-// (useState) - bez cookie, localStorage ani sessionStorage; po odswiezeniu strony
-// trzeba kliknac ponownie.
+// (useState) - bez cookie i sessionStorage. WYJATEK: mapa Google (MapEmbed) zapamietuje
+// wybor lokalnie w localStorage (klucz mapGoogleConsent, 12 mies., src/lib/mapConsent.ts):
+// przy waznym wpisie laduje sie sama, a link "Wylacz mape Google" cofa wybor. Filmy
+// (YouTube/Vimeo) nadal wymagaja klikniecia przy kazdej wizycie.
 //
 // Uklad: komponent wypelnia rodzica (position:absolute; inset:0) - rodzic MUSI miec
 // position:relative i wlasny rozmiar (aspect-ratio / height / padding-bottom), dzieki
@@ -22,6 +25,7 @@ const COPY: Record<Locale, {
   policy: string
   policyHref: string
   openInMaps: string
+  revokeMap: string
 }> = {
   pl: {
     title: { 'google-maps': 'Mapa Google', youtube: 'Wideo YouTube', vimeo: 'Wideo Vimeo' },
@@ -35,6 +39,7 @@ const COPY: Record<Locale, {
     policy: 'Polityka prywatności',
     policyHref: '/rodo',
     openInMaps: 'Otwórz w Mapach Google',
+    revokeMap: 'Wyłącz mapę Google / cofnij zgodę',
   },
   de: {
     title: { 'google-maps': 'Google Maps', youtube: 'YouTube-Video', vimeo: 'Vimeo-Video' },
@@ -48,18 +53,26 @@ const COPY: Record<Locale, {
     policy: 'Datenschutzerklärung',
     policyHref: '/de/datenschutz',
     openInMaps: 'In Google Maps öffnen',
+    revokeMap: 'Google Maps deaktivieren / Einwilligung widerrufen',
   },
 }
 
 export function ConsentGate({
-  provider, locale = 'pl', children, onLoad,
+  provider, locale = 'pl', children, onLoad, loaded: loadedProp, focusButton = false,
 }: {
   provider: Provider
   locale?: Locale
   children: ReactNode
   onLoad?: () => void
+  /** Tryb sterowany (MapEmbed): rodzic decyduje, czy tresc jest zaladowana. Bez tego - stan lokalny (klik = zaladuj). */
+  loaded?: boolean
+  /** Po zamontowaniu ustaw fokus na przycisku (np. po wycofaniu zgody, zeby fokus nie przepadl). */
+  focusButton?: boolean
 }) {
-  const [loaded, setLoaded] = useState(false)
+  const [innerLoaded, setInnerLoaded] = useState(false)
+  const btnRef = useRef<HTMLButtonElement>(null)
+  const loaded = loadedProp ?? innerLoaded
+  useEffect(() => { if (focusButton && !loaded) btnRef.current?.focus() }, [focusButton, loaded])
   const t = COPY[locale]
   if (loaded) return <>{children}</>
   return (
@@ -78,9 +91,10 @@ export function ConsentGate({
         <a href={t.policyHref} style={{ color: '#1a4fa0', textDecoration: 'underline' }}>{t.policy}</a>
       </p>
       <button
+        ref={btnRef}
         type="button"
         aria-label={t.aria[provider]}
-        onClick={() => { setLoaded(true); onLoad?.() }}
+        onClick={() => { setInnerLoaded(true); onLoad?.() }}
         style={{ padding: '10px 22px', background: '#1a4fa0', color: 'white', border: 'none', borderRadius: 8, fontWeight: 700, fontSize: 14, cursor: 'pointer' }}
       >
         {t.button[provider]}
@@ -106,13 +120,25 @@ export default function MapEmbed({
 }) {
   const t = COPY[locale]
   const lang = locale === 'de' ? 'de' : 'pl'
+  // Poczatkowo ZAWSZE false (SSR i pierwszy render = przycisk, zero zadan do Google); wazny zapis
+  // z localStorage wlaczy mape dopiero w efekcie po zamontowaniu.
+  const [loaded, setLoaded] = useState(false)
+  const [refocus, setRefocus] = useState(false)
+  useEffect(() => { if (readMapConsent(getMapStorage())) setLoaded(true) }, [])
+  const revoke = () => { clearMapConsent(getMapStorage()); setRefocus(true); setLoaded(false) }
   const boxStyle = height
     ? { position: 'relative' as const, width: '100%', height }
     : { position: 'relative' as const, width: '100%', paddingBottom, minHeight }
   return (
     <div>
       <div style={{ ...boxStyle, borderRadius: radius, overflow: 'hidden' }}>
-        <ConsentGate provider="google-maps" locale={locale}>
+        <ConsentGate
+          provider="google-maps"
+          locale={locale}
+          loaded={loaded}
+          focusButton={refocus}
+          onLoad={() => { writeMapConsent(getMapStorage()); setLoaded(true) }}
+        >
           <iframe
             src={`https://maps.google.com/maps?q=${query}&output=embed&hl=${lang}&z=${zoom}`}
             title={title}
@@ -122,6 +148,17 @@ export default function MapEmbed({
           />
         </ConsentGate>
       </div>
+      {loaded && (
+        <div style={{ padding: '6px 12px 0', textAlign: 'right', fontSize: 12.5 }}>
+          <button
+            type="button"
+            onClick={revoke}
+            style={{ background: 'none', border: 0, padding: 0, font: 'inherit', color: '#1a4fa0', textDecoration: 'underline', cursor: 'pointer' }}
+          >
+            {t.revokeMap}
+          </button>
+        </div>
+      )}
       {!hideLink && (
         <div style={{ padding: '8px 12px 10px', textAlign: 'right', fontSize: 12.5 }}>
           <a href={`https://www.google.com/maps/search/?api=1&query=${query}`} target="_blank" rel="noopener noreferrer" style={{ color: '#1a4fa0', textDecoration: 'underline' }}>
