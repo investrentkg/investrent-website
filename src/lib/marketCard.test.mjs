@@ -208,3 +208,31 @@ test('PhoneBlock: pod checkboxem istniejaca klauzula PHONE_BLOCK_LEGAL (BEZ prze
   assert.ok(t.PHONE_BLOCK_LEGAL.clauseBeforeLink.startsWith('Administratorem danych jest InvestRent sp. z o.o.'))
   assert.ok(!/Administratorem danych/.test(fs.readFileSync(new URL('./wycenaConsentText.ts', import.meta.url), 'utf8')), 'klauzula nie jest przepisana do pliku zgody')
 })
+
+test('mala proba transakcji: granica 7 (ostrzezenie) / 8 (brak), n=0 bez ostrzezenia; render TransactionsBox', async () => {
+  const mc = await import('./marketCard.ts')
+  assert.equal(mc.isSmallTransactionSample(0), false)
+  for (const n of [1, 7]) assert.equal(mc.isSmallTransactionSample(n), true)
+  for (const n of [8, 9, 41]) assert.equal(mc.isSmallTransactionSample(n), false)
+  const ts = (await import('typescript')).default
+  const { renderToStaticMarkup } = await import('react-dom/server')
+  const React = (await import('react')).default
+  const src = fs.readFileSync(new URL('../app/wycena/MarketCard.tsx', import.meta.url), 'utf8')
+  const here = (p) => new URL(p, import.meta.url).href
+  const js = ts.transpileModule(src, { compilerOptions: { jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 } }).outputText
+    .replace("'@/lib/marketCard'", `'${here('./marketCard.ts')}'`).replace("'./marketCardTexts'", `'${here('../app/wycena/marketCardTexts.ts')}'`)
+  const dir = path.join(process.cwd(), 'node_modules', '.cache', 'render-test'); fs.mkdirSync(dir, { recursive: true })
+  const file = path.join(dir, 'MarketCard.mjs'); fs.writeFileSync(file, js)
+  const { TransactionsBox } = await import(new URL(`file:///${file.replace(/\\/g, '/')}`).href)
+  const html = (count) => renderToStaticMarkup(React.createElement(TransactionsBox, { t: count == null ? null : { count, median: 11500, p25: 10200, p75: 12900, asOf: '08.2026', note: 'x' } }))
+  const expected = { 1: 'jest tylko 1 transakcja', 2: 'są tylko 2 transakcje', 3: 'są tylko 3 transakcje', 4: 'są tylko 4 transakcje', 5: 'jest tylko 5 transakcji', 7: 'jest tylko 7 transakcji' }
+  for (const [n, txt] of Object.entries(expected)) assert.ok(html(Number(n)).includes(`Mała próba: ${txt} (poniżej 8). Wynik jest orientacyjny.`), `n=${n}`)
+  assert.ok(!html(8).includes('Mała próba'), 'n=8 bez ostrzezenia')
+  assert.ok(!html(41).includes('Mała próba'))
+  assert.ok(!html(0).includes('Mała próba'), 'n=0 bez ostrzezenia')
+  const none = html(null)
+  assert.ok(none.includes('Nie mamy wystarczających danych o cenach transakcyjnych dla tego segmentu.') && !none.includes('Mała próba'), 'brak danych: dotychczasowy komunikat')
+  // odmiana: 12 i 22 (poza progiem renderu, wprost z tekstu)
+  const T = (await import('../app/wycena/marketCardTexts.ts')).MARKET_CARD_TEXTS
+  assert.ok(T.transactionsSmallSample(12).includes('jest tylko 12 transakcji') && T.transactionsSmallSample(22).includes('są tylko 22 transakcje'))
+})
