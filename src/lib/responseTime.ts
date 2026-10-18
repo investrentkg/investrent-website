@@ -14,3 +14,6 @@ export const RESPONSE_BADGE = 'do 24 godz.'
 
 // Gotowe pełne zdanie kontaktowe.
 export const RESPONSE_SENTENCE = `Skontaktujemy się ${RESPONSE_FULL}.`
+
+// Komunikat czatu (decyzja Daniela 18.10.2026, wariant A).
+export const CHAT_RESPONSE_NOTE = 'Najczęściej odpisujemy do 15 minut. Czasem może to potrwać dłużej, ale nie później niż w ciągu 24 godzin.'
