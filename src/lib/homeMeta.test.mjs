@@ -10,7 +10,7 @@ test('title strony glownej dokladnie wg zatwierdzonego tekstu', () => {
 test('description strony glownej dokladnie wg zatwierdzonego tekstu', () => {
   assert.equal(
     HOME_DESCRIPTION,
-    'Biuro nieruchomości w Kołobrzegu i okolicach: sprzedaż, kupno i wynajem mieszkań oraz domów. Bezpłatna wycena, odpowiedź najpóźniej w ciągu 24 godzin.',
+    'Biuro nieruchomości w Kołobrzegu: mieszkania na sprzedaż i wynajem, orientacyjna wycena online, obsługa sprzedaży i zakupu. Zadzwoń lub napisz.',
   )
 })
 
@@ -30,7 +30,7 @@ test('stare wartosci z CRM ustepuja nowym; inna wlasna wartosc z CRM wygrywa', (
 
 test('description <= 160 znakow, a stare 60-minutowe i poprzednie wartosci z CRM ustepuja', () => {
   assert.ok(HOME_DESCRIPTION.length <= 160)
+  assert.ok(!HOME_DESCRIPTION.includes('60'))
   const old60 = 'Biuro nieruchomości w Kołobrzegu i okolicach: sprzedaż, kupno i wynajem mieszkań oraz domów. Bezpłatna wycena, odpowiedź do 60 minut.'
   assert.equal(pickHomeMeta(null, old60).description, HOME_DESCRIPTION)
-  assert.equal(pickHomeMeta(null, 'Biuro nieruchomości w Kołobrzegu: mieszkania na sprzedaż i wynajem, orientacyjna wycena online, obsługa sprzedaży i zakupu. Zadzwoń lub napisz.').description, HOME_DESCRIPTION)
 })
