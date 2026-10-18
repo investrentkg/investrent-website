@@ -1,6 +1,8 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
+import os from 'node:os'
+import path from 'node:path'
 import { spawnSync } from 'node:child_process'
 import { interpretMarketCard, fetchMarketCard, fmtPpm, fmtRange, fmtAsOfDate, MARKET_CARD_URL, CONTACT_WINDOWS } from './marketCard.ts'
 import { CONSENT_TEXT, CONSENT_VERSION, CONSENT_PLACEHOLDER, consentTextReady, marketCardActive } from './wycenaConsentText.ts'
@@ -13,17 +15,28 @@ const okBody = {
   transactions: { available: true, count: 41, median_price_per_m2: 11500, range: { p25: 10200, p75: 12900 }, as_of: '08.2026', note: 'wszystkie standardy, rejestr nie zawiera stanu' },
 }
 
-test('flaga OFF (domyslnie): karta i checkbox nieaktywne, tekst zgody to placeholder (null)', async () => {
+// TEKST K1 zatwierdzony DOSLOWNIE przez Daniela (18.10.2026): kopia w tescie celowo, zeby kazda zmiana w pliku zrodlowym wymagala swiadomej zmiany tutaj.
+const APPROVED_CONSENT_TEXT = 'Chcę, aby agent InvestRent skontaktował się ze mną telefonicznie w sprawie dokładniejszej wyceny tej nieruchomości. To nie jest zgoda na przesyłanie ofert marketingowych.'
+
+test('flaga OFF (domyslnie): karta i checkbox nieaktywne mimo gotowego tekstu zgody', async () => {
   const f = await import('./wycenaFlags.ts')
-  assert.equal(f.MARKET_CARD_FLAG, false); assert.equal(f.MARKET_CARD_ACTIVE, false)
-  assert.equal(CONSENT_TEXT, null)
+  const on = process.env.NEXT_PUBLIC_WYCENA_MARKET_CARD === 'on' // przy fladze ON w srodowisku testu oczekujemy aktywnej karty (tekst jest gotowy)
+  assert.equal(f.MARKET_CARD_FLAG, on); assert.equal(f.MARKET_CARD_ACTIVE, on)
+  assert.equal(consentTextReady(CONSENT_TEXT), true)
+  assert.equal(marketCardActive(false), false) // flaga OFF = nic sie nie zmienia, nawet z gotowym tekstem
   assert.match(CONSENT_VERSION, PHONE_BLOCK_VERSION_FORMAT)
+})
+
+test('tekst zgody K1 DOSLOWNIE jak zatwierdzony, wersja wycena-2026-10-18-v2 (ta sama co na liscie w CRM)', () => {
+  assert.equal(CONSENT_TEXT, APPROVED_CONSENT_TEXT)
+  assert.equal(CONSENT_VERSION, 'wycena-2026-10-18-v2')
+  assert.ok(!/inwestor|zagranicz/i.test(CONSENT_TEXT), 'dopisek o inwestorach zagranicznych NIE wchodzi do zgody')
 })
 
 test('placeholder / pusty tekst zgody blokuje aktywacje nawet przy fladze ON; gotowy tekst + flaga = aktywna', () => {
   for (const bad of [null, undefined, '', '   ', 'krotki', CONSENT_PLACEHOLDER, `x ${CONSENT_PLACEHOLDER} y y y y y y y`]) {
     assert.equal(consentTextReady(bad), false, String(bad))
-    assert.equal(marketCardActive(true, bad), false)
+    assert.equal(marketCardActive(true, bad ?? null), false) // undefined = domyslny parametr (CONSENT_TEXT), wiec jawnie null
   }
   const real = 'Przykładowy dłuższy tekst zgody do testu.'
   assert.equal(marketCardActive(true, real), true)
@@ -36,10 +49,19 @@ test('BLOKADA: flaga ON w srodowisku testu/builda wymaga gotowego tekstu zgody (
   }
 })
 
-test('prebuild: flaga ON + placeholder = exit 1; flaga OFF = exit 0', () => {
-  const run = env => spawnSync(process.execPath, ['scripts/check-market-card-consent.mjs'], { env: { ...process.env, ...env }, encoding: 'utf8' })
-  assert.equal(run({ NEXT_PUBLIC_WYCENA_MARKET_CARD: 'on' }).status, 1)
+test('prebuild: flaga ON + zatwierdzony tekst = exit 0; flaga OFF = exit 0; flaga ON + placeholder (kopia drzewa) = exit 1', () => {
+  const run = (env, script = 'scripts/check-market-card-consent.mjs') => spawnSync(process.execPath, [script], { env: { ...process.env, ...env }, encoding: 'utf8' })
+  assert.equal(run({ NEXT_PUBLIC_WYCENA_MARKET_CARD: 'on' }).status, 0)
   assert.equal(run({ NEXT_PUBLIC_WYCENA_MARKET_CARD: '' }).status, 0)
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'wy-consent-'))
+  try {
+    fs.mkdirSync(path.join(tmp, 'scripts')); fs.mkdirSync(path.join(tmp, 'src', 'lib'), { recursive: true })
+    fs.copyFileSync('scripts/check-market-card-consent.mjs', path.join(tmp, 'scripts', 'check-market-card-consent.mjs'))
+    fs.writeFileSync(path.join(tmp, 'src', 'lib', 'wycenaConsentText.ts'), "export const CONSENT_TEXT: string | null = null\n")
+    assert.equal(run({ NEXT_PUBLIC_WYCENA_MARKET_CARD: 'on' }, path.join(tmp, 'scripts', 'check-market-card-consent.mjs')).status, 1)
+    fs.writeFileSync(path.join(tmp, 'src', 'lib', 'wycenaConsentText.ts'), "export const CONSENT_TEXT: string | null = 'TEKST_ZGODY_DO_UZUPELNIENIA'\n")
+    assert.equal(run({ NEXT_PUBLIC_WYCENA_MARKET_CARD: 'on' }, path.join(tmp, 'scripts', 'check-market-card-consent.mjs')).status, 1)
+  } finally { fs.rmSync(tmp, { recursive: true, force: true }) }
 })
 
 test('karta: dwie wartosci OSOBNO (oferty i transakcje), bez mediany lacznej', () => {
@@ -100,6 +122,9 @@ test('okno kontaktu: wysylane jako contact_window tylko gdy wybrane; bez wyboru 
   await sendPhoneRequest(base, deps)
   assert.equal(bodies[0].contact_window, 'rano'); assert.ok(CONTACT_WINDOWS.includes(bodies[0].contact_window))
   assert.ok(!('contact_window' in bodies[1]))
+  // wersja zgody K1 jedzie w tym samym payloadzie co okno kontaktu
+  assert.deepEqual(bodies[0].consent, { checked: true, version: 'wycena-2026-10-18-v2' })
+  assert.deepEqual(bodies[1].consent, { checked: true, version: 'wycena-2026-10-18-v2' })
 })
 
 test('teksty karty i bloku: bez "bezplatn", bez obietnic terminu, bez trendu; formy "Panstwo"', async () => {
@@ -118,4 +143,21 @@ test('PhoneBlock: karta, okno i checkbox tylko pod MARKET_CARD_ACTIVE; tekst che
   assert.match(src, /\{mc && \(\s*<>/)
   assert.match(src, /\{CONSENT_TEXT\}/)
   assert.ok(!/TEKST_ZGODY_DO_UZUPELNIENIA/.test(src))
+  // wersja K1 w obu sciezkach (callback i zapis awaryjny) pod mc; bez mc dotychczasowa PHONE_BLOCK_CONSENT_VERSION
+  assert.equal((src.match(/consentVersion: mc \? CONSENT_VERSION : PHONE_BLOCK_CONSENT_VERSION/g) ?? []).length, 2)
+})
+
+test('PhoneBlock: pod checkboxem istniejaca klauzula PHONE_BLOCK_LEGAL (BEZ przepisywania) i dopisek "To nie jest operat"; checkbox przed klauzula', async () => {
+  const src = fs.readFileSync(new URL('../app/wycena/PhoneBlock.tsx', import.meta.url), 'utf8')
+  const iBox = src.indexOf('id="wy-consent" type="checkbox"')
+  const iClause = src.indexOf('{L.clauseBeforeLink}')
+  const iAppraisal = src.indexOf('{mc && <p style={{ ...hintStyle, margin: \'8px 0 0\' }}>{L.notAppraisal}</p>}')
+  assert.ok(iBox > 0 && iClause > iBox, 'klauzula informacyjna pod checkboxem')
+  assert.ok(iAppraisal > iClause, 'dopisek "To nie jest operat" pod klauzula (przy fladze ON)')
+  assert.match(src, /\{!mc && <p[^>]*>\{L\.notAppraisal\}<\/p>\}/, 'przy fladze OFF dopisek zostaje w dotychczasowym miejscu')
+  assert.match(src, /PHONE_BLOCK_LEGAL as L/)
+  const t = await import('../app/wycena/phoneBlockTexts.ts')
+  assert.equal(t.PHONE_BLOCK_LEGAL.notAppraisal, 'To nie jest operat szacunkowy rzeczoznawcy majątkowego.')
+  assert.ok(t.PHONE_BLOCK_LEGAL.clauseBeforeLink.startsWith('Administratorem danych jest InvestRent sp. z o.o.'))
+  assert.ok(!/Administratorem danych/.test(fs.readFileSync(new URL('./wycenaConsentText.ts', import.meta.url), 'utf8')), 'klauzula nie jest przepisana do pliku zgody')
 })

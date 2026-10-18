@@ -81,7 +81,7 @@ export default function PhoneBlock({ outcome, values, onDone }: { outcome: Estim
         {
           callbackEnabled: CALLBACK_ON, callbackUrl: CALLBACK_URL,
           submitLeadFallback: async () => {
-            const res = await submitLead(buildLeadRequest({ name: '', phone, values, outcome, utm, attribution: getAttribution(), turnstileToken: tsToken, honeypot: hp, consentVersion: PHONE_BLOCK_CONSENT_VERSION }))
+            const res = await submitLead(buildLeadRequest({ name: '', phone, values, outcome, utm, attribution: getAttribution(), turnstileToken: tsToken, honeypot: hp, consentVersion: mc ? CONSENT_VERSION : PHONE_BLOCK_CONSENT_VERSION }))
             return res.ok ? { ok: true } : { ok: false, reason: res.reason }
           },
         },
@@ -112,7 +112,7 @@ export default function PhoneBlock({ outcome, values, onDone }: { outcome: Estim
       <h3 id="wy-pb-title" className="wy-pb-title">{mc ? MC.blockTitle : P.title}</h3>
       <p style={{ margin: '0 0 6px', color: '#374151', fontSize: 15, lineHeight: 1.6 }}>{mc ? MC.blockIntro : P.exchange}</p>
       {mc && <MarketCard token={token} />}
-      <p style={{ margin: '0 0 12px', ...hintStyle }}>{L.notAppraisal}</p>
+      {!mc && <p style={{ margin: '0 0 12px', ...hintStyle }}>{L.notAppraisal}</p>}
 
       {mc && <p style={{ margin: '0 0 8px', color: '#374151', fontSize: 15, lineHeight: 1.6 }}>{MC.contactIntro}</p>}
       <label htmlFor="wy-phone" style={{ display: 'block', fontWeight: 600, fontSize: 14, color: '#0d2a5c', marginBottom: 6 }}>{L.label} *</label>
@@ -140,6 +140,7 @@ export default function PhoneBlock({ outcome, values, onDone }: { outcome: Estim
       <p style={{ ...hintStyle, margin: '8px 0 0' }}>
         {L.clauseBeforeLink}<a href={L.clauseLinkHref} target="_blank" rel="noopener noreferrer" style={{ color: '#1a4fa0', textDecoration: 'underline' }}>{L.clauseLinkLabel}</a>{L.clauseAfterLink}
       </p>
+      {mc && <p style={{ ...hintStyle, margin: '8px 0 0' }}>{L.notAppraisal}</p>}
       <div className="wy-hp" aria-hidden="true">
         <label>Nie wypełniaj tego pola
           <input type="text" name="hp_field" tabIndex={-1} autoComplete="off" value={hp} onChange={e => setHp(e.target.value)} />
