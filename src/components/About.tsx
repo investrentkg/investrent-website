@@ -8,7 +8,7 @@ import { HOME_TEXT_A } from '@/lib/sprzedazSeo'
 const POINTS = [
   { icon: MapPin,       title: 'Lokalny ekspert',          desc: 'Znamy każdą ulicę Kołobrzegu i okolic. Wiemy które lokalizacje zyskają na wartości.' },
   { icon: ShieldCheck,  title: 'Bezpieczna transakcja',    desc: 'Weryfikujemy stan prawny każdej nieruchomości. Zero niespodzianek po zakupie.' },
-  { icon: Clock,        title: 'Odpowiadamy do 60 minut',  desc: 'Żadnego czekania. Kontaktujemy się z każdym klientem tego samego dnia.' },
+  { icon: Clock,        title: 'Odpowiadamy jak najszybciej',  desc: 'Nie później niż w ciągu 24 godzin, bez zbędnego czekania.' },
 ]
 
 const IMG = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80&fit=crop&h=600'

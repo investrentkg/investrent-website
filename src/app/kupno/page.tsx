@@ -10,7 +10,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Kupno nieruchomości Kołobrzeg',
-  description: 'Szukasz mieszkania lub domu w Kołobrzegu? Znajdziemy Ci idealną nieruchomość. Bezpłatna pomoc, odpowiedź do 60 minut.',
+  description: 'Szukasz mieszkania lub domu w Kołobrzegu? Znajdziemy Ci idealną nieruchomość. Bezpłatna pomoc, odpowiedź najpóźniej w ciągu 24 godzin.',
   // NAPRAWA (audyt SEO 31.07.2026, punkt 3): brak kanonicznego URL na calej stronie.
   alternates: { canonical: 'https://www.investrent.com.pl/kupno' },
 }
@@ -27,7 +27,7 @@ const STEPS = [
 const FAQ = [
   { q: 'Czy pomoc w znalezieniu nieruchomości jest płatna dla kupującego?', a: 'Nie, dla osoby kupującej nasza pomoc w poszukiwaniu i negocjacjach jest bezpłatna — nasze wynagrodzenie pochodzi z prowizji rozliczanej w ramach transakcji, zgodnie ze standardową praktyką rynkową.' },
   { q: 'Czy pokazujecie tylko oferty z Waszej bazy, czy też innych agencji?', a: 'Znamy sytuację na całym lokalnym rynku — zarówno oferty innych agencji, jak i te sprzedawane bezpośrednio przez właścicieli. Pomagamy znaleźć nieruchomość, która realnie pasuje do Twoich potrzeb, niezależnie skąd pochodzi.' },
-  { q: 'Jak szybko dostanę propozycje ofert po zgłoszeniu?', a: 'Standardowo odpowiadamy w ciągu 60 minut, a pierwsze dopasowane propozycje przygotowujemy zwykle w ciągu 24 godzin od rozmowy o Twoich wymaganiach.' },
+  { q: 'Jak szybko dostanę propozycje ofert po zgłoszeniu?', a: 'Skontaktujemy się jak najszybciej, nie później niż w ciągu 24 godzin od zgłoszenia. Pierwsze dopasowane propozycje przygotowujemy zwykle w ciągu 24 godzin od rozmowy o Twoich wymaganiach.' },
   { q: 'Czy sprawdzacie stan prawny nieruchomości przed zakupem?', a: 'Tak, to standardowy element naszej obsługi — weryfikujemy księgę wieczystą, ewentualne obciążenia i zgodność stanu prawnego, zanim dojdzie do finalizacji transakcji u notariusza.' },
   { q: 'Czy pomagacie też przy zakupie na kredyt?', a: 'Tak, współpracujemy z doradcami kredytowymi i pomagamy dobrać ofertę kredytową dopasowaną do Twojej sytuacji — również jeśli masz nietypową historię kredytową.' },
 ]
@@ -57,7 +57,7 @@ export default async function KupnoPage() {
             <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' as const }}>
               {[
                 { icon: ShieldCheck, text: 'Weryfikacja stanu prawnego' },
-                { icon: Clock,       text: 'Odpowiedź do 60 minut' },
+                { icon: Clock,       text: 'Odpowiedź najpóźniej w ciągu 24 godzin' },
                 { icon: Award,       text: 'Bezpłatna pomoc' },
               ].map(b => { const Icon = b.icon; return (
                 <div key={b.text} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>

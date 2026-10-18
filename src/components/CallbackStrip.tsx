@@ -35,10 +35,10 @@ export default function CallbackStrip() {
             </div>
             <div>
               <div style={{ fontFamily: 'var(--font-montserrat), Arial, sans-serif', fontWeight: 800, color: 'white', fontSize: 17, letterSpacing: -0.3, marginBottom: 2 }}>
-                Oddzwonimy do 60 minut
+                Oddzwonimy najpóźniej w ciągu 24 godzin
               </div>
               <div style={{ color: 'rgba(255,255,255,.8)', fontSize: 12 }}>
-                Zostaw numer — nasz doradca oddzwoni do Ciebie jeszcze dziś
+                Zostaw numer — nasz doradca do Ciebie oddzwoni
               </div>
             </div>
           </div>

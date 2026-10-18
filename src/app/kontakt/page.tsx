@@ -15,7 +15,7 @@ export const revalidate = 300
 
 export const metadata: Metadata = {
   title: 'Kontakt',
-  description: 'Skontaktuj się z biurem nieruchomości InvestRent w Kołobrzegu. Odpowiadamy do 60 minut. Tel: +48 731 554 341',
+  description: 'Skontaktuj się z biurem nieruchomości InvestRent w Kołobrzegu. Odpowiadamy najpóźniej w ciągu 24 godzin. Tel: +48 731 554 341',
   // NAPRAWA (audyt SEO 31.07.2026, punkt 3): brak kanonicznego URL na calej stronie.
   alternates: { canonical: 'https://www.investrent.com.pl/kontakt' },
 }
@@ -47,7 +47,7 @@ export default async function KontaktPage() {
             <h1 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 38, color: 'white', letterSpacing: '-1px', marginBottom: 8 }}>
               Skontaktuj się z nami
             </h1>
-            <p style={{ color: 'rgba(255,255,255,.7)', fontSize: 15 }}>Odpowiadamy do 60 minut — w dni robocze i w weekendy</p>
+            <p style={{ color: 'rgba(255,255,255,.7)', fontSize: 15 }}>Odpowiadamy jak najszybciej, nie później niż w ciągu 24 godzin</p>
           </div>
         </div>
         <Contact office={office} />

@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Search, Handshake, Clock, Star, Award, Home } from 'lucide-react'
 import HeroWidget from '@/components/HeroWidget'
+import { RESPONSE_BADGE } from '@/lib/responseTime'
 import AnimatedCounter from '@/components/AnimatedCounter'
 import type { PublicStats } from '@/types'
 
@@ -76,7 +77,7 @@ export default function Hero({ stats, googleRating = null }: HeroProps) {
 
   const STATS = [
     { icon: <Handshake size={20} />, val: `${Math.max(s.completed_transactions, 150)}+`, label: 'transakcji' },
-    { icon: <Clock size={20} />,     val: 'do 60 min',         label: 'odpowiedź' },
+    { icon: <Clock size={20} />,     val: RESPONSE_BADGE,         label: 'kontakt' },
     ...(googleRating ? [{ icon: <Star size={20} />, val: `${googleRating}/5`, label: 'ocena klientów' }] : []),
     { icon: <Award size={20} />,     val: 'Bezpłatna',         label: 'wycena' },
   ]

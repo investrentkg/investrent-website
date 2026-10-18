@@ -55,12 +55,12 @@ export const metadata: Metadata = {
     default: 'InvestRent Nieruchomości Kołobrzeg | Kupno, Sprzedaż, Wynajem',
     template: '%s | InvestRent Nieruchomości',
   },
-  description: 'Biuro nieruchomości Kołobrzeg. Kupno, sprzedaż i wynajem mieszkań nad Bałtykiem. Odpowiadamy do 60 minut. Bezpłatna wycena nieruchomości.',
+  description: 'Biuro nieruchomości Kołobrzeg. Kupno, sprzedaż i wynajem mieszkań nad Bałtykiem. Odpowiadamy najpóźniej w ciągu 24 godzin. Bezpłatna wycena nieruchomości.',
   keywords: ['nieruchomości Kołobrzeg', 'mieszkania Kołobrzeg', 'kupno sprzedaż wynajem', 'biuro nieruchomości', 'apartamenty Bałtyk'],
   authors: [{ name: 'InvestRent Nieruchomości' }],
   openGraph: {
     title: 'InvestRent Nieruchomości — Kołobrzeg',
-    description: 'Kupno, sprzedaż i wynajem nieruchomości nad Bałtykiem. Odpowiadamy do 60 minut.',
+    description: 'Kupno, sprzedaż i wynajem nieruchomości nad Bałtykiem. Odpowiadamy najpóźniej w ciągu 24 godzin.',
     type: 'website',
     locale: 'pl_PL',
     url: 'https://www.investrent.com.pl',
@@ -74,7 +74,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'InvestRent Nieruchomości — Kołobrzeg',
-    description: 'Kupno, sprzedaż i wynajem nieruchomości nad Bałtykiem. Odpowiadamy do 60 minut.',
+    description: 'Kupno, sprzedaż i wynajem nieruchomości nad Bałtykiem. Odpowiadamy najpóźniej w ciągu 24 godzin.',
     images: ['/hero.jpg'],
   },
   // robots: celowo BEZ jawnego `index, follow` (08.10.2026, audyt: strona 404 miala DWA tagi robots naraz,
