@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { MapPin, ShieldCheck, Clock, Star } from 'lucide-react'
 import Image from 'next/image'
 import ScrollReveal from '@/components/ScrollReveal'
+import { HOME_TEXT_A } from '@/lib/sprzedazSeo'
 
 const POINTS = [
   { icon: MapPin,       title: 'Lokalny ekspert',          desc: 'Znamy każdą ulicę Kołobrzegu i okolic. Wiemy które lokalizacje zyskają na wartości.' },
@@ -82,6 +83,11 @@ export default function About({ googleRating = null }: { googleRating?: number |
             </p>
             <p style={{ fontSize: 14, color: '#6b7280', lineHeight: 1.8, marginBottom: 24 }}>
               Naszą misją jest przeprowadzenie klientów przez każdą transakcję bezpiecznie i bez stresu. Nie znikamy po podpisaniu umowy — jesteśmy do dyspozycji przez cały proces i długo po nim.
+            </p>
+            {/* SEO krok 2 (18.10.2026): tekst A (zaakceptowany dosłownie) + link do /sprzedaz */}
+            <p style={{ fontSize: 14, color: '#6b7280', lineHeight: 1.8, marginBottom: 24 }}>
+              {HOME_TEXT_A}{' '}
+              Zobacz, jak wygląda <a href="/sprzedaz" style={{ color: '#1a4fa0', textDecoration: 'underline' }}>sprzedaż nieruchomości w Kołobrzegu</a> z naszym biurem.
             </p>
             <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 14 }}>
               {POINTS.map((pt, i) => {
