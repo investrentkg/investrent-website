@@ -6,6 +6,7 @@ import type { CSSProperties } from 'react'
 //  - _ga, _ga_<ID>: src/components/GoogleAnalytics.tsx - gtag('config', ID) bez cookie_expires/cookie_domain => domyslne ustawienia Google (2 lata), ladowane DOPIERO po zgodzie "analytics".
 //  - ir_consent: src/lib/consent.ts (CONSENT_STORAGE_KEY, localStorage; CONSENT_MAX_AGE_MS = 12 mies., potem ponowne pytanie).
 //  - ir_attr: src/lib/attribution.ts (ATTRIBUTION_STORAGE_KEY, sessionStorage; tylko po zgodzie "attribution"; kasowany po jej wycofaniu - consentStore.ts).
+//  - mapGoogleConsent: src/lib/mapConsent.ts (localStorage, 12 mies.; zapis dopiero po kliknieciu "Zaladuj mape"; kasowany linkiem cofniecia w MapEmbed).
 //  - ir_launcher_hints: src/components/ChatWidget.tsx (sessionStorage, flagi podpowiedzi okna czatu).
 //  - Reklamowe (Meta Pixel/CAPI): ADS_AVAILABLE = false w consent.ts - nic nie jest zapisywane.
 // Tabela jest zrodlem prawdy dla tekstu polityki: przy zmianie zapisow (nowy klucz, inny czas zycia, nowy dostawca) zmienic ja RAZEM z CONSENT_VERSION / banerem zgod.
@@ -48,6 +49,12 @@ const TEXT: Record<Locale, {
         ],
       },
       {
+        title: 'Mapa Google (tylko po kliknięciu „Załaduj mapę”)',
+        rows: [
+          { name: 'mapGoogleConsent', kind: 'pamięć lokalna (localStorage)', provider: OWN.pl, purpose: 'Zapamiętuje Państwa wybór dotyczący mapy Google Maps, dzięki czemu mapa ładuje się przy kolejnych wizytach bez ponownego klikania. Zapisywany tylko w Państwa przeglądarce, bez plików cookies i bez przesyłania na nasz serwer.', lifetime: '12 miesięcy od wyboru; usuwany po kliknięciu „Wyłącz mapę Google / cofnij zgodę” albo po usunięciu danych strony w przeglądarce' },
+        ],
+      },
+      {
         title: 'Reklamowe (planowane, obecnie brak)',
         rows: [
           { name: '—', kind: 'obecnie nic nie jest zapisywane', provider: 'Meta Platforms Ireland Limited (planowane)', purpose: 'Kategoria zarezerwowana na przyszłość (narzędzia reklamowe Meta). Nie jest dziś stosowana i nie można jej włączyć.', lifetime: '—' },
@@ -79,6 +86,12 @@ const TEXT: Record<Locale, {
         title: 'Marketing (nur nach Einwilligung)',
         rows: [
           { name: 'ir_attr', kind: 'Sitzungsspeicher (sessionStorage)', provider: OWN.de, purpose: 'Speichert, über welche Kampagne Sie zu uns gekommen sind (UTM-Parameter und eine Kennzeichnung des Besuchs über einen Werbelink auf Facebook), um dies Ihrer abgesendeten Anfrage beizufügen und die Wirksamkeit der Kampagnen zu messen. Die Angaben verbleiben in den Systemen von InvestRent.', lifetime: 'bis zum Schließen des Browser-Tabs; wird bei Widerruf der Einwilligung sofort gelöscht' },
+        ],
+      },
+      {
+        title: 'Google-Maps-Karte (nur nach Klick auf „Karte laden“)',
+        rows: [
+          { name: 'mapGoogleConsent', kind: 'lokaler Speicher (localStorage)', provider: OWN.de, purpose: 'Speichert Ihre Auswahl zur Google-Maps-Karte, damit die Karte bei weiteren Besuchen ohne erneutes Anklicken geladen wird. Wird nur in Ihrem Browser gespeichert, ohne Cookies und ohne Übertragung an unseren Server.', lifetime: '12 Monate ab der Auswahl; wird gelöscht über den Link „Google-Karte deaktivieren / Einwilligung widerrufen“ oder durch Löschen der Websitedaten im Browser' },
         ],
       },
       {
