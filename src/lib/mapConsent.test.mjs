@@ -9,6 +9,7 @@ import { createRequire } from 'node:module'
 import {
   MAP_CONSENT_KEY, MAP_CONSENT_VERSION, MAP_CONSENT_MAX_AGE_MS,
   isValidMapConsent, readMapConsent, writeMapConsent, clearMapConsent, getMapStorage,
+  shouldAutoLoadMap, revokeMapConsent, onMapConsentRevoked, MAP_CONSENT_REVOKED_EVENT,
 } from './mapConsent.ts'
 
 const NOW = Date.UTC(2026, 9, 18, 12, 0, 0)
@@ -87,6 +88,74 @@ test('etykieta linku cofniecia w UI jest IDENTYCZNA jak w tekstach polityki (PL 
   assert.ok(ui.includes(`revokeMap: '${DE}'`) && de.includes(`„${DE}“`))
 })
 
+// Ograniczenie: render serwerowy (renderToStaticMarkup) nie uruchamia efektow, a w repo nie ma jsdom/react-testing-library,
+// wiec "komponent laduje mape" sprawdzamy na poziomie decyzji (shouldAutoLoadMap - dokladnie to wola efekt po zamontowaniu)
+// z atrapa window.localStorage + straznik zrodla, ze efekt faktycznie wola ta funkcje, a wynik trafia do setLoaded.
+function withWindow(storage, fn) {
+  const target = new EventTarget()
+  const win = { localStorage: storage, addEventListener: target.addEventListener.bind(target), removeEventListener: target.removeEventListener.bind(target), dispatchEvent: target.dispatchEvent.bind(target) }
+  const prev = globalThis.window
+  globalThis.window = win
+  try { return fn(win) } finally { if (prev === undefined) delete globalThis.window; else globalThis.window = prev }
+}
+
+test('auto-ladowanie: wazny wpis w window.localStorage => shouldAutoLoadMap true; brak/wygasly/zepsuty/zablokowany => false', () => {
+  const s = mem(); writeMapConsent(s, Date.now())
+  assert.equal(withWindow(s, () => shouldAutoLoadMap()), true)
+  assert.equal(withWindow(mem(), () => shouldAutoLoadMap()), false)
+  const old = mem(); writeMapConsent(old, Date.now() - MAP_CONSENT_MAX_AGE_MS - 5000)
+  assert.equal(withWindow(old, () => shouldAutoLoadMap()), false)
+  assert.equal(old.m.has(MAP_CONSENT_KEY), false)
+  const bad = mem(); bad.m.set(MAP_CONSENT_KEY, '{oops')
+  assert.equal(withWindow(bad, () => shouldAutoLoadMap()), false)
+  assert.equal(shouldAutoLoadMap(), false) // bez window
+  const win = { get localStorage() { throw new Error('SecurityError') } }
+  const prev = globalThis.window; globalThis.window = win
+  try { assert.equal(shouldAutoLoadMap(), false) } finally { delete globalThis.window; if (prev) globalThis.window = prev }
+})
+
+test('komponent: efekt po zamontowaniu wola shouldAutoLoadMap -> setLoaded(true); stan poczatkowy false', () => {
+  const src = readFileSync(new URL('../components/ConsentEmbed.tsx', import.meta.url), 'utf8')
+  assert.match(src, /const \[loaded, setLoaded\] = useState\(false\)/)
+  assert.match(src, /useEffect\(\(\) => \{ if \(shouldAutoLoadMap\(\)\) setLoaded\(true\) \}, \[\]\)/)
+  assert.match(src, /onMapConsentRevoked\(\(\) => setLoaded\(false\)\)/)
+})
+
+test('wycofanie jednej mapy wylacza WSZYSTKIE instancje na stronie (CustomEvent) i usuwa wpis; odpiecie nasluchu dziala', () => {
+  const s = mem(); writeMapConsent(s, Date.now())
+  withWindow(s, () => {
+    let a = 0, b = 0
+    const offA = onMapConsentRevoked(() => a++)
+    const offB = onMapConsentRevoked(() => b++)
+    revokeMapConsent()
+    assert.deepEqual([a, b], [1, 1])
+    assert.equal(s.m.has(MAP_CONSENT_KEY), false)
+    offB(); revokeMapConsent()
+    assert.deepEqual([a, b], [2, 1])
+    offA()
+  })
+  assert.equal(MAP_CONSENT_REVOKED_EVENT, 'ir-map-consent-revoked')
+})
+
+test('wycofanie w innej karcie (zdarzenie storage z usunieciem klucza) tez wylacza mape; inne klucze/zapisy ignorowane', () => {
+  withWindow(mem(), (win) => {
+    let n = 0
+    const off = onMapConsentRevoked(() => n++)
+    const ev = (key, newValue) => Object.assign(new Event('storage'), { key, newValue })
+    win.dispatchEvent(ev('inny', null)); win.dispatchEvent(ev(MAP_CONSENT_KEY, '{"v":1,"ts":1}'))
+    assert.equal(n, 0)
+    win.dispatchEvent(ev(MAP_CONSENT_KEY, null))
+    assert.equal(n, 1)
+    off()
+  })
+})
+
+test('tabela cookies (PL i DE) zawiera wpis mapGoogleConsent z localStorage i 12 mies.', () => {
+  const src = readFileSync(new URL('../components/legal/CookieTable.tsx', import.meta.url), 'utf8')
+  assert.equal((src.match(/name: 'mapGoogleConsent'/g) || []).length, 2)
+  assert.ok(src.includes('12 miesięcy od wyboru; usuwany po kliknięciu „Wyłącz mapę Google / cofnij zgodę”'))
+  assert.ok(src.includes('12 Monate ab der Auswahl; wird gelöscht über den Link „Google-Karte deaktivieren / Einwilligung widerrufen“'))
+})
 // --- Render komponentu (SSR): przed wyborem zadnego iframe/URL Google (zero zadan do Google) ---
 test('render komponentu MapEmbed bez zapisanego wyboru: przycisk "Zaladuj mape", BRAK iframe i maps.google.com', async () => {
   const require = createRequire(import.meta.url)
@@ -113,6 +182,7 @@ test('render komponentu MapEmbed bez zapisanego wyboru: przycisk "Zaladuj mape",
     assert.equal(html.includes('<script'), false)
     assert.equal(html.includes('<img'), false)
     assert.match(html, locale === 'pl' ? /Załaduj mapę/ : /Karte laden/)
-    assert.equal(html.includes('cofnij zgodę') || html.includes('widerrufen'), false, 'link cofniecia tylko przy zaladowanej mapie')
+    assert.match(html, /visibility:hidden[^>]*>\s*<button/, 'wiersz linku cofniecia zarezerwowany (min 44 px), ale ukryty przed zaladowaniem mapy')
+    assert.match(html, /min-height:44px/)
   }
 })

@@ -1,6 +1,6 @@
 "use client"
 import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { clearMapConsent, getMapStorage, readMapConsent, writeMapConsent } from '@/lib/mapConsent'
+import { getMapStorage, onMapConsentRevoked, revokeMapConsent, shouldAutoLoadMap, writeMapConsent } from '@/lib/mapConsent'
 
 // Click-to-load dla tresci osadzanych od Google/YouTube/Vimeo (§ 25 TDDDG, art. 6
 // RODO): dopoki uzytkownik nie kliknie przycisku, NIE jest ladowany zaden zasob
@@ -124,8 +124,10 @@ export default function MapEmbed({
   // z localStorage wlaczy mape dopiero w efekcie po zamontowaniu.
   const [loaded, setLoaded] = useState(false)
   const [refocus, setRefocus] = useState(false)
-  useEffect(() => { if (readMapConsent(getMapStorage())) setLoaded(true) }, [])
-  const revoke = () => { clearMapConsent(getMapStorage()); setRefocus(true); setLoaded(false) }
+  useEffect(() => { if (shouldAutoLoadMap()) setLoaded(true) }, [])
+  // Wycofanie w dowolnej instancji (lub w innej karcie) wylacza WSZYSTKIE mapy na stronie.
+  useEffect(() => onMapConsentRevoked(() => setLoaded(false)), [])
+  const revoke = () => { setRefocus(true); revokeMapConsent() }
   const boxStyle = height
     ? { position: 'relative' as const, width: '100%', height }
     : { position: 'relative' as const, width: '100%', paddingBottom, minHeight }
@@ -148,17 +150,16 @@ export default function MapEmbed({
           />
         </ConsentGate>
       </div>
-      {loaded && (
-        <div style={{ padding: '6px 12px 0', textAlign: 'right', fontSize: 12.5 }}>
-          <button
-            type="button"
-            onClick={revoke}
-            style={{ background: 'none', border: 0, padding: 0, font: 'inherit', color: '#1a4fa0', textDecoration: 'underline', cursor: 'pointer' }}
-          >
-            {t.revokeMap}
-          </button>
-        </div>
-      )}
+      {/* Wiersz zarezerwowany ZAWSZE (min. 44 px), zeby po hydratacji/zaladowaniu mapy tresc sie nie przesuwala; przed zaladowaniem link jest ukryty (visibility, brak fokusu). */}
+      <div style={{ minHeight: 44, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', padding: '0 12px', fontSize: 12.5, visibility: loaded ? 'visible' : 'hidden' }}>
+        <button
+          type="button"
+          onClick={revoke}
+          style={{ background: 'none', border: 0, padding: '0 4px', minHeight: 44, font: 'inherit', color: '#1a4fa0', textDecoration: 'underline', cursor: 'pointer' }}
+        >
+          {t.revokeMap}
+        </button>
+      </div>
       {!hideLink && (
         <div style={{ padding: '8px 12px 10px', textAlign: 'right', fontSize: 12.5 }}>
           <a href={`https://www.google.com/maps/search/?api=1&query=${query}`} target="_blank" rel="noopener noreferrer" style={{ color: '#1a4fa0', textDecoration: 'underline' }}>

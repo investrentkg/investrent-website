@@ -76,3 +76,28 @@ export function clearMapConsent(storage: MapStorageLike | null | undefined): boo
     return false
   }
 }
+
+/** Zdarzenie okna: wycofano wybor mapy - KAZDA instancja MapEmbed na stronie ma wrocic do przycisku. */
+export const MAP_CONSENT_REVOKED_EVENT = 'ir-map-consent-revoked'
+
+/** Czy mapa ma zaladowac sie sama (ważny wpis w localStorage przegladarki). Uzywane w efekcie po zamontowaniu. */
+export function shouldAutoLoadMap(now: number = Date.now()): boolean {
+  return readMapConsent(getMapStorage(), now)
+}
+
+/** Wycofanie: usuwa wpis i powiadamia wszystkie instancje w tej karcie (CustomEvent); inne karty dostana zdarzenie `storage`. */
+export function revokeMapConsent(): void {
+  clearMapConsent(getMapStorage())
+  try {
+    if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent(MAP_CONSENT_REVOKED_EVENT))
+  } catch { /* ignoruj */ }
+}
+
+/** Nasluch wycofania (ta karta: CustomEvent; inne karty: `storage` z usunieciem klucza). Zwraca funkcje odpinajaca. */
+export function onMapConsentRevoked(handler: () => void): () => void {
+  if (typeof window === 'undefined') return () => {}
+  const onStorage = (e: StorageEvent) => { if (e.key === MAP_CONSENT_KEY && e.newValue === null) handler() }
+  window.addEventListener(MAP_CONSENT_REVOKED_EVENT, handler)
+  window.addEventListener('storage', onStorage)
+  return () => { window.removeEventListener(MAP_CONSENT_REVOKED_EVENT, handler); window.removeEventListener('storage', onStorage) }
+}
