@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start -p ${PORT:-3000}",
     "lint": "next lint",
-    "test": "node --test src/lib/valuation.test.mjs src/lib/leadSubmit.test.mjs src/lib/consent.test.mjs src/lib/phoneBlock.test.mjs src/lib/localityOffers.test.mjs src/lib/sprzedazSeo.test.mjs"
+    "test": "node --test src/lib/valuation.test.mjs src/lib/leadSubmit.test.mjs src/lib/consent.test.mjs src/lib/phoneBlock.test.mjs src/lib/localityOffers.test.mjs src/lib/sprzedazSeo.test.mjs src/lib/homeMeta.test.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.383.0",

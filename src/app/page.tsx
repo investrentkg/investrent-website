@@ -30,6 +30,7 @@ import MortgageCalcSection from '@/components/MortgageCalcSection'
 import SocialSidebar from '@/components/SocialSidebar'
 import { getVerifiedRating } from '@/lib/schemaRating'
 import type { Office } from '@/types'
+import { HOME_TITLE, HOME_DESCRIPTION, pickHomeMeta } from '@/lib/homeMeta'
 
 // NAPRAWA (audyt SEO 31.07.2026, punkt 3): strona glowna nie mial WLASNEGO
 // eksportu metadata w ogole - dziedziczyla wszystko z layout.tsx, w tym
@@ -50,14 +51,39 @@ import type { Office } from '@/types'
 // (ocena Google, wycena, czas odpowiedzi). Uwaga: jesli w CRM (Strony ->
 // strona-glowna) ustawiono wlasne meta_title/meta_description, one nadal
 // maja pierwszenstwo nad tymi wartosciami domyslnymi.
-const DEFAULT_TITLE = 'Biuro nieruchomości Kołobrzeg | Invest Rent'
-const DEFAULT_DESCRIPTION = 'Biuro nieruchomości w Kołobrzegu i okolicach: sprzedaż, kupno i wynajem mieszkań oraz domów. Bezpłatna wycena, odpowiedź do 60 minut.'
+//
+// ZMIANA (18.10.2026, SEO krok 1 zaakceptowany przez Daniela): nowy title i
+// description (teksty w lib/homeMeta.ts). Title domyslny idzie jako `absolute`,
+// bo layout.tsx ma title.template '%s | InvestRent Nieruchomości' - bez tego
+// marka bylaby doklejona drugi raz. og:/twitter: ustawione jawnie i spojnie
+// (Next podmienia, a nie scala openGraph/twitter z layoutu, dlatego powtorzone
+// sa url, siteName, locale i obraz podgladu).
+const DEFAULT_TITLE = HOME_TITLE
 export async function generateMetadata(): Promise<Metadata> {
   const content = await getPageContent('strona-glowna')
+  // Zywa strona serwowala stare wartosci z CRM (pierwszenstwo nad kodem) - pickHomeMeta
+  // traktuje je jak brak wlasnej wartosci; inna wlasna wartosc z CRM nadal wygrywa.
+  const { ownTitle, title, description } = pickHomeMeta(content?.blocks?.meta_title, content?.blocks?.meta_description)
   return {
-    title: content?.blocks?.meta_title || DEFAULT_TITLE,
-    description: content?.blocks?.meta_description || DEFAULT_DESCRIPTION,
+    // wlasny tytul z CRM zachowuje dotychczasowe zachowanie (szablon layoutu)
+    title: ownTitle ? ownTitle : { absolute: DEFAULT_TITLE },
+    description,
     alternates: { canonical: 'https://www.investrent.com.pl' },
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      locale: 'pl_PL',
+      url: 'https://www.investrent.com.pl',
+      siteName: 'InvestRent Nieruchomości',
+      images: [{ url: '/hero.jpg', width: 1920, height: 1080, alt: 'InvestRent Nieruchomości Kołobrzeg' }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: ['/hero.jpg'],
+    },
   }
 }
 
