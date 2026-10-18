@@ -6,6 +6,8 @@ import { sendFunnelStep } from './funnel.ts'
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://investrent-crm-production.up.railway.app'
 export const MARKET_CARD_URL = `${API}/api/public/valuation/market-card`
 export const MARKET_CARD_MIN_SAMPLE = 8
+/** Ostrzezenie malej proby dla transakcji: 0 < n < 8 (n=0 to brak danych, bez ostrzezenia); ta sama semantyka progu co dla ofert. */
+export const isSmallTransactionSample = (n: number): boolean => n > 0 && n < MARKET_CARD_MIN_SAMPLE
 
 export const CARD_CONDITIONS = ['do_remontu', 'do_zamieszkania', 'deweloperski', 'do_wykonczenia'] as const
 export type CardCondition = (typeof CARD_CONDITIONS)[number]

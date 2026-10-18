@@ -127,13 +127,60 @@ test('okno kontaktu: wysylane jako contact_window tylko gdy wybrane; bez wyboru 
   assert.deepEqual(bodies[1].consent, { checked: true, version: 'wycena-2026-10-18-v2' })
 })
 
-test('teksty karty i bloku: bez "bezplatn", bez obietnic terminu, bez trendu; formy "Panstwo"', async () => {
+test('teksty karty: DOSLOWNIE wersje finalne zatwierdzone przez Daniela 18.10.2026 (poz. 1-26) + odmiana oferta/oferty/ofert', async () => {
+  const m = await import('../app/wycena/marketCardTexts.ts')
+  const T = m.MARKET_CARD_TEXTS
+  assert.equal(T.blockTitle, 'Dokładniejszy wynik')
+  assert.equal(T.blockIntro, 'Poniżej widzisz ceny ofert i ceny transakcyjne w okolicy. Agent może na tej podstawie doprecyzować szacunek.')
+  assert.equal(T.offersTitle, 'Ceny ofert w okolicy')
+  assert.equal(T.offersCount(12), 'Liczba ofert (bez duplikatów): 12')
+  assert.equal(T.offersMedian, 'Mediana ceny za m² (wartość środkowa)')
+  assert.equal(T.offersRange, 'Przedział, w którym mieści się środkowe 50% ofert')
+  assert.equal(T.transactionsTitle, 'Ceny transakcyjne w okolicy')
+  assert.equal(T.transactionsAsOf('08.2026'), 'dane na 08.2026')
+  assert.equal(T.transactionsCount(41), 'Liczba transakcji: 41')
+  assert.equal(T.transactionsMedian, 'Mediana ceny za m² (wartość środkowa)')
+  assert.equal(T.transactionsRange, 'Przedział, w którym mieści się środkowe 50% transakcji')
+  assert.equal(T.transactionsNote, 'Dane obejmują mieszkania w każdym stanie, rejestr nie podaje stanu lokalu.')
+  assert.equal(T.separateNote, 'Ceny ofert i ceny transakcyjne pokazujemy osobno: to różne dane i nie wyliczamy z nich jednej ceny.')
+  assert.equal(T.noData, 'Nie mamy wystarczających danych rynkowych dla tej nieruchomości, żeby pokazać ceny ofert i ceny transakcyjne.')
+  assert.equal(T.noOffers, 'Nie mamy wystarczających danych o cenach ofert dla tego segmentu.')
+  assert.equal(T.noTransactions, 'Nie mamy wystarczających danych o cenach transakcyjnych dla tego segmentu.')
+  assert.equal(T.conditionLabel, 'Stan mieszkania (filtruje tylko ceny ofert)')
+  assert.equal(T.conditionAll, 'Wszystkie')
+  assert.equal(T.conditionCounts(3, 20), 'Ofert w wybranym stanie: 3 (wszystkich: 20).')
+  assert.equal(T.loading, 'Ładowanie danych rynkowych…')
+  assert.equal(T.place.ulica, 'Twoja ulica')
+  assert.equal(T.place.dzielnica('Śródmieście'), 'dzielnica Śródmieście')
+  assert.equal(T.place.dzielnica(null), 'Twoja dzielnica')
+  assert.equal(T.place.miasto('Kołobrzeg'), 'miasto Kołobrzeg')
+  assert.equal(T.contactIntro, 'Chcesz omówić wynik z agentem? Podaj numer telefonu i wybierz porę kontaktu.')
+  assert.equal(T.windowLabel, 'Preferowana pora kontaktu')
+  assert.equal(T.windowNone, 'Bez preferencji')
+  assert.equal(T.submit, 'Poproś o kontakt')
+  assert.equal(T.errConsent, 'Zaznacz zgodę, żeby wysłać numer.')
+  // pory kontaktu bez zmian
+  const mc = await import('./marketCard.ts')
+  assert.deepEqual(mc.CONTACT_WINDOW_LABELS, { rano: 'Rano', poludnie: 'W południe', wieczor: 'Wieczorem' })
+  // odmiana: 1 oferta, 2-4 oferty, 5+ ofert (12-14 ofert, 22 oferty)
+  const w = (n) => T.smallSample(n)
+  assert.equal(w(1), 'Mała próba: w wybranym stanie mamy tylko 1 oferta (poniżej 8). Wynik jest orientacyjny.')
+  for (const n of [2, 3, 4, 22]) assert.match(w(n), new RegExp(`mamy tylko ${n} oferty \\(poniżej 8\\)`))
+  for (const n of [0, 5, 7, 12, 13, 14, 25]) assert.match(w(n), new RegExp(`mamy tylko ${n} ofert \\(poniżej 8\\)`))
+  // transakcje: 1 -> "jest tylko 1 transakcja"; 2-4 (i 22, 23) -> "sa tylko n transakcje"; reszta (0, 5-21, 25+) -> "jest tylko n transakcji"
+  const tx = (n) => T.transactionsSmallSample(n)
+  assert.equal(tx(1), 'Mała próba: jest tylko 1 transakcja (poniżej 8). Wynik jest orientacyjny.')
+  for (const n of [2, 3, 4, 22, 23]) assert.equal(tx(n), `Mała próba: są tylko ${n} transakcje (poniżej 8). Wynik jest orientacyjny.`)
+  for (const n of [0, 5, 12, 14, 21, 25]) assert.equal(tx(n), `Mała próba: jest tylko ${n} transakcji (poniżej 8). Wynik jest orientacyjny.`)
+})
+
+test('teksty karty i bloku: bez "bezplatn", bez obietnic terminu, bez trendu; forma bezposrednia (nie "Panstwo")', async () => {
   const m = await import('../app/wycena/marketCardTexts.ts')
   const flat = JSON.stringify(m.MARKET_CARD_TEXTS) + m.MARKET_CARD_TEXTS.smallSample(3) + m.MARKET_CARD_TEXTS.offersCount(5)
   assert.ok(!/bezp[łl]atn|gratis|za darmo|gwarant/i.test(flat), 'bez bezplatnie')
   assert.ok(!/(w ci[aą]gu|natychmiast|szybko|dzi[sś]\b|jutro|\d+\s*(min|h|godz))/i.test(flat), 'bez terminu oddzwonienia')
   assert.ok(!/trend|wzrost|spadek|rośnie|maleje|prognoz/i.test(flat), 'bez twierdzen o trendzie')
-  assert.ok(!/\bTwoj|\bTwó|\bpodaj\b|\bwybierz\b/i.test(flat), 'forma Panstwo')
+  assert.ok(!/Państw|\bproszę\b/i.test(flat), 'forma bezposrednia, bez "Panstwo"')
 })
 
 test('PhoneBlock: karta, okno i checkbox tylko pod MARKET_CARD_ACTIVE; tekst checkboxa z CONSENT_TEXT (jedno miejsce)', () => {
@@ -160,4 +207,32 @@ test('PhoneBlock: pod checkboxem istniejaca klauzula PHONE_BLOCK_LEGAL (BEZ prze
   assert.equal(t.PHONE_BLOCK_LEGAL.notAppraisal, 'To nie jest operat szacunkowy rzeczoznawcy majątkowego.')
   assert.ok(t.PHONE_BLOCK_LEGAL.clauseBeforeLink.startsWith('Administratorem danych jest InvestRent sp. z o.o.'))
   assert.ok(!/Administratorem danych/.test(fs.readFileSync(new URL('./wycenaConsentText.ts', import.meta.url), 'utf8')), 'klauzula nie jest przepisana do pliku zgody')
+})
+
+test('mala proba transakcji: granica 7 (ostrzezenie) / 8 (brak), n=0 bez ostrzezenia; render TransactionsBox', async () => {
+  const mc = await import('./marketCard.ts')
+  assert.equal(mc.isSmallTransactionSample(0), false)
+  for (const n of [1, 7]) assert.equal(mc.isSmallTransactionSample(n), true)
+  for (const n of [8, 9, 41]) assert.equal(mc.isSmallTransactionSample(n), false)
+  const ts = (await import('typescript')).default
+  const { renderToStaticMarkup } = await import('react-dom/server')
+  const React = (await import('react')).default
+  const src = fs.readFileSync(new URL('../app/wycena/MarketCard.tsx', import.meta.url), 'utf8')
+  const here = (p) => new URL(p, import.meta.url).href
+  const js = ts.transpileModule(src, { compilerOptions: { jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 } }).outputText
+    .replace("'@/lib/marketCard'", `'${here('./marketCard.ts')}'`).replace("'./marketCardTexts'", `'${here('../app/wycena/marketCardTexts.ts')}'`)
+  const dir = path.join(process.cwd(), 'node_modules', '.cache', 'render-test'); fs.mkdirSync(dir, { recursive: true })
+  const file = path.join(dir, 'MarketCard.mjs'); fs.writeFileSync(file, js)
+  const { TransactionsBox } = await import(new URL(`file:///${file.replace(/\\/g, '/')}`).href)
+  const html = (count) => renderToStaticMarkup(React.createElement(TransactionsBox, { t: count == null ? null : { count, median: 11500, p25: 10200, p75: 12900, asOf: '08.2026', note: 'x' } }))
+  const expected = { 1: 'jest tylko 1 transakcja', 2: 'są tylko 2 transakcje', 3: 'są tylko 3 transakcje', 4: 'są tylko 4 transakcje', 5: 'jest tylko 5 transakcji', 7: 'jest tylko 7 transakcji' }
+  for (const [n, txt] of Object.entries(expected)) assert.ok(html(Number(n)).includes(`Mała próba: ${txt} (poniżej 8). Wynik jest orientacyjny.`), `n=${n}`)
+  assert.ok(!html(8).includes('Mała próba'), 'n=8 bez ostrzezenia')
+  assert.ok(!html(41).includes('Mała próba'))
+  assert.ok(!html(0).includes('Mała próba'), 'n=0 bez ostrzezenia')
+  const none = html(null)
+  assert.ok(none.includes('Nie mamy wystarczających danych o cenach transakcyjnych dla tego segmentu.') && !none.includes('Mała próba'), 'brak danych: dotychczasowy komunikat')
+  // odmiana: 12 i 22 (poza progiem renderu, wprost z tekstu)
+  const T = (await import('../app/wycena/marketCardTexts.ts')).MARKET_CARD_TEXTS
+  assert.ok(T.transactionsSmallSample(12).includes('jest tylko 12 transakcji') && T.transactionsSmallSample(22).includes('są tylko 22 transakcje'))
 })

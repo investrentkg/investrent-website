@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useRef, useState } from 'react'
 import {
-  CARD_CONDITIONS, CONDITION_LABELS, fetchMarketCard, fmtAsOfDate, fmtPpm, fmtRange, trackCardShown,
+  CARD_CONDITIONS, CONDITION_LABELS, fetchMarketCard, fmtAsOfDate, fmtPpm, fmtRange, isSmallTransactionSample, trackCardShown,
   type CardCondition, type MarketCardView, type OffersView, type TransactionsView,
 } from '@/lib/marketCard'
 import { MARKET_CARD_TEXTS as M } from './marketCardTexts'
@@ -46,6 +46,7 @@ export function TransactionsBox({ t }: { t: TransactionsView | null }) {
           <p style={pStyle}>{M.transactionsMedian}: <strong>{fmtPpm(t.median)}</strong></p>
           {fmtRange(t.p25, t.p75) && <p style={pStyle}>{M.transactionsRange}: <strong>{fmtRange(t.p25, t.p75)}</strong></p>}
           <p style={hintStyle}>{M.transactionsNote}</p>
+          {isSmallTransactionSample(t.count) && <p role="status" style={{ ...hintStyle, color: '#92400e', fontWeight: 600 }}>{M.transactionsSmallSample(t.count)}</p>}
         </>
       ) : <p style={pStyle}>{M.noTransactions}</p>}
     </section>
