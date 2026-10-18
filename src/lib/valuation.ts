@@ -272,9 +272,18 @@ export function describeOutcome(o: EstimateOutcome | null): string {
   return 'Wycena orientacyjna: nie udało się obliczyć — wycena indywidualna.'
 }
 
+// Przyjmuje: krajowy 9-cyfrowy numer (spacje, myslniki, nawiasy dowolne), miedzynarodowy z + albo z prefiksem  0 (np. +49 171 1234567, 0049 171 1234567, 0048 512 345 678)
+// oraz (dotychczas) 8-15 cyfr bez + zaczynajacych sie od 1-9. Do wysylki numery z  0 zamieniamy na + (normalizePhoneForSend).
 export function isValidPhone(p: string): boolean {
   const cleaned = p.replace(/[\s\-()]/g, '')
-  return /^(\+?[1-9]\d{7,14}|\d{9})$/.test(cleaned)
+  return /^(\+?[1-9]\d{7,14}|\d{9}|00[1-9]\d{7,13})$/.test(cleaned)
+}
+
+/** Numer do wysylki do CRM: przycieta wartosc; prefiks 00 (miedzynarodowy) zamieniony na +, reszta bez zmian. */
+export function normalizePhoneForSend(p: string): string {
+  const t = p.trim()
+  const cleaned = t.replace(/[\s\-()]/g, '')
+  return /^00[1-9]\d{7,13}$/.test(cleaned) ? '+' + cleaned.slice(2) : t
 }
 
 export function readUtm(search: string): string {
@@ -333,7 +342,7 @@ export const CALCULATOR_LEAD_SOURCE = 'wycena_lp'
 export function buildLeadRequest(input: { name: string; phone: string; values: FormValues; outcome: EstimateOutcome | null; utm: string; turnstileToken?: string | null; honeypot?: string; attribution?: Attribution | null; consentVersion?: string }) {
   return {
     full_name: input.name.trim() || 'Właściciel',
-    phone: input.phone.trim(),
+    phone: normalizePhoneForSend(input.phone),
     source: CALCULATOR_LEAD_SOURCE,
     client_type: 'seller',
     preferred_city: input.values.city.trim(),

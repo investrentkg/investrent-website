@@ -9,7 +9,7 @@ import WycenaModal from '@/components/WycenaModal'
 import Turnstile from './Turnstile'
 import PhoneBlock from './PhoneBlock'
 import { PHONE_BLOCK_TEXTS } from './phoneBlockTexts'
-import { PHONE_BLOCK_ON } from '@/lib/wycenaFlags'
+import { PHONE_BLOCK_ON, scrollDeltaAboveBanner } from '@/lib/wycenaFlags'
 import { sendFunnelStep } from '@/lib/funnel'
 import {
   CONDITIONS, EMPTY_FORM, OFFICE_PHONE, PROPERTY_TYPES,
@@ -79,6 +79,18 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
   const showSticky = available && phase === 'after' && !!outcome && armed && !leadInView && !ctaInView && !leadDone
 
   useEffect(() => { trackValuation('wycena_view'); sendFunnelStep('entry', funnelVariant) }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  // baner cookies (fixed, na dole; wysokosc w --consent-h) nie moze zaslaniac fokusowanego pola: przewijamy tak, by dol pola byl nad banerem
+  useEffect(() => {
+    const onFocusIn = (e: FocusEvent) => {
+      const t = e.target as HTMLElement | null
+      if (!t || !/^(INPUT|SELECT|TEXTAREA)$/.test(t.tagName)) return
+      const bar = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--consent-h')) || 0
+      const d = scrollDeltaAboveBanner(t.getBoundingClientRect().bottom, window.innerHeight, bar)
+      if (d > 0) window.scrollBy({ top: d, behavior: 'instant' as ScrollBehavior })
+    }
+    document.addEventListener('focusin', onFocusIn)
+    return () => document.removeEventListener('focusin', onFocusIn)
+  }, [])
   // licznik lejka (flaga NEXT_PUBLIC_WYCENA_FUNNEL, domyslnie wylaczony): consent_screen = pojawienie sie bloku/panelu telefonu po wyniku
   const consentLogged = useRef(false)
   useEffect(() => {

@@ -587,6 +587,7 @@ html, body {
 /* â”€â”€ Kalkulator wyceny (/wycena) â”€â”€ */
 .wy-field {
   width: 100%;
+  min-height: 48px; /* cel dotyku >= 44 px */
   padding: 12px 14px;
   border-radius: 12px;
   border: 1.5px solid #94a3b8;
@@ -604,7 +605,7 @@ html, body {
 .wy-field[aria-invalid="true"] { border-color: #b91c1c; }
 .wy-btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  width: 100%; border: none; border-radius: 12px; padding: 14px 20px;
+  width: 100%; min-height: 48px; border: none; border-radius: 12px; padding: 14px 20px;
   font-size: 16px; font-weight: 700; font-family: inherit; cursor: pointer;
   background: #f5a623; color: #1a1a1a;
 }
@@ -638,7 +639,7 @@ html, body {
 .wy-details > summary { display: flex; align-items: center; min-height: 44px; cursor: pointer; color: #1a4fa0; font-weight: 600; text-decoration: underline; }
 .wy-details[open] > summary { margin-bottom: 8px; }
 
-/* ¦¦ /wycena: blok telefonu pod wynikiem + telefon (375 px) ¦¦ */
+/* ï¿½ï¿½ /wycena: blok telefonu pod wynikiem + telefon (375 px) ï¿½ï¿½ */
 .wy-phoneblock { margin: 16px 0 4px; padding: 16px; background: #f0f6ff; border: 1px solid #bfdbfe; border-radius: 14px; }
 .wy-pb-title { font-family: var(--font-montserrat); font-weight: 800; font-size: 18px; color: #0d2a5c; margin: 0 0 8px; line-height: 1.3; }
 .wy-consent-row { display: flex; gap: 12px; align-items: flex-start; margin-top: 14px; }
@@ -655,3 +656,6 @@ html:has(.wy-pad) { scroll-padding-bottom: calc(var(--consent-h, 0px) + 96px); }
   .wy-pad { padding-top: 16px !important; }
   .wy-phoneblock { padding: 14px; }
 }
+
+/* link w tekscie (klauzula informacyjna): cel dotyku >= 44 px bez zmiany tresci */
+.wy-inline-link { display: inline-block; padding: 12px 2px; min-height: 44px; box-sizing: border-box; }
