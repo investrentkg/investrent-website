@@ -6,6 +6,7 @@ export const revalidate = 300
 
 import { serializeJsonLd } from '@/lib/jsonLd'
 import Nav from '@/components/Nav'
+import RelatedLinks from '@/components/RelatedLinks'
 import Footer from '@/components/Footer'
 import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
@@ -128,6 +129,7 @@ export default async function HubPage() {
             },
           ],
         }) }} />
+        <RelatedLinks page="hub" />
       </main>
       <Footer office={o as any} />
       <SocialSidebar office={o as any} />

@@ -25,6 +25,7 @@ import Reviews       from '@/components/Reviews'
 import { JsonLd }    from '@/components/JsonLd'
 import Team          from '@/components/Team'
 import Contact       from '@/components/Contact'
+import RelatedLinks from '@/components/RelatedLinks'
 import Footer        from '@/components/Footer'
 import MortgageCalcSection from '@/components/MortgageCalcSection'
 import SocialSidebar from '@/components/SocialSidebar'
@@ -139,6 +140,7 @@ export default async function Home() {
         <Contact       office={office} />
         <MortgageCalcSection />
         <ReadAlso />
+        <RelatedLinks page="home" />
       </main>
       <Footer        office={office} />
 
