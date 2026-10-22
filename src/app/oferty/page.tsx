@@ -5,6 +5,7 @@ import Footer from '@/components/Footer'
 import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
 import OffersPageClient from './OffersPageClient'
+import AllOffersLinks from '@/components/AllOffersLinks'
 import { getPublicOffers, getOffice, getPageContent } from '@/lib/api'
 import type { Metadata } from 'next'
 
@@ -58,6 +59,7 @@ export default async function OffersPage({ searchParams }: { searchParams: { [k:
           </div>
         </div>
         <OffersPageClient initialOffers={data?.data ?? []} initialTotal={data?.pagination?.total ?? 0} defaultType={property_type} defaultTransaction={transaction_type} agentId={agent_id} />
+        {!agent_id && <AllOffersLinks filter={{ ...(property_type && { property_type }), ...(transaction_type && { transaction_type }) }} heading={transaction_type === 'wynajem' ? 'Wszystkie oferty wynajmu' : transaction_type === 'sprzedaz' ? 'Wszystkie oferty sprzedaży' : 'Wszystkie oferty'} />}
       </main>
       <Footer office={office} />
 
