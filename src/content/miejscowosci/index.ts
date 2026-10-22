@@ -47,9 +47,21 @@ export const LOCALITIES: LocalityContent[] = [
     school: null,
     // RCN (Cenogram), lokale mieszkalne, wolny rynek, obręb Grzybowo, 2024-10-04..2025-12-19: 49 transakcji, mediana 12 578 zł/m2
     rcn: { n: 49, medianPerM2: 12578, period: '10.2024–12.2025' },
-    status: 'draft',
+    status: 'approved',
     summary:
       'Grzybowo to wieś tuż za miastem — ok. 8 km i ok. 13 minut autem od centrum Kołobrzegu, w gminie Kołobrzeg. Przez miejscowość kursują autobusy Express Bus i PKS. To aktywny rynek nowych apartamentów: w Rejestrze Cen Nieruchomości od października 2024 do grudnia 2025 jest 49 transakcji lokali mieszkalnych na wolnym rynku, w większości z rynku pierwotnego, o średniej powierzchni ok. 54 m². Działamy tu szeroko: od apartamentów, przez pensjonaty, po budynki do wykończenia. Przykłady z naszej oferty to obiekty inwestycyjne; jedna z ofert znajduje się ok. 900 m od morza.',
+    sections: [
+      { heading: 'Charakter miejscowości', paragraphs: ['Grzybowo to wieś w gminie Kołobrzeg, położona tuż za miastem: około 8 km i około 13 minut samochodem od centrum Kołobrzegu. Kołobrzeg ma pełną infrastrukturę i największą ofertę, a Grzybowo leży 13 minut jazdy od niego i ma mniejszą skalę. Źródła turystyczne opisują miejscowość jako spokojną, bez deptaka i dużych hoteli. Jest tu więcej zieleni, okolica jest cichsza, a życie skupia się przede wszystkim w sezonie.'] },
+      { heading: 'Dojazd i komunikacja', paragraphs: ['Do centrum Kołobrzegu jedzie się samochodem około 13 minut. Przez Grzybowo kursują Express Bus na trasie Kołobrzeg–Trzebiatów oraz PKS Gryfice na trasie Kołobrzeg–Świnoujście; rozkłady warto sprawdzić u przewoźników, bo mogą się zmieniać. W miejscowości są sklepy, a liceum znajduje się w Kołobrzegu. Przychodni w Grzybowie nie potwierdziliśmy, a przypisanie dzieci do szkoły podstawowej nie jest nam znane, dlatego rodziny z dziećmi powinny tę kwestię wyjaśnić w gminie jeszcze przed decyzją o zakupie.'] },
+      { heading: 'Rynek nieruchomości i ceny z rejestru', paragraphs: ['Grzybowo jest miejscem aktywnego rynku nowych apartamentów. W Rejestrze Cen Nieruchomości od października 2024 do grudnia 2025 odnotowano tu 49 transakcji lokali mieszkalnych na wolnym rynku, w większości z rynku pierwotnego, o średniej powierzchni około 54 m². Mediana cen transakcyjnych wyniosła około 12,6 tys. zł/m². Rejestr publikuje dane z opóźnieniem, więc to obraz sprzed kilku miesięcy, a nie bieżący stan rynku.', 'Ceny ofertowe z naszej bazy pokazujemy w podsumowaniu powyżej tylko wtedy, gdy ofert w miejscowości jest co najmniej trzy. Nie zestawiamy ich z cenami z rejestru, bo dotyczą innych segmentów i innego okresu.'] },
+      { heading: 'Dla kogo jest Grzybowo', paragraphs: ['Kupują tu osoby z całej Polski i z Niemiec, które chcą być blisko Kołobrzegu, ale szukają miejscowości o mniejszej skali i większej ilości zieleni. Rynek obejmuje zarówno lokale w nowym budownictwie, jak i większe obiekty, które kupujący może zagospodarować według własnego pomysłu.'] },
+      { heading: 'Praktyczne wskazówki przy zakupie', paragraphs: ['Odległość od morza w ogłoszeniach bywa podawana w linii prostej, w minutach albo w metrach; warto sprawdzić na miejscu, jak wygląda faktyczna droga pieszo. Przy lokalu z rynku pierwotnego warto dopytać o zakres wykończenia i etap prac, a przy obiekcie do wykończenia oszacować realny koszt dokończenia. Przy porównywaniu cen dobrze odróżniać ceny ofertowe od transakcyjnych oraz lokale od całych budynków, bo to różne segmenty. Rozkłady autobusów i dojazd do szkoły lepiej sprawdzić przed zakupem niż po nim.'] },
+    ],
+    faq: [
+      { q: 'Ile jest z Grzybowa do centrum Kołobrzegu?', a: 'Około 8 km, czyli około 13 minut samochodem. Kursują też autobusy Express Bus i PKS Gryfice.' },
+      { q: 'Ile wynosi mediana cen transakcyjnych w Grzybowie?', a: 'W Rejestrze Cen Nieruchomości dla lokali mieszkalnych na wolnym rynku (październik 2024 – grudzień 2025, 49 transakcji) mediana wyniosła około 12,6 tys. zł/m². Dane rejestru są publikowane z opóźnieniem.' },
+      { q: 'Ile jest od Grzybowa do morza?', a: 'Zależy od konkretnego obiektu; odległość podajemy przy każdej ofercie.' },
+    ],
   },
   {
     slug: 'sianozety',
@@ -79,9 +91,21 @@ export const LOCALITIES: LocalityContent[] = [
     school: 'w miejscowości',
     // RCN, poziom GMINY Ustronie Morskie (obejmuje Sianożęty), 2025-01-16..2026-01-22: 158 transakcji, mediana 12 462 zł/m2
     rcn: { n: 158, medianPerM2: 12462, period: '01.2025–01.2026', level: 'gmina' },
-    status: 'draft',
+    status: 'approved',
     summary:
       'Ustronie Morskie leży ok. 14 km od centrum Kołobrzegu — samochodem ok. 17 minut. Wieś liczy ok. 2,4 tys. mieszkańców, a w sezonie liczba osób na miejscu wyraźnie rośnie. Zabudowa to przede wszystkim apartamenty, hotele i pensjonaty. Do Kołobrzegu jeździ autobus przez Sianożęty, Bagicz i Podczele; w miejscowości działa szkoła podstawowa, są sklepy i gabinety lekarza rodzinnego, a liceum jest w Kołobrzegu.',
+    sections: [
+      { heading: 'Charakter miejscowości', paragraphs: ['Ustronie Morskie leży około 14 km od centrum Kołobrzegu; samochodem dojazd zajmuje około 17 minut. Według spisu z 2021 roku wieś liczy około 2,4 tys. mieszkańców, a w sezonie liczba osób na miejscu wyraźnie rośnie. Poza sezonem jest znacznie spokojniej, ale mieszkają tu stali mieszkańcy. Źródła opisują okolicę jako zieloną i cichą. Z Ustroniem Morskim sąsiadują, i są z nim połączone, Sianożęty, położone w tej samej gminie.'] },
+      { heading: 'Dojazd i komunikacja', paragraphs: ['Do Kołobrzegu kursuje autobus przez Sianożęty, Bagicz i Podczele; rozkład należy sprawdzić u przewoźnika. W miejscowości działa szkoła podstawowa im. Marii Konopnickiej, a liceum znajduje się w Kołobrzegu. Są tu sklepy oraz gabinety lekarza rodzinnego; godziny przyjęć i telefony trzeba potwierdzić bezpośrednio w placówce.'] },
+      { heading: 'Rynek nieruchomości i ceny z rejestru', paragraphs: ['W Rejestrze Cen Nieruchomości dla gminy Ustronie Morskie od stycznia 2025 do stycznia 2026 zapisano 158 transakcji lokali mieszkalnych na wolnym rynku. Mediana cen transakcyjnych wyniosła około 12,5 tys. zł/m². Warto pamiętać, że to wartość dla całej gminy, więc obejmuje także Sianożęty, a nie wyłącznie samo Ustronie Morskie. Rejestr publikuje dane z opóźnieniem, dlatego jest to obraz minionego roku, a nie aktualny stan rynku.', 'Ceny ofertowe z naszej bazy pokazujemy w podsumowaniu powyżej tylko wtedy, gdy ofert w miejscowości jest co najmniej trzy.'] },
+      { heading: 'Dla kogo jest Ustronie Morskie', paragraphs: ['Kupują tu osoby z całej Polski, a także z Niemiec. Miejscowość przyciąga tych, którzy cenią zieleń i ciszę oraz akceptują, że poza sezonem ruch jest mniejszy. Odległość od plaży zależy od konkretnej oferty i waha się od około 100 m do około 1 km, co dla jednych jest warunkiem koniecznym, a dla innych kwestią drugorzędną. Można ją rozważać zarówno jako miejsce na pobyt rekreacyjny, jak i jako adres na cały rok.'] },
+      { heading: 'Praktyczne wskazówki przy zakupie', paragraphs: ['Odległość od plaży warto sprawdzić na miejscu pieszo: różnica między 100 m a 1 km to różnica między krótkim a dłuższym spacerem. Dobrze odwiedzić miejscowość w sezonie i poza nim, bo jej rytm zmienia się wyraźnie. Przy porównywaniu cen warto odróżniać medianę dla gminy od cen w konkretnej części miejscowości oraz ceny transakcyjne od ofertowych. Osoby planujące mieszkać tu na stałe powinny sprawdzić dojazd do pracy i rozkład autobusów w godzinach, w których faktycznie będą z niego korzystać.'] },
+    ],
+    faq: [
+      { q: 'Ile jest z Ustronia Morskiego do centrum Kołobrzegu?', a: 'Około 14 km, czyli około 17 minut samochodem. Kursuje też autobus przez Sianożęty, Bagicz i Podczele.' },
+      { q: 'Czy w Ustroniu Morskim mieszka się przez cały rok?', a: 'Tak, w miejscowości mieszkają stali mieszkańcy, jest szkoła podstawowa i są sklepy. Poza sezonem jest znacznie spokojniej.' },
+      { q: 'Jaka jest mediana cen transakcyjnych?', a: 'Dla gminy Ustronie Morskie (razem z Sianożętami), lokale mieszkalne na wolnym rynku, styczeń 2025 – styczeń 2026, 158 transakcji: około 12,5 tys. zł/m². Dane rejestru są publikowane z opóźnieniem.' },
+    ],
   },
   {
     slug: 'dzwirzyno',
