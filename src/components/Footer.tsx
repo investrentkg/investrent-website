@@ -92,6 +92,7 @@ export default function Footer({ office }: { office: Office | null }) {
             </div>
             {/* NOWE (25.09.2026): dyskretne linki dla odbiorców z Niemiec (Meta Suchwünsche) */}
             <div style={{ display: 'flex', gap: 14, fontSize: 11 }}>
+              <a href="/de/immobilien-kolberg" hrefLang="de" lang="de" style={{ color: 'rgba(255,255,255,.3)', textDecoration: 'none' }}>Immobilien Kolberg (DE)</a>
               <a href="/de/datenschutz" hrefLang="de" lang="de" style={{ color: 'rgba(255,255,255,.3)', textDecoration: 'none' }}>Datenschutz (DE)</a>
               <a href="/de/impressum" hrefLang="de" lang="de" style={{ color: 'rgba(255,255,255,.3)', textDecoration: 'none' }}>Impressum (DE)</a>
             </div>
