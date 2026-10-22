@@ -1,5 +1,6 @@
 import { serializeJsonLd } from '@/lib/jsonLd'
 import Nav from '@/components/Nav'
+import RelatedLinks from '@/components/RelatedLinks'
 import Footer from '@/components/Footer'
 import { getOffice } from '@/lib/api'
 import WycenaClient from './WycenaClient'
@@ -40,6 +41,7 @@ export default async function WycenaPage() {
       <main id="glowna-tresc">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(BREADCRUMBS) }} />
         <WycenaClient initialEnabled={CALC_ENABLED} />
+        <RelatedLinks page="wycena" />
       </main>
       <Footer office={office} />
     </>

@@ -1,5 +1,6 @@
 import { serializeJsonLd } from '@/lib/jsonLd'
 import Nav from '@/components/Nav'
+import RelatedLinks from '@/components/RelatedLinks'
 import Footer from '@/components/Footer'
 import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
@@ -136,6 +137,7 @@ export default async function KupnoPage() {
           '@type': 'FAQPage',
           mainEntity: FAQ.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
         }) }} />
+        <RelatedLinks page="kupno" />
       </main>
       <Footer office={office} />
 

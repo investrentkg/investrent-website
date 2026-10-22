@@ -1,5 +1,6 @@
 import { serializeJsonLd } from '@/lib/jsonLd'
 import Nav from '@/components/Nav'
+import RelatedLinks from '@/components/RelatedLinks'
 import Footer from '@/components/Footer'
 import SocialSidebar from '@/components/SocialSidebar'
 import Contact from '@/components/Contact'
@@ -253,6 +254,7 @@ export default async function SprzedazPage() {
         }) }} />
 
         <div id="kontakt-sprzedaz"><Contact office={office} /></div>
+        <RelatedLinks page="sprzedaz" />
       </main>
       <Footer office={office} />
 

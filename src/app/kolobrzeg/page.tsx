@@ -10,6 +10,7 @@ export const revalidate = 3600
 import { serializeJsonLd } from '@/lib/jsonLd'
 import Nav from '@/components/Nav'
 import ReadAlso from '@/components/ReadAlso'
+import RelatedLinks from '@/components/RelatedLinks'
 import Footer from '@/components/Footer'
 import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
@@ -174,6 +175,7 @@ export default async function KolobrzegPage() {
           mainEntity: FAQ.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
         }) }} />
         <ReadAlso />
+        <RelatedLinks page="kolobrzeg" />
       </main>
       <Footer office={office} />
       <SocialSidebar office={office} />
