@@ -242,6 +242,7 @@ export async function submitLead(payload: {
   notes?: string
   source?: string
   client_type?: string
+  offer_ref?: string // numer oferty (tylko formularz karty oferty); backend ignoruje zly format
   preferred_city?: string
   hp_field?: string // honeypot (backend: niepusty = bot)
   turnstile_token?: string

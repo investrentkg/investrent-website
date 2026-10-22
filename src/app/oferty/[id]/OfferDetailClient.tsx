@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { MapPin, LayoutGrid, Ruler, Layers, Phone, ChevronLeft, ChevronRight, Award, Shield, Clock, ArrowLeft, X, Expand } from 'lucide-react'
 import { submitLead } from '@/lib/api'
+import { buildOfferInquiryPayload } from '@/lib/leadSubmit'
 import { formatPhoneDisplay } from '@/lib/phone'
 import MortgageMiniCalculator from '@/components/MortgageMiniCalculator'
 import Link from 'next/link'
@@ -285,7 +286,7 @@ function ContactForm({ refNumber }: { refNumber: string }) {
   async function submit() {
     if (!form.phone && !form.email) { alert('Podaj telefon lub email'); return }
     setStatus('loading')
-    const res = await submitLead({ full_name: form.name, phone: form.phone, email: form.email, notes: `Zapytanie o ofertę ${refNumber}${form.notes ? ': ' + form.notes : ''}`, source: 'offer_detail', client_type: 'buyer' })
+    const res = await submitLead(buildOfferInquiryPayload(refNumber, form))
     setStatus(res?.ok ? 'ok' : 'error')
   }
 
