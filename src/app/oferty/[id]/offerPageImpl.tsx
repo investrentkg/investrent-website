@@ -44,7 +44,7 @@ function transactionLabel(t: string): string {
   return t === 'wynajem' ? 'wynajem' : 'sprzedaż'
 }
 
-// SEO (22.10.2026): title oferty = tytuł agenta + marka; dłuższe niż ok. 60 znaków Google ucina, więc skracamy tytuł do granicy słowa
+// SEO (22.10.2026, audyt): title oferty = tytuł agenta + marka; dłuższe niż ok. 60 znaków Google ucina, więc skracamy tytuł do granicy słowa
 // (marka krótka ' | InvestRent' zamiast szablonu layoutu). Pełny tytuł zostaje w H1, OG i danych strukturalnych.
 function clampOfferTitle(t: string, max = 47): string {
   if (t.length <= max) return t
