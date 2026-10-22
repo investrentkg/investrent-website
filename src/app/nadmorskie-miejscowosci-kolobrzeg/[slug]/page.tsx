@@ -14,6 +14,7 @@ import { getOffice } from '@/lib/api'
 import { loadAllOffers } from '@/lib/allOffers'
 import { HUB, LOCALITIES, BEACH_RANGE, getLocality } from '@/content/miejscowosci'
 import { summarizeCity, formatOffersCount, formatPriceCell, formatRcnCell } from '@/lib/localityOffers'
+import { serializeJsonLd } from '@/lib/jsonLd'
 import type { Metadata } from 'next'
 
 const BASE_URL = 'https://www.investrent.com.pl'
@@ -27,7 +28,7 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   if (!l) return { title: 'Nie znaleziono' }
   const approved = l.status === 'approved'
   return {
-    title: `Nieruchomości ${l.name} — dojazd, plaża, oferta`,
+    title: { absolute: `Nieruchomości ${l.name}: dojazd, plaża, oferta | InvestRent` },
     description: `${l.name}: ${l.distanceKm} (${l.driveMin}) od centrum Kołobrzegu, plaża, komunikacja i aktualne oferty nieruchomości.`,
     alternates: { canonical: `${BASE_URL}${HUB.path}/${l.slug}` },
     robots: approved ? { index: true, follow: true } : { index: false, follow: true },
@@ -68,6 +69,19 @@ export default async function LocalityPage({ params }: { params: { slug: string 
               <li>Ceny transakcyjne (RCN, dane do 01.2026): {formatRcnCell(l.rcn)}</li>
             </ul>
             <p style={{ ...p, fontSize: 13, color: '#6b7280' }}>Ceny to ceny ofertowe z naszej bazy, nie transakcyjne ani poziom rynku; zakres pokazujemy tylko przy co najmniej 3 ofertach.</p>
+            {l.sections?.map(sec => (
+              <section key={sec.heading}>
+                <h2 style={h2}>{sec.heading}</h2>
+                {sec.paragraphs.map(t => <p key={t} style={p}>{t}</p>)}
+              </section>
+            ))}
+            {l.faq && l.faq.length > 0 && (
+              <section>
+                <h2 style={h2}>Najczęstsze pytania</h2>
+                {l.faq.map(f => (<div key={f.q}><h3 style={{ fontSize: 16, color: '#0d2a5c', margin: '14px 0 6px' }}>{f.q}</h3><p style={p}>{f.a}</p></div>))}
+                <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: l.faq.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }) }} />
+              </section>
+            )}
             <p style={p}>Aktualnych propozycji zapytaj w biurze — oferta zmienia się na bieżąco.</p>
             <p>
               <a href={HUB.path} style={{ color: '#1a4fa0', fontWeight: 700, textDecoration: 'none' }}>← Porównanie wszystkich miejscowości</a>
