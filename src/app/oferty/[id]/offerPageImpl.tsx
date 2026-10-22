@@ -50,7 +50,7 @@ function clampOfferTitle(t: string, max = 47): string {
   if (t.length <= max) return t
   const cut = t.slice(0, max + 1)
   const i = cut.lastIndexOf(' ')
-  return (i > 20 ? cut.slice(0, i) : t.slice(0, max)).replace(/[\s,;:–—-]+$/, '').replace(/(\s+(ul\.|przy|w|z|i|na|do|od|blisko|oraz|dla|nad|pod|ze))+$/i, '')
+  return (i > 20 ? cut.slice(0, i) : t.slice(0, max)).replace(/[\s,;:–—+&/|-]+$/, '').replace(/(\s+(ul\.|przy|w|z|i|na|do|od|blisko|oraz|dla|nad|pod|ze))+$/i, '')
 }
 
 export async function buildOfferMetadata(params: { id: string }, previewToken?: string): Promise<Metadata> {
