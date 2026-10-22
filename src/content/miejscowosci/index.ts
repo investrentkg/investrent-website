@@ -27,6 +27,9 @@ export interface LocalityContent {
   status: LocalityStatus
   /** Akapit w sekcji miejscowości na hubie i na podstronie. */
   summary: string
+  /** Rozszerzony, unikalny tekst podstrony (sekcje H2 + akapity); wymagany do awansu na 'approved'. */
+  sections?: { heading: string; paragraphs: string[] }[]
+  faq?: { q: string; a: string }[]
 }
 
 export const BEACH_RANGE = 'od ok. 100 m do ok. 1 km (zależnie od oferty)'
