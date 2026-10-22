@@ -18,6 +18,8 @@ const STATIC_PAGES = [
   // nieruchomosci kolobrzeg" ktora zostaje przypisana do strony glownej).
   { path: '/kolobrzeg', priority: 0.85, changeFrequency: 'weekly' as const },
   { path: '/nadmorskie-miejscowosci-kolobrzeg', priority: 0.7, changeFrequency: 'weekly' as const },
+  { path: '/mieszkania-na-sprzedaz-kolobrzeg', priority: 0.85, changeFrequency: 'daily' as const },
+  { path: '/domy-na-sprzedaz-kolobrzeg', priority: 0.8, changeFrequency: 'daily' as const },
   { path: '/kupno', priority: 0.8, changeFrequency: 'weekly' as const },
   { path: '/sprzedaz', priority: 0.8, changeFrequency: 'weekly' as const },
   { path: '/wynajem', priority: 0.8, changeFrequency: 'weekly' as const },
