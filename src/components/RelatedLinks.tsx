@@ -23,6 +23,7 @@ const LINKS: Record<RelatedKey, { href: string; title: string }[]> = {
   ],
   kolobrzeg: [
     { href: POST_B, title: 'Od czego zależy cena nieruchomości w Kołobrzegu' },
+    { href: POST_A, title: 'Ceny ofertowe i transakcyjne mieszkań w Kołobrzegu' },
     { href: '/mieszkania-na-sprzedaz-kolobrzeg', title: 'Mieszkania na sprzedaż w Kołobrzegu: aktualne oferty' },
     { href: '/domy-na-sprzedaz-kolobrzeg', title: 'Domy na sprzedaż w Kołobrzegu i okolicy: aktualne oferty' },
   ],

@@ -20,8 +20,8 @@ import { MapPin, TrendingUp, Home, ArrowRight } from 'lucide-react'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Nieruchomości Kołobrzeg — rynek, dzielnice, oferty',
-  description: 'Kupno, sprzedaż i wynajem nieruchomości w Kołobrzegu: przegląd dzielnic, aktualne oferty i praktyczne informacje o lokalnym rynku nad Bałtykiem.',
+  title: { absolute: 'Nieruchomości Kołobrzeg: rynek, dzielnice, oferty | InvestRent' },
+  description: 'Nieruchomości w Kołobrzegu: dzielnice, aktualne oferty sprzedaży i wynajmu oraz ceny ofertowe i transakcyjne. Lokalne biuro InvestRent pomoże w wyborze.',
   alternates: { canonical: 'https://www.investrent.com.pl/kolobrzeg' },
 }
 
