@@ -44,6 +44,15 @@ function transactionLabel(t: string): string {
   return t === 'wynajem' ? 'wynajem' : 'sprzedaż'
 }
 
+// SEO (22.10.2026): title oferty = tytuł agenta + marka; dłuższe niż ok. 60 znaków Google ucina, więc skracamy tytuł do granicy słowa
+// (marka krótka ' | InvestRent' zamiast szablonu layoutu). Pełny tytuł zostaje w H1, OG i danych strukturalnych.
+function clampOfferTitle(t: string, max = 47): string {
+  if (t.length <= max) return t
+  const cut = t.slice(0, max + 1)
+  const i = cut.lastIndexOf(' ')
+  return (i > 20 ? cut.slice(0, i) : t.slice(0, max)).replace(/[\s,;:–—-]+$/, '').replace(/(\s+(ul\.|przy|w|z|i|na|do|od|blisko|oraz|dla|nad|pod|ze))+$/i, '')
+}
+
 export async function buildOfferMetadata(params: { id: string }, previewToken?: string): Promise<Metadata> {
   const result = await getPublicOfferResult(params.id, previewToken)
   // Tryb podgladu (13.09.2026, patrz backend lib/offerPreviewToken.ts) -
@@ -116,7 +125,7 @@ export async function buildOfferMetadata(params: { id: string }, previewToken?: 
   // inaczej niz <title> ponizej, gdzie robi to sam szablon.
   const socialTitle = `${title} | InvestRent Kołobrzeg`
   return {
-    title,
+    title: { absolute: `${clampOfferTitle(title)} | InvestRent` },
     description,
     // NAPRAWA (audyt SEO, punkt 6): udostepnienie linku do KONKRETNEJ oferty
     // na Facebooku/WhatsApp pokazywalo ogolne zdjecie strony glownej

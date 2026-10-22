@@ -110,7 +110,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           )}
 
           <div style={{ fontSize: 16, color: '#374151', lineHeight: 1.75 }} className="blog-content">
-            <ReactMarkdown>{post.content}</ReactMarkdown>
+            <ReactMarkdown components={{ h1: ({ children }) => <h2>{children}</h2> }}>{post.content}</ReactMarkdown>
           </div>
         </article>
       </main>
