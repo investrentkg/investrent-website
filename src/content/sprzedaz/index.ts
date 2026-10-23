@@ -3,7 +3,7 @@
 
 export type SaleSection = { heading: string; paragraphs: string[]; bullets?: string[] }
 export type SaleListingContent = {
-  propertyType: 'mieszkanie' | 'dom'
+  propertyType: 'mieszkanie' | 'dom' | 'dzialka'
   path: string
   title: string
   description: string
@@ -94,6 +94,49 @@ export const DOMY: SaleListingContent = {
     { q: 'Czy w ofertach są tylko domy z Kołobrzegu?', a: 'Pokazujemy domy z Kołobrzegu i okolicznych miejscowości nadmorskich. Miejscowość widać przy każdej ofercie.' },
     { q: 'Czy dom z działką jest w jednej ofercie?', a: 'Zwykle tak, a opis oferty podaje powierzchnię działki i budynku. Szczegóły potwierdzamy przed oglądaniem.' },
     { q: 'Czy sprawdzacie stan prawny przed transakcją?', a: 'Zwracamy uwagę na dokumenty i księgę wieczystą oraz wskazujemy, co warto zweryfikować. W sprawach prawnych zalecamy konsultację z notariuszem lub prawnikiem.' },
+    { q: 'Jak szybko dostanę odpowiedź po zgłoszeniu?', a: 'Odpowiadamy najpóźniej w ciągu 24 godzin od zgłoszenia.' },
+  ],
+}
+
+export const DZIALKI: SaleListingContent = {
+  propertyType: 'dzialka',
+  path: '/dzialki-na-sprzedaz-kolobrzeg',
+  title: 'Działki na sprzedaż Kołobrzeg i okolice – oferty',
+  description: 'Działki na sprzedaż w Kołobrzegu i okolicznych miejscowościach nad Bałtykiem: aktualne oferty biura InvestRent i wskazówki przed zakupem.',
+  h1: 'Działki na sprzedaż w Kołobrzegu i okolicy',
+  breadcrumb: 'Działki na sprzedaż',
+  lead: 'Aktualne oferty działek w Kołobrzegu i okolicznych miejscowościach nad morzem. Pomagamy wybrać działkę pod dom, inwestycję lub rekreację i zebrać informacje, które warto sprawdzić przed zakupem.',
+  sections: [
+    {
+      heading: 'Działki w Kołobrzegu i okolicznych miejscowościach',
+      paragraphs: [
+        'Działki oferujemy w Kołobrzegu i w okolicznych miejscowościach nadmorskich oraz gminach sąsiednich; miejscowość widać przy każdej ofercie. Cena, możliwości zabudowy i odległość od morza różnią się zależnie od miejsca, więc nie podajemy jednej „średniej”. Aktualne ceny ofertowe widzisz przy każdym ogłoszeniu.',
+        'Przy działkach wiele zależy od celu: inaczej wybiera się teren pod dom całoroczny, inaczej pod inwestycję lub działkę rekreacyjną. Zanim zawęzisz poszukiwania, warto określić, ile ma kosztować całość: zakup, przyłącza, prace przygotowawcze i budowa.',
+      ],
+    },
+    {
+      heading: 'Na co zwrócić uwagę przed zakupem działki',
+      paragraphs: ['Przy każdej działce warto zebrać te same informacje:'],
+      bullets: [
+        'przeznaczenie terenu i zasady zabudowy (plan miejscowy albo decyzja o warunkach zabudowy w urzędzie gminy),',
+        'dostęp do drogi publicznej i stan drogi dojazdowej,',
+        'media: prąd, woda, kanalizacja, gaz; odległość do przyłączy i koszt ich doprowadzenia,',
+        'kształt, ukształtowanie i warunki gruntowe,',
+        'księga wieczysta, obciążenia i służebności,',
+        'otoczenie: sąsiednia zabudowa, hałas, sezonowość ruchu.',
+      ],
+    },
+    {
+      heading: 'Jak możemy pomóc',
+      paragraphs: [
+        'Przedstawiamy dopasowane oferty, umawiamy oglądanie i towarzyszymy w negocjacjach. Dla kupującego nasza pomoc jest bezpłatna. W sprawach prawnych i formalnych dotyczących konkretnej działki zalecamy konsultację z notariuszem lub prawnikiem. Więcej o samym mieście znajdziesz na stronie o nieruchomościach w Kołobrzegu.',
+      ],
+    },
+  ],
+  faq: [
+    { q: 'Czy w ofertach są tylko działki z Kołobrzegu?', a: 'Pokazujemy działki z Kołobrzegu i okolicznych miejscowości. Lokalizacja jest podana przy każdej ofercie.' },
+    { q: 'Czy mogę zapytać o możliwość zabudowy konkretnej działki?', a: 'Tak, przekażemy dostępne informacje z oferty. Ostateczne ustalenia dotyczące zabudowy należy potwierdzić w urzędzie gminy.' },
+    { q: 'Czy pomagacie w sprawach formalnych przy zakupie?', a: 'Towarzyszymy w kolejnych krokach transakcji i wskazujemy, jakie dokumenty warto sprawdzić. W kwestiach prawnych zalecamy konsultację z notariuszem lub prawnikiem.' },
     { q: 'Jak szybko dostanę odpowiedź po zgłoszeniu?', a: 'Odpowiadamy najpóźniej w ciągu 24 godzin od zgłoszenia.' },
   ],
 }

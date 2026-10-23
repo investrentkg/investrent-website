@@ -42,7 +42,7 @@ export default async function SaleListingPage({ c }: { c: SaleListingContent }) 
           </div>
         </div>
         <OffersPageClient initialOffers={offers} initialTotal={data?.pagination?.total ?? 0} defaultType={c.propertyType} defaultTransaction="sprzedaz" />
-        <AllOffersLinks filter={{ transaction_type: 'sprzedaz', property_type: c.propertyType }} heading={c.propertyType === 'dom' ? 'Wszystkie domy na sprzedaż' : 'Wszystkie mieszkania na sprzedaż'} />
+        <AllOffersLinks filter={{ transaction_type: 'sprzedaz', property_type: c.propertyType }} heading={c.propertyType === 'dom' ? 'Wszystkie domy na sprzedaż' : c.propertyType === 'dzialka' ? 'Wszystkie działki na sprzedaż' : 'Wszystkie mieszkania na sprzedaż'} />
         {offers.length === 0 && (
           <div className="container" style={{ padding: '24px 0', maxWidth: 760 }}>
             <p style={{ fontSize: 15, color: '#374151', lineHeight: 1.8 }}>Aktualnie nie mamy opublikowanych ofert tego typu. Zajrzyj do <a href="/oferty" style={link}>wszystkich ofert</a> albo napisz do nas, a poinformujemy Cię o nowych.</p>
