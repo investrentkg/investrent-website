@@ -229,20 +229,20 @@ export default function OffersPageClient({ initialOffers, initialTotal, defaultT
         <div className="container">
           {/* Wiersz główny */}
           <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' as const, marginBottom: showAdvanced ? 14 : 0 }}>
-            <SEL value={filters.market_type} onChange={f('market_type')}>
+            <SEL aria-label="Rynek" value={filters.market_type} onChange={f('market_type')}>
               <option value="">Rynek (wszystkie)</option>
               <option value="pierwotny">Rynek pierwotny</option>
               <option value="wtorny">Rynek wtórny</option>
             </SEL>
-            <SEL value={filters.transaction_type} onChange={f('transaction_type')}>
+            <SEL aria-label="Rodzaj transakcji" value={filters.transaction_type} onChange={f('transaction_type')}>
               {TRANS_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
             </SEL>
-            <SEL value={filters.property_type} onChange={f('property_type')} style={{ minWidth: 160 }}>
+            <SEL aria-label="Typ nieruchomości" value={filters.property_type} onChange={f('property_type')} style={{ minWidth: 160 }}>
               {PROP_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
             </SEL>
             <div style={{ position: 'relative' as const, flex: '1 1 180px' }}>
               <MapPin size={14} style={{ position: 'absolute' as const, left: 12, top: '50%', transform: 'translateY(-50%)', color: '#9ca3af', pointerEvents: 'none' as const }} />
-              <INP placeholder="Lokalizacja (np. Kołobrzeg)" value={filters.city} onChange={f('city')} style={{ paddingLeft: 34, width: '100%' }} />
+              <INP aria-label="Lokalizacja" placeholder="Lokalizacja (np. Kołobrzeg)" value={filters.city} onChange={f('city')} style={{ paddingLeft: 34, width: '100%' }} />
             </div>
             <button onClick={() => setShowAdvanced(a => !a)}
               style={{ padding: '10px 16px', borderRadius: 9, border: '1.5px solid', borderColor: showAdvanced ? '#1a4fa0' : '#e5e7eb', background: showAdvanced ? '#eff6ff' : 'white', color: showAdvanced ? '#1a4fa0' : '#6b7280', fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' as const }}>
@@ -269,7 +269,7 @@ export default function OffersPageClient({ initialOffers, initialTotal, defaultT
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 10, paddingTop: 14, borderTop: '1px solid #f0f0f0' }}>
               <div>
                 <label style={{ fontSize: 11, fontWeight: 700, color: '#6b7280', letterSpacing: '.5px', textTransform: 'uppercase' as const, display: 'block', marginBottom: 5 }}>Pokoje</label>
-                <SEL value={filters.rooms} onChange={f('rooms')} style={{ width: '100%' }}>
+                <SEL aria-label="Liczba pokoi" value={filters.rooms} onChange={f('rooms')} style={{ width: '100%' }}>
                   {ROOMS_OPTS.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
                 </SEL>
               </div>

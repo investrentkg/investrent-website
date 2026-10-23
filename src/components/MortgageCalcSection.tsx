@@ -99,7 +99,7 @@ export default function MortgageCalcSection() {
                   <span style={{ fontSize: 13, color: '#374151', fontWeight: 600 }}>{sl.label}</span>
                   <span style={{ fontSize: 14, fontWeight: 800, color: '#1a4fa0' }}>{sl.fmt(sl.val)}</span>
                 </div>
-                <input type="range" min={sl.min} max={sl.max} step={sl.step}
+                <input type="range" aria-label={sl.label} min={sl.min} max={sl.max} step={sl.step}
                   value={sl.val} onChange={e => sl.set(parseFloat(e.target.value))}
                   style={{ width: '100%', accentColor: '#1a4fa0', cursor: 'pointer' }} />
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#9ca3af', marginTop: 2 }}>
@@ -146,7 +146,7 @@ export default function MortgageCalcSection() {
                 <SuccessBadge text="Oddzwonimy wkrótce!" style={{ background: '#f0fdf4', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#065f46', fontWeight: 600, justifyContent: 'center' }} />
               ) : (
                 <div style={{ display: 'flex', gap: 8 }}>
-                  <input type="tel" placeholder="Twój numer telefonu"
+                  <input type="tel" aria-label="Numer telefonu" placeholder="Twój numer telefonu"
                     value={phone} onChange={e => setPhone(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && submitCreditLead()}
                     style={{ flex: 1, padding: '10px 12px', borderRadius: 10, border: '1.5px solid #e5e7eb',

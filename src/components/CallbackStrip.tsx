@@ -48,7 +48,7 @@ export default function CallbackStrip() {
             ) : (
               <>
                 <input
-                  type="tel" value={phone} onChange={e => setPhone(e.target.value)}
+                  type="tel" aria-label="Numer telefonu" value={phone} onChange={e => setPhone(e.target.value)}
                   placeholder="+48 … wpisz numer telefonu"
                   style={{ background: 'rgba(255,255,255,.95)', borderRadius: 10, padding: '11px 16px', fontSize: 13, color: '#374151', width: 210, border: 'none', outline: 'none' }}
                 />
