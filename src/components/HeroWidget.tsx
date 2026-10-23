@@ -56,7 +56,7 @@ export default function HeroWidget() {
       {/* Szukam */}
       {tab === 'search' && (
         <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 10 }}>
-          <select value={propType} onChange={e => setPropType(e.target.value)} style={fieldStyle}>
+          <select aria-label="Typ nieruchomości" value={propType} onChange={e => setPropType(e.target.value)} style={fieldStyle}>
             <option value="">Typ nieruchomości</option>
             <option value="mieszkanie">Mieszkanie</option>
             <option value="dom">Dom</option>
@@ -64,12 +64,12 @@ export default function HeroWidget() {
             <option value="lokal">Lokal użytkowy</option>
             <option value="inwestycja">Inwestycja</option>
           </select>
-          <select value={transType} onChange={e => setTransType(e.target.value)} style={fieldStyle}>
+          <select aria-label="Rodzaj transakcji" value={transType} onChange={e => setTransType(e.target.value)} style={fieldStyle}>
             <option value="">Kupno i wynajem</option>
             <option value="sprzedaz">Na sprzedaż</option>
             <option value="wynajem">Do wynajęcia</option>
           </select>
-          <input type="text" placeholder="Lokalizacja — np. Kołobrzeg, Mielno…"
+          <input type="text" aria-label="Lokalizacja" placeholder="Lokalizacja — np. Kołobrzeg, Mielno…"
             value={city} onChange={e => setCity(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && go()}
             style={fieldStyle} />
@@ -101,9 +101,9 @@ export default function HeroWidget() {
               <p style={{ color: 'rgba(255,255,255,.7)', fontSize: 13, lineHeight: 1.65, margin: '0 0 4px' }}>
                 Zostaw numer — ekspert bezpłatnie wyceni Twoją nieruchomość.
               </p>
-              <input type="text" placeholder="Imię i nazwisko (opcjonalnie)"
+              <input type="text" aria-label="Imię i nazwisko (opcjonalnie)" placeholder="Imię i nazwisko (opcjonalnie)"
                 value={sellName} onChange={e => setSellName(e.target.value)} style={fieldStyle} />
-              <input type="tel" placeholder="+48 numer telefonu *"
+              <input type="tel" aria-label="Numer telefonu (wymagane)" placeholder="+48 numer telefonu *"
                 value={sellPhone} onChange={e => setSellPhone(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && sell()}
                 style={{ ...fieldStyle, border: status === 'error' ? '1.5px solid #ef4444' : 'none' }} />
