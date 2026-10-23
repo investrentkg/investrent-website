@@ -127,6 +127,9 @@ export default async function Home() {
   return (
     <>
       <JsonLd office={office} rating={rating} />
+      {/* Wczesne wczytanie obrazu tla hero (poprawa LCP na telefonie) */}
+      <link rel="preload" as="image" href="/hero-m.webp" media="(max-width: 768px)" fetchPriority="high" />
+      <link rel="preload" as="image" href="/hero.webp" media="(min-width: 769px)" fetchPriority="high" />
       <Nav           office={office} />
       <main>
         <Hero          stats={statsData} googleRating={rating?.rating ?? null} />
