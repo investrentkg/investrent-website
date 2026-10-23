@@ -10,18 +10,21 @@ export type RelatedKey = 'wycena' | 'sprzedaz' | 'kupno' | 'kolobrzeg' | 'home' 
 const LINKS: Record<RelatedKey, { href: string; title: string }[]> = {
   wycena: [{ href: POST_A, title: 'Zobacz, ile kosztuje mieszkanie w Kołobrzegu: ceny ofertowe i transakcyjne' }],
   sprzedaz: [
+    { href: '/dzialki-na-sprzedaz-kolobrzeg', title: 'Działki na sprzedaż w Kołobrzegu i okolicy: oferty' },
     { href: '/mieszkania-na-sprzedaz-kolobrzeg', title: 'Mieszkania na sprzedaż w Kołobrzegu: aktualne oferty' },
     { href: '/domy-na-sprzedaz-kolobrzeg', title: 'Domy na sprzedaż w Kołobrzegu i okolicy: aktualne oferty' },
     { href: POST_A, title: 'Jakie ceny widzimy na rynku: ceny ofertowe i transakcyjne w Kołobrzegu' },
     { href: HUB, title: 'Nieruchomości w nadmorskich miejscowościach koło Kołobrzegu' },
   ],
   kupno: [
+    { href: '/dzialki-na-sprzedaz-kolobrzeg', title: 'Działki na sprzedaż w Kołobrzegu i okolicy: oferty' },
     { href: '/mieszkania-na-sprzedaz-kolobrzeg', title: 'Mieszkania na sprzedaż w Kołobrzegu: aktualne oferty' },
     { href: '/domy-na-sprzedaz-kolobrzeg', title: 'Domy na sprzedaż w Kołobrzegu i okolicy: aktualne oferty' },
     { href: POST_B, title: 'Od czego zależy cena kupowanego mieszkania' },
     { href: HUB, title: 'Nadmorskie miejscowości w okolicy Kołobrzegu' },
   ],
   kolobrzeg: [
+    { href: '/dzialki-na-sprzedaz-kolobrzeg', title: 'Działki na sprzedaż w Kołobrzegu i okolicy: oferty' },
     { href: POST_B, title: 'Od czego zależy cena nieruchomości w Kołobrzegu' },
     { href: POST_A, title: 'Ceny ofertowe i transakcyjne mieszkań w Kołobrzegu' },
     { href: '/mieszkania-na-sprzedaz-kolobrzeg', title: 'Mieszkania na sprzedaż w Kołobrzegu: aktualne oferty' },
