@@ -14,6 +14,7 @@ import SocialSidebar from '@/components/SocialSidebar'
 import Team from '@/components/Team'
 import Reviews from '@/components/Reviews'
 import { JsonLd } from '@/components/JsonLd'
+import { serializeJsonLd } from '@/lib/jsonLd'
 import Breadcrumb from '@/components/Breadcrumb'
 import MapEmbed from '@/components/ConsentEmbed'
 import { getTeamWithOfferCounts, getStats, getOffice } from '@/lib/api'
@@ -68,6 +69,10 @@ export default async function ONasPage() {
   return (
     <>
       <JsonLd office={office} rating={rating} />
+      {/* SEO (23.10.2026): dane strukturalne Person dla zespołu (te same dane, które widać na stronie: imię i nazwisko, stanowisko, zdjęcie) */}
+      {teamData?.data?.length ? (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd({ '@context': 'https://schema.org', '@graph': teamData.data.map((m: any) => ({ '@type': 'Person', name: m.full_name, ...(m.role_label ? { jobTitle: m.role_label } : {}), ...(m.avatar_url ? { image: m.avatar_url } : {}), worksFor: { '@type': 'RealEstateAgent', name: office.name, url: 'https://www.investrent.com.pl' } })) }) }} />
+      ) : null}
       <Nav office={office} />
       <main>
         <div style={{ background: 'linear-gradient(135deg, #0d2a5c, #1a4fa0)', padding: '56px 0 48px' }}>
