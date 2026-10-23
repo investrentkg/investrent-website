@@ -70,3 +70,21 @@ export function trackLeadSuccess(source: string | undefined): void {
     // analityka nigdy nie moze zepsuc formularza
   }
 }
+
+// Payload formularza "Zapytaj o oferte" z karty oferty. offer_ref = numer oferty (pole
+// niewidoczne dla klienta); notatka "Zapytanie o oferte <nr>" zostaje (kompatybilnosc ze
+// starym backendem). Pozostale formularze NIE wysylaja offer_ref.
+export function buildOfferInquiryPayload(
+  refNumber: string,
+  form: { name: string; phone: string; email: string; notes: string }
+) {
+  return {
+    full_name: form.name,
+    phone: form.phone,
+    email: form.email,
+    notes: `Zapytanie o ofertę ${refNumber}${form.notes ? ': ' + form.notes : ''}`,
+    source: 'offer_detail',
+    client_type: 'buyer',
+    offer_ref: refNumber,
+  }
+}
