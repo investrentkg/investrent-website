@@ -120,9 +120,8 @@ export default function Hero({ stats, googleRating = null }: HeroProps) {
           </video>
         )}
         <div
-          className="absolute inset-0 bg-cover bg-center"
+          className="absolute inset-0 bg-cover bg-center hero-bg"
           style={{
-            backgroundImage: 'url(/hero.jpg)',
             backgroundPosition: 'center 35%',
             opacity: videoReady ? 0 : 1,
             transform: `scale(${1 + scrollProgress * 0.09})`,
