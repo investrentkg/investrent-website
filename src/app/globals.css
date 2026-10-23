@@ -655,3 +655,7 @@ html:has(.wy-pad) { scroll-padding-bottom: calc(var(--consent-h, 0px) + 96px); }
   .wy-pad { padding-top: 16px !important; }
   .wy-phoneblock { padding: 14px; }
 }
+
+/* Tlo hero (22.10.2026, audyt: LCP strony glownej 6,1 s na telefonie): lekkie WebP zamiast 281 KB JPG; mobile 33 KB, wieksze ekrany 86 KB. */
+.hero-bg { background-image: url('/hero-m.webp'); }
+@media (min-width: 769px) { .hero-bg { background-image: url('/hero.webp'); } }
