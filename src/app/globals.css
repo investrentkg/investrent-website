@@ -659,3 +659,8 @@ html:has(.wy-pad) { scroll-padding-bottom: calc(var(--consent-h, 0px) + 96px); }
 /* Tlo hero (22.10.2026, audyt: LCP strony glownej 6,1 s na telefonie): lekkie WebP zamiast 281 KB JPG; mobile 33 KB, wieksze ekrany 86 KB. */
 .hero-bg { background-image: url('/hero-m.webp'); }
 @media (min-width: 769px) { .hero-bg { background-image: url('/hero.webp'); } }
+
+/* Hero na telefonach i tabletach (23.10.2026, audyt: LCP 4,8 s): tekst widoczny od razu w HTML, bez animacji wejscia (przezroczystosc/rozmycie az do hydracji opozniala najwiekszy element). Desktop bez zmian. */
+@media (max-width: 1023px) {
+  .hero-reveal, .word-reveal { opacity: 1 !important; filter: none !important; transform: none !important; transition: none !important; }
+}
