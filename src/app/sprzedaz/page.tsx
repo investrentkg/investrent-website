@@ -11,6 +11,7 @@ import { getVerifiedRating } from '@/lib/schemaRating'
 import { DollarSign, Camera, Globe, FileCheck, Key, CheckCircle, ArrowRight, FileText, Building, Users, Shield } from 'lucide-react'
 import type { Metadata } from 'next'
 import { SPRZEDAZ_TITLE, SPRZEDAZ_H1, SPRZEDAZ_META_DESCRIPTION, FOREIGN_H2, FOREIGN_TEXT_B, VALUATION_CTA_LABEL, NEW_FAQ } from '@/lib/sprzedazSeo'
+import { buildBreadcrumbJsonLd, buildServiceJsonLd } from '@/lib/seoSchemas'
 
 // ZMIANA (04.10.2026): fetch opinii bez opcji = force-cache (patrz kontakt/page.tsx) - ISR co 5 minut.
 export const revalidate = 300
@@ -252,6 +253,13 @@ export default async function SprzedazPage() {
           '@type': 'FAQPage',
           mainEntity: FAQ.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
         }) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(buildBreadcrumbJsonLd([
+          { name: 'Strona główna', path: '/' }, { name: 'Sprzedaż', path: '/sprzedaz' },
+        ])) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(buildServiceJsonLd({
+          name: 'Pośrednictwo w sprzedaży nieruchomości', description: SPRZEDAZ_META_DESCRIPTION,
+          provider: office.name, areaServed: 'Kołobrzeg i okolice', path: '/sprzedaz',
+        })) }} />
 
         <div id="kontakt-sprzedaz"><Contact office={office} /></div>
         <RelatedLinks page="sprzedaz" />

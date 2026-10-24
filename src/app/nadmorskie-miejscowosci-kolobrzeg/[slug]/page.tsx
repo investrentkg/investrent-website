@@ -16,6 +16,7 @@ import { HUB, LOCALITIES, BEACH_RANGE, getLocality } from '@/content/miejscowosc
 import { summarizeCity, formatOffersCount, formatPriceCell, formatRcnCell } from '@/lib/localityOffers'
 import { serializeJsonLd } from '@/lib/jsonLd'
 import type { Metadata } from 'next'
+import { buildBreadcrumbJsonLd } from '@/lib/seoSchemas'
 
 const BASE_URL = 'https://www.investrent.com.pl'
 
@@ -49,6 +50,11 @@ export default async function LocalityPage({ params }: { params: { slug: string 
     <>
       <Nav office={o as any} />
       <main>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(buildBreadcrumbJsonLd([
+          { name: 'Strona główna', path: '/' },
+          { name: 'Nadmorskie miejscowości', path: HUB.path },
+          { name: l.name, path: `${HUB.path}/${l.slug}` },
+        ])) }} />
         <div style={{ background: 'linear-gradient(135deg, #0d2a5c, #1a4fa0)', padding: '48px 0 40px' }}>
           <div className="container">
             <Breadcrumb light={true} crumbs={[{ label: 'Strona główna', href: '/' }, { label: 'Nadmorskie miejscowości', href: HUB.path }, { label: l.name }]} />
