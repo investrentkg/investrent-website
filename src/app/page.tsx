@@ -32,6 +32,7 @@ import SocialSidebar from '@/components/SocialSidebar'
 import { getVerifiedRating } from '@/lib/schemaRating'
 import type { Office } from '@/types'
 import { HOME_TITLE, HOME_DESCRIPTION, pickHomeMeta } from '@/lib/homeMeta'
+import { buildPageMeta } from '@/lib/buildPageMeta'
 
 // NAPRAWA (audyt SEO 31.07.2026, punkt 3): strona glowna nie mial WLASNEGO
 // eksportu metadata w ogole - dziedziczyla wszystko z layout.tsx, w tym
@@ -70,21 +71,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: ownTitle ? ownTitle : { absolute: DEFAULT_TITLE },
     description,
     alternates: { canonical: 'https://www.investrent.com.pl', languages: { pl: 'https://www.investrent.com.pl', de: 'https://www.investrent.com.pl/de/immobilien-kolberg' } },
-    openGraph: {
-      title,
-      description,
-      type: 'website',
-      locale: 'pl_PL',
-      url: 'https://www.investrent.com.pl',
-      siteName: 'InvestRent Nieruchomości',
-      images: [{ url: '/hero.jpg', width: 1920, height: 1080, alt: 'InvestRent Nieruchomości Kołobrzeg' }],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title,
-      description,
-      images: ['/hero.jpg'],
-    },
+    ...buildPageMeta({ title, description, path: '/', image: '/hero.jpg' }),
   }
 }
 
