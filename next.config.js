@@ -80,11 +80,11 @@ const nextConfig = {
       // prawdziwy jest /rodo. Przekierowanie zeby link nie 404-owal.
       { source: '/polityka-prywatnosci', destination: '/rodo', permanent: true },
 
-      // Kategorie ofert - stara strona mialy osobne adresy per typ, nowa
-      // filtruje przez query string na wspolnej stronie /oferty
-      { source: '/oferty/mieszkania', destination: '/oferty?property_type=mieszkanie', permanent: true },
-      { source: '/oferty/domy',       destination: '/oferty?property_type=dom',        permanent: true },
-      { source: '/oferty/dzialki',    destination: '/oferty?property_type=dzialka',    permanent: true },
+      // Zaindeksowane kategorie sprzedazy kierujemy na dedykowane landing pages,
+      // ktore maja wlasny canonical zamiast na filtrowana liste /oferty.
+      { source: '/oferty/mieszkania', destination: '/mieszkania-na-sprzedaz-kolobrzeg', permanent: true },
+      { source: '/oferty/domy',       destination: '/domy-na-sprzedaz-kolobrzeg',      permanent: true },
+      { source: '/oferty/dzialki',    destination: '/dzialki-na-sprzedaz-kolobrzeg',   permanent: true },
       { source: '/oferty/lokale',     destination: '/oferty?property_type=lokal',      permanent: true },
       { source: '/oferty/hale',       destination: '/oferty?property_type=magazyn',    permanent: true },
       // NAPRAWA (31.07, Daniel: "zmiana nie moze byc szokiem dla wyszukiwarek"):
@@ -95,9 +95,9 @@ const nextConfig = {
       // BEZ tej reguly zwracalby 404 zamiast przekierowania. Wildcard lapie
       // kazdy taki wariant (dowolne miasto/filtr), niezaleznie od tego czy go
       // znalazlem w wyszukiwarce czy nie.
-      { source: '/oferty/mieszkania/:path*', destination: '/oferty?property_type=mieszkanie', permanent: true },
-      { source: '/oferty/domy/:path*',       destination: '/oferty?property_type=dom',        permanent: true },
-      { source: '/oferty/dzialki/:path*',    destination: '/oferty?property_type=dzialka',    permanent: true },
+      { source: '/oferty/mieszkania/:path*', destination: '/mieszkania-na-sprzedaz-kolobrzeg', permanent: true },
+      { source: '/oferty/domy/:path*',       destination: '/domy-na-sprzedaz-kolobrzeg',      permanent: true },
+      { source: '/oferty/dzialki/:path*',    destination: '/dzialki-na-sprzedaz-kolobrzeg',   permanent: true },
       { source: '/oferty/lokale/:path*',     destination: '/oferty?property_type=lokal',      permanent: true },
       { source: '/oferty/hale/:path*',       destination: '/oferty?property_type=magazyn',    permanent: true },
       // "Obiekty" nie ma odpowiednika w nowym systemie typow nieruchomosci -
