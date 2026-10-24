@@ -8,6 +8,8 @@ import OffersPageClient from './OffersPageClient'
 import AllOffersLinks from '@/components/AllOffersLinks'
 import { getPublicOffers, getOffice, getPageContent } from '@/lib/api'
 import type { Metadata } from 'next'
+import { serializeJsonLd } from '@/lib/jsonLd'
+import { buildBreadcrumbJsonLd, buildCollectionJsonLd } from '@/lib/seoSchemas'
 
 // ZMIANA (16.08, Daniel: "chce miec mozliwosc APLIKACJI sugestii SEO z
 // poziomu CRM - inni administratorzy tez musza to moc zrobic samodzielnie").
@@ -46,11 +48,20 @@ export default async function OffersPage({ searchParams }: { searchParams: { [k:
   ])
   const office = officeData ?? FALLBACK_OFFICE
   const title = transaction_type === 'wynajem' ? 'Nieruchomości do wynajecia' : transaction_type === 'sprzedaz' ? 'Nieruchomości na sprzedaz' : 'Wszystkie oferty'
+  const offers = data?.data ?? []
 
   return (
     <>
       <Nav office={office} />
       <main>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(buildBreadcrumbJsonLd([
+          { name: 'Strona główna', path: '/' }, { name: 'Oferty', path: '/oferty' },
+        ])) }} />
+        {!property_type && !transaction_type && !agent_id && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(buildCollectionJsonLd({
+          name: title, description: data ? DEFAULT_DESCRIPTION : 'Aktualne publiczne oferty nieruchomości.', path: '/oferty',
+          totalItems: data?.pagination?.total ?? offers.length,
+          items: offers.map(offer => ({ name: offer.title || offer.ref_number, path: `/oferty/${encodeURIComponent(offer.slug || offer.id)}`, image: offer.main_photo })),
+        })) }} />}
         <div style={{ background: 'linear-gradient(135deg, #0d2a5c, #1a4fa0)', padding: '40px 0 32px' }}>
           <div className="container">
             <Breadcrumb light={true} crumbs={[{ label: 'Strona główna', href: '/' }, { label: 'Oferty' }]} />
@@ -58,7 +69,7 @@ export default async function OffersPage({ searchParams }: { searchParams: { [k:
             <p style={{ color: 'rgba(255,255,255,.7)', fontSize: 15 }}>Kołobrzeg, Mielno, Dźwirzyno i okolice Bałtyku</p>
           </div>
         </div>
-        <OffersPageClient initialOffers={data?.data ?? []} initialTotal={data?.pagination?.total ?? 0} defaultType={property_type} defaultTransaction={transaction_type} agentId={agent_id} />
+        <OffersPageClient initialOffers={offers} initialTotal={data?.pagination?.total ?? 0} defaultType={property_type} defaultTransaction={transaction_type} agentId={agent_id} />
         {!agent_id && <AllOffersLinks filter={{ ...(property_type && { property_type }), ...(transaction_type && { transaction_type }) }} heading={transaction_type === 'wynajem' ? 'Wszystkie oferty wynajmu' : transaction_type === 'sprzedaz' ? 'Wszystkie oferty sprzedaży' : 'Wszystkie oferty'} />}
       </main>
       <Footer office={office} />
