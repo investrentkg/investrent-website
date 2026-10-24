@@ -7,6 +7,7 @@ import { JsonLd } from '@/components/JsonLd'
 import { getOffice } from '@/lib/api'
 import { getVerifiedRating } from '@/lib/schemaRating'
 import type { Metadata } from 'next'
+import { buildPageMeta } from '@/lib/buildPageMeta'
 
 // ZMIANA (04.10.2026): fetch opinii bez opcji = force-cache - strona mogla zamarznac do
 // kolejnego deployu, a swiezosc oceny (getVerifiedRating) liczy sie tylko w momencie
@@ -18,6 +19,7 @@ export const metadata: Metadata = {
   description: 'Biuro nieruchomości InvestRent, ul. Ratuszowa 12/1, Kołobrzeg. Pn–pt 8–16, sob 10–15. Odpowiadamy w ciągu 24 godzin. Tel: +48 731 554 341',
   // NAPRAWA (audyt SEO 31.07.2026, punkt 3): brak kanonicznego URL na calej stronie.
   alternates: { canonical: 'https://www.investrent.com.pl/kontakt' },
+  ...buildPageMeta({ title: 'Kontakt — biuro nieruchomości Kołobrzeg', description: 'Biuro nieruchomości InvestRent, ul. Ratuszowa 12/1, Kołobrzeg. Pn–pt 8–16, sob 10–15. Odpowiadamy w ciągu 24 godzin. Tel: +48 731 554 341', path: '/kontakt' }),
 }
 
 const FALLBACK_OFFICE = { name: 'InvestRent Nieruchomości', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }

@@ -21,12 +21,14 @@ import { getTeamWithOfferCounts, getStats, getOffice } from '@/lib/api'
 import { getVerifiedRating } from '@/lib/schemaRating'
 import { MapPin, Phone, Mail, Shield, Heart, TrendingUp, Users, CheckCircle } from 'lucide-react'
 import type { Metadata } from 'next'
+import { buildPageMeta } from '@/lib/buildPageMeta'
 
 export const metadata: Metadata = {
   title: 'Biuro nieruchomości Kołobrzeg — zespół',
   description: 'Zespół biura nieruchomości InvestRent z Kołobrzegu: sprzedaż, kupno i wynajem nad morzem. Znamy lokalny rynek, 150+ transakcji.',
   // NAPRAWA (audyt SEO 31.07.2026, punkt 3): brak kanonicznego URL na calej stronie.
   alternates: { canonical: 'https://www.investrent.com.pl/o-nas' },
+  ...buildPageMeta({ title: 'Biuro nieruchomości Kołobrzeg — zespół', description: 'Zespół biura nieruchomości InvestRent z Kołobrzegu: sprzedaż, kupno i wynajem nad morzem. Znamy lokalny rynek, 150+ transakcji.', path: '/o-nas' }),
 }
 
 const FALLBACK_OFFICE = { name: 'InvestRent Nieruchomości', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }

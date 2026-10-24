@@ -15,6 +15,7 @@ import { loadAllOffers } from '@/lib/allOffers'
 import { HUB, LOCALITIES, BEACH_RANGE } from '@/content/miejscowosci'
 import { summarizeCity, formatOffersCount, formatPriceCell, formatRcnCell } from '@/lib/localityOffers'
 import type { Metadata } from 'next'
+import { buildPageMeta } from '@/lib/buildPageMeta'
 
 const BASE_URL = 'https://www.investrent.com.pl'
 
@@ -22,6 +23,7 @@ export const metadata: Metadata = {
   title: HUB.title,
   description: HUB.description,
   alternates: { canonical: `${BASE_URL}${HUB.path}` },
+  ...buildPageMeta({ title: HUB.title, description: HUB.description, path: HUB.path }),
 }
 
 const FALLBACK_OFFICE = { name: '', logo_url: '/logo.png', address: '', phone: '', email: '', website: null, working_hours: null }

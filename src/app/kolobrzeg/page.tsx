@@ -18,11 +18,13 @@ import OffersPageClient from '@/app/oferty/OffersPageClient'
 import { getPublicOffers, getOffice, getPageContent } from '@/lib/api'
 import { MapPin, TrendingUp, Home, ArrowRight } from 'lucide-react'
 import type { Metadata } from 'next'
+import { buildPageMeta } from '@/lib/buildPageMeta'
 
 export const metadata: Metadata = {
   title: { absolute: 'Nieruchomości Kołobrzeg: rynek, dzielnice, oferty | InvestRent' },
   description: 'Nieruchomości w Kołobrzegu: dzielnice, aktualne oferty sprzedaży i wynajmu oraz ceny ofertowe i transakcyjne. Lokalne biuro InvestRent pomoże w wyborze.',
   alternates: { canonical: 'https://www.investrent.com.pl/kolobrzeg' },
+  ...buildPageMeta({ title: 'Nieruchomości Kołobrzeg: rynek, dzielnice, oferty | InvestRent', description: 'Nieruchomości w Kołobrzegu: dzielnice, aktualne oferty sprzedaży i wynajmu oraz ceny ofertowe i transakcyjne. Lokalne biuro InvestRent pomoże w wyborze.', path: '/kolobrzeg' }),
 }
 
 const FALLBACK_OFFICE = { name: 'InvestRent Nieruchomości', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
