@@ -15,9 +15,8 @@ import { loadAllOffers } from '@/lib/allOffers'
 import { HUB, LOCALITIES, BEACH_RANGE, getLocality } from '@/content/miejscowosci'
 import { summarizeCity, formatOffersCount, formatPriceCell, formatRcnCell } from '@/lib/localityOffers'
 import { serializeJsonLd } from '@/lib/jsonLd'
+import { buildPageMeta } from '@/lib/seoPageMeta.mjs'
 import type { Metadata } from 'next'
-
-const BASE_URL = 'https://www.investrent.com.pl'
 
 export function generateStaticParams() {
   return LOCALITIES.map(l => ({ slug: l.slug }))
@@ -27,12 +26,11 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   const l = getLocality(params.slug)
   if (!l) return { title: 'Nie znaleziono' }
   const approved = l.status === 'approved'
-  return {
+  return buildPageMeta({
     title: { absolute: `Nieruchomości ${l.name}: dojazd, plaża, oferta | InvestRent` },
     description: `${l.name}: ${l.distanceKm} (${l.driveMin}) od centrum Kołobrzegu, plaża, komunikacja i aktualne oferty nieruchomości.`,
-    alternates: { canonical: `${BASE_URL}${HUB.path}/${l.slug}` },
     robots: approved ? { index: true, follow: true } : { index: false, follow: true },
-  }
+  }, `${HUB.path}/${l.slug}`)
 }
 
 export default async function LocalityPage({ params }: { params: { slug: string } }) {

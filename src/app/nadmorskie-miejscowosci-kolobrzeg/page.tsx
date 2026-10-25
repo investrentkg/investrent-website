@@ -13,16 +13,18 @@ import Breadcrumb from '@/components/Breadcrumb'
 import { getOffice } from '@/lib/api'
 import { loadAllOffers } from '@/lib/allOffers'
 import { HUB, LOCALITIES, BEACH_RANGE } from '@/content/miejscowosci'
+import { buildPageMeta } from '@/lib/seoPageMeta.mjs'
 import { summarizeCity, formatOffersCount, formatPriceCell, formatRcnCell } from '@/lib/localityOffers'
 import type { Metadata } from 'next'
 
 const BASE_URL = 'https://www.investrent.com.pl'
 
-export const metadata: Metadata = {
+const pageMetadata: Metadata = {
   title: HUB.title,
   description: HUB.description,
   alternates: { canonical: `${BASE_URL}${HUB.path}` },
 }
+export const metadata: Metadata = buildPageMeta(pageMetadata, HUB.path)
 
 const FALLBACK_OFFICE = { name: '', logo_url: '/logo.png', address: '', phone: '', email: '', website: null, working_hours: null }
 

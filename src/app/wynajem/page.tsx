@@ -7,15 +7,17 @@ import OffersPageClient from '@/app/oferty/OffersPageClient'
 import { getPublicOffers, getOffice } from '@/lib/api'
 import ReadAlso from '@/components/ReadAlso'
 import { RENTAL_INTRO, OWNER_HEADING } from './wynajemContent'
+import { buildPageMeta } from '@/lib/seoPageMeta.mjs'
 import { KeyRound, Shield, Clock, Star, ArrowRight } from 'lucide-react'
 import type { Metadata } from 'next'
 
-export const metadata: Metadata = {
+const pageMetadata: Metadata = {
   title: 'Wynajem mieszkań w Kołobrzegu – oferty długoterminowe',
   description: 'Mieszkania na wynajem w Kołobrzegu: oferty wynajmu długoterminowego, koszty, kaucja i umowa najmu. Sprawdź aktualne oferty biura InvestRent.',
   // NAPRAWA (audyt SEO 31.07.2026, punkt 3): brak kanonicznego URL na calej stronie.
   alternates: { canonical: 'https://www.investrent.com.pl/wynajem' },
 }
+export const metadata: Metadata = buildPageMeta(pageMetadata, '/wynajem')
 
 const FALLBACK_OFFICE = { name: 'InvestRent Nieruchomości', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
 
