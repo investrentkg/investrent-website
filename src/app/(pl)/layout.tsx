@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Montserrat, Inter } from 'next/font/google'
 import ConsentManager from '@/components/ConsentManager'
 import GoogleAnalytics from '@/components/GoogleAnalytics'
-import './globals.css'
+import '../globals.css'
 import AttributionCapture from '@/components/AttributionCapture'
 
 const montserrat = Montserrat({

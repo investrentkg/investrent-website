@@ -107,7 +107,7 @@ test('znacznik zgody: pola kanał/czas/wersja czytelne dla redakcji retencji (ka
   assert.ok(!m.includes('@')); assert.ok((withoutTime.match(new RegExp(String.raw`\d`, 'g')) ?? []).length < 9)
 })
 test('teksty: liczba porownan (przedzial i "min lub wiecej" gdy max == min)', async () => {
-  const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/wycena/texts.ts'); const RA = { items: RETENTION_A_ITEMS, how: RETENTION_A_HOW }
+  const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/(pl)/wycena/texts.ts'); const RA = { items: RETENTION_A_ITEMS, how: RETENTION_A_HOW }
   assert.equal(T.result.comparables(20, 49), 'Do szacunku wykorzystaliśmy co najmniej 20 porównywalnych nieruchomości z Twojej miejscowości.')
   assert.equal(T.result.comparables(50, 50), 'Do szacunku wykorzystaliśmy co najmniej 50 porównywalnych nieruchomości z Twojej miejscowości.')
 })
@@ -117,13 +117,13 @@ test('komunikat limitu: czas ponowienia z retry_after_seconds backendu (okno 1 h
   assert.equal(formatRetryAfter(null), '24 h')
 })
 test('teksty: brak realnego numeru w komunikatach i jedno okreslenie zgody na telefon', async () => {
-  const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/wycena/texts.ts'); const RA = { items: RETENTION_A_ITEMS, how: RETENTION_A_HOW }
+  const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/(pl)/wycena/texts.ts'); const RA = { items: RETENTION_A_ITEMS, how: RETENTION_A_HOW }
   const all = JSON.stringify(T)
   assert.ok(!all.includes('600 100 200')); assert.ok(!all.includes('zgodę na kontakt'))
   assert.ok(T.errors.rateLimited('2 h').includes('za około 2 h'))
 })
 test('teksty v11: zadnego marketingu, skrotu numeru ani "3 lat" w tekstach publicznych; jedna zgoda na telefon w sprawie wyceny', async () => {
-  const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/wycena/texts.ts'); const RA = { items: RETENTION_A_ITEMS, how: RETENTION_A_HOW }
+  const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/(pl)/wycena/texts.ts'); const RA = { items: RETENTION_A_ITEMS, how: RETENTION_A_HOW }
   const all = JSON.stringify(T)
   for (const w of ['marketing','SMS','STOP','skrót numeru','HMAC','3 lata','art. 17']) assert.ok(w === 'STOP' ? !/\bSTOP\b/i.test(all) : !all.toLowerCase().includes(w.toLowerCase()), 'zakazana fraza: ' + w) // 28.09 (Prawnik pkt 2): 'STOP' jako slowo-klucz, nie fragment wyrazu (np. 'stopniu ochrony')
   assert.equal(T.lead.consentMarketing, undefined); assert.equal(T.lead.consentMarketingOptional, undefined)
@@ -155,7 +155,7 @@ test('payload v11.2: nazwy kanoniczne ze slownika; "Inna dzielnica" i dzielnica 
   assert.equal(isOutOfScope({ ...ok, district: OTHER_DISTRICT }), false) // v14: w zakresie
 })
 test('teksty v11.2: okres z numerem (T-f: umowa przed pulapem, kontakt = rozmowa/wiadomosc, nieodebrane nie licza sie, ponowne zgloszenie nie odnawia), T-g, T-h, T-e', async () => {
-  const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/wycena/texts.ts'); const RA = { items: RETENTION_A_ITEMS, how: RETENTION_A_HOW }
+  const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/(pl)/wycena/texts.ts'); const RA = { items: RETENTION_A_ITEMS, how: RETENTION_A_HOW }
   const sp = String.fromCharCode(160)
   const items = [...T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]), ...RA.items].join(' ').split(sp).join(' ')
   const last = [...T.how.body, ...RA.how].slice(-3).join(' ').split(sp).join(' ')
@@ -197,7 +197,7 @@ test('test kontraktowy slownikow front/backend: front == wspolny plik slowniki_k
   }
 })
 test('teksty v13: telefon biura jako droga cofniecia (numer = OFFICE_PHONE), Railway 30 dni jako "dzienniki techniczne", bez wycofanego "kolejne zgloszenie nie wydluza"', async () => {
-  const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/wycena/texts.ts'); const RA = { items: RETENTION_A_ITEMS, how: RETENTION_A_HOW }
+  const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/(pl)/wycena/texts.ts'); const RA = { items: RETENTION_A_ITEMS, how: RETENTION_A_HOW }
   const sp = String.fromCharCode(160)
   const items = [...T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]), ...RA.items].join(' ').split(sp).join(' ')
   const last = [...T.how.body, ...RA.how].slice(-3).join(' ').split(sp).join(' ')
@@ -212,7 +212,7 @@ test('teksty v13: telefon biura jako droga cofniecia (numer = OFFICE_PHONE), Rai
   assert.ok(items.includes('mówiąc o tym agentowi podczas rozmowy') && !items.includes('pisząc na biuro@investrent.com.pl'), 'v13: cofniecie trzema drogami, nie tylko e-mailem')
 })
 test('teksty v11.3 (DPA Railway 26.09): Railway w transferze wg umowy powierzenia (bez niepotwierdzonego mechanizmu), wyjatek 30 dni logow Railway od "okolo 24 godzin", brak zdan o Vercel/Brevo/Google/Anthropic jako zabezpieczonych', async () => {
-  const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/wycena/texts.ts'); const RA = { items: RETENTION_A_ITEMS, how: RETENTION_A_HOW }
+  const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/(pl)/wycena/texts.ts'); const RA = { items: RETENTION_A_ITEMS, how: RETENTION_A_HOW }
   const sp = String.fromCharCode(160)
   const items = [...T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]), ...RA.items].join(' ').split(sp).join(' ')
   const how = [...T.how.body, ...RA.how].join(' ').split(sp).join(' ')
@@ -223,7 +223,7 @@ test('teksty v11.3 (DPA Railway 26.09): Railway w transferze wg umowy powierzeni
   assert.ok(items.includes('Przekazanie opieramy na decyzji Komisji Europejskiej o odpowiednim stopniu ochrony (EU-US Data Privacy Framework, czyli unijno-amerykańskie porozumienie o ochronie danych), o ile odbiorca ma w danym czasie aktywną certyfikację, a w pozostałym zakresie na standardowych klauzulach umownych UE'))
 })
 test('teksty v11.3 (Brevo ustalone): Sendinblue SAS (Francja) jako procesor wg umowy w regulaminie, bez mechanizmu transferu do USA dla Brevo', async () => {
-  const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/wycena/texts.ts'); const RA = { items: RETENTION_A_ITEMS, how: RETENTION_A_HOW }
+  const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/(pl)/wycena/texts.ts'); const RA = { items: RETENTION_A_ITEMS, how: RETENTION_A_HOW }
   const sp = String.fromCharCode(160)
   const items = [...T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]), ...RA.items].join(' ').split(sp).join(' ')
   assert.ok(items.includes('Brevo (Sendinblue SAS, Francja; zwykle imię i odnośnik do zgłoszenia w naszym systemie, bez numeru telefonu; w wyjątkowych przypadkach, np. gdy przez 24 godziny od przypisania klienta agent nie nawiąże z nim kontaktu, także numer telefonu), na podstawie umowy powierzenia będącej częścią regulaminu usługi')); assert.ok(!items.includes('Brevo (Sendinblue SAS, Francja; imię, numer telefonu')) /* audyt sciezek e-mail 28.09: staleAssignmentScheduler wysyla numer po 24 h bez kontaktu, wiec klauzula ma wyjatek */ // po #575 mail do managerów bez numeru
@@ -231,7 +231,7 @@ test('teksty v11.3 (Brevo ustalone): Sendinblue SAS (Francja) jako procesor wg u
 })
 
 test('teksty v11.4: T-m (Railway 30 dni pierwsze), T-l (bez kopii DPF, bez Vercel/Brevo), T-o/T-n, doneBody, Anthropic SCC, Podczele tylko jako dzielnica', async () => {
-  const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/wycena/texts.ts'); const RA = { items: RETENTION_A_ITEMS, how: RETENTION_A_HOW }
+  const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/(pl)/wycena/texts.ts'); const RA = { items: RETENTION_A_ITEMS, how: RETENTION_A_HOW }
   const { CITY_LIST, canonicalCity } = await import('./localities.ts')
   const sp = String.fromCharCode(160)
   const items = [...T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]), ...RA.items].join(' ').split(sp).join(' ')
@@ -255,7 +255,7 @@ test('teksty v11.4: T-m (Railway 30 dni pierwsze), T-l (bez kopii DPF, bez Verce
 })
 
 test('teksty v11.5: T-l2 (lista, Supabase UE), T-r, T-q, T-s, consentCall 3 drogi, wyjatek rozmowy o wspolpracy, kalendarz bez numeru, "sprawdzi"', async () => {
-  const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/wycena/texts.ts'); const RA = { items: RETENTION_A_ITEMS, how: RETENTION_A_HOW }
+  const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/(pl)/wycena/texts.ts'); const RA = { items: RETENTION_A_ITEMS, how: RETENTION_A_HOW }
   const sp = String.fromCharCode(160)
   const items = [...T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]), ...RA.items].join(' ').split(sp).join(' ')
   const how = [...T.how.body, ...RA.how].join(' ').split(sp).join(' ')
@@ -275,7 +275,7 @@ test('teksty v11.5: T-l2 (lista, Supabase UE), T-r, T-q, T-s, consentCall 3 drog
 })
 
 test('teksty v11.6: cel [2] dla wspolpracy, Cenogram, Vercel w DPF, T-t (punkty), h1 bez "bezplatna", "czy" w outOfScopeBody, how.body bez powtorzenia', async () => {
-  const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/wycena/texts.ts'); const RA = { items: RETENTION_A_ITEMS, how: RETENTION_A_HOW }
+  const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/(pl)/wycena/texts.ts'); const RA = { items: RETENTION_A_ITEMS, how: RETENTION_A_HOW }
   const sp = String.fromCharCode(160)
   const items = [...T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]), ...RA.items].join(' ').split(sp).join(' ')
   const how = [...T.how.body, ...RA.how].join(' ').split(sp).join(' ')
@@ -291,7 +291,7 @@ test('teksty v11.6: cel [2] dla wspolpracy, Cenogram, Vercel w DPF, T-t (punkty)
 })
 
 test('teksty v11.7: [4] jako lista odbiorcow (T-u) + osobny punkt zabezpieczen; Cenogram (Polska); lit. c w [2]; DPF objasniony; Vercel z umowa powierzenia', async () => {
-  const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/wycena/texts.ts'); const RA = { items: RETENTION_A_ITEMS, how: RETENTION_A_HOW }
+  const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/(pl)/wycena/texts.ts'); const RA = { items: RETENTION_A_ITEMS, how: RETENTION_A_HOW }
   const sp = String.fromCharCode(160)
   const secs = T.lead.consentInfo
   const odb = secs.find(c => c.h === 'Komu przekazujemy dane.'), zab = secs.find(c => c.h === 'Zabezpieczenia przy przekazaniu poza Europejski Obszar Gospodarczy (EOG).')
@@ -306,7 +306,7 @@ test('teksty v11.7: [4] jako lista odbiorcow (T-u) + osobny punkt zabezpieczen; 
 })
 
 test('teksty v11.8 (decyzje Daniela 26.09): T-k lista nie dzwonimy, T-c2 rozmowa telefoniczna lub osobista, usuniecie danych po cofnieciu, odnawianie wyjatku wspolpracy', async () => {
-  const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/wycena/texts.ts'); const RA = { items: RETENTION_A_ITEMS, how: RETENTION_A_HOW }
+  const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/(pl)/wycena/texts.ts'); const RA = { items: RETENTION_A_ITEMS, how: RETENTION_A_HOW }
   const sp = String.fromCharCode(160)
   const items = [...T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]), ...RA.items].join(' ').split(sp).join(' ')
   const how = [...T.how.body, ...RA.how].join(' ').split(sp).join(' ')
@@ -318,7 +318,7 @@ test('teksty v11.8 (decyzje Daniela 26.09): T-k lista nie dzwonimy, T-c2 rozmowa
 })
 
 test('teksty v13: wstep krotki (zakres tez we wstepie od 28.09), okresy WARIANT A wlaczony (B tylko awaryjnie), streszczenie zgody na wierzchu z trzema drogami cofniecia', async () => {
-  const { T, RETENTION_VARIANT_A, RETENTION_A_ITEMS, RETENTION_A_HOW, RETENTION_B_ITEMS, RETENTION_B_HOW } = await import('../app/wycena/texts.ts')
+  const { T, RETENTION_VARIANT_A, RETENTION_A_ITEMS, RETENTION_A_HOW, RETENTION_B_ITEMS, RETENTION_B_HOW } = await import('../app/(pl)/wycena/texts.ts')
   const sp = String.fromCharCode(160)
   assert.ok(T.intro.split(/[.?] /).length <= 5, 'wstep: max 5 zdan (28.09: zakres wrocil do wstepu wg Krytyka pkt 1)'); assert.ok(T.disclaimerTop.includes('sztucznej inteligencji'), 'informacja o AI zostaje w disclaimerTop (wstep jej juz nie zawiera, decyzja Daniela 10.10)'); assert.equal(T.intro, 'Odpowiedz na kilka pytań, a po chwili pokażemy szacunkowy przedział ceny i cenę za m² (o ile mamy dość danych). To nasz automatyczny szacunek, nie operat rzeczoznawcy (taki dokument bywa potrzebny na przykład w banku). Dokładniejszy szacunek przygotuje agent po rozmowie z Tobą. Numeru telefonu podawać nie musisz.'); assert.equal(T.result.title, 'Szacunkowy przedział ceny'); assert.equal(T.cta.hint, 'Agent oddzwoni po zostawieniu numeru, bezpłatnie i bez zobowiązań. W rozmowie doprecyzuje szacunek o to, czego kalkulator nie widzi: stan wnętrza, widok i standard wykończenia.'); assert.equal(T.cta.hintNoNumbers, 'Agent oddzwoni po zostawieniu numeru, bezpłatnie i bez zobowiązań.'); assert.equal(T.metaTitle, 'Wycena mieszkania w Kołobrzegu online: kalkulator ceny'); assert.equal(T.metaDescription, 'Ile może być warte Twoje mieszkanie w Kołobrzegu? Szacunkowy przedział ceny online, bezpłatnie i bez podawania telefonu. Domy i działki wycenia agent.'); assert.ok(!/widełk/i.test(T.metaTitle + T.metaDescription), 'meta bez slowa widelki (Meta dociaga meta-description do reklamy)')
   assert.ok(T.disclaimerMore.startsWith('Poza Kołobrzegiem przedział jest szerszy')); assert.ok(T.result.scopeNoteWider.startsWith('Dla Twojej miejscowości przedział jest szerszy'))
@@ -355,7 +355,7 @@ test('lead z /wycena v12: source=wycena_lp, honeypot hp_field pusty, token Turns
   assert.ok(fs2.includes("source: 'wycena_modal'") && !fs2.includes('wycena_lp'), 'okienko Zamow rozmowe zostaje wycena_modal')
 })
 test('teksty v14: numer biura w tekstach = OFFICE_PHONE (jedno zrodlo), doneBody i outOfScopeBody z numerem bez dubletu, scopeNoteWider i floor_hint, bledy z dzwonieniem', async () => {
-  const { T } = await import('../app/wycena/texts.ts'); const { OFFICE_PHONE } = await import('./valuation.ts')
+  const { T } = await import('../app/(pl)/wycena/texts.ts'); const { OFFICE_PHONE } = await import('./valuation.ts')
   const sp = String.fromCharCode(160); const norm = x => x.split(sp).join(' ')
   const all = norm(JSON.stringify(T)); const phone = norm(OFFICE_PHONE)
   const nums = all.match(/\+48 \d{3} \d{3} \d{3}/g) ?? []
@@ -373,7 +373,7 @@ test('walidacja v14: komunikat braku dzielnicy wg tabeli', () => {
   assert.equal(validateForm({ ...ok, district: '' }).district, 'Wybierz dzielnicę lub osiedle z listy. Jeśli nie ma na niej Twojej, wybierz „Inna dzielnica”.')
 })
 test('teksty v14 (runda 5 Krytyka): etykiety wyniku bez "Orientacyjny", scopeNote i disclaimerFallback bez dublowania disclaimerTop, brak zdania "mają charakter orientacyjny"', async () => {
-  const { T } = await import('../app/wycena/texts.ts')
+  const { T } = await import('../app/(pl)/wycena/texts.ts')
   assert.equal(T.result.priceLabel, 'Przedział ceny'); assert.equal(T.result.perM2Label, 'Cena za m²')
   assert.ok(T.result.scopeNote.includes('oraz kilku ogólnych danych z formularza. Nie widzimy zdjęć ani szczegółów stanu i standardu mieszkania') && T.result.scopeNote.startsWith('Przedział liczymy automatycznie') && T.result.scopeNote.endsWith('może się wyraźnie różnić od przedziału.') && !/operat/.test(T.result.scopeNote), 'zdanie o operacie zostaje tylko w disclaimerTop')
   assert.equal(T.result.disclaimerFallback, 'Cena, jaką uzyskasz, zależy m.in. od stanu technicznego, standardu wykończenia, widoku z okien i sytuacji na rynku.')
@@ -381,7 +381,7 @@ test('teksty v14 (runda 5 Krytyka): etykiety wyniku bez "Orientacyjny", scopeNot
   assert.equal(T.disclaimerTop, 'Wynik jest orientacyjny, nie jest operatem szacunkowym rzeczoznawcy majątkowego ani wiążącą ofertą ceny. Liczymy go automatycznie z użyciem sztucznej inteligencji.') // v14 P6 + Prawnik 28.09 (notatka 22): "ani wiążącą ofertą ceny"
 })
 test('panel wyniku v14: front NIE renderuje pol backendu outcome.message / outcome.disclaimer (tylko teksty z texts.ts); disclaimerTop zawsze przy wyniku; scopeNoteWider warunkowo; "Wyceń inną" jako link', () => {
-  const src = fs.readFileSync(new URL('../app/wycena/WycenaClient.tsx', import.meta.url), 'utf8')
+  const src = fs.readFileSync(new URL('../app/(pl)/wycena/WycenaClient.tsx', import.meta.url), 'utf8')
   const jsx = src.split('\n').filter(l => !l.trim().startsWith('//')).join('\n')
   assert.ok(!/outcome\.(message|disclaimer)\b/.test(jsx), 'v14: pola backendu ignorowane w widoku')
   const range = jsx.slice(jsx.indexOf("outcome.kind === 'range'"), jsx.indexOf("outcome.kind === 'no_numbers'"))
@@ -391,7 +391,7 @@ test('panel wyniku v14: front NIE renderuje pol backendu outcome.message / outco
   assert.equal(jsx.split('className="wy-linkbtn" style={{ marginTop: 8, marginLeft: -6 }}').length - 1, 3)
 })
 test('teksty v14 (runda 6): odeslanie do "Twoje prawa" NIE wchodzi bez F.1, sekcja F nie wklejona, zdanie nad polem zgody w opisie wersji, "Twoje prawa" bez "w tej sprawie"', async () => {
-  const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/wycena/texts.ts')
+  const { T, RETENTION_A_ITEMS, RETENTION_A_HOW } = await import('../app/(pl)/wycena/texts.ts')
   const sp = String.fromCharCode(160); const norm = x => x.split(sp).join(' ')
   const clause = norm([...T.lead.consentInfo.flatMap(c => [c.t, ...(c.items ?? [])]), ...T.how.body].join(' '))
   assert.ok(clause.includes('Jeśli wcześniej cofniesz zgodę, usuniemy dane kontaktowe i pozostałe dane ze zgłoszenia w ciągu 30 dni od cofnięcia, z wyjątkami opisanymi w części „Twoje prawa”.'), '28.09 (Prawnik pkt 9 + notatka 22): P3 wraca razem z F.1 lekkim')
@@ -399,12 +399,12 @@ test('teksty v14 (runda 6): odeslanie do "Twoje prawa" NIE wchodzi bez F.1, sekc
   assert.ok(norm(T.lead.consentInfo.find(c => c.h === 'Twoje prawa.').t).includes('że nie chcesz, żebyśmy do Ciebie dzwonili. Po cofnięciu zgody nie zadzwonimy do Ciebie w związku z tym zgłoszeniem, także w sprawie sprzedaży lub wynajmu; wyjątek to np. wykonanie zawartej już umowy. Twoje dane usuniemy z naszego systemu w ciągu 30 dni od cofnięcia. Zostanie tylko dowód Twojej zgody (bez danych kontaktowych) oraz dane potrzebne z innego powodu, np. wynikające z umowy.'))
   assert.ok(norm(RETENTION_A_ITEMS[1]).includes('Po upływie tego terminu usuniemy Twoje imię, numer telefonu i notatki oraz treść zgłoszenia; zostanie wyłącznie anonimowa statystyka') && norm(RETENTION_A_HOW[0]).includes('usuniemy Twoje imię, numer telefonu i notatki oraz treść zgłoszenia') && !norm(RETENTION_A_ITEMS[1] + RETENTION_A_HOW[0]).includes('adres e-mail') && norm(RETENTION_A_ITEMS[1]).includes('dowód Twojej zgody (bez danych kontaktowych; jak długo, opisuje ostatni punkt tej listy)') && norm(RETENTION_A_HOW[0]).includes('dowód Twojej zgody (bez danych kontaktowych; jak długo, opisuje pełna informacja o danych)') && !/do 3 lat/.test(norm(RETENTION_A_ITEMS[1] + RETENTION_A_HOW[0])), 'jednakowe zdanie o usuwaniu w ITEMS (2) i HOW')
   assert.equal(RETENTION_A_ITEMS.length, 4)
-  const doc = fs.readFileSync(new URL('./valuation.ts', import.meta.url), 'utf8') + fs.readFileSync(new URL('../app/wycena/texts.ts', import.meta.url), 'utf8')
+  const doc = fs.readFileSync(new URL('./valuation.ts', import.meta.url), 'utf8') + fs.readFileSync(new URL('../app/(pl)/wycena/texts.ts', import.meta.url), 'utf8')
   assert.ok(doc.includes('lead.bodyRange') && doc.includes('lead.bodyFallback') && doc.includes('P8'), 'zdania nad polem zgody wspoldefiniuja zakres zgody (wersja v13)')
   assert.ok(T.lead.bodyRange.startsWith('Zdjęcia, szczegóły stanu i standardu mieszkania') && T.lead.consentCallRequired.includes('wymagana'))
 })
 test('teksty v14 (runda 7): przelacznik RETENTION_JOB_ACTIVE (czas zdan o usuwaniu), domyslnie false = czas przyszly; true = czas terazniejszy; oba warianty rozni tylko czas', async () => {
-  const m = await import('../app/wycena/texts.ts'); const { T } = m
+  const m = await import('../app/(pl)/wycena/texts.ts'); const { T } = m
   const sp = String.fromCharCode(160); const norm = x => x.split(sp).join(' ')
   assert.equal(m.RETENTION_JOB_ACTIVE, false, 'domyslnie false: nic nie jest obiecane jako juz dzialajace (art. 13 RODO)')
   assert.equal(m.RETENTION_VARIANT_A, true, 'przelacznik okresow A/B bez zmian')
@@ -472,7 +472,7 @@ test('trackValuation: nowe zdarzenia przekazują tylko parametry nieosobowe i ni
 })
 
 test('teksty zgód i wersja zgody nietknięte przez pakiet pomiaru/CTA (bez nowej wersji CONSENT_VERSION)', async () => {
-  const { T } = await import('../app/wycena/texts.ts')
+  const { T } = await import('../app/(pl)/wycena/texts.ts')
   assert.equal(CONSENT_VERSION, 'wycena-2026-09-28-v13')
   assert.ok(T.lead.consentCall.startsWith('Zgadzam się, aby INVESTRENT sp. z o.o.'))
   assert.ok(T.lead.bodyRange.startsWith('Zdjęcia, szczegóły stanu i standardu mieszkania'))
@@ -480,11 +480,11 @@ test('teksty zgód i wersja zgody nietknięte przez pakiet pomiaru/CTA (bez nowe
 })
 
 test('D2 (CTA do panelu kontaktu): teksty bez obietnic dokładności, presji i wysyłki wyniku; zdarzenia GA4 bez danych osobowych; payload leada bez nowych pól', async () => {
-  const { T } = await import('../app/wycena/texts.ts')
+  const { T } = await import('../app/(pl)/wycena/texts.ts')
   const cta = [...Object.values(T.cta), T.errors.turnstileQueued].join(' ')
   assert.ok(!/dokładn|gwarant|pewn|tylko dziś|ostatni|szybko|natychmiast|SMS|marketing|wyślemy wynik|wyślij wynik/i.test(cta), 'CTA: bez obietnicy dokładności, presji czasu i wysyłki wyniku')
   assert.equal(T.cta.primary, 'Omów wynik z agentem')
-  const src = fs.readFileSync(new URL('../app/wycena/WycenaClient.tsx', import.meta.url), 'utf8')
+  const src = fs.readFileSync(new URL('../app/(pl)/wycena/WycenaClient.tsx', import.meta.url), 'utf8')
   assert.ok(src.includes("trackValuation('wycena_cta_click'") && src.includes("trackValuation('wycena_sticky_shown'") && src.includes("trackValuation('wycena_lead_submit_queued'"))
   assert.ok(!/wycena_cta_click'[^)]*(phone|name|full_name)/.test(src), 'zdarzenia CTA bez danych osobowych')
   assert.ok(src.includes('<ContactFallback placement="wycena_lead_fail"'), 'po bledzie wysylki: Zadzwon/WhatsApp zamiast slepego bledu')
@@ -496,7 +496,7 @@ test('D2 (CTA do panelu kontaktu): teksty bez obietnic dokładności, presji i w
 })
 
 test('slownik 11.10 (Krytyk PR #53): "widelki"/"zakres" tylko w klauzuli retencji (statystyka); disclaimerTop zostaje orientacyjny; submit i etykiety bez "orientacyjna wycena"', async () => {
-  const { T, RETENTION_A_ITEMS_ACTIVE, RETENTION_A_ITEMS_PLANNED } = await import('../app/wycena/texts.ts')
+  const { T, RETENTION_A_ITEMS_ACTIVE, RETENTION_A_ITEMS_PLANNED } = await import('../app/(pl)/wycena/texts.ts')
   const strings = []
   const walk = (o) => { if (typeof o === 'string') strings.push(o); else if (Array.isArray(o)) o.forEach(walk); else if (o && typeof o === 'object') Object.values(o).forEach(walk) }
   walk(T)

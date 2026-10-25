@@ -5,7 +5,7 @@ import Breadcrumb from '@/components/Breadcrumb'
 import { H2, H3, P, UL, LI } from '@/components/legal/LegalShell'
 import CookieTable from '@/components/legal/CookieTable'
 import { getOffice } from '@/lib/api'
-import { RETENTION_A_ITEMS } from '@/app/wycena/texts'
+import { RETENTION_A_ITEMS } from '@/app/(pl)/wycena/texts'
 import type { Metadata } from 'next'
 
 // NAPRAWA (audyt SEO/tresci, Daniel 30.07.2026): strona calkowicie brakowala,
@@ -49,6 +49,7 @@ export const metadata: Metadata = {
     languages: {
       pl: 'https://www.investrent.com.pl/rodo',
       de: 'https://www.investrent.com.pl/de/datenschutz',
+      'x-default': 'https://www.investrent.com.pl/rodo',
     },
   },
 }

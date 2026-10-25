@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-import { buildOfferMetadata, renderOfferPage } from '@/app/oferty/[id]/offerPageImpl'
+import { buildOfferMetadata, renderOfferPage } from '@/app/(pl)/oferty/[id]/offerPageImpl'
 
 export async function generateMetadata({ params, searchParams }: { params: { id: string }; searchParams: { preview?: string } }): Promise<Metadata> {
   const previewToken = searchParams?.preview

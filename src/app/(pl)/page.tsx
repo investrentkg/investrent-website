@@ -69,7 +69,7 @@ export async function generateMetadata(): Promise<Metadata> {
     // wlasny tytul z CRM zachowuje dotychczasowe zachowanie (szablon layoutu)
     title: ownTitle ? ownTitle : { absolute: DEFAULT_TITLE },
     description,
-    alternates: { canonical: 'https://www.investrent.com.pl', languages: { pl: 'https://www.investrent.com.pl', de: 'https://www.investrent.com.pl/de/immobilien-kolberg' } },
+    alternates: { canonical: 'https://www.investrent.com.pl', languages: { pl: 'https://www.investrent.com.pl', de: 'https://www.investrent.com.pl/de/immobilien-kolberg', 'x-default': 'https://www.investrent.com.pl' } },
     openGraph: {
       title,
       description,
