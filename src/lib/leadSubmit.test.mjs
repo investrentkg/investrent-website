@@ -1,7 +1,7 @@
 // Uruchom: node --test src/lib/leadSubmit.test.mjs   (Node >= 22.6, natywne strip-types)
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { postLead, trackLeadSuccess } from './leadSubmit.ts'
+import { postLead, trackLeadSuccess, buildOfferInquiryPayload } from './leadSubmit.ts'
 
 const json = (body, status = 200) => async () => new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } })
 
@@ -41,4 +41,19 @@ test('GA: no-op bez gtag; event tylko z lead_source (bez danych osobowych)', () 
   trackLeadSuccess('wycena_modal')
   assert.deepEqual(calls, [['event', 'generate_lead', { lead_source: 'wycena_modal' }]])
   delete globalThis.window
+})
+
+test('formularz oferty: payload zawiera offer_ref i zachowuje notatke', () => {
+  const p = buildOfferInquiryPayload('IR/123', { name: 'Jan', phone: '600', email: '', notes: 'Dzien dobry' })
+  assert.equal(p.offer_ref, 'IR/123')
+  assert.equal(p.source, 'offer_detail')
+  assert.equal(p.notes, 'Zapytanie o ofertę IR/123: Dzien dobry')
+  assert.equal(buildOfferInquiryPayload('X1', { name: '', phone: '1', email: '', notes: '' }).notes, 'Zapytanie o ofertę X1')
+})
+test('inne formularze (np. wycena_modal) nie wysylaja offer_ref', async () => {
+  const { readFileSync, readdirSync, statSync } = await import('node:fs')
+  const { join } = await import('node:path')
+  const walk = d => readdirSync(d).flatMap(n => { const p = join(d, n); return statSync(p).isDirectory() ? walk(p) : [p] })
+  const users = walk('src').filter(f => /\.(tsx?|mjs)$/.test(f) && !f.endsWith('.test.mjs') && readFileSync(f, 'utf8').includes('offer_ref'))
+  assert.deepEqual(users.map(f => f.replaceAll('\\', '/')).sort(), ['src/lib/api.ts', 'src/lib/leadSubmit.ts'])
 })
