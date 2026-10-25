@@ -10,6 +10,12 @@ import { LOCALITIES } from '@/content/miejscowosci'
 
 const BASE_URL = 'https://www.investrent.com.pl'
 
+const LANGUAGE_ALTERNATES: Record<string, Record<string, string>> = {
+  '': { pl: BASE_URL, de: `${BASE_URL}/de/immobilien-kolberg`, 'x-default': BASE_URL },
+  '/de/immobilien-kolberg': { pl: BASE_URL, de: `${BASE_URL}/de/immobilien-kolberg`, 'x-default': BASE_URL },
+  '/de/datenschutz': { pl: `${BASE_URL}/rodo`, de: `${BASE_URL}/de/datenschutz`, 'x-default': `${BASE_URL}/rodo` },
+}
+
 const STATIC_PAGES = [
   { path: '', priority: 1.0, changeFrequency: 'daily' as const },
   { path: '/oferty', priority: 0.9, changeFrequency: 'daily' as const },
@@ -48,6 +54,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const localityPages = LOCALITIES.filter(l => l.status === 'approved').map(l => ({ path: `/nadmorskie-miejscowosci-kolobrzeg/${l.slug}`, priority: 0.6, changeFrequency: 'monthly' as const }))
   const staticEntries: MetadataRoute.Sitemap = [...STATIC_PAGES, ...localityPages].map(p => ({
     url: `${BASE_URL}${p.path}`,
+    alternates: LANGUAGE_ALTERNATES[p.path] ? { languages: LANGUAGE_ALTERNATES[p.path] } : undefined,
     changeFrequency: p.changeFrequency,
     priority: p.priority,
   }))

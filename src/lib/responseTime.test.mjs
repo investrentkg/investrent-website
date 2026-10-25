@@ -13,7 +13,7 @@ test('stale obietnicy 24 h', () => {
 })
 
 test('meta stron <= 160 znakow i bez starych fraz', () => {
-  const files = ['../app/layout.tsx', '../app/kontakt/page.tsx', '../app/kupno/page.tsx']
+  const files = ['../app/(pl)/layout.tsx', '../app/(pl)/kontakt/page.tsx', '../app/(pl)/kupno/page.tsx']
   for (const f of files) {
     const src = readFileSync(new URL(f, import.meta.url), 'utf8')
     for (const m of src.matchAll(/description:\s*'([^']*)'/g)) assert.ok(m[1].length <= 160, `${f}: ${m[1].length} zn.`)

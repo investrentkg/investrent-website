@@ -14,7 +14,7 @@ test('flagi bloku telefonu, callbacku i licznika sa DOMYSLNIE wylaczone (merge n
 })
 
 test('teksty bloku: prawne DOSLOWNIE wg zatwierdzenia Daniela 15.10 (bez zmian w slowach), wersja wycena-RRRR-MM-DD-vN, brak terminu oddzwonienia i SMS, brak checkboxa', async () => {
-  const m = await import('../app/wycena/phoneBlockTexts.ts')
+  const m = await import('../app/(pl)/wycena/phoneBlockTexts.ts')
   assert.match(m.PHONE_BLOCK_CONSENT_VERSION, m.PHONE_BLOCK_VERSION_FORMAT)
   assert.equal(m.PHONE_BLOCK_CONSENT_VERSION, 'wycena-2026-10-15-v1')
   const L = m.PHONE_BLOCK_LEGAL
@@ -29,7 +29,7 @@ test('teksty bloku: prawne DOSLOWNIE wg zatwierdzenia Daniela 15.10 (bez zmian w
   assert.ok(!/(dzi[sś]\b|jutro|godzin|minut|w ci[aą]gu|natychmiast|szybko|\d+\s*(min|h)\b)/i.test(all), 'bez obietnicy terminu oddzwonienia')
   assert.ok(!/gwarant|SMS/i.test(all))
   assert.ok(m.PHONE_BLOCK_TEXTS.title.includes('Bezpłatna'))
-  assert.ok(!/DO AKCEPTACJI/.test(fs.readFileSync(new URL('../app/wycena/phoneBlockTexts.ts', import.meta.url), 'utf8').split('\n').filter(l => !l.trim().startsWith('//')).join('\n')))
+  assert.ok(!/DO AKCEPTACJI/.test(fs.readFileSync(new URL('../app/(pl)/wycena/phoneBlockTexts.ts', import.meta.url), 'utf8').split('\n').filter(l => !l.trim().startsWith('//')).join('\n')))
 })
 test('adapter: callback (flaga on + valuation_token) -> POST z tokenem, telefonem, zgoda {checked, version} i utm', async () => {
   const calls = []
@@ -104,12 +104,12 @@ test('licznik lejka: wylaczony = nic; wlaczony = fetch keepalive (credentials om
   assert.deepEqual(utmFromSearch('?utm_source=' + 'x'.repeat(100)), { utm_source: 'x'.repeat(64) })
 })
 test('strona: blok telefonu tylko za flaga, pod przedzialem (leadSlot przed noty zakresu), osobna karta kontaktu pomijana tylko gdy blok aktywny; teksty zgod nietkniete', () => {
-  const src = fs.readFileSync(new URL('../app/wycena/WycenaClient.tsx', import.meta.url), 'utf8')
+  const src = fs.readFileSync(new URL('../app/(pl)/wycena/WycenaClient.tsx', import.meta.url), 'utf8')
   assert.ok(src.includes("PHONE_BLOCK_ON && outcome?.kind === 'range'"))
   assert.ok(src.includes('{leadSlot ?? <ResultCta'))
   const range = src.slice(src.indexOf("if (outcome.kind === 'range')"), src.indexOf("if (outcome.kind === 'no_numbers')"))
   assert.ok(range.indexOf('{leadSlot ??') > range.indexOf('formatRange(outcome.rangeWide)') && range.indexOf('{leadSlot ??') < range.indexOf('{T.result.scopeNote}'), 'blok miedzy przedzialami a notami')
-  const block = fs.readFileSync(new URL('../app/wycena/PhoneBlock.tsx', import.meta.url), 'utf8')
+  const block = fs.readFileSync(new URL('../app/(pl)/wycena/PhoneBlock.tsx', import.meta.url), 'utf8')
   // bez checkboxa w trybie podstawowym (opinia Prawnika 15.10); checkbox istnieje WYLACZNIE w galezi karty rynku (flaga MARKET_CARD + gotowy tekst zgody)
   assert.ok((block.match(/type="checkbox"/g) ?? []).length <= 1 && (!block.includes('type="checkbox"') || block.indexOf('type="checkbox"') > block.indexOf('{mc && (')), 'checkbox tylko w galezi mc')
   assert.ok(block.includes('{L.clickNotice}') && block.includes('{L.clauseBeforeLink}') && block.includes('{L.notAppraisal}'))

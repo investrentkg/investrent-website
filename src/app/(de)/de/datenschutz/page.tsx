@@ -32,6 +32,7 @@ export const metadata: Metadata = {
     languages: {
       pl: 'https://www.investrent.com.pl/rodo',
       de: 'https://www.investrent.com.pl/de/datenschutz',
+      'x-default': 'https://www.investrent.com.pl/rodo',
     },
   },
 }
