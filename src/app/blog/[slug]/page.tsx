@@ -23,6 +23,7 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import ReactMarkdown from 'react-markdown'
 import Image from 'next/image'
+import { buildBreadcrumbJsonLd } from '@/lib/seoSchemas'
 
 const FALLBACK_OFFICE = { name: 'InvestRent Nieruchomości', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
 const BASE_URL = 'https://www.investrent.com.pl'
@@ -57,7 +58,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'Article',
+    '@type': 'BlogPosting',
     headline: post.title,
     description: post.excerpt || post.meta_description || undefined,
     image: post.cover_image_url || undefined,
@@ -70,6 +71,9 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(buildBreadcrumbJsonLd([
+        { name: 'Strona główna', path: '/' }, { name: 'Blog', path: '/blog' }, { name: post.title, path: `/blog/${encodeURIComponent(post.slug)}` },
+      ])) }} />
       <Nav office={office} />
       <main>
         <div style={{ background: 'linear-gradient(135deg, #0d2a5c, #1a4fa0)', padding: '40px 0 32px' }}>

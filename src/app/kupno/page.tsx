@@ -8,6 +8,7 @@ import OffersPageClient from '@/app/oferty/OffersPageClient'
 import { getPublicOffers, getOffice } from '@/lib/api'
 import { Search, ShieldCheck, Clock, Award, ArrowRight } from 'lucide-react'
 import type { Metadata } from 'next'
+import { buildBreadcrumbJsonLd, buildServiceJsonLd } from '@/lib/seoSchemas'
 
 export const metadata: Metadata = {
   title: 'Kupno nieruchomości Kołobrzeg',
@@ -137,6 +138,13 @@ export default async function KupnoPage() {
           '@type': 'FAQPage',
           mainEntity: FAQ.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
         }) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(buildBreadcrumbJsonLd([
+          { name: 'Strona główna', path: '/' }, { name: 'Kupno', path: '/kupno' },
+        ])) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(buildServiceJsonLd({
+          name: 'Pomoc przy zakupie nieruchomości', description: 'Pomoc w znalezieniu, sprawdzeniu i bezpiecznym zakupie nieruchomości.',
+          provider: office.name, areaServed: 'Kołobrzeg i okolice', path: '/kupno',
+        })) }} />
         <RelatedLinks page="kupno" />
       </main>
       <Footer office={office} />
