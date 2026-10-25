@@ -4,7 +4,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import { interpretResponse, formatRange } from './valuation.ts'
-import { T } from '../app/wycena/texts.ts'
+import { T } from '../app/(pl)/wycena/texts.ts'
 
 const base = { ok: true, mode: 'range', range: { low: 560000, high: 1050000 }, price_per_m2: { low: 10800, high: 20200 }, comparables: { min: 20, max: 49 }, quality: 'high', disclaimer: 'x', message: 'm' }
 const two = { ...base, range_core: { low: 680000, high: 930000 }, range_wide: { low: 560000, high: 1050000 }, price_per_m2_core: { low: 13100, high: 17900 }, price_per_m2_wide: { low: 10800, high: 20200 }, label_core: 'a', label_wide: 'b' }
@@ -41,7 +41,7 @@ test('teksty dwoch zakresow: miasto domowe z deklaracja pokrycia, inne miejscowo
   assert.equal(T.result.coreTitle, 'Typowy przedział'); assert.equal(T.result.wideTitle, 'Szerszy przedział'); assert.equal(T.result.coreTitleWider, 'Przedział orientacyjny'); assert.equal(T.result.wideTitleWider, 'Szerszy przedział orientacyjny')
 })
 test('widok: dwa zakresy renderowane z texts.ts, fallback do pojedynczego range, brak pol backendu label_*', () => {
-  const src = fs.readFileSync(new URL('../app/wycena/WycenaClient.tsx', import.meta.url), 'utf8')
+  const src = fs.readFileSync(new URL('../app/(pl)/wycena/WycenaClient.tsx', import.meta.url), 'utf8')
   const jsx = src.split('\n').filter(l => !l.trim().startsWith('//')).join('\n')
   const range = jsx.slice(jsx.indexOf("outcome.kind === 'range'"), jsx.indexOf("outcome.kind === 'no_numbers'"))
   for (const s of ['outcome.rangeCore && outcome.rangeWide', '{wider ? T.result.coreTitleWider : T.result.coreTitle}', '{wider ? T.result.wideTitleWider : T.result.wideTitle}', 'formatRange(outcome.rangeCore)', 'formatRange(outcome.rangeWide)', 'formatRange(outcome.range)', '{T.result.priceLabel}', '{T.disclaimerTop}']) assert.ok(range.includes(s), 'brak: ' + s)

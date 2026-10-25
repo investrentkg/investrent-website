@@ -7,7 +7,7 @@ import { spawnSync } from 'node:child_process'
 import { interpretMarketCard, fetchMarketCard, fmtPpm, fmtRange, fmtAsOfDate, MARKET_CARD_URL, CONTACT_WINDOWS } from './marketCard.ts'
 import { CONSENT_TEXT, CONSENT_VERSION, CONSENT_PLACEHOLDER, consentTextReady, marketCardActive } from './wycenaConsentText.ts'
 import { sendPhoneRequest } from './phoneBlockSubmit.ts'
-import { PHONE_BLOCK_VERSION_FORMAT } from '../app/wycena/phoneBlockTexts.ts'
+import { PHONE_BLOCK_VERSION_FORMAT } from '../app/(pl)/wycena/phoneBlockTexts.ts'
 
 const okBody = {
   ok: true, as_of_date: '2026-10-18', band: { key: '50_70', label: '50-70 m²' },
@@ -131,7 +131,7 @@ test('okno kontaktu: wysylane jako contact_window tylko gdy wybrane; bez wyboru 
 })
 
 test('teksty karty: DOSLOWNIE wersje finalne zatwierdzone przez Daniela 18.10.2026 (poz. 1-26) + odmiana oferta/oferty/ofert', async () => {
-  const m = await import('../app/wycena/marketCardTexts.ts')
+  const m = await import('../app/(pl)/wycena/marketCardTexts.ts')
   const T = m.MARKET_CARD_TEXTS
   assert.equal(T.blockTitle, 'Dokładniejszy wynik')
   assert.equal(T.blockIntro, 'Poniżej widzisz ceny ofert i ceny transakcyjne w okolicy. Agent może na tej podstawie doprecyzować szacunek.')
@@ -178,7 +178,7 @@ test('teksty karty: DOSLOWNIE wersje finalne zatwierdzone przez Daniela 18.10.20
 })
 
 test('teksty karty i bloku: bez "bezplatn", bez obietnic terminu, bez trendu; forma bezposrednia (nie "Panstwo")', async () => {
-  const m = await import('../app/wycena/marketCardTexts.ts')
+  const m = await import('../app/(pl)/wycena/marketCardTexts.ts')
   const flat = JSON.stringify(m.MARKET_CARD_TEXTS) + m.MARKET_CARD_TEXTS.smallSample(3) + m.MARKET_CARD_TEXTS.offersCount(5)
   assert.ok(!/bezp[łl]atn|gratis|za darmo|gwarant/i.test(flat), 'bez bezplatnie')
   assert.ok(!/(w ci[aą]gu|natychmiast|szybko|dzi[sś]\b|jutro|\d+\s*(min|h|godz))/i.test(flat), 'bez terminu oddzwonienia')
@@ -187,7 +187,7 @@ test('teksty karty i bloku: bez "bezplatn", bez obietnic terminu, bez trendu; fo
 })
 
 test('PhoneBlock: karta, okno i checkbox tylko pod MARKET_CARD_ACTIVE; tekst checkboxa z CONSENT_TEXT (jedno miejsce)', () => {
-  const src = fs.readFileSync(new URL('../app/wycena/PhoneBlock.tsx', import.meta.url), 'utf8')
+  const src = fs.readFileSync(new URL('../app/(pl)/wycena/PhoneBlock.tsx', import.meta.url), 'utf8')
   assert.match(src, /const mc = MARKET_CARD_ACTIVE/)
   assert.match(src, /\{mc && !WYCENA_LAYOUT_V4_ACTIVE && <MarketCard/)
   assert.match(src, /\{mc && \(\s*<>/)
@@ -198,7 +198,7 @@ test('PhoneBlock: karta, okno i checkbox tylko pod MARKET_CARD_ACTIVE; tekst che
 })
 
 test('PhoneBlock: pod checkboxem istniejaca klauzula PHONE_BLOCK_LEGAL (BEZ przepisywania) i dopisek "To nie jest operat"; checkbox przed klauzula', async () => {
-  const src = fs.readFileSync(new URL('../app/wycena/PhoneBlock.tsx', import.meta.url), 'utf8')
+  const src = fs.readFileSync(new URL('../app/(pl)/wycena/PhoneBlock.tsx', import.meta.url), 'utf8')
   const iBox = src.indexOf('id="wy-consent" type="checkbox"')
   const iClause = src.indexOf('{L.clauseBeforeLink}')
   const iAppraisal = src.indexOf('{mc && <p style={{ ...hintStyle, margin: \'8px 0 0\' }}>{L.notAppraisal}</p>}')
@@ -206,7 +206,7 @@ test('PhoneBlock: pod checkboxem istniejaca klauzula PHONE_BLOCK_LEGAL (BEZ prze
   assert.ok(iAppraisal > iClause, 'dopisek "To nie jest operat" pod klauzula (przy fladze ON)')
   assert.match(src, /\{!mc && <p[^>]*>\{L\.notAppraisal\}<\/p>\}/, 'przy fladze OFF dopisek zostaje w dotychczasowym miejscu')
   assert.match(src, /PHONE_BLOCK_LEGAL as L/)
-  const t = await import('../app/wycena/phoneBlockTexts.ts')
+  const t = await import('../app/(pl)/wycena/phoneBlockTexts.ts')
   assert.equal(t.PHONE_BLOCK_LEGAL.notAppraisal, 'To nie jest operat szacunkowy rzeczoznawcy majątkowego.')
   assert.ok(t.PHONE_BLOCK_LEGAL.clauseBeforeLink.startsWith('Administratorem danych jest InvestRent sp. z o.o.'))
   assert.ok(!/Administratorem danych/.test(fs.readFileSync(new URL('./wycenaConsentText.ts', import.meta.url), 'utf8')), 'klauzula nie jest przepisana do pliku zgody')
@@ -220,7 +220,7 @@ test('mala proba transakcji: granica 7 (ostrzezenie) / 8 (brak), n=0 bez ostrzez
   const ts = (await import('typescript')).default
   const { renderToStaticMarkup } = await import('react-dom/server')
   const React = (await import('react')).default
-  const src = fs.readFileSync(new URL('../app/wycena/MarketCard.tsx', import.meta.url), 'utf8')
+  const src = fs.readFileSync(new URL('../app/(pl)/wycena/MarketCard.tsx', import.meta.url), 'utf8')
   const here = (p) => new URL(p, import.meta.url).href
   const dir = path.join(process.cwd(), 'node_modules', '.cache', 'render-test'); fs.mkdirSync(dir, { recursive: true })
   const hookFile = path.join(dir, 'useMarketCard.mjs')
@@ -231,8 +231,8 @@ test('mala proba transakcji: granica 7 (ostrzezenie) / 8 (brak), n=0 bez ostrzez
     .replace("'@/lib/wycenaFlags'", `'${here('./wycenaFlags.ts')}'`)
     .replace("'@/lib/valuation'", `'${here('./valuation.ts')}'`)
     .replace("'@/lib/useMarketCard'", `'file:///${hookFile.replace(/\\/g, '/')}'`)
-    .replace("'./marketCardTexts'", `'${here('../app/wycena/marketCardTexts.ts')}'`)
-    .replace("'./wycenaV4Texts'", `'${here('../app/wycena/wycenaV4Texts.ts')}'`)
+    .replace("'./marketCardTexts'", `'${here('../app/(pl)/wycena/marketCardTexts.ts')}'`)
+    .replace("'./wycenaV4Texts'", `'${here('../app/(pl)/wycena/wycenaV4Texts.ts')}'`)
   const file = path.join(dir, 'MarketCard.mjs'); fs.writeFileSync(file, js)
   const { TransactionsBox } = await import(new URL(`file:///${file.replace(/\\/g, '/')}`).href)
   const html = (count) => renderToStaticMarkup(React.createElement(TransactionsBox, { t: count == null ? null : { count, median: 11500, p25: 10200, p75: 12900, asOf: '08.2026', note: 'x' } }))
@@ -244,6 +244,6 @@ test('mala proba transakcji: granica 7 (ostrzezenie) / 8 (brak), n=0 bez ostrzez
   const none = html(null)
   assert.ok(none.includes('Nie mamy wystarczających danych o cenach transakcyjnych dla tego segmentu.') && !none.includes('Mała próba'), 'brak danych: dotychczasowy komunikat')
   // odmiana: 12 i 22 (poza progiem renderu, wprost z tekstu)
-  const T = (await import('../app/wycena/marketCardTexts.ts')).MARKET_CARD_TEXTS
+  const T = (await import('../app/(pl)/wycena/marketCardTexts.ts')).MARKET_CARD_TEXTS
   assert.ok(T.transactionsSmallSample(12).includes('jest tylko 12 transakcji') && T.transactionsSmallSample(22).includes('są tylko 22 transakcje'))
 })

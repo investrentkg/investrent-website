@@ -52,6 +52,7 @@ const nextConfig = {
   // ═══════════════════════════════════════════════════════════════════
   async redirects() {
     return [
+      { source: '/de', destination: '/de/immobilien-kolberg', statusCode: 301 },
       // NAPRAWA (19.08, Google Search Console: "Duplikat, uzytkownik nie
       // oznaczyl strony kanonicznej" - alert). Kazda podstrona ma poprawnie
       // ustawiony <link rel="canonical"> zawsze wskazujacy na wersje z

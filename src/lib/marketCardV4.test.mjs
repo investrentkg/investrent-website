@@ -48,10 +48,10 @@ test('V4 używa liczby ofert po filtrze stanu przy ocenie próby', () => {
 })
 
 test('V4 widok zachowuje kolejność transakcyjne potem ofertowe i jest bramkowany flagą', async () => {
-  const marketCard = await readFile(new URL('../app/wycena/MarketCard.tsx', import.meta.url), 'utf8')
-  const client = await readFile(new URL('../app/wycena/WycenaClient.tsx', import.meta.url), 'utf8')
-  const phoneBlock = await readFile(new URL('../app/wycena/PhoneBlock.tsx', import.meta.url), 'utf8')
-  const v4Texts = await readFile(new URL('../app/wycena/wycenaV4Texts.ts', import.meta.url), 'utf8')
+  const marketCard = await readFile(new URL('../app/(pl)/wycena/MarketCard.tsx', import.meta.url), 'utf8')
+  const client = await readFile(new URL('../app/(pl)/wycena/WycenaClient.tsx', import.meta.url), 'utf8')
+  const phoneBlock = await readFile(new URL('../app/(pl)/wycena/PhoneBlock.tsx', import.meta.url), 'utf8')
+  const v4Texts = await readFile(new URL('../app/(pl)/wycena/wycenaV4Texts.ts', import.meta.url), 'utf8')
   assert.ok(marketCard.indexOf('wy-v4-transactions-title') < marketCard.indexOf('wy-v4-offers-title'))
   assert.match(marketCard, /WYCENA_LAYOUT_V4_ACTIVE\) return <V4MarketCard/)
   assert.match(client, /marketCardSlot=\{WYCENA_LAYOUT_V4_ACTIVE && outcome\.kind === 'range'/)

@@ -1,4 +1,4 @@
-import { OFFICE_PHONE } from '../../lib/valuation.ts' // numer biura z jednego zrodla (v14: bez literalow w tekstach zgody/wyniku)
+import { OFFICE_PHONE } from '../../../lib/valuation.ts' // numer biura z jednego zrodla (v14: bez literalow w tekstach zgody/wyniku)
 
 // Teksty publiczne kalkulatora wyceny (/wycena) w jednym miejscu.
 // v14 (28.09.2026): teksty FINAL po 5 rundach Krytyka (_wspolne_pliki\kalkulator_v14_teksty_FINAL_do_wklejenia_2026_09_28.md), oparte na rekomendacji Prawnika; CONSENT_VERSION nadal v13 (nic nie wdrozone).
