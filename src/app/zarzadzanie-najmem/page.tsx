@@ -7,6 +7,7 @@ import Breadcrumb from '@/components/Breadcrumb'
 import { getOffice } from '@/lib/api'
 import { Shield, Users, TrendingUp, Wrench, FileCheck, CheckCircle, Phone, Key } from 'lucide-react'
 import type { Metadata } from 'next'
+import { buildPageMeta } from '@/lib/buildPageMeta'
 
 // NAPRAWA (audyt SEO/tresci, Daniel 30.07.2026): ta podstrona istniala na
 // starej stronie (investrent.com.pl/zarzadzanie-najmem) i opisuje realna,
@@ -19,6 +20,7 @@ export const metadata: Metadata = {
   description: 'Zarządzanie najmem nieruchomości w Kołobrzegu i okolicach nadmorskich — od znalezienia najemcy po bieżącą obsługę i rozliczenia. Stabilny dochód, zero formalności po Twojej stronie.',
   // NAPRAWA (audyt SEO 31.07.2026, punkt 3): brak kanonicznego URL na calej stronie.
   alternates: { canonical: 'https://www.investrent.com.pl/zarzadzanie-najmem' },
+  ...buildPageMeta({ title: 'Zarządzanie najmem Kołobrzeg', description: 'Zarządzanie najmem nieruchomości w Kołobrzegu i okolicach nadmorskich — od znalezienia najemcy po bieżącą obsługę i rozliczenia. Stabilny dochód, zero formalności po Twojej stronie.', path: '/zarzadzanie-najmem' }),
 }
 
 const FALLBACK_OFFICE = {

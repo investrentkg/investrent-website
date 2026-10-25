@@ -8,12 +8,14 @@ import OffersPageClient from '@/app/oferty/OffersPageClient'
 import { getPublicOffers, getOffice } from '@/lib/api'
 import { Search, ShieldCheck, Clock, Award, ArrowRight } from 'lucide-react'
 import type { Metadata } from 'next'
+import { buildPageMeta } from '@/lib/buildPageMeta'
 
 export const metadata: Metadata = {
   title: 'Kupno nieruchomości Kołobrzeg',
   description: 'Szukasz mieszkania lub domu w Kołobrzegu? Znajdziemy Ci idealną nieruchomość. Bezpłatna pomoc, odpowiedź najpóźniej w ciągu 24 godzin.',
   // NAPRAWA (audyt SEO 31.07.2026, punkt 3): brak kanonicznego URL na calej stronie.
   alternates: { canonical: 'https://www.investrent.com.pl/kupno' },
+  ...buildPageMeta({ title: 'Kupno nieruchomości Kołobrzeg', description: 'Szukasz mieszkania lub domu w Kołobrzegu? Znajdziemy Ci idealną nieruchomość. Bezpłatna pomoc, odpowiedź najpóźniej w ciągu 24 godzin.', path: '/kupno' }),
 }
 
 const FALLBACK_OFFICE = { name: 'InvestRent Nieruchomości', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }

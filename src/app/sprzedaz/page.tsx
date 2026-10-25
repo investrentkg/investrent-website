@@ -11,6 +11,7 @@ import { getVerifiedRating } from '@/lib/schemaRating'
 import { DollarSign, Camera, Globe, FileCheck, Key, CheckCircle, ArrowRight, FileText, Building, Users, Shield } from 'lucide-react'
 import type { Metadata } from 'next'
 import { SPRZEDAZ_TITLE, SPRZEDAZ_H1, SPRZEDAZ_META_DESCRIPTION, FOREIGN_H2, FOREIGN_TEXT_B, VALUATION_CTA_LABEL, NEW_FAQ } from '@/lib/sprzedazSeo'
+import { buildPageMeta } from '@/lib/buildPageMeta'
 
 // ZMIANA (04.10.2026): fetch opinii bez opcji = force-cache (patrz kontakt/page.tsx) - ISR co 5 minut.
 export const revalidate = 300
@@ -22,6 +23,7 @@ export const metadata: Metadata = {
   description: SPRZEDAZ_META_DESCRIPTION,
   // NAPRAWA (audyt SEO 31.07.2026, punkt 3): brak kanonicznego URL na calej stronie.
   alternates: { canonical: 'https://www.investrent.com.pl/sprzedaz' },
+  ...buildPageMeta({ title: SPRZEDAZ_TITLE, description: SPRZEDAZ_META_DESCRIPTION, path: '/sprzedaz' }),
 }
 
 const FALLBACK_OFFICE = { name: 'InvestRent Nieruchomości', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
