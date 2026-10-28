@@ -24,6 +24,8 @@ test('flaga OFF (domyslnie): karta i checkbox nieaktywne mimo gotowego tekstu zg
   assert.equal(f.MARKET_CARD_FLAG, on); assert.equal(f.MARKET_CARD_ACTIVE, on)
   assert.equal(consentTextReady(CONSENT_TEXT), true)
   assert.equal(marketCardActive(false), false) // flaga OFF = nic sie nie zmienia, nawet z gotowym tekstem
+  assert.equal(f.WYCENA_LAYOUT_V4_FLAG, process.env.NEXT_PUBLIC_WYCENA_LAYOUT_V4 === 'on')
+  assert.equal(f.WYCENA_LAYOUT_V4_ACTIVE, f.WYCENA_LAYOUT_V4_FLAG && f.MARKET_CARD_ACTIVE)
   assert.match(CONSENT_VERSION, PHONE_BLOCK_VERSION_FORMAT)
 })
 
@@ -219,8 +221,12 @@ test('mala proba transakcji: granica 7 (ostrzezenie) / 8 (brak), n=0 bez ostrzez
   const React = (await import('react')).default
   const src = fs.readFileSync(new URL('../app/wycena/MarketCard.tsx', import.meta.url), 'utf8')
   const here = (p) => new URL(p, import.meta.url).href
+  const hookFile = path.join(process.cwd(), 'node_modules', '.cache', 'render-test', 'useMarketCard.mjs')
+  fs.writeFileSync(hookFile, 'export function useMarketCard() { return { view: null, condition: null, setCondition() {}, busy: false } }')
   const js = ts.transpileModule(src, { compilerOptions: { jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 } }).outputText
-    .replace("'@/lib/marketCard'", `'${here('./marketCard.ts')}'`).replace("'./marketCardTexts'", `'${here('../app/wycena/marketCardTexts.ts')}'`)
+    .replace("'@/lib/marketCard'", `'${here('./marketCard.ts')}'`)
+    .replace("'@/lib/useMarketCard'", `'file:///${hookFile.replace(/\\/g, '/')}'`)
+    .replace("'./marketCardTexts'", `'${here('../app/wycena/marketCardTexts.ts')}'`)
   const dir = path.join(process.cwd(), 'node_modules', '.cache', 'render-test'); fs.mkdirSync(dir, { recursive: true })
   const file = path.join(dir, 'MarketCard.mjs'); fs.writeFileSync(file, js)
   const { TransactionsBox } = await import(new URL(`file:///${file.replace(/\\/g, '/')}`).href)
