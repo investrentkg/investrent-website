@@ -94,7 +94,7 @@ test('rozłączność zgód: attribution (UTM) bez ads i odwrotnie; brak wyboru 
   assert.deepEqual(parseConsent(serializeConsent(adsOnly), NOW + 1000), adsOnly)
   assert.equal(parseConsent(JSON.stringify({ v: 3, analytics: true, attribution: true, ts: NOW }), NOW), null, 'brak klucza ads = nieprawidłowy zapis')
 })
-test('wycofanie zgody marketingowej (attribution) => sprzątanie ir_attr; analityka, ads i pierwsze odrzucenie jej nie ruszają; wycofanie ads nie czyści UTM', () => {
+test('wycofanie zgody marketingowej czyści ir_attr i cookies Meta tylko w trybie Pixel; ads pozostaje rozłączne', () => {
   assert.equal(ATTRIBUTION_SESSION_KEY, 'ir_attr')
   assert.equal(applyChoice(null, REJECT_ALL, NOW).clearAttribution, false)
   const on = makeConsent(ACCEPT_ALL, NOW)
@@ -102,12 +102,16 @@ test('wycofanie zgody marketingowej (attribution) => sprzątanie ir_attr; analit
   assert.equal(applyChoice(on, { analytics: true, attribution: false, ads: false }, NOW + 1).clearAttribution, true)
   assert.equal(applyChoice(on, { analytics: false, attribution: true, ads: false }, NOW + 1).clearAttribution, false)
   assert.equal(applyChoice(makeConsent({ analytics: true, attribution: false, ads: false }, NOW), REJECT_ALL, NOW + 1).clearAttribution, false)
-  // wycofanie reklamowych (po wdrożeniu piksela) czyści cookies Meta, ale nie UTM; wycofanie UTM nie czyści Meta
+  const pixelUsesMarketing = process.env.NEXT_PUBLIC_META_PIXEL_ENABLED === 'on'
+  // Wycofanie ads czyści cookies Meta; wycofanie Marketingowych także wtedy, gdy Pixel używa tej kategorii.
   const both = { v: CONSENT_VERSION, analytics: false, attribution: true, ads: true, ts: NOW }
   const r1 = applyChoice(both, { analytics: false, attribution: true, ads: false }, NOW + 1)
   assert.deepEqual([r1.clearAttribution, r1.clearMeta], [false, true])
   const r2 = applyChoice(both, { analytics: false, attribution: false, ads: true }, NOW + 1)
-  assert.equal(r2.clearAttribution, true) // (ads wymuszone na false do wdrożenia piksela, więc clearMeta tu nie sprawdzamy)
+  assert.equal(r2.clearAttribution, true)
+  const marketingOnly = { v: CONSENT_VERSION, analytics: false, attribution: true, ads: false, ts: NOW }
+  const marketingRevoked = applyChoice(marketingOnly, { analytics: false, attribution: false, ads: false }, NOW + 1)
+  assert.equal(marketingRevoked.clearMeta, pixelUsesMarketing)
 })
 
 test('język po ścieżce: /de i /de/... = niemiecki, reszta (także /dekoracje) polski; komplet tekstów PL i DE', () => {
@@ -157,10 +161,10 @@ test('zmiana wyboru: wycofanie analityki => sprzątanie _ga*; pierwsze odrzuceni
   assert.deepEqual([on.clearGa, on.clearMeta], [false, false])
   assert.equal(analyticsAllowed(on.next), true)
   const off = applyChoice(on.next, REJECT_ALL, NOW + 2)
-  assert.deepEqual([off.clearGa, off.clearMeta], [true, false]) // ads nigdy nie był włączony (ADS_AVAILABLE=false) - nie ma czego sprzątać
+  assert.deepEqual([off.clearGa, off.clearMeta], [true, process.env.NEXT_PUBLIC_META_PIXEL_ENABLED === 'on'])
   assert.equal(analyticsAllowed(off.next), false)
   const onlyMk = applyChoice(on.next, { analytics: true, attribution: false, ads: false }, NOW + 3)
-  assert.deepEqual([onlyMk.clearGa, onlyMk.clearMeta], [false, false]); assert.equal(onlyMk.clearAttribution, true)
+  assert.deepEqual([onlyMk.clearGa, onlyMk.clearMeta], [false, process.env.NEXT_PUBLIC_META_PIXEL_ENABLED === 'on']); assert.equal(onlyMk.clearAttribution, true)
   // zapis z nowym ts, trwały i odczytywalny po zmianie
   const mem = new Map(); const st = { getItem: k => mem.get(k) ?? null, setItem: (k, v) => mem.set(k, v) }
   writeStoredConsent(st, on.next); writeStoredConsent(st, off.next)

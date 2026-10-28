@@ -10,6 +10,7 @@ import Turnstile from './Turnstile'
 import PhoneBlock from './PhoneBlock'
 import { PHONE_BLOCK_TEXTS } from './phoneBlockTexts'
 import { PHONE_BLOCK_ON } from '@/lib/wycenaFlags'
+import WycenaMetaPixel, { trackWycenaMetaLead } from '@/components/WycenaMetaPixel'
 import { sendFunnelStep } from '@/lib/funnel'
 import {
   CONDITIONS, EMPTY_FORM, OFFICE_PHONE, PROPERTY_TYPES,
@@ -190,6 +191,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
 
   return (
     <>
+    <WycenaMetaPixel />
     <div className="wy-hero" style={{ background: 'linear-gradient(135deg, #0d2a5c, #1a4fa0)', padding: '32px 0 36px' }}>
       <div className="container" style={{ maxWidth: 860 }}>
         <Breadcrumb light={true} crumbs={[{ label: 'Strona główna', href: '/' }, { label: 'Wycena nieruchomości' }]} />
@@ -571,7 +573,7 @@ function LeadPanel({ outcome, values, onDone }: { outcome: EstimateOutcome | nul
     trackValuation('wycena_lead_submit', { mode, iab: iabClass() })
     try {
       const r = await submitLead(buildLeadRequest({ name, phone, values, outcome, utm: readUtm(window.location.search), attribution: getAttribution(), turnstileToken: tsToken, honeypot: hp }))
-      if (r?.ok) { setState('ok'); trackValuation('wycena_lead', { mode: outcome?.kind ?? 'none' }) }
+      if (r?.ok) { setState('ok'); trackValuation('wycena_lead', { mode: outcome?.kind ?? 'none' }); trackWycenaMetaLead() }
       else {
         setState('fail')
         trackValuation('wycena_lead_submit_failed', { reason: r && !r.ok ? r.reason : 'unknown', status: r && !r.ok && r.status ? String(r.status) : '', iab: iabClass() })
