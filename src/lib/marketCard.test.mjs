@@ -188,7 +188,7 @@ test('teksty karty i bloku: bez "bezplatn", bez obietnic terminu, bez trendu; fo
 test('PhoneBlock: karta, okno i checkbox tylko pod MARKET_CARD_ACTIVE; tekst checkboxa z CONSENT_TEXT (jedno miejsce)', () => {
   const src = fs.readFileSync(new URL('../app/wycena/PhoneBlock.tsx', import.meta.url), 'utf8')
   assert.match(src, /const mc = MARKET_CARD_ACTIVE/)
-  assert.match(src, /\{mc && <MarketCard/)
+  assert.match(src, /\{mc && !WYCENA_LAYOUT_V4_ACTIVE && <MarketCard/)
   assert.match(src, /\{mc && \(\s*<>/)
   assert.match(src, /\{CONSENT_TEXT\}/)
   assert.ok(!/TEKST_ZGODY_DO_UZUPELNIENIA/.test(src))
@@ -221,13 +221,17 @@ test('mala proba transakcji: granica 7 (ostrzezenie) / 8 (brak), n=0 bez ostrzez
   const React = (await import('react')).default
   const src = fs.readFileSync(new URL('../app/wycena/MarketCard.tsx', import.meta.url), 'utf8')
   const here = (p) => new URL(p, import.meta.url).href
-  const hookFile = path.join(process.cwd(), 'node_modules', '.cache', 'render-test', 'useMarketCard.mjs')
+  const dir = path.join(process.cwd(), 'node_modules', '.cache', 'render-test'); fs.mkdirSync(dir, { recursive: true })
+  const hookFile = path.join(dir, 'useMarketCard.mjs')
   fs.writeFileSync(hookFile, 'export function useMarketCard() { return { view: null, condition: null, setCondition() {}, busy: false } }')
   const js = ts.transpileModule(src, { compilerOptions: { jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 } }).outputText
     .replace("'@/lib/marketCard'", `'${here('./marketCard.ts')}'`)
+    .replace("'@/lib/marketCardV4'", `'${here('./marketCardV4.ts')}'`)
+    .replace("'@/lib/wycenaFlags'", `'${here('./wycenaFlags.ts')}'`)
+    .replace("'@/lib/valuation'", `'${here('./valuation.ts')}'`)
     .replace("'@/lib/useMarketCard'", `'file:///${hookFile.replace(/\\/g, '/')}'`)
     .replace("'./marketCardTexts'", `'${here('../app/wycena/marketCardTexts.ts')}'`)
-  const dir = path.join(process.cwd(), 'node_modules', '.cache', 'render-test'); fs.mkdirSync(dir, { recursive: true })
+    .replace("'./wycenaV4Texts'", `'${here('../app/wycena/wycenaV4Texts.ts')}'`)
   const file = path.join(dir, 'MarketCard.mjs'); fs.writeFileSync(file, js)
   const { TransactionsBox } = await import(new URL(`file:///${file.replace(/\\/g, '/')}`).href)
   const html = (count) => renderToStaticMarkup(React.createElement(TransactionsBox, { t: count == null ? null : { count, median: 11500, p25: 10200, p75: 12900, asOf: '08.2026', note: 'x' } }))
