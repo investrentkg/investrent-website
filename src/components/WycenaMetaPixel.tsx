@@ -30,13 +30,13 @@ function loadPixel() {
   fbq('init', PIXEL_ID)
 }
 
-export function trackWycenaMetaLead(): void {
-  if (!WYCENA_META_TRACKING_ON || !PIXEL_ID || !hasAttributionConsent() || typeof window === 'undefined' || !window.fbq) return
+export function trackWycenaMetaLead(eventId: string | null | undefined): void {
+  if (!WYCENA_META_TRACKING_ON || !PIXEL_ID || !hasAttributionConsent() || typeof window === 'undefined' || !window.fbq || !eventId) return
   trackConsentedWycenaLead({
     enabled: WYCENA_META_TRACKING_ON,
     marketingConsent: hasAttributionConsent(),
     pixelAvailable: true,
-    eventId: `wyc_${crypto.randomUUID()}`,
+    eventId,
     track: (event, options) => window.fbq?.('track', event, {}, options),
   })
 }

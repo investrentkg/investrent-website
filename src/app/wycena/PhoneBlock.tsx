@@ -8,11 +8,14 @@ import {
   type EstimateOutcome, type FormValues,
 } from '@/lib/valuation'
 import { sendPhoneRequest } from '@/lib/phoneBlockSubmit'
-import { CALLBACK_ON, MARKET_CARD_ACTIVE } from '@/lib/wycenaFlags'
+import { CALLBACK_ON, MARKET_CARD_ACTIVE, WYCENA_META_TRACKING_ON } from '@/lib/wycenaFlags'
 import { CONSENT_TEXT, CONSENT_VERSION } from '@/lib/wycenaConsentText'
 import { CONTACT_WINDOWS, CONTACT_WINDOW_LABELS, type ContactWindow } from '@/lib/marketCard'
 import { T } from './texts'
 import { PHONE_BLOCK_CONSENT_VERSION, PHONE_BLOCK_LEGAL as L, PHONE_BLOCK_TEXTS as P } from './phoneBlockTexts'
+import { hasAttributionConsent } from '@/lib/consentStore'
+import { buildWycenaMetaTracking, createWycenaMetaEventId } from '@/lib/wycenaMetaPixel'
+import { trackWycenaMetaLead } from '@/components/WycenaMetaPixel'
 import Turnstile from './Turnstile'
 import MarketCard from './MarketCard'
 import { MARKET_CARD_TEXTS as MC } from './marketCardTexts'
@@ -45,6 +48,7 @@ export default function PhoneBlock({ outcome, values, onDone }: { outcome: Estim
   const [tsStuck, setTsStuck] = useState(false)
   const [queued, setQueued] = useState(false)
   const inFlight = useRef(false)
+  const metaEventId = useRef<string | null>(null)
   const mode = outcome.kind
   const token = 'valuationToken' in outcome && outcome.valuationToken ? outcome.valuationToken : null
 
@@ -76,17 +80,27 @@ export default function PhoneBlock({ outcome, values, onDone }: { outcome: Estim
     trackValuation('wycena_lead_submit', { mode, iab: iab(), placement: 'phone_block' })
     const utm = readUtm(window.location.search)
     try {
+      const attribution = getAttribution()
+      if (WYCENA_META_TRACKING_ON && hasAttributionConsent() && !metaEventId.current) metaEventId.current = createWycenaMetaEventId()
+      const metaTracking = buildWycenaMetaTracking({
+        enabled: WYCENA_META_TRACKING_ON,
+        marketingConsent: hasAttributionConsent(),
+        eventId: metaEventId.current,
+        readCookie: () => document.cookie,
+        search: window.location.search,
+        attribution: attribution as Record<string, unknown> | null,
+      })
       const r = await sendPhoneRequest(
-        { phone, valuationToken: token, consentVersion: mc ? CONSENT_VERSION : PHONE_BLOCK_CONSENT_VERSION, values, outcome, utm, turnstileToken: tsToken, honeypot: hp, contactWindow: mc && win ? win : null },
+        { phone, valuationToken: token, consentVersion: mc ? CONSENT_VERSION : PHONE_BLOCK_CONSENT_VERSION, values, outcome, utm, turnstileToken: tsToken, honeypot: hp, contactWindow: mc && win ? win : null, metaTracking },
         {
           callbackEnabled: CALLBACK_ON, callbackUrl: CALLBACK_URL,
           submitLeadFallback: async () => {
-            const res = await submitLead(buildLeadRequest({ name: '', phone, values, outcome, utm, attribution: getAttribution(), turnstileToken: tsToken, honeypot: hp, consentVersion: mc ? CONSENT_VERSION : PHONE_BLOCK_CONSENT_VERSION }))
+            const res = await submitLead({ ...buildLeadRequest({ name: '', phone, values, outcome, utm, attribution, turnstileToken: tsToken, honeypot: hp, consentVersion: mc ? CONSENT_VERSION : PHONE_BLOCK_CONSENT_VERSION }), ...(metaTracking ? { meta_tracking: metaTracking } : {}) })
             return res.ok ? { ok: true } : { ok: false, reason: res.reason }
           },
         },
       )
-      if (r.ok) { setState('ok'); trackValuation('wycena_lead', { mode, placement: 'phone_block', via: r.via }) }
+      if (r.ok) { setState('ok'); trackValuation('wycena_lead', { mode, placement: 'phone_block', via: r.via }); trackWycenaMetaLead(metaTracking?.event_id) }
       else { setState('fail'); trackValuation('wycena_lead_submit_failed', { reason: r.reason, status: '', iab: iab(), placement: 'phone_block' }) }
     } catch {
       setState('fail')

@@ -4,6 +4,7 @@
 //  - w przeciwnym razie (tryb awaryjny): dotychczasowy POST /api/public/leads (submitLead) z wynikiem wyceny w notes.
 // Zwraca { ok } bez rzucania; na porazce sieciowej callbacku probuje trybu awaryjnego (jeden zapis, nie dwa).
 import type { EstimateOutcome, FormValues } from './valuation'
+import type { WycenaMetaTracking } from './wycenaMetaPixel'
 
 export type PhoneRequestInput = {
   phone: string
@@ -16,6 +17,8 @@ export type PhoneRequestInput = {
   honeypot?: string
   /** okno kontaktu (S2/S3): wysylane jako contact_window; CRM zapisze je dopiero po S3 (do tego czasu pole jest ignorowane) */
   contactWindow?: string | null
+  /** Tracking metadata is created only after the existing Marketing category is accepted. */
+  metaTracking?: WycenaMetaTracking
 }
 export type PhoneRequestResult = { ok: true; via: 'callback' | 'lead' } | { ok: false; reason: string }
 export type PhoneRequestDeps = {
@@ -50,6 +53,7 @@ export async function sendPhoneRequest(input: PhoneRequestInput, deps: PhoneRequ
           ...(Object.keys(u).length ? { utm: u } : {}),
           ...(input.contactWindow ? { contact_window: input.contactWindow } : {}),
           ...(input.turnstileToken ? { turnstile_token: input.turnstileToken } : {}),
+          ...(input.metaTracking ? { meta_tracking: input.metaTracking } : {}),
           hp_field: input.honeypot ?? '',
         }),
       })
