@@ -18,4 +18,6 @@ export const MARKET_CARD_ACTIVE: boolean = marketCardActive(MARKET_CARD_FLAG)
 
 /** Układ kalkulatora v4; pozostaje nieaktywny bez jednoczesnego włączenia karty rynku. */
 export const WYCENA_LAYOUT_V4_FLAG: boolean = process.env.NEXT_PUBLIC_WYCENA_LAYOUT_V4 === 'on'
-export const WYCENA_LAYOUT_V4_ACTIVE: boolean = WYCENA_LAYOUT_V4_FLAG && MARKET_CARD_ACTIVE
+/** Blok kontaktu v4 musi być zaakceptowany razem z nową kwotą; domyślnie OFF do akceptacji tekstu przez Prawnika i Daniela. */
+export const WYCENA_NOTICE_V4_FLAG: boolean = process.env.NEXT_PUBLIC_WYCENA_NOTICE_V4 === 'on'
+export const WYCENA_LAYOUT_V4_ACTIVE: boolean = WYCENA_LAYOUT_V4_FLAG && MARKET_CARD_ACTIVE && WYCENA_NOTICE_V4_FLAG

@@ -354,6 +354,15 @@ test('lead z /wycena v12: source=wycena_lp, honeypot hp_field pusty, token Turns
   const fs2 = fs.readFileSync(new URL('../components/WycenaModal.tsx', import.meta.url), 'utf8')
   assert.ok(fs2.includes("source: 'wycena_modal'") && !fs2.includes('wycena_lp'), 'okienko Zamow rozmowe zostaje wycena_modal')
 })
+test('V4 lead: imie i nazwisko laczone, wybrany termin w notatkach po znaczniku zgody, tylko dozwolone wartosci', async () => {
+  const { buildLeadRequest } = await import('./valuation.ts')
+  const valid = buildLeadRequest({ name: ' Anna ', surname: ' Nowak ', phone: '731554341', values: ok, outcome: null, utm: '', consentVersion: 'v1', contactWindow: '12-15' })
+  assert.equal(valid.full_name, 'Anna Nowak')
+  assert.ok(valid.notes.includes('Preferowany przedział rozmowy: 12-15 (niewiążący).'))
+  assert.ok(valid.notes.indexOf('[Zgoda-kalkulator]') < valid.notes.indexOf('Preferowany przedział rozmowy:'))
+  const invalid = buildLeadRequest({ name: 'Anna', surname: 'Nowak', phone: '731554341', values: ok, outcome: null, utm: '', contactWindow: 'dowolny tekst' })
+  assert.ok(!invalid.notes.includes('dowolny tekst'))
+})
 test('teksty v14: numer biura w tekstach = OFFICE_PHONE (jedno zrodlo), doneBody i outOfScopeBody z numerem bez dubletu, scopeNoteWider i floor_hint, bledy z dzwonieniem', async () => {
   const { T } = await import('../app/wycena/texts.ts'); const { OFFICE_PHONE } = await import('./valuation.ts')
   const sp = String.fromCharCode(160); const norm = x => x.split(sp).join(' ')
