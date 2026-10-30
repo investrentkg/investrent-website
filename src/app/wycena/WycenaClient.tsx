@@ -12,7 +12,8 @@ import { PHONE_BLOCK_TEXTS } from './phoneBlockTexts'
 import { PHONE_BLOCK_ON, WYCENA_META_TRACKING_ON } from '@/lib/wycenaFlags'
 import WycenaMetaPixel, { trackWycenaMetaLead } from '@/components/WycenaMetaPixel'
 import { hasAttributionConsent } from '@/lib/consentStore'
-import { buildWycenaMetaTracking, createWycenaMetaEventId } from '@/lib/wycenaMetaPixel'
+import { buildWycenaMetaTracking } from '@/lib/wycenaMetaPixel'
+import { useMetaConsentReceipt } from './useMetaConsentReceipt'
 import { sendFunnelStep } from '@/lib/funnel'
 import {
   CONDITIONS, EMPTY_FORM, OFFICE_PHONE, PROPERTY_TYPES,
@@ -486,7 +487,7 @@ function LeadPanel({ outcome, values, onDone }: { outcome: EstimateOutcome | nul
   const fallbackRef = useRef<HTMLDivElement>(null)
   const inFlight = useRef(false)
   const formRef = useRef<HTMLFormElement>(null)
-  const metaEventId = useRef<string | null>(null)
+  const metaConsent = useMetaConsentReceipt()
   const mountedAt = useRef(Date.now())
   const tsReadyLogged = useRef(false)
   const tsFailLogged = useRef(false)
@@ -576,11 +577,12 @@ function LeadPanel({ outcome, values, onDone }: { outcome: EstimateOutcome | nul
     trackValuation('wycena_lead_submit', { mode, iab: iabClass() })
     try {
       const attribution = getAttribution()
-      if (WYCENA_META_TRACKING_ON && hasAttributionConsent() && !metaEventId.current) metaEventId.current = createWycenaMetaEventId()
+      const metaReceipt = metaConsent.getReceipt()
       const metaTracking = buildWycenaMetaTracking({
         enabled: WYCENA_META_TRACKING_ON,
         marketingConsent: hasAttributionConsent(),
-        eventId: metaEventId.current,
+        eventId: metaReceipt?.eventId ?? null,
+        consentReceipt: metaReceipt?.receipt ?? null,
         readCookie: () => document.cookie,
         search: window.location.search,
         attribution: attribution as Record<string, unknown> | null,
@@ -658,6 +660,7 @@ function LeadPanel({ outcome, values, onDone }: { outcome: EstimateOutcome | nul
         </label>
       </div>
 
+      {metaConsent.widget}
       {TURNSTILE_SITE_KEY && (
         <div style={{ marginTop: 16 }}>
           <Turnstile siteKey={TURNSTILE_SITE_KEY} resetKey={tsReset} onToken={onTsToken} onFail={onTsFail} />

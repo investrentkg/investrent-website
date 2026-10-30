@@ -174,3 +174,20 @@ test('zmiana wyboru: wycofanie analityki => sprzątanie _ga*; pierwsze odrzuceni
 test('zdarzenie zmiany zgody ma stałą nazwę (kontrakt dla website#42 / UTM)', () => {
   assert.equal(CONSENT_CHANGE_EVENT, 'ir-consent-change')
 })
+
+test('wycofanie zgody Marketing przy wlaczonym Pixelu czysci cookies Meta (_fbp, _fbc) i atrybucje, nie ruszajac _ga', () => {
+  const prev = process.env.NEXT_PUBLIC_META_PIXEL_ENABLED
+  process.env.NEXT_PUBLIC_META_PIXEL_ENABLED = 'on'
+  try {
+    const granted = { v: CONSENT_VERSION, analytics: true, attribution: true, ads: false, ts: NOW }
+    const r = applyChoice(granted, { analytics: true, attribution: false, ads: false }, NOW + 1)
+    assert.equal(r.next.attribution, false)
+    assert.equal(r.clearMeta, true)
+    assert.equal(r.clearAttribution, true)
+    assert.equal(r.clearGa, false)
+    assert.deepEqual(metaCookieNames('_fbp=fb.1.1.1; _fbc=fb.1.2.x; _ga=GA1.1.2; sid=1'), ['_fbp', '_fbc'])
+    assert.equal(applyChoice(granted, { analytics: true, attribution: true, ads: false }, NOW + 1).clearMeta, false)
+  } finally {
+    if (prev === undefined) delete process.env.NEXT_PUBLIC_META_PIXEL_ENABLED; else process.env.NEXT_PUBLIC_META_PIXEL_ENABLED = prev
+  }
+})
