@@ -31,7 +31,7 @@ export default async function WynajemPage() {
   const [data, officeData, contentData] = await Promise.all([
     getPublicOffers({ limit: 9, transaction_type: 'wynajem' } as any),
     getOffice(),
-    fetch('https://investrent-crm-production.up.railway.app/api/public/content/wynajem')
+    fetch('https://api.investrent.com.pl/api/public/content/wynajem')
       .then(r => r.json()).catch(() => null),
   ])
   const office = officeData ?? FALLBACK_OFFICE

@@ -6,7 +6,7 @@ Strona www biura nieruchomości InvestRent, połączona live z CRM.
 - **Next.js 14** (App Router, ISR)
 - **TypeScript** + Tailwind CSS
 - **Montserrat** + **Inter** via `next/font`
-- API: `investrent-crm-production.up.railway.app`
+- API: `api.investrent.com.pl`
 
 ## Uruchomienie lokalnie
 
@@ -21,7 +21,7 @@ npm run dev
 
 | Zmienna | Opis |
 |---|---|
-| `NEXT_PUBLIC_API_URL` | URL backendu CRM (Railway) |
+| `NEXT_PUBLIC_API_URL` | URL backendu CRM (api.investrent.com.pl) |
 | `NEXT_PUBLIC_META_PIXEL_ENABLED` | Meta Pixel for valuation; keep unset or `off` until explicitly enabled |
 | `NEXT_PUBLIC_META_PIXEL_ID` | Meta Pixel ID (public identifier, required for browser Pixel) |
 | `NEXT_PUBLIC_MAPS_KEY` | Google Maps API key (opcjonalnie) |

@@ -55,9 +55,9 @@ const FAQ: { q: string; a: string; linkLabel?: string; linkHref?: string }[] = [
 export default async function SprzedazPage() {
   const [officeData, reviewsData, contentData] = await Promise.all([
     getOffice(),
-    fetch('https://investrent-crm-production.up.railway.app/api/public/google-reviews')
+    fetch('https://api.investrent.com.pl/api/public/google-reviews')
       .then(r => r.json()).catch(() => null),
-    fetch('https://investrent-crm-production.up.railway.app/api/public/content/sprzedaz')
+    fetch('https://api.investrent.com.pl/api/public/content/sprzedaz')
       .then(r => r.json()).catch(() => null),
   ])
   const office = officeData ?? FALLBACK_OFFICE

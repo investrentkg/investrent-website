@@ -104,7 +104,7 @@ export default function OffersSection({ initialOffers }: { initialOffers: Pagina
   }, [])
   const [usingSamples, setUsingSamples] = useState(!hasRealOffers)
 
-  const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://investrent-crm-production.up.railway.app'
+  const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.investrent.com.pl'
   const perView = cols
 
   // NAPRAWA (Daniel 31.07, drugie podejście po zrzutach z telefonu -

@@ -23,7 +23,7 @@ import {
 import { T } from './texts'
 import { CITY_LIST, KOLOBRZEG_DISTRICTS, OTHER_CITY, OTHER_DISTRICT } from '@/lib/localities'
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://investrent-crm-production.up.railway.app'
+const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.investrent.com.pl'
 const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ''
 const ESTIMATE_URL = `${API}/api/public/valuation/estimate`
 

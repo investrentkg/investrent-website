@@ -30,7 +30,7 @@ export default async function KontaktPage() {
   // te strone z wizytowka Google Business Profile.
   const [officeData, reviewsData] = await Promise.all([
     getOffice(),
-    fetch('https://investrent-crm-production.up.railway.app/api/public/google-reviews')
+    fetch('https://api.investrent.com.pl/api/public/google-reviews')
       .then(r => r.json()).catch(() => null),
   ])
   const office = officeData ?? FALLBACK_OFFICE

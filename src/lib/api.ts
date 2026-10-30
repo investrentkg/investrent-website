@@ -2,7 +2,7 @@ import { postLead, trackLeadSuccess } from '@/lib/leadSubmit'
 import { withAttribution, type Attribution } from '@/lib/attribution'
 import type { WycenaMetaTracking } from '@/lib/wycenaMetaPixel'
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://investrent-crm-production.up.railway.app'
+const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.investrent.com.pl'
 
 // Zapytania z tej strony do CRM idą z serwera Next.js (SSR), nie z przeglądarki -
 // nigdy nie niosą nagłówka Origin, więc dotychczasowy mechanizm rozpoznawania
