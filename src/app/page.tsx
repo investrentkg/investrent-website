@@ -105,7 +105,7 @@ export default async function Home() {
     getTeamWithOfferCounts(),
     getOffice(),
     getStats(),
-    fetch('https://investrent-crm-production.up.railway.app/api/public/google-reviews')
+    fetch('https://api.investrent.com.pl/api/public/google-reviews')
       .then(r => r.json()).catch(() => null),
   ])
   // NAPRAWA 17.07.2026: `reviewsData?.rating ?? 4.8` wyglądało bezpiecznie, ale

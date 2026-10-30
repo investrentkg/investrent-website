@@ -4,7 +4,7 @@ import { FUNNEL_ON } from './wycenaFlags.ts'
 
 export type FunnelStep = 'entry' | 'start' | 'valuation' | 'consent_screen' | 'submit' | 'reject'
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://investrent-crm-production.up.railway.app'
+const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.investrent.com.pl'
 export const FUNNEL_URL = `${API}/api/public/valuation/funnel-step`
 
 /** UTM z adresu strony (bez zapisu w storage; serwer normalizuje i liczy tylko agregat dzienny). */

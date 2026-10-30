@@ -36,7 +36,7 @@ jobs:
       - name: Next.js build test
         run: npm run build
         env:
-          NEXT_PUBLIC_API_URL: https://investrent-crm-production.up.railway.app
+          NEXT_PUBLIC_API_URL: https://api.investrent.com.pl
 
       - name: ✅ Build OK
         run: echo "Build zakończony pomyślnie"

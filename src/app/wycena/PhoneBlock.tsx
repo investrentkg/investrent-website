@@ -24,7 +24,7 @@ import { MARKET_CARD_TEXTS as MC } from './marketCardTexts'
 // Pole numeru + przycisk (jawne dzialanie uzytkownika; bez checkboxa: opinia Prawnika 15.10.2026 - kontakt zamowiony, nie marketing) + krotka wymiana wartosci.
 // Bez SMS. Po wyslaniu potwierdzenie bez terminu oddzwonienia. Teksty prawne: phoneBlockTexts.ts (zatwierdzone doslownie przez Daniela 15.10.2026).
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://investrent-crm-production.up.railway.app'
+const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.investrent.com.pl'
 const CALLBACK_URL = `${API}/api/public/valuation/callback`
 const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ''
 const phoneHref = 'tel:+48731554341'

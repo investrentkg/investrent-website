@@ -5,7 +5,7 @@ import { Search, MapPin, LayoutGrid, Ruler, Layers, ChevronLeft, ChevronRight, S
 import type { Offer } from '@/types'
 import Link from 'next/link'
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://investrent-crm-production.up.railway.app'
+const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.investrent.com.pl'
 
 const CITIES = ['Kołobrzeg', 'Mielno', 'Dźwirzyno', 'Rewal', 'Trzebiatów', 'Kołobrzeg - Podczele', 'Kołobrzeg - Centrum']
 const PROP_TYPES = [
