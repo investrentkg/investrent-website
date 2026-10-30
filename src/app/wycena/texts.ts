@@ -51,7 +51,7 @@ export const T = {
   // title bez doklejania marki: page.tsx uzywa title.absolute (layout ma szablon '%s | InvestRent Nieruchomości')
   metaTitle: 'Wycena mieszkania w Kołobrzegu online: kalkulator ceny',
   metaDescription:
-    'Ile może być warte Twoje mieszkanie w Kołobrzegu? Szacunkowy przedział ceny online, bezpłatnie i bez podawania telefonu. Domy i działki wycenia agent.',
+    'Ile może być warte Twoje mieszkanie w Kołobrzegu? Orientacyjna wycena online, bezpłatnie. Domy i działki wycenia agent.',
   metaDescriptionOff:
     'Wycena mieszkania w Kołobrzegu: zostaw numer telefonu, a agent InvestRent zadzwoni i oszacuje cenę.',
   h1: 'Kalkulator wyceny mieszkania w Kołobrzegu: przedział ceny online',
