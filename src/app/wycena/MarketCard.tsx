@@ -6,7 +6,6 @@ import {
 import { useMarketCard } from '@/lib/useMarketCard'
 import { summarizeMarketCardV4 } from '@/lib/marketCardV4'
 import { WYCENA_LAYOUT_V4_ACTIVE } from '@/lib/wycenaFlags'
-import { formatPLN } from '@/lib/valuation'
 import { MARKET_CARD_TEXTS as M } from './marketCardTexts'
 import { WYCENA_V4_TEXTS as V4 } from './wycenaV4Texts'
 
@@ -89,9 +88,7 @@ function V4MarketCard({ view, areaM2, condition, setCondition, busy }: { view: N
           <p className="wy-v4-market-source">{V4.transactions.source}</p>
           <h4 id="wy-v4-transactions-title">{V4.transactions.title}</h4>
           {summary.transactions ? <>
-            <p className="wy-v4-market-amount">{formatPLN(summary.transactions.low)} – {formatPLN(summary.transactions.high)}</p>
-            <p className="wy-v4-market-area">{V4.amountFor(areaM2!)}</p>
-            <p className="wy-v4-market-middle">{V4.transactions.middle}</p>
+            <p className="wy-v4-market-area">{V4.amountLabel.transactions(summary.transactions.low, summary.transactions.high, areaM2!)}</p>
             <p className="wy-v4-market-count">Na podstawie {txCount} {V4.transactions.unit}</p>
           </> : <p className="wy-v4-market-empty">{V4.transactions.empty}</p>}
           {txCount >= 8 && txCount < 15 && <p className="wy-v4-market-small" role="status">{V4.transactions.smallSample(txCount)}</p>}
@@ -101,9 +98,7 @@ function V4MarketCard({ view, areaM2, condition, setCondition, busy }: { view: N
           <h4 id="wy-v4-offers-title">{V4.offers.title}</h4>
           {offers && <p className="wy-v4-market-place">{placeText(offers)}{offers.level === 'miasto' ? ` — ${V4.cityFallback}` : ''}</p>}
           {summary.offers ? <>
-            <p className="wy-v4-market-amount">{formatPLN(summary.offers.low)} – {formatPLN(summary.offers.high)}</p>
-            <p className="wy-v4-market-area">{V4.amountFor(areaM2!)}</p>
-            <p className="wy-v4-market-middle">{V4.offers.middle}</p>
+            <p className="wy-v4-market-area">{V4.amountLabel.offers(summary.offers.low, summary.offers.high, areaM2!)}</p>
             <p className="wy-v4-market-count">Na podstawie {offerCount} {V4.offers.unit}</p>
           </> : <p className="wy-v4-market-empty">{V4.offers.empty}</p>}
           {offerCount >= 8 && offerCount < 15 && <p className="wy-v4-market-small" role="status">{V4.offers.smallSample(offerCount)}</p>}
