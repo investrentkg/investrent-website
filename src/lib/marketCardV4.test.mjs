@@ -2,6 +2,27 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { summarizeMarketCardV4 } from './marketCardV4.ts'
+import { WYCENA_V4_TEXTS as V4 } from '../app/wycena/wycenaV4Texts.ts'
+
+test('V4 etykieta kwoty zawiera "podobne", metraż i podstawę (poz. 8 Prawnika 30.10)', () => {
+  const nb = ' '
+  assert.equal(
+    V4.amountLabel.transactions(531000, 644000, 45),
+    `531${nb}000 – 644${nb}000 zł za podobne mieszkania o metrażu 45 m² (środkowe 50% transakcji) — orientacyjnie, bez uwzględnienia stanu.`,
+  )
+  assert.equal(
+    V4.amountLabel.offers(531000, 644000, 45),
+    `531${nb}000 – 644${nb}000 zł za podobne mieszkania o metrażu 45 m² (środkowe 50% ofert) — orientacyjnie, bez uwzględnienia stanu.`,
+  )
+  assert.doesNotMatch(V4.amountLabel.offers(1, 2, 3), /cena Twojego mieszkania/i)
+})
+
+test('V4 karta używa etykiety kwoty zamiast samej kwoty i "dla N m²"', async () => {
+  const marketCard = await readFile(new URL('../app/wycena/MarketCard.tsx', import.meta.url), 'utf8')
+  assert.match(marketCard, /V4\.amountLabel\.transactions\(/)
+  assert.match(marketCard, /V4\.amountLabel\.offers\(/)
+  assert.doesNotMatch(marketCard, /V4\.amountFor/)
+})
 
 const card = {
   kind: 'card',
