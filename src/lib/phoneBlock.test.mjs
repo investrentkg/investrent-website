@@ -40,6 +40,13 @@ test('adapter: callback (flaga on + valuation_token) -> POST z tokenem, telefone
   assert.equal(url, 'https://api.test/cb')
   assert.deepEqual(body, { valuation_token: 'tok.abc', phone: '512 345 678', consent: { checked: true, version: 'wycena-2026-10-15-v1' }, utm: { utm_source: 'meta', utm_campaign: 'kol' }, hp_field: '' })
 })
+test('adapter: callback przekazuje wspólny event_id i metadane wyłącznie z Marketing consent', async () => {
+  let captured
+  const metaTracking = { event_id: 'wyc_1234567890abcdef', marketing_consent: true, fbp: 'fb.1.123.abc', utm: { utm_source: 'meta' } }
+  await sendPhoneRequest({ ...base, metaTracking }, { callbackEnabled: true, callbackUrl: 'https://api.test/cb', fetchImpl: async (_u, i) => { captured = JSON.parse(i.body); return okRes() }, submitLeadFallback: async () => assert.fail('nie powinien być fallback') })
+  assert.deepEqual(captured.meta_tracking, metaTracking)
+  assert.ok(!JSON.stringify(captured.meta_tracking).includes(base.phone))
+})
 test('adapter: flaga off albo brak tokenu = tryb awaryjny (jeden lead), callback nie jest wolany', async () => {
   let fetches = 0, leads = 0
   const deps = (cb) => ({ callbackEnabled: cb, callbackUrl: 'x', fetchImpl: async () => { fetches++; return okRes() }, submitLeadFallback: async () => { leads++; return { ok: true } } })

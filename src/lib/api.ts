@@ -1,5 +1,6 @@
 import { postLead, trackLeadSuccess } from '@/lib/leadSubmit'
 import { withAttribution, type Attribution } from '@/lib/attribution'
+import type { WycenaMetaTracking } from '@/lib/wycenaMetaPixel'
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://investrent-crm-production.up.railway.app'
 
@@ -247,6 +248,8 @@ export async function submitLead(payload: {
   hp_field?: string // honeypot (backend: niepusty = bot)
   turnstile_token?: string
   attribution?: Attribution
+  /** Meta data only when the existing Marketing category is accepted; consumed server-side only under META_CAPI_ENABLED. */
+  meta_tracking?: WycenaMetaTracking
 }) {
   // Nigdy nie rzuca (timeout 15 s, siec, odpowiedz nie-JSON) - zwraca { ok, reason? }.
   // Wywolujacy sprawdzaja tylko r?.ok, wiec dla nich nic sie nie zmienia poza tym,

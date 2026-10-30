@@ -10,7 +10,10 @@ import Turnstile from './Turnstile'
 import PhoneBlock from './PhoneBlock'
 import MarketCard from './MarketCard'
 import { PHONE_BLOCK_TEXTS } from './phoneBlockTexts'
-import { PHONE_BLOCK_ON, WYCENA_LAYOUT_V4_ACTIVE } from '@/lib/wycenaFlags'
+import { PHONE_BLOCK_ON, WYCENA_LAYOUT_V4_ACTIVE, WYCENA_META_TRACKING_ON } from '@/lib/wycenaFlags'
+import WycenaMetaPixel, { trackWycenaMetaLead } from '@/components/WycenaMetaPixel'
+import { hasAttributionConsent } from '@/lib/consentStore'
+import { buildWycenaMetaTracking, createWycenaMetaEventId } from '@/lib/wycenaMetaPixel'
 import { sendFunnelStep } from '@/lib/funnel'
 import {
   CONDITIONS, EMPTY_FORM, OFFICE_PHONE, PROPERTY_TYPES,
@@ -192,6 +195,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
 
   return (
     <>
+    <WycenaMetaPixel />
     <div className="wy-hero" style={{ background: 'linear-gradient(135deg, #0d2a5c, #1a4fa0)', padding: '32px 0 36px' }}>
       <div className="container" style={{ maxWidth: 860 }}>
         <Breadcrumb light={true} crumbs={[{ label: 'Strona główna', href: '/' }, { label: 'Wycena nieruchomości' }]} />
@@ -499,6 +503,7 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false }: { outcome: Es
   const fallbackRef = useRef<HTMLDivElement>(null)
   const inFlight = useRef(false)
   const formRef = useRef<HTMLFormElement>(null)
+  const metaEventId = useRef<string | null>(null)
   const mountedAt = useRef(Date.now())
   const tsReadyLogged = useRef(false)
   const tsFailLogged = useRef(false)
@@ -589,8 +594,18 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false }: { outcome: Es
     setState('sending')
     trackValuation('wycena_lead_submit', { mode, iab: iabClass() })
     try {
-      const r = await submitLead(buildLeadRequest({ name, surname: v4Contact ? surname : undefined, phone, values, outcome, utm: readUtm(window.location.search), attribution: getAttribution(), turnstileToken: tsToken, honeypot: hp, contactWindow: v4Contact ? contactWindow || null : null }))
-      if (r?.ok) { setState('ok'); trackValuation('wycena_lead', { mode: outcome?.kind ?? 'none' }) }
+      const attribution = getAttribution()
+      if (WYCENA_META_TRACKING_ON && hasAttributionConsent() && !metaEventId.current) metaEventId.current = createWycenaMetaEventId()
+      const metaTracking = buildWycenaMetaTracking({
+        enabled: WYCENA_META_TRACKING_ON,
+        marketingConsent: hasAttributionConsent(),
+        eventId: metaEventId.current,
+        readCookie: () => document.cookie,
+        search: window.location.search,
+        attribution: attribution as Record<string, unknown> | null,
+      })
+      const r = await submitLead({ ...buildLeadRequest({ name, surname: v4Contact ? surname : undefined, phone, values, outcome, utm: readUtm(window.location.search), attribution, turnstileToken: tsToken, honeypot: hp, contactWindow: v4Contact ? contactWindow || null : null }), ...(metaTracking ? { meta_tracking: metaTracking } : {}) })
+      if (r?.ok) { setState('ok'); trackValuation('wycena_lead', { mode: outcome?.kind ?? 'none' }); trackWycenaMetaLead(metaTracking?.event_id) }
       else {
         setState('fail')
         trackValuation('wycena_lead_submit_failed', { reason: r && !r.ok ? r.reason : 'unknown', status: r && !r.ok && r.status ? String(r.status) : '', iab: iabClass() })
