@@ -8,6 +8,8 @@ export const PHONE_BLOCK_ON: boolean = process.env.NEXT_PUBLIC_WYCENA_PHONE_BLOC
 export const CALLBACK_ON: boolean = process.env.NEXT_PUBLIC_WYCENA_CALLBACK === 'on'
 /** Wywolania licznika lejka (POST /api/public/valuation/funnel-step, CRM #1066). Wlaczamy po migracji i fladze CRM PUBLIC_FUNNEL_STEPS_ENABLED. */
 export const FUNNEL_ON: boolean = process.env.NEXT_PUBLIC_WYCENA_FUNNEL === 'on'
+/** Meta Lead measurement. OFF by default; requires approved consent/rodo copy and server env before enabling. */
+export const WYCENA_META_TRACKING_ON: boolean = process.env.NEXT_PUBLIC_META_PIXEL_ENABLED === 'on'
 
 /** Karta rynku (ceny ofert + ceny transakcyjne) i okno kontaktu w bloku telefonu (S2). Dziala WYLACZNIE razem z gotowym tekstem zgody (wycenaConsentText.ts). */
 export const MARKET_CARD_FLAG: boolean = process.env.NEXT_PUBLIC_WYCENA_MARKET_CARD === 'on'

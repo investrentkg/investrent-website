@@ -112,5 +112,11 @@ export const adsAllowed = (s: ConsentState | null | undefined): boolean => !!s &
  */
 export function applyChoice(prev: ConsentState | null | undefined, choice: ConsentChoice, now: number = Date.now()): { next: ConsentState; clearGa: boolean; clearMeta: boolean; clearAttribution: boolean } {
   const next = makeConsent(choice, now)
-  return { next, clearGa: !!prev?.analytics && !next.analytics, clearMeta: !!prev?.ads && !next.ads, clearAttribution: !!prev?.attribution && !next.attribution }
+  const metaUsesMarketing = process.env.NEXT_PUBLIC_META_PIXEL_ENABLED === 'on'
+  return {
+    next,
+    clearGa: !!prev?.analytics && !next.analytics,
+    clearMeta: (!!prev?.ads && !next.ads) || (metaUsesMarketing && !!prev?.attribution && !next.attribution),
+    clearAttribution: !!prev?.attribution && !next.attribution,
+  }
 }

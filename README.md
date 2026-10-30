@@ -22,8 +22,12 @@ npm run dev
 | Zmienna | Opis |
 |---|---|
 | `NEXT_PUBLIC_API_URL` | URL backendu CRM (Railway) |
+| `NEXT_PUBLIC_META_PIXEL_ENABLED` | Meta Pixel for valuation; keep unset or `off` until explicitly enabled |
+| `NEXT_PUBLIC_META_PIXEL_ID` | Meta Pixel ID (public identifier, required for browser Pixel) |
 | `NEXT_PUBLIC_MAPS_KEY` | Google Maps API key (opcjonalnie) |
 | `NEXT_PUBLIC_GA_ID` | Google Analytics ID (opcjonalnie) |
+
+Server-side Conversions API is not included in this website change. It requires a CRM-issued proof tied to a successfully saved lead; do not enable a public CAPI endpoint based on browser-supplied consent or identifiers.
 
 ## Pliki do uzupełnienia (public/)
 - `public/hero.jpg` — zdjęcie hero (latarnia Kołobrzeg, 1920×1080)
