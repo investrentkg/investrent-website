@@ -1,9 +1,9 @@
 "use client"
-import { useEffect, useRef, useState } from 'react'
 import {
-  CARD_CONDITIONS, CONDITION_LABELS, fetchMarketCard, fmtAsOfDate, fmtPpm, fmtRange, isSmallTransactionSample, trackCardShown,
-  type CardCondition, type MarketCardView, type OffersView, type TransactionsView,
+  CARD_CONDITIONS, CONDITION_LABELS, fmtAsOfDate, fmtPpm, fmtRange, isSmallTransactionSample,
+  type CardCondition, type OffersView, type TransactionsView,
 } from '@/lib/marketCard'
+import { useMarketCard } from '@/lib/useMarketCard'
 import { MARKET_CARD_TEXTS as M } from './marketCardTexts'
 
 // Karta rynku pod wynikiem (flaga NEXT_PUBLIC_WYCENA_MARKET_CARD + gotowy tekst zgody): DWIE wartosci osobno, bez mediany lacznej.
@@ -54,22 +54,7 @@ export function TransactionsBox({ t }: { t: TransactionsView | null }) {
 }
 
 export default function MarketCard({ token }: { token: string | null }) {
-  const [view, setView] = useState<MarketCardView | null>(null)
-  const [condition, setCondition] = useState<CardCondition | null>(null)
-  const [busy, setBusy] = useState(false)
-  const tracked = useRef(false)
-  const seq = useRef(0)
-
-  useEffect(() => {
-    if (!token) { setView({ kind: 'none' }); return }
-    const my = ++seq.current
-    setBusy(true)
-    void fetchMarketCard(token, condition).then(v => {
-      if (my !== seq.current) return
-      setView(v); setBusy(false)
-      if (v.kind === 'card' && !tracked.current) { tracked.current = true; trackCardShown() }
-    })
-  }, [token, condition])
+  const { view, condition, setCondition, busy } = useMarketCard(token)
 
   if (!view) return <p style={hintStyle} role="status">{M.loading}</p>
   if (view.kind === 'none' && condition === null) return null // blad/flaga CRM off: bez karty, formularz telefonu dziala dalej
