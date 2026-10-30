@@ -15,3 +15,7 @@ export const WYCENA_META_TRACKING_ON: boolean = process.env.NEXT_PUBLIC_META_PIX
 export const MARKET_CARD_FLAG: boolean = process.env.NEXT_PUBLIC_WYCENA_MARKET_CARD === 'on'
 /** Flaga ON ORAZ gotowy tekst zgody; bez tekstu karta i checkbox sie nie pojawiaja nawet przy fladze ON. */
 export const MARKET_CARD_ACTIVE: boolean = marketCardActive(MARKET_CARD_FLAG)
+
+/** Układ kalkulatora v4; pozostaje nieaktywny bez jednoczesnego włączenia karty rynku. */
+export const WYCENA_LAYOUT_V4_FLAG: boolean = process.env.NEXT_PUBLIC_WYCENA_LAYOUT_V4 === 'on'
+export const WYCENA_LAYOUT_V4_ACTIVE: boolean = WYCENA_LAYOUT_V4_FLAG && MARKET_CARD_ACTIVE

@@ -50,3 +50,21 @@ test('event ids are valid and fail closed when secure randomness is unavailable'
   assert.equal(createWycenaMetaEventId(() => '12345678-1234-1234-1234-123456789abc'), 'wyc_12345678-1234-1234-1234-123456789abc')
   assert.equal(createWycenaMetaEventId(() => { throw new Error('unavailable') }), null)
 })
+
+// Zaakceptowane ryzyko "zawyzone zdarzenia": marketing_consent/source w publicznym requestcie deklaruje wywolujacy
+// (rekomendacja Dyrektora, do potwierdzenia przez Daniela). Zabezpieczenie: metadane CAPI nie niosa PII.
+test('tracking metadata has only whitelisted keys and no phone/email (accepted risk: inflated events)', () => {
+  const payload = buildWycenaMetaTracking({
+    enabled: true, marketingConsent: true, eventId,
+    readCookie: () => '_fbp=fb.1.123.abc; _fbc=fb.1.124.def',
+    search: '?fbclid=a%40b.pl',
+    attribution: { utm_source: 'meta', utm_medium: 'cpc', utm_campaign: 'c', utm_content: 'x', utm_term: 'y', email: 'a@b.pl', phone: '600100200', name: 'Jan', source: 'forged' },
+  })
+  const allowedTop = new Set(['event_id', 'marketing_consent', 'fbp', 'fbc', 'fbclid', 'utm'])
+  const allowedUtm = new Set(['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'])
+  for (const key of Object.keys(payload)) assert.ok(allowedTop.has(key), `niedozwolony klucz: ${key}`)
+  for (const key of Object.keys(payload.utm)) assert.ok(allowedUtm.has(key), `niedozwolony klucz utm: ${key}`)
+  assert.equal(payload.fbclid, undefined)
+  const json = JSON.stringify(payload)
+  assert.ok(!/600100200|a@b\.pl|a%40b|Jan|forged/.test(json))
+})
