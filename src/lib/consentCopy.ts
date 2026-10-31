@@ -23,7 +23,7 @@ export interface ConsentCopy {
   /** Marketingowe = zapis atrybucji UTM (dane wyłącznie wewnętrzne). */
   marketing: { name: string; desc: string }
   /** Reklamowe = przyszły Meta Pixel/CAPI (udostępnianie danych Meta); do wdrożenia przełącznik nieaktywny. */
-  ads: { name: string; badge: string; desc: string }
+  ads: { name: string; badge: string; desc: string; /** Tekst po wdrożeniu piksela (ADS_AVAILABLE); PROPOZYCJA do akceptacji Daniela/Prawnika. */ liveDesc: string }
   /** Zdanie o wycofaniu zgody; po nim link do polityki. */
   withdraw: string
   privacyLabel: string
@@ -57,6 +57,7 @@ export const CONSENT_COPY: Record<ConsentLocale, ConsentCopy> = {
     ads: {
       name: 'Reklamowe (Meta)',
       badge: 'planowane',
+      liveDesc: 'pozwalają nam mierzyć skuteczność reklam na Facebooku i Instagramie. Po wysłaniu przez Państwa zgłoszenia w kalkulatorze wyceny przekażemy do Meta Platforms Ireland Limited (odrębny administrator danych) informację o tym zdarzeniu — bez imienia, numeru telefonu i adresu e-mail — wraz z identyfikatorami przeglądarki i kliknięcia reklamy oraz adresem IP i danymi przeglądarki. Dane mogą być przekazywane poza Europejski Obszar Gospodarczy. Zgoda jest dobrowolna.',
       desc: 'obecnie nic tu nie uruchamiamy. Ewentualne udostępnianie danych Meta Platforms Ireland Limited w celu pomiaru reklam na Facebooku i Instagramie będzie wymagało Państwa odrębnej zgody.',
     },
     withdraw: 'Zgodę mogą Państwo w każdej chwili zmienić lub wycofać w „Ustawieniach prywatności” (link w stopce strony).',
@@ -89,6 +90,7 @@ export const CONSENT_COPY: Record<ConsentLocale, ConsentCopy> = {
     ads: {
       name: 'Werbung (Meta)',
       badge: 'geplant',
+      liveDesc: 'ermöglichen uns, die Wirksamkeit von Werbung auf Facebook und Instagram zu messen. Nach dem Absenden Ihrer Anfrage im Bewertungsrechner übermitteln wir Meta Platforms Ireland Limited (eigenständiger Verantwortlicher) eine Information über dieses Ereignis — ohne Name, Telefonnummer und E-Mail-Adresse — zusammen mit Kennungen von Browser und Werbeklick sowie IP-Adresse und Browserdaten. Die Daten können außerhalb des Europäischen Wirtschaftsraums verarbeitet werden. Die Einwilligung ist freiwillig.',
       desc: 'derzeit läuft hier nichts. Eine etwaige Weitergabe von Daten an Meta Platforms Ireland Limited zur Messung von Werbung auf Facebook und Instagram erfordert Ihre gesonderte Einwilligung.',
     },
     withdraw: 'Sie können Ihre Einwilligung jederzeit in den „Datenschutzeinstellungen” (Link in der Fußzeile) ändern oder widerrufen.',

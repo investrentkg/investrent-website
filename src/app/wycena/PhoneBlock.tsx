@@ -13,7 +13,7 @@ import { CONSENT_TEXT, CONSENT_VERSION } from '@/lib/wycenaConsentText'
 import { CONTACT_WINDOWS, CONTACT_WINDOW_LABELS, type ContactWindow } from '@/lib/marketCard'
 import { T } from './texts'
 import { PHONE_BLOCK_CONSENT_VERSION, PHONE_BLOCK_LEGAL as L, PHONE_BLOCK_TEXTS as P } from './phoneBlockTexts'
-import { hasAttributionConsent } from '@/lib/consentStore'
+import { hasAdsConsent } from '@/lib/consentStore'
 import { buildWycenaMetaTracking } from '@/lib/wycenaMetaPixel'
 import { useMetaConsentReceipt } from './useMetaConsentReceipt'
 import { trackWycenaMetaLead } from '@/components/WycenaMetaPixel'
@@ -85,7 +85,7 @@ export default function PhoneBlock({ outcome, values, onDone }: { outcome: Estim
       const metaReceipt = metaConsent.getReceipt()
       const metaTracking = buildWycenaMetaTracking({
         enabled: WYCENA_META_TRACKING_ON,
-        marketingConsent: hasAttributionConsent(),
+        marketingConsent: hasAdsConsent(),
         eventId: metaReceipt?.eventId ?? null,
         consentReceipt: metaReceipt?.receipt ?? null,
         readCookie: () => document.cookie,

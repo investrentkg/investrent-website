@@ -175,19 +175,33 @@ test('zdarzenie zmiany zgody ma stałą nazwę (kontrakt dla website#42 / UTM)',
   assert.equal(CONSENT_CHANGE_EVENT, 'ir-consent-change')
 })
 
-test('wycofanie zgody Marketing przy wlaczonym Pixelu czysci cookies Meta (_fbp, _fbc) i atrybucje, nie ruszajac _ga', () => {
+test('Meta: cookies _fbp/_fbc czyszczone TYLKO po wycofaniu zgody Reklamowe (ads); wycofanie Marketingowe ich nie rusza (zgody rozlaczne)', async () => {
   const prev = process.env.NEXT_PUBLIC_META_PIXEL_ENABLED
   process.env.NEXT_PUBLIC_META_PIXEL_ENABLED = 'on'
   try {
-    const granted = { v: CONSENT_VERSION, analytics: true, attribution: true, ads: false, ts: NOW }
-    const r = applyChoice(granted, { analytics: true, attribution: false, ads: false }, NOW + 1)
-    assert.equal(r.next.attribution, false)
-    assert.equal(r.clearMeta, true)
-    assert.equal(r.clearAttribution, true)
-    assert.equal(r.clearGa, false)
+    const on = await import('./consent.ts?ads-on')
+    assert.equal(on.ADS_AVAILABLE, true)
+    const granted = { v: CONSENT_VERSION, analytics: true, attribution: true, ads: true, ts: NOW }
+    const dropAds = on.applyChoice(granted, { analytics: true, attribution: true, ads: false }, NOW + 1)
+    assert.equal(dropAds.next.ads, false)
+    assert.equal(dropAds.clearMeta, true)
+    assert.equal(dropAds.clearAttribution, false)
+    assert.equal(dropAds.clearGa, false)
+    const dropMarketing = on.applyChoice(granted, { analytics: true, attribution: false, ads: true }, NOW + 1)
+    assert.equal(dropMarketing.next.ads, true)
+    assert.equal(dropMarketing.clearMeta, false)
+    assert.equal(dropMarketing.clearAttribution, true)
+    assert.equal(on.makeConsent(on.ACCEPT_ALL, NOW).ads, true)
     assert.deepEqual(metaCookieNames('_fbp=fb.1.1.1; _fbc=fb.1.2.x; _ga=GA1.1.2; sid=1'), ['_fbp', '_fbc'])
-    assert.equal(applyChoice(granted, { analytics: true, attribution: true, ads: false }, NOW + 1).clearMeta, false)
   } finally {
     if (prev === undefined) delete process.env.NEXT_PUBLIC_META_PIXEL_ENABLED; else process.env.NEXT_PUBLIC_META_PIXEL_ENABLED = prev
   }
+})
+
+test('Meta: przy fladze OFF (domyslnie) ADS_AVAILABLE=false, ads nigdy true, wycofanie Marketingowe nie czysci Meta', () => {
+  assert.equal(ADS_AVAILABLE, false)
+  const granted = { v: CONSENT_VERSION, analytics: true, attribution: true, ads: false, ts: NOW }
+  const r = applyChoice(granted, { analytics: true, attribution: false, ads: true }, NOW + 1)
+  assert.equal(r.next.ads, false)
+  assert.equal(r.clearMeta, false)
 })
