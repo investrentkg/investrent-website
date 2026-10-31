@@ -12,6 +12,7 @@ import Footer from '@/components/Footer'
 import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
 import OfferDetailClient from './OfferDetailClient'
+import OfferAreaBlock from '@/components/OfferAreaBlock'
 import { OfferCard } from '@/components/OffersSection'
 import { getPublicOfferResult, getOffice, getPublicOffers } from '@/lib/api'
 import { notFound, permanentRedirect } from 'next/navigation'
@@ -327,6 +328,7 @@ export async function renderOfferPage(params: { id: string }, previewToken?: str
           </div>
         </div>
         <OfferDetailClient offer={offer} />
+        <OfferAreaBlock city={offer.address_city} />
       </main>
       <Footer office={office} />
 
