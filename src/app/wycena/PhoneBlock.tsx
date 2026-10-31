@@ -14,7 +14,8 @@ import { CONTACT_WINDOWS, CONTACT_WINDOW_LABELS, type ContactWindow } from '@/li
 import { T } from './texts'
 import { PHONE_BLOCK_CONSENT_VERSION, PHONE_BLOCK_LEGAL as L, PHONE_BLOCK_TEXTS as P } from './phoneBlockTexts'
 import { hasAttributionConsent } from '@/lib/consentStore'
-import { buildWycenaMetaTracking, createWycenaMetaEventId } from '@/lib/wycenaMetaPixel'
+import { buildWycenaMetaTracking } from '@/lib/wycenaMetaPixel'
+import { useMetaConsentReceipt } from './useMetaConsentReceipt'
 import { trackWycenaMetaLead } from '@/components/WycenaMetaPixel'
 import Turnstile from './Turnstile'
 import MarketCard from './MarketCard'
@@ -48,7 +49,7 @@ export default function PhoneBlock({ outcome, values, onDone }: { outcome: Estim
   const [tsStuck, setTsStuck] = useState(false)
   const [queued, setQueued] = useState(false)
   const inFlight = useRef(false)
-  const metaEventId = useRef<string | null>(null)
+  const metaConsent = useMetaConsentReceipt()
   const mode = outcome.kind
   const token = 'valuationToken' in outcome && outcome.valuationToken ? outcome.valuationToken : null
 
@@ -81,11 +82,12 @@ export default function PhoneBlock({ outcome, values, onDone }: { outcome: Estim
     const utm = readUtm(window.location.search)
     try {
       const attribution = getAttribution()
-      if (WYCENA_META_TRACKING_ON && hasAttributionConsent() && !metaEventId.current) metaEventId.current = createWycenaMetaEventId()
+      const metaReceipt = metaConsent.getReceipt()
       const metaTracking = buildWycenaMetaTracking({
         enabled: WYCENA_META_TRACKING_ON,
         marketingConsent: hasAttributionConsent(),
-        eventId: metaEventId.current,
+        eventId: metaReceipt?.eventId ?? null,
+        consentReceipt: metaReceipt?.receipt ?? null,
         readCookie: () => document.cookie,
         search: window.location.search,
         attribution: attribution as Record<string, unknown> | null,
@@ -160,6 +162,7 @@ export default function PhoneBlock({ outcome, values, onDone }: { outcome: Estim
           <input type="text" name="hp_field" tabIndex={-1} autoComplete="off" value={hp} onChange={e => setHp(e.target.value)} />
         </label>
       </div>
+      {metaConsent.widget}
       {TURNSTILE_SITE_KEY && (
         <div style={{ marginTop: 12 }}>
           <Turnstile siteKey={TURNSTILE_SITE_KEY} resetKey={tsReset} onToken={t => { setTsToken(t); if (t) { setTsFailed(false); setTsStuck(false) } }} onFail={() => setTsFailed(true)} />
