@@ -1,7 +1,7 @@
 "use client"
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { createElement } from 'react'
-import { attributionAllowed } from '@/lib/consent'
+import { adsAllowed } from '@/lib/consent'
 import { useConsent } from '@/lib/consentStore'
 import { WYCENA_META_TRACKING_ON } from '@/lib/wycenaFlags'
 import { CONSENT_RECEIPT_MAX_AGE_MS, createWycenaMetaEventId, requestMetaConsentReceipt } from '@/lib/wycenaMetaPixel'
@@ -20,7 +20,7 @@ export type MetaReceipt = { eventId: string; receipt: string }
  */
 export function useMetaConsentReceipt(): { getReceipt: () => MetaReceipt | null; widget: ReactNode } {
   const consent = useConsent()
-  const active = WYCENA_META_TRACKING_ON && attributionAllowed(consent ?? null)
+  const active = WYCENA_META_TRACKING_ON && adsAllowed(consent ?? null)
   const [tsToken, setTsToken] = useState<string | null>(null)
   const [tsReset, setTsReset] = useState(0)
   const stored = useRef<(MetaReceipt & { at: number }) | null>(null)

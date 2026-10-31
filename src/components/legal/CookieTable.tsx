@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+import { ADS_AVAILABLE } from '@/lib/consent'
 
 // Tabela cookies i zapisow w pamieci przegladarki dla polityk prywatnosci (/rodo - PL, /de/datenschutz - DE).
 // Rekomendacja Prawnika 09.10.2026 (prawnik_baner_zgod_doprecyzowanie_2026_10_09.md, pkt d): kolumny nazwa / dostawca / cel / czas zycia.
@@ -8,7 +9,7 @@ import type { CSSProperties } from 'react'
 //  - ir_attr: src/lib/attribution.ts (ATTRIBUTION_STORAGE_KEY, sessionStorage; tylko po zgodzie "attribution"; kasowany po jej wycofaniu - consentStore.ts).
 //  - mapGoogleConsent: src/lib/mapConsent.ts (localStorage, 12 mies.; zapis dopiero po kliknieciu "Zaladuj mape"; kasowany linkiem cofniecia w MapEmbed).
 //  - ir_launcher_hints: src/components/ChatWidget.tsx (sessionStorage, flagi podpowiedzi okna czatu).
-//  - Reklamowe (Meta Pixel/CAPI): ADS_AVAILABLE = false w consent.ts - nic nie jest zapisywane.
+//  - Reklamowe (Meta Pixel/CAPI): ADS_AVAILABLE (consent.ts) = NEXT_PUBLIC_META_PIXEL_ENABLED==='on'; przy OFF nic nie jest zapisywane, przy ON wiersz _fbp/_fbc (tekst do akceptacji Daniela).
 // Tabela jest zrodlem prawdy dla tekstu polityki: przy zmianie zapisow (nowy klucz, inny czas zycia, nowy dostawca) zmienic ja RAZEM z CONSENT_VERSION / banerem zgod.
 // Przewijanie poziome tylko w kontenerze tabeli (nie strony).
 
@@ -55,9 +56,11 @@ const TEXT: Record<Locale, {
         ],
       },
       {
-        title: 'Reklamowe (planowane, obecnie brak)',
+        title: ADS_AVAILABLE ? 'Reklamowe — Meta (tylko po zgodzie)' : 'Reklamowe (planowane, obecnie brak)',
         rows: [
-          { name: '—', kind: 'obecnie nic nie jest zapisywane', provider: 'Meta Platforms Ireland Limited (planowane)', purpose: 'Kategoria zarezerwowana na przyszłość (narzędzia reklamowe Meta). Nie jest dziś stosowana i nie można jej włączyć.', lifetime: '—' },
+          ADS_AVAILABLE
+          ? { name: '_fbp, _fbc', kind: 'cookie', provider: 'Meta Platforms Ireland Limited', purpose: 'Piksel Meta (ładowany dopiero po zgodzie „Reklamowe (Meta)”): rozpoznaje przeglądarkę i kliknięcie reklamy, aby mierzyć skuteczność reklam na Facebooku i Instagramie. Dane trafiają do Meta (odrębny administrator).', lifetime: 'do 90 dni (ustawienie Meta); usuwane od razu po wycofaniu zgody' }
+          : { name: '—', kind: 'obecnie nic nie jest zapisywane', provider: 'Meta Platforms Ireland Limited (planowane)', purpose: 'Kategoria zarezerwowana na przyszłość (narzędzia reklamowe Meta). Nie jest dziś stosowana i nie można jej włączyć.', lifetime: '—' },
         ],
       },
     ],
@@ -95,9 +98,11 @@ const TEXT: Record<Locale, {
         ],
       },
       {
-        title: 'Werbung (geplant, derzeit nicht vorhanden)',
+        title: ADS_AVAILABLE ? 'Werbung — Meta (nur mit Einwilligung)' : 'Werbung (geplant, derzeit nicht vorhanden)',
         rows: [
-          { name: '—', kind: 'derzeit wird nichts gespeichert', provider: 'Meta Platforms Ireland Limited (geplant)', purpose: 'Für die Zukunft vorgesehene Kategorie (Werbetools von Meta). Wird derzeit nicht eingesetzt und kann nicht aktiviert werden.', lifetime: '—' },
+          ADS_AVAILABLE
+          ? { name: '_fbp, _fbc', kind: 'Cookie', provider: 'Meta Platforms Ireland Limited', purpose: 'Meta-Pixel (wird erst nach Ihrer Einwilligung „Werbung (Meta)“ geladen): erkennt Browser und Werbeklick, um die Wirksamkeit von Werbung auf Facebook und Instagram zu messen. Die Daten gehen an Meta (eigenständiger Verantwortlicher).', lifetime: 'bis zu 90 Tage (Meta-Einstellung); wird bei Widerruf sofort gelöscht' }
+          : { name: '—', kind: 'derzeit wird nichts gespeichert', provider: 'Meta Platforms Ireland Limited (geplant)', purpose: 'Für die Zukunft vorgesehene Kategorie (Werbetools von Meta). Wird derzeit nicht eingesetzt und kann nicht aktiviert werden.', lifetime: '—' },
         ],
       },
     ],

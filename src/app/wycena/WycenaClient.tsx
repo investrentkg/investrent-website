@@ -12,7 +12,7 @@ import MarketCard from './MarketCard'
 import { PHONE_BLOCK_TEXTS } from './phoneBlockTexts'
 import { PHONE_BLOCK_ON, WYCENA_LAYOUT_V4_ACTIVE, WYCENA_META_TRACKING_ON } from '@/lib/wycenaFlags'
 import WycenaMetaPixel, { trackWycenaMetaLead } from '@/components/WycenaMetaPixel'
-import { hasAttributionConsent } from '@/lib/consentStore'
+import { hasAdsConsent } from '@/lib/consentStore'
 import { buildWycenaMetaTracking } from '@/lib/wycenaMetaPixel'
 import { useMetaConsentReceipt } from './useMetaConsentReceipt'
 import { sendFunnelStep } from '@/lib/funnel'
@@ -583,7 +583,7 @@ function LeadPanel({ outcome, values, onDone }: { outcome: EstimateOutcome | nul
       const metaReceipt = metaConsent.getReceipt()
       const metaTracking = buildWycenaMetaTracking({
         enabled: WYCENA_META_TRACKING_ON,
-        marketingConsent: hasAttributionConsent(),
+        marketingConsent: hasAdsConsent(),
         eventId: metaReceipt?.eventId ?? null,
         consentReceipt: metaReceipt?.receipt ?? null,
         readCookie: () => document.cookie,
