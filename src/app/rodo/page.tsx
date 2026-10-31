@@ -132,6 +132,7 @@ export default async function RodoPage() {
                 <LI><strong>Niezbędne</strong> — konieczne do prawidłowego działania strony (np. zapamiętanie Państwa wyboru w banerze zgód). Nie wymagają zgody.</LI>
                 <LI><strong>Analityczne</strong> — pomagają nam zrozumieć, jak korzystają Państwo ze strony (np. Google Analytics 4). Uruchamiane wyłącznie po wyrażeniu zgody.</LI>
                 <LI><strong>Marketingowe</strong> — pozwalają mierzyć skuteczność naszych kampanii reklamowych. Uruchamiane wyłącznie po wyrażeniu zgody. Jeśli wyrazili Państwo zgodę na kategorię Marketingowe, informacja o kampanii, z której Państwo przyszli (parametry UTM oraz znacznik wejścia z linku reklamowego Facebooka), może zostać dołączona do wysłanego przez Państwa zgłoszenia, wyłącznie w celu oceny skuteczności naszych kampanii; sama ta informacja nie zawiera Państwa danych osobowych.</LI>
+                <LI><strong>Reklamowe (Meta)</strong> — Piksel Meta (pliki cookie _fbp i _fbc) mierzy skuteczność reklam na Facebooku i Instagramie wyłącznie na stronie kalkulatora wyceny. Uruchamiany wyłącznie po wyrażeniu odrębnej zgody; po jej wycofaniu pliki cookie są usuwane. Szczegóły: część „Wycena nieruchomości”.</LI>
               </UL>
               <P>
                 Zgodę mogą Państwo wyrazić, odrzucić lub dostosować przy pierwszej wizycie na stronie w banerze zgód, a także w dowolnym momencie później poprzez zmianę ustawień. Wybór jest zapamiętywany przez 12 miesięcy, po czym poprosimy o niego ponownie. Opis poszczególnych kategorii dostępny jest w panelu zgód.
@@ -163,11 +164,14 @@ export default async function RodoPage() {
               </P>
               <UL>
                 <LI>Zgoda na telefon w sprawie wyceny nieruchomości (art. 6 ust. 1 lit. a RODO) jest wymagana, abyśmy mogli zadzwonić pod podany numer. Obejmuje wyłącznie kontakt telefoniczny, nie SMS, komunikatory ani e-mail z naszej inicjatywy.</LI>
-                <LI>Kalkulator nie zbiera zgody na marketing.</LI>
+                <LI>Pole wyboru przy prośbie o oddzwonienie nie jest zgodą na marketing – dotyczy wyłącznie kontaktu telefonicznego w sprawie wyceny. Pliki cookie Meta (Meta Pixel, patrz część „Pliki cookie i podobne technologie”) działają na tej stronie wyłącznie po wyrażeniu odrębnej zgody „Reklamowe (Meta)” w banerze cookies.</LI>
                 <LI>Przyjmujemy cofnięcie zgody pod adresem <a href="mailto:biuro@investrent.com.pl" style={link}>biuro@investrent.com.pl</a>. Po cofnięciu nie zadzwonimy do Państwa w sprawie wyceny.</LI>
                 <LI>Zapisujemy dowód zgody: wersję zgody, kanał (telefon w sprawie wyceny) i czas (art. 6 ust. 1 lit. f RODO w związku z art. 7 ust. 1 RODO).</LI>
                 <LI>Jeśli sami poproszą Państwo o rozmowy o współpracy albo dojdzie do zawarcia umowy, przetwarzamy dane w tym celu na podstawie art. 6 ust. 1 lit. b RODO (działania na Państwa żądanie przed zawarciem umowy i jej wykonanie), a w zakresie wynikającym z przepisów także art. 6 ust. 1 lit. c RODO.</LI>
               </UL>
+              <P>
+                Jeśli w banerze zgód wyrazili Państwo zgodę „Reklamowe (Meta)”, przesłanie formularza w kalkulatorze wyceny (w tym prośby o oddzwonienie) jest rejestrowane jako zdarzenie „Lead” w systemach Meta Platforms Ireland Limited (Merrion Road, Dublin 4, Irlandia) – za pomocą pliku cookie (Meta Pixel) w Państwa przeglądarce oraz równolegle za pomocą naszego serwera (Meta Conversions API), wraz z informacją o kampanii, z której Państwo przyszli (parametry UTM oraz znacznik kliknięcia z reklamy Facebooka/Instagramu), wyłącznie w celu oceny skuteczności naszych kampanii reklamowych. Nie przekazujemy w tym celu imienia, numeru telefonu ani adresu e-mail. Bez tej zgody zdarzenie nie jest wysyłane. Meta Platforms Ireland Limited przetwarza te dane jako niezależny administrator, na zasadach i przez okres wynikający z własnej polityki prywatności Meta. Podstawą jest art. 6 ust. 1 lit. a RODO (zgoda). Przysługują Państwu prawa opisane w części „Prawa osób, których dane dotyczą”, w tym prawo wycofania zgody w każdej chwili w ustawieniach cookies oraz prawo sprzeciwu wobec przetwarzania do celów marketingowych (art. 21 ust. 2 RODO).
+              </P>
               <P>
                 Wynik jest wyraźnie orientacyjny; nie stanowi operatu szacunkowego ani wyceny w rozumieniu przepisów. Nie podejmujemy decyzji opartych wyłącznie na zautomatyzowanym przetwarzaniu w rozumieniu art. 22 RODO, wywołujących wobec Państwa skutki prawne lub w podobny sposób istotnie na Państwa wpływających: z wyniku nie wynikają zawarcie umowy, ustalenie ceny ani odmowa; dalszą obsługę zawsze prowadzą nasi pracownicy.
               </P>
@@ -233,7 +237,7 @@ export default async function RodoPage() {
                 <LI>Google (Gemini API, Google Ireland Limited lub Google LLC) – tworzenie plakatów ofert ze zdjęć;</LI>
                 <LI>Apify i Bright Data – pobieranie publicznie dostępnych ogłoszeń nieruchomości z portali oraz usługi obróbki zdjęć ofert;</LI>
                 <LI>Cloudflare, Inc. (USA) – ochrona przed automatycznymi wejściami (Turnstile, tylko na stronie kalkulatora);</LI>
-                <LI>Meta Platforms Ireland Limited (Irlandia) – formularze kontaktowe na Facebooku/Instagramie;</LI>
+                <LI>Meta Platforms Ireland Limited (Irlandia) – formularze kontaktowe na Facebooku/Instagramie oraz, po wyrażeniu zgody „Reklamowe (Meta)”, zdarzenia Meta Pixel/Conversions API z kalkulatora wyceny;</LI>
                 <LI>Google Ireland Limited (Irlandia) – usługi Google (mapy, wideo, API – patrz wyżej), w tym Kalendarz Google pracowników biura, jeśli pracownik połączył go z naszym systemem: tworzymy w nim zadanie oddzwonienia z imieniem osoby i odnośnikiem do jej karty w naszym systemie.</LI>
               </UL>
               {/* Lista dostawcow = jedno zrodlo prawdy z /de/datenschutz (sekcja 10). Zmieniac obie wersje razem. Brevo potwierdzone jako uzywane (od 13.09.2026). */}
