@@ -180,7 +180,11 @@ function OfferJsonLd({ offer }: { offer: any }) {
       '@type': 'Offer',
       price: offer.price ?? undefined,
       priceCurrency: 'PLN',
-      availability: 'https://schema.org/InStock',
+      // SEO (31.10): oferta zarezerwowana nie jest w pelni dostepna - schema ma byc
+      // zgodna z widoczna na stronie etykieta "ZAREZERWOWANA".
+      availability: offer.status === 'zarezerwowana'
+        ? 'https://schema.org/LimitedAvailability'
+        : 'https://schema.org/InStock',
       businessFunction: offer.transaction_type === 'wynajem'
         ? 'http://purl.org/goodrelations/v1#LeaseOut'
         : 'http://purl.org/goodrelations/v1#Sell',
