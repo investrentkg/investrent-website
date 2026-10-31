@@ -8,7 +8,7 @@ import {
   type EstimateOutcome, type FormValues,
 } from '@/lib/valuation'
 import { sendPhoneRequest } from '@/lib/phoneBlockSubmit'
-import { CALLBACK_ON, MARKET_CARD_ACTIVE, WYCENA_META_TRACKING_ON } from '@/lib/wycenaFlags'
+import { CALLBACK_ON, MARKET_CARD_ACTIVE, WYCENA_LAYOUT_V4_ACTIVE, WYCENA_META_TRACKING_ON } from '@/lib/wycenaFlags'
 import { CONSENT_TEXT, CONSENT_VERSION } from '@/lib/wycenaConsentText'
 import { CONTACT_WINDOWS, CONTACT_WINDOW_LABELS, type ContactWindow } from '@/lib/marketCard'
 import { T } from './texts'
@@ -125,7 +125,7 @@ export default function PhoneBlock({ outcome, values, onDone }: { outcome: Estim
     <form onSubmit={e => { e.preventDefault(); void attempt() }} noValidate className="wy-phoneblock" aria-labelledby="wy-pb-title">
       <h3 id="wy-pb-title" className="wy-pb-title">{mc ? MC.blockTitle : P.title}</h3>
       <p style={{ margin: '0 0 6px', color: '#374151', fontSize: 15, lineHeight: 1.6 }}>{mc ? MC.blockIntro : P.exchange}</p>
-      {mc && <MarketCard token={token} />}
+      {mc && !WYCENA_LAYOUT_V4_ACTIVE && <MarketCard token={token} />}
       {!mc && <p style={{ margin: '0 0 12px', ...hintStyle }}>{L.notAppraisal}</p>}
 
       {mc && <p style={{ margin: '0 0 8px', color: '#374151', fontSize: 15, lineHeight: 1.6 }}>{MC.contactIntro}</p>}
