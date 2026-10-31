@@ -90,7 +90,7 @@ export const CONSENT_COPY: Record<ConsentLocale, ConsentCopy> = {
     ads: {
       name: 'Werbung (Meta)',
       badge: 'geplant',
-      liveDesc: 'ermöglichen uns, die Wirksamkeit von Werbung auf Facebook und Instagram zu messen. Nach dem Absenden Ihrer Anfrage im Bewertungsrechner übermitteln wir Meta Platforms Ireland Limited (eigenständiger Verantwortlicher) eine Information über dieses Ereignis — ohne Name, Telefonnummer und E-Mail-Adresse — zusammen mit Kennungen von Browser und Werbeklick sowie IP-Adresse und Browserdaten. Die Daten können außerhalb des Europäischen Wirtschaftsraums verarbeitet werden. Die Einwilligung ist freiwillig.',
+      liveDesc: 'ermöglichen uns, die Wirksamkeit von Werbung auf Facebook und Instagram zu messen. Nach dem Absenden Ihrer Anfrage im Bewertungsrechner übermitteln wir Meta Platforms Ireland Limited (eigenständiger Verantwortlicher) eine Information über dieses Ereignis — ohne Ihren Namen, Ihre Telefonnummer und Ihre E-Mail-Adresse — zusammen mit Kennungen Ihres Browsers und des Werbeklicks sowie IP-Adresse und Browserdaten. Die Daten können in Länder außerhalb des Europäischen Wirtschaftsraums übermittelt werden. Die Einwilligung ist freiwillig.',
       desc: 'derzeit läuft hier nichts. Eine etwaige Weitergabe von Daten an Meta Platforms Ireland Limited zur Messung von Werbung auf Facebook und Instagram erfordert Ihre gesonderte Einwilligung.',
     },
     withdraw: 'Sie können Ihre Einwilligung jederzeit in den „Datenschutzeinstellungen” (Link in der Fußzeile) ändern oder widerrufen.',

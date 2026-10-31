@@ -101,7 +101,7 @@ const TEXT: Record<Locale, {
         title: ADS_AVAILABLE ? 'Werbung — Meta (nur mit Einwilligung)' : 'Werbung (geplant, derzeit nicht vorhanden)',
         rows: [
           ADS_AVAILABLE
-          ? { name: '_fbp, _fbc', kind: 'Cookie', provider: 'Meta Platforms Ireland Limited', purpose: 'Meta-Pixel (wird erst nach Ihrer Einwilligung „Werbung (Meta)“ geladen): erkennt Browser und Werbeklick, um die Wirksamkeit von Werbung auf Facebook und Instagram zu messen. Die Daten gehen an Meta (eigenständiger Verantwortlicher).', lifetime: 'bis zu 90 Tage (Meta-Einstellung); wird bei Widerruf sofort gelöscht' }
+          ? { name: '_fbp, _fbc', kind: 'Cookie', provider: 'Meta Platforms Ireland Limited', purpose: 'Meta-Pixel (wird erst nach Ihrer Einwilligung „Werbung (Meta)“ geladen): erkennt Ihren Browser und den Klick auf die Werbung, um die Wirksamkeit von Werbung auf Facebook und Instagram zu messen. Die Daten werden an Meta Platforms Ireland Limited übermittelt (eigenständiger Verantwortlicher).', lifetime: 'bis zu 90 Tagen (Meta-Einstellung); wird bei Widerruf Ihrer Einwilligung sofort gelöscht' }
           : { name: '—', kind: 'derzeit wird nichts gespeichert', provider: 'Meta Platforms Ireland Limited (geplant)', purpose: 'Für die Zukunft vorgesehene Kategorie (Werbetools von Meta). Wird derzeit nicht eingesetzt und kann nicht aktiviert werden.', lifetime: '—' },
         ],
       },
