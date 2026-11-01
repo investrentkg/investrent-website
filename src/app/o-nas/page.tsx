@@ -23,8 +23,8 @@ import { MapPin, Phone, Mail, Shield, Heart, TrendingUp, Users, CheckCircle } fr
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Biuro nieruchomości Kołobrzeg — zespół',
-  description: 'Zespół biura nieruchomości InvestRent z Kołobrzegu: sprzedaż, kupno i wynajem nad morzem. Znamy lokalny rynek, 150+ transakcji.',
+  title: { absolute: 'Biuro nieruchomości InvestRent Kołobrzeg — poznaj zespół' },
+  description: 'Poznaj zespół InvestRent: lokalne biuro nieruchomości w Kołobrzegu. Sprzedaż, kupno i wynajem nad morzem, 150+ transakcji, znamy rynek od środka.',
   // NAPRAWA (audyt SEO 31.07.2026, punkt 3): brak kanonicznego URL na calej stronie.
   alternates: { canonical: 'https://www.investrent.com.pl/o-nas' },
 }

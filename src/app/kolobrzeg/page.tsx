@@ -21,7 +21,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: { absolute: 'Nieruchomości Kołobrzeg: rynek, dzielnice, oferty | InvestRent' },
-  description: 'Nieruchomości w Kołobrzegu: dzielnice, aktualne oferty sprzedaży i wynajmu oraz ceny ofertowe i transakcyjne. Lokalne biuro InvestRent pomoże w wyborze.',
+  description: 'Ceny ofertowe i transakcyjne w dzielnicach Kołobrzegu, aktualne oferty sprzedaży i wynajmu. Sprawdź rynek z lokalnym biurem InvestRent.',
   alternates: { canonical: 'https://www.investrent.com.pl/kolobrzeg' },
 }
 
