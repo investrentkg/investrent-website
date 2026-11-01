@@ -32,6 +32,11 @@ export const WYCENA_V4_TEXTS = {
     title: 'Nie widzimy Twojej nieruchomości',
     body: 'Zostaw numer, jeśli chcesz porozmawiać o swojej nieruchomości. Oddzwonimy.',
     submit: 'Zostaw numer',
+    /** Zatwierdzone przez Daniela 01.11 (forma Ty): blok kontaktu, gdy rejestry nie maja danych dla nieruchomosci (karta rynku: nodata). */
+    noData: {
+      title: 'W rejestrach nie mamy wystarczająco danych dla tej nieruchomości.',
+      body: 'To nie przeszkadza: nasz doradca może ją wycenić na podstawie rozmowy. Zostaw numer telefonu, a odezwiemy się.',
+    },
     firstName: 'Imię',
     lastName: 'Nazwisko (opcjonalnie)',
     timeLabel: 'Kiedy najwygodniej zadzwonić? (opcjonalnie)',
