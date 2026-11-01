@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { trackConsentedWycenaLead, createWycenaMetaEventId, buildWycenaMetaTracking, requestMetaConsentReceipt, pixelConsentAction, initPixelWithoutAutoMatching } from './wycenaMetaPixel.ts'
+import { shouldFireBrowserLead, trackConsentedWycenaLead, createWycenaMetaEventId, buildWycenaMetaTracking, requestMetaConsentReceipt, pixelConsentAction, initPixelWithoutAutoMatching } from './wycenaMetaPixel.ts'
 
 const eventId = 'wyc_1234567890abcdef'
 const receipt = 'v1.' + 'a'.repeat(20) + '.' + 'B'.repeat(43)
@@ -144,4 +144,48 @@ test('wycofanie zgody Marketing = revoke Pixela (nie grant), przy wylaczonej fla
   assert.equal(pixelConsentAction({ enabled: true, pixelId: '123', marketingConsent: false }), 'revoke')
   assert.equal(pixelConsentAction({ enabled: false, pixelId: '123', marketingConsent: true }), 'none')
   assert.equal(pixelConsentAction({ enabled: true, pixelId: '', marketingConsent: true }), 'none')
+})
+
+test('shouldFireBrowserLead: brak pola meta_capi (starszy backend) = dotychczasowe zachowanie (true)', () => {
+  assert.equal(shouldFireBrowserLead(eventId, undefined), true)
+  assert.equal(shouldFireBrowserLead(eventId, null), true)
+})
+
+test('shouldFireBrowserLead: Lead tylko dla dispatched===true z tym samym event_id', () => {
+  assert.equal(shouldFireBrowserLead(eventId, { event_id: eventId, dispatched: true }), true)
+  assert.equal(shouldFireBrowserLead(eventId, { event_id: eventId, dispatched: false }), false)
+  assert.equal(shouldFireBrowserLead(eventId, { event_id: 'wyc_innyinnyinnyinny', dispatched: true }), false)
+  assert.equal(shouldFireBrowserLead(eventId, { dispatched: true }), false)
+  assert.equal(shouldFireBrowserLead(null, { event_id: eventId, dispatched: true }), false)
+  assert.equal(shouldFireBrowserLead(undefined, { event_id: eventId, dispatched: true }), false)
+})
+
+test('shouldFireBrowserLead: zly ksztalt/typ pola (obecne, ale niepoprawne) = fail closed', () => {
+  for (const bad of [true, 'true', 1, 0, '', [], [{ event_id: eventId, dispatched: true }], { event_id: eventId, dispatched: 'true' }, { event_id: eventId, dispatched: 1 }, { event_id: eventId }, {}]) {
+    assert.equal(shouldFireBrowserLead(eventId, bad), false, JSON.stringify(bad))
+  }
+})
+
+test('trackConsentedWycenaLead z sygnalem CAPI: dispatched:false / inny event_id = zero zdarzen; dispatched:true = jedno z tym samym eventID', () => {
+  const base = { enabled: true, marketingConsent: true, pixelAvailable: true, eventId }
+  const events = []
+  const track = (...a) => events.push(a)
+  assert.equal(trackConsentedWycenaLead({ ...base, track, capiSignal: { event_id: eventId, dispatched: false } }), false)
+  assert.equal(trackConsentedWycenaLead({ ...base, track, capiSignal: { event_id: 'wyc_innyinnyinnyinny', dispatched: true } }), false)
+  assert.equal(events.length, 0)
+  assert.equal(trackConsentedWycenaLead({ ...base, track, capiSignal: { event_id: eventId, dispatched: true } }), true)
+  assert.deepEqual(events, [['Lead', { eventID: eventId }]])
+})
+
+test('trackConsentedWycenaLead: sygnal dispatched:true NIE omija flagi, zgody ads ani dostepnosci Pixela (fail closed)', () => {
+  const sig = { event_id: eventId, dispatched: true }
+  for (const [enabled, marketingConsent, pixelAvailable] of [[false, true, true], [true, false, true], [true, true, false]]) {
+    assert.equal(trackConsentedWycenaLead({ enabled, marketingConsent, pixelAvailable, eventId, capiSignal: sig, track: () => assert.fail() }), false)
+  }
+})
+
+test('trackConsentedWycenaLead bez capiSignal (starszy backend): zachowanie bez zmian', () => {
+  const events = []
+  assert.equal(trackConsentedWycenaLead({ enabled: true, marketingConsent: true, pixelAvailable: true, eventId, track: (...a) => events.push(a) }), true)
+  assert.equal(events.length, 1)
 })

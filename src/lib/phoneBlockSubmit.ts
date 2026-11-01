@@ -20,13 +20,14 @@ export type PhoneRequestInput = {
   /** Tracking metadata is created only after the existing Marketing category is accepted. */
   metaTracking?: WycenaMetaTracking
 }
-export type PhoneRequestResult = { ok: true; via: 'callback' | 'lead' } | { ok: false; reason: string }
+// metaCapi: pole meta_capi z odpowiedzi CRM (jest tylko gdy backend je zwrocil), patrz shouldFireBrowserLead w wycenaMetaPixel.ts.
+export type PhoneRequestResult = { ok: true; via: 'callback' | 'lead'; metaCapi?: unknown } | { ok: false; reason: string }
 export type PhoneRequestDeps = {
   callbackEnabled: boolean
   callbackUrl: string
   fetchImpl?: typeof fetch
   /** zapis awaryjny: dotychczasowy lead z wynikiem w notes (cialo budowane przez wolajacego) */
-  submitLeadFallback: () => Promise<{ ok: boolean; reason?: string }>
+  submitLeadFallback: () => Promise<{ ok: boolean; reason?: string; metaCapi?: unknown }>
 }
 
 export function utmObject(utm: string): Record<string, string> {
@@ -58,13 +59,13 @@ export async function sendPhoneRequest(input: PhoneRequestInput, deps: PhoneRequ
         }),
       })
       if (res.ok) {
-        let data: { ok?: unknown } | null = null
+        let data: { ok?: unknown; meta_capi?: unknown } | null = null
         try { data = await res.json() } catch { /* pusta odpowiedz */ }
-        if (!data || data.ok === true) return { ok: true, via: 'callback' }
+        if (!data || data.ok === true) return data && data.meta_capi !== undefined ? { ok: true, via: 'callback', metaCapi: data.meta_capi } : { ok: true, via: 'callback' }
       }
       // blad HTTP albo odpowiedz bez ok: tryb awaryjny ponizej
     } catch { /* siec: tryb awaryjny ponizej */ }
   }
   const r = await deps.submitLeadFallback()
-  return r.ok ? { ok: true, via: 'lead' } : { ok: false, reason: r.reason ?? 'unknown' }
+  return r.ok ? (r.metaCapi !== undefined ? { ok: true, via: 'lead', metaCapi: r.metaCapi } : { ok: true, via: 'lead' }) : { ok: false, reason: r.reason ?? 'unknown' }
 }
