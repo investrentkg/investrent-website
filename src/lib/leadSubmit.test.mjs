@@ -57,3 +57,11 @@ test('inne formularze (np. wycena_modal) nie wysylaja offer_ref', async () => {
   const users = walk('src').filter(f => /\.(tsx?|mjs)$/.test(f) && !f.endsWith('.test.mjs') && readFileSync(f, 'utf8').includes('offer_ref'))
   assert.deepEqual(users.map(f => f.replaceAll('\\', '/')).sort(), ['src/lib/api.ts', 'src/lib/leadSubmit.ts'])
 })
+
+test('postLead: pole meta_capi z odpowiedzi jest przekazane jako metaCapi; bez pola wynik to dokladnie { ok: true }', async () => {
+  const mk = (body) => ({ fetchImpl: async () => ({ ok: true, status: 200, json: async () => body }) })
+  const sig = { event_id: 'wyc_1234567890abcdef', dispatched: true }
+  assert.deepEqual(await postLead('https://api.test/leads', {}, mk({ ok: true, meta_capi: sig })), { ok: true, metaCapi: sig })
+  assert.deepEqual(await postLead('https://api.test/leads', {}, mk({ ok: true, meta_capi: { event_id: 'wyc_1234567890abcdef', dispatched: false } })), { ok: true, metaCapi: { event_id: 'wyc_1234567890abcdef', dispatched: false } })
+  assert.deepEqual(await postLead('https://api.test/leads', {}, mk({ ok: true })), { ok: true })
+})
