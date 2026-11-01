@@ -20,7 +20,7 @@ export default function MortgageCalcSection() {
 
   // Pobierz stopę referencyjną NBP
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL ?? 'https://investrent-crm-production.up.railway.app'}/api/public/nbp-rate`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL ?? 'https://api.investrent.com.pl'}/api/public/nbp-rate`)
       .then(r => r.json())
       .then(data => {
         const val = data?.rate ?? null

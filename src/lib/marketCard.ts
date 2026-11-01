@@ -3,7 +3,7 @@
 // Brak danych (available:false), blad sieci, flaga CRM off (404) = brak karty (model 'none'), nigdy zmyslone liczby.
 import { sendFunnelStep } from './funnel.ts'
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://investrent-crm-production.up.railway.app'
+const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.investrent.com.pl'
 export const MARKET_CARD_URL = `${API}/api/public/valuation/market-card`
 export const MARKET_CARD_MIN_SAMPLE = 8
 /** Ostrzezenie malej proby dla transakcji: 0 < n < 8 (n=0 to brak danych, bez ostrzezenia); ta sama semantyka progu co dla ofert. */

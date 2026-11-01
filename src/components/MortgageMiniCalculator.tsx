@@ -30,7 +30,7 @@ export default function MortgageMiniCalculator({ price, refNumber, offerId }: { 
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL ?? 'https://investrent-crm-production.up.railway.app'}/api/public/nbp-rate`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL ?? 'https://api.investrent.com.pl'}/api/public/nbp-rate`)
       .then(r => r.json())
       .then(data => {
         if (data?.rate && typeof data.rate === 'number') {

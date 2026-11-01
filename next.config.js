@@ -79,6 +79,9 @@ const nextConfig = {
       // Basic Access, ale strona nigdy nie istniala pod tym adresem -
       // prawdziwy jest /rodo. Przekierowanie zeby link nie 404-owal.
       { source: '/polityka-prywatnosci', destination: '/rodo', permanent: true },
+      // SEO (31.10): /de nie istnial (404), a jedyna tresc DE to
+      // /de/immobilien-kolberg - katalog /de ma tylko layout i strony prawne.
+      { source: '/de', destination: '/de/immobilien-kolberg', permanent: true },
 
       // Kategorie ofert - stara strona mialy osobne adresy per typ, nowa
       // filtruje przez query string na wspolnej stronie /oferty

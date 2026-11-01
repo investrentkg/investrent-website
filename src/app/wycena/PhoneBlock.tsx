@@ -13,8 +13,9 @@ import { CONSENT_TEXT, CONSENT_VERSION } from '@/lib/wycenaConsentText'
 import { CONTACT_WINDOWS, CONTACT_WINDOW_LABELS, type ContactWindow } from '@/lib/marketCard'
 import { T } from './texts'
 import { PHONE_BLOCK_CONSENT_VERSION, PHONE_BLOCK_LEGAL as L, PHONE_BLOCK_TEXTS as P } from './phoneBlockTexts'
-import { hasAttributionConsent } from '@/lib/consentStore'
-import { buildWycenaMetaTracking, createWycenaMetaEventId } from '@/lib/wycenaMetaPixel'
+import { hasAdsConsent } from '@/lib/consentStore'
+import { buildWycenaMetaTracking } from '@/lib/wycenaMetaPixel'
+import { useMetaConsentReceipt } from './useMetaConsentReceipt'
 import { trackWycenaMetaLead } from '@/components/WycenaMetaPixel'
 import Turnstile from './Turnstile'
 import MarketCard from './MarketCard'
@@ -24,7 +25,7 @@ import { MARKET_CARD_TEXTS as MC } from './marketCardTexts'
 // Pole numeru + przycisk (jawne dzialanie uzytkownika; bez checkboxa: opinia Prawnika 15.10.2026 - kontakt zamowiony, nie marketing) + krotka wymiana wartosci.
 // Bez SMS. Po wyslaniu potwierdzenie bez terminu oddzwonienia. Teksty prawne: phoneBlockTexts.ts (zatwierdzone doslownie przez Daniela 15.10.2026).
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://investrent-crm-production.up.railway.app'
+const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.investrent.com.pl'
 const CALLBACK_URL = `${API}/api/public/valuation/callback`
 const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ''
 const phoneHref = 'tel:+48731554341'
@@ -48,7 +49,7 @@ export default function PhoneBlock({ outcome, values, onDone }: { outcome: Estim
   const [tsStuck, setTsStuck] = useState(false)
   const [queued, setQueued] = useState(false)
   const inFlight = useRef(false)
-  const metaEventId = useRef<string | null>(null)
+  const metaConsent = useMetaConsentReceipt()
   const mode = outcome.kind
   const token = 'valuationToken' in outcome && outcome.valuationToken ? outcome.valuationToken : null
 
@@ -81,11 +82,12 @@ export default function PhoneBlock({ outcome, values, onDone }: { outcome: Estim
     const utm = readUtm(window.location.search)
     try {
       const attribution = getAttribution()
-      if (WYCENA_META_TRACKING_ON && hasAttributionConsent() && !metaEventId.current) metaEventId.current = createWycenaMetaEventId()
+      const metaReceipt = metaConsent.getReceipt()
       const metaTracking = buildWycenaMetaTracking({
         enabled: WYCENA_META_TRACKING_ON,
-        marketingConsent: hasAttributionConsent(),
-        eventId: metaEventId.current,
+        marketingConsent: hasAdsConsent(),
+        eventId: metaReceipt?.eventId ?? null,
+        consentReceipt: metaReceipt?.receipt ?? null,
         readCookie: () => document.cookie,
         search: window.location.search,
         attribution: attribution as Record<string, unknown> | null,
@@ -160,6 +162,7 @@ export default function PhoneBlock({ outcome, values, onDone }: { outcome: Estim
           <input type="text" name="hp_field" tabIndex={-1} autoComplete="off" value={hp} onChange={e => setHp(e.target.value)} />
         </label>
       </div>
+      {metaConsent.widget}
       {TURNSTILE_SITE_KEY && (
         <div style={{ marginTop: 12 }}>
           <Turnstile siteKey={TURNSTILE_SITE_KEY} resetKey={tsReset} onToken={t => { setTsToken(t); if (t) { setTsFailed(false); setTsStuck(false) } }} onFail={() => setTsFailed(true)} />

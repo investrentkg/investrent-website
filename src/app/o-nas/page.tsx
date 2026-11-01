@@ -41,12 +41,12 @@ const VALUES = [
 export default async function ONasPage() {
   const [teamData, statsData, officeData, reviewsData, contentData] = await Promise.all([
     getTeamWithOfferCounts(), getStats(), getOffice(),
-    fetch('https://investrent-crm-production.up.railway.app/api/public/google-reviews')
+    fetch('https://api.investrent.com.pl/api/public/google-reviews')
       .then(r => r.json()).catch(() => null),
     // NOWE (Daniel 03.08): edytowalna tresc z CRM - bezpieczny fallback do
     // dotychczasowego, zaszytego tekstu ponizej, jesli nikt nic nie
     // dostosowal. Patrz backend/src/routes/websiteContent.ts.
-    fetch('https://investrent-crm-production.up.railway.app/api/public/content/o-nas')
+    fetch('https://api.investrent.com.pl/api/public/content/o-nas')
       .then(r => r.json()).catch(() => null),
   ])
   const office = officeData ?? FALLBACK_OFFICE

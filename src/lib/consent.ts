@@ -31,7 +31,7 @@ export interface ConsentState {
 }
 
 /** Czy kategoria Reklamowe (Pixel/CAPI) jest już wdrożona i wybieralna. FALSE = przełącznik w panelu nieaktywny, zgoda `ads` nigdy nie jest zapisywana jako true. */
-export const ADS_AVAILABLE = false
+export const ADS_AVAILABLE: boolean = process.env.NEXT_PUBLIC_META_PIXEL_ENABLED === 'on'
 
 export type ConsentChoice = { analytics: boolean; attribution: boolean; ads: boolean }
 export const REJECT_ALL: ConsentChoice = { analytics: false, attribution: false, ads: false }
@@ -112,11 +112,10 @@ export const adsAllowed = (s: ConsentState | null | undefined): boolean => !!s &
  */
 export function applyChoice(prev: ConsentState | null | undefined, choice: ConsentChoice, now: number = Date.now()): { next: ConsentState; clearGa: boolean; clearMeta: boolean; clearAttribution: boolean } {
   const next = makeConsent(choice, now)
-  const metaUsesMarketing = process.env.NEXT_PUBLIC_META_PIXEL_ENABLED === 'on'
   return {
     next,
     clearGa: !!prev?.analytics && !next.analytics,
-    clearMeta: (!!prev?.ads && !next.ads) || (metaUsesMarketing && !!prev?.attribution && !next.attribution),
+    clearMeta: !!prev?.ads && !next.ads,
     clearAttribution: !!prev?.attribution && !next.attribution,
   }
 }

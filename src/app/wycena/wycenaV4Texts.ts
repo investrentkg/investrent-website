@@ -21,8 +21,7 @@ export const WYCENA_V4_TEXTS = {
     empty: 'Za mało danych o cenach ofertowych dla tego segmentu.',
     smallSample: (count: number) => `Mała próba: ${count} ofert. Przedział ma charakter orientacyjny.`,
   },
-  amountFor: (areaM2: number) => `dla ${areaM2} m²`,
-  /** Poz. 8 opinii Prawnika 30.10 (zaakceptowane przez Daniela): kwota, słowo „podobne" i metraż w jednym zdaniu. */
+  /** Poz. 8 opinii Prawnika 30.10 (OPINIA_Prawnika_kalkulator_2026_10_30.md): kwota, słowo „podobne" i metraż w jednym zdaniu. Wdrożenie dopiero po akceptacji Daniela. */
   amountLabel: {
     transactions: (low: number, high: number, areaM2: number) => amountLabelText(low, high, areaM2, 'transakcji'),
     offers: (low: number, high: number, areaM2: number) => amountLabelText(low, high, areaM2, 'ofert'),
@@ -37,11 +36,16 @@ export const WYCENA_V4_TEXTS = {
     title: 'Orientacyjna ocena modelu AI',
     body: 'Automatyczna ocena modelu AI. Nie jest ceną transakcyjną ani ofertową.',
   },
-  /** DO AKCEPTACJI PRAWNIK/DANIEL — nie publikować; widoczne wyłącznie po NEXT_PUBLIC_WYCENA_NOTICE_V4=on. */
+  /** Nagłówek i treść zatwierdził Daniel 01.11 (wariant A); wcześniej oznaczone DO AKCEPTACJI — publikacja po scaleniu i decyzji o fladze; widoczne wyłącznie po NEXT_PUBLIC_WYCENA_NOTICE_V4=on. */
   notice: {
-    title: 'Nie widzimy Twojej nieruchomości',
-    body: 'Zostaw numer, jeśli chcesz porozmawiać o swojej nieruchomości. Oddzwonimy.',
+    title: 'Wycenimy dokładniej po rozmowie',
+    body: 'Kalkulator nie widzi stanu ani standardu Twojej nieruchomości. Zostaw kontakt, a agent powie, ile może być warta, po krótkiej rozmowie.',
     submit: 'Zostaw numer',
+    /** Zatwierdzone przez Daniela 01.11 (forma Ty): blok kontaktu, gdy rejestry nie maja danych dla nieruchomosci (karta rynku: nodata). */
+    noData: {
+      title: 'W rejestrach nie mamy wystarczająco danych dla tej nieruchomości.',
+      body: 'To nie przeszkadza: nasz doradca może ją wycenić na podstawie rozmowy. Zostaw numer telefonu, a odezwiemy się.',
+    },
     firstName: 'Imię',
     lastName: 'Nazwisko (opcjonalnie)',
     timeLabel: 'Kiedy najwygodniej zadzwonić? (opcjonalnie)',

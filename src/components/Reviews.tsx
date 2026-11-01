@@ -5,7 +5,7 @@ import AnimatedCounter from '@/components/AnimatedCounter'
 import ScrollReveal from '@/components/ScrollReveal'
 import { getVerifiedRating, type VerifiedRating } from '@/lib/schemaRating'
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://investrent-crm-production.up.railway.app'
+const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.investrent.com.pl'
 const GOOGLE_URL = 'https://www.google.com/maps/place/Invest+Rent+Nieruchomo%C5%9Bci/@54.1770073,15.5744432,17z/#reviews'
 
 interface Review {

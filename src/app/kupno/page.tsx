@@ -37,7 +37,7 @@ export default async function KupnoPage() {
   const [data, officeData, contentData] = await Promise.all([
     getPublicOffers({ limit: 9, transaction_type: 'sprzedaz' }),
     getOffice(),
-    fetch('https://investrent-crm-production.up.railway.app/api/public/content/kupno')
+    fetch('https://api.investrent.com.pl/api/public/content/kupno')
       .then(r => r.json()).catch(() => null),
   ])
   const office = officeData ?? FALLBACK_OFFICE

@@ -9,11 +9,13 @@ import WycenaModal from '@/components/WycenaModal'
 import Turnstile from './Turnstile'
 import PhoneBlock from './PhoneBlock'
 import MarketCard from './MarketCard'
+import { showAiEstimate } from '@/lib/wycenaAiVisibility'
 import { PHONE_BLOCK_TEXTS } from './phoneBlockTexts'
 import { PHONE_BLOCK_ON, WYCENA_LAYOUT_V4_ACTIVE, WYCENA_META_TRACKING_ON } from '@/lib/wycenaFlags'
 import WycenaMetaPixel, { trackWycenaMetaLead } from '@/components/WycenaMetaPixel'
-import { hasAttributionConsent } from '@/lib/consentStore'
-import { buildWycenaMetaTracking, createWycenaMetaEventId } from '@/lib/wycenaMetaPixel'
+import { hasAdsConsent } from '@/lib/consentStore'
+import { buildWycenaMetaTracking } from '@/lib/wycenaMetaPixel'
+import { useMetaConsentReceipt } from './useMetaConsentReceipt'
 import { sendFunnelStep } from '@/lib/funnel'
 import {
   CONDITIONS, EMPTY_FORM, OFFICE_PHONE, PROPERTY_TYPES,
@@ -25,7 +27,7 @@ import { T } from './texts'
 import { WYCENA_V4_TEXTS as V4 } from './wycenaV4Texts'
 import { CITY_LIST, KOLOBRZEG_DISTRICTS, OTHER_CITY, OTHER_DISTRICT } from '@/lib/localities'
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://investrent-crm-production.up.railway.app'
+const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.investrent.com.pl'
 const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ''
 const ESTIMATE_URL = `${API}/api/public/valuation/estimate`
 
@@ -78,6 +80,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
   const [ctaInView, setCtaInView] = useState(false)
   const [armed, setArmed] = useState(false)
   const [leadDone, setLeadDone] = useState(false)
+  const [cardKind, setCardKind] = useState<'card' | 'nodata' | 'none' | null>(null)
   const stickyLogged = useRef(false)
   const funnelVariant = PHONE_BLOCK_ON ? { variant: 'phone_block' } : {}
   const startLogged = useRef(false)
@@ -314,11 +317,11 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
         {available && phase === 'after' && outcome && (
           <div ref={resultRef} tabIndex={-1} style={{ outline: 'none', display: 'flex', flexDirection: 'column', gap: 24, scrollMarginTop: 88 }}>
             {/* flaga NEXT_PUBLIC_WYCENA_PHONE_BLOCK: dla wyniku z liczbami blok telefonu jest BEZPOSREDNIO pod przedzialem (w karcie wyniku), bez osobnej karty kontaktu pod spodem */}
-            <OutcomePanel outcome={outcome} scoped={!isOutOfScope(submittedValues)} wider={!isKolobrzeg(submittedValues.city)} onAgain={reset} onCta={() => goToLead('result')}
-              marketCardSlot={WYCENA_LAYOUT_V4_ACTIVE && outcome.kind === 'range' ? <MarketCard token={outcome.valuationToken ?? null} areaM2={Number(submittedValues.area_m2.trim().replace(',', '.')) || null} /> : undefined}
+            <OutcomePanel showAi={showAiEstimate(cardKind)} outcome={outcome} scoped={!isOutOfScope(submittedValues)} wider={!isKolobrzeg(submittedValues.city)} onAgain={reset} onCta={() => goToLead('result')}
+              marketCardSlot={WYCENA_LAYOUT_V4_ACTIVE && outcome.kind === 'range' ? <MarketCard token={outcome.valuationToken ?? null} onKind={setCardKind} areaM2={Number(submittedValues.area_m2.trim().replace(',', '.')) || null} /> : undefined}
               leadSlot={WYCENA_LAYOUT_V4_ACTIVE && outcome?.kind === 'range' ? (
                 <div ref={leadWrapRef} id="wy-lead" style={{ scrollMarginTop: 88 }}>
-                  <LeadPanel outcome={outcome} values={submittedValues} v4Contact onDone={() => { setLeadDone(true); sendFunnelStep('submit', funnelVariant) }} />
+                  <LeadPanel outcome={outcome} values={submittedValues} v4Contact v4NoData={cardKind === 'nodata'} onDone={() => { setLeadDone(true); sendFunnelStep('submit', funnelVariant) }} />
                 </div>
               ) : PHONE_BLOCK_ON && outcome?.kind === 'range' ? (
                 <div ref={leadWrapRef} id="wy-lead" style={{ scrollMarginTop: 88 }}>
@@ -394,7 +397,7 @@ function ContactFallback({ placement }: { placement: string }) {
   )
 }
 
-function OutcomePanel({ outcome, scoped, wider, onAgain, onCta, marketCardSlot, leadSlot }: { outcome: EstimateOutcome; scoped: boolean; wider: boolean; onAgain: () => void; onCta: () => void; marketCardSlot?: React.ReactNode; leadSlot?: React.ReactNode }) {
+function OutcomePanel({ outcome, scoped, wider, onAgain, onCta, marketCardSlot, leadSlot, showAi = true }: { outcome: EstimateOutcome; scoped: boolean; wider: boolean; onAgain: () => void; onCta: () => void; marketCardSlot?: React.ReactNode; leadSlot?: React.ReactNode; showAi?: boolean }) {
   if (outcome.kind === 'range') {
     return (
       <section style={card} aria-labelledby="wy-res-title">
@@ -443,7 +446,7 @@ function OutcomePanel({ outcome, scoped, wider, onAgain, onCta, marketCardSlot, 
           </div>
         ))}
         {marketCardSlot}
-        {WYCENA_LAYOUT_V4_ACTIVE && (
+        {WYCENA_LAYOUT_V4_ACTIVE && showAi && (
           <div className="wy-v4-ai" aria-label={V4.ai.title}>
             <p className="wy-v4-ai-title">{V4.ai.title}</p>
             <p className="wy-v4-ai-range">{formatRange(outcome.rangeCore ?? outcome.range)}</p>
@@ -484,7 +487,7 @@ function OutcomePanel({ outcome, scoped, wider, onAgain, onCta, marketCardSlot, 
   )
 }
 
-function LeadPanel({ outcome, values, onDone, v4Contact = false }: { outcome: EstimateOutcome | null; values: FormValues; onDone?: () => void; v4Contact?: boolean }) {
+function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = false }: { outcome: EstimateOutcome | null; values: FormValues; onDone?: () => void; v4Contact?: boolean; v4NoData?: boolean }) {
   const [name, setName] = useState('')
   const [surname, setSurname] = useState('')
   const [phone, setPhone] = useState('')
@@ -503,7 +506,7 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false }: { outcome: Es
   const fallbackRef = useRef<HTMLDivElement>(null)
   const inFlight = useRef(false)
   const formRef = useRef<HTMLFormElement>(null)
-  const metaEventId = useRef<string | null>(null)
+  const metaConsent = useMetaConsentReceipt()
   const mountedAt = useRef(Date.now())
   const tsReadyLogged = useRef(false)
   const tsFailLogged = useRef(false)
@@ -595,11 +598,12 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false }: { outcome: Es
     trackValuation('wycena_lead_submit', { mode, iab: iabClass() })
     try {
       const attribution = getAttribution()
-      if (WYCENA_META_TRACKING_ON && hasAttributionConsent() && !metaEventId.current) metaEventId.current = createWycenaMetaEventId()
+      const metaReceipt = metaConsent.getReceipt()
       const metaTracking = buildWycenaMetaTracking({
         enabled: WYCENA_META_TRACKING_ON,
-        marketingConsent: hasAttributionConsent(),
-        eventId: metaEventId.current,
+        marketingConsent: hasAdsConsent(),
+        eventId: metaReceipt?.eventId ?? null,
+        consentReceipt: metaReceipt?.receipt ?? null,
         readCookie: () => document.cookie,
         search: window.location.search,
         attribution: attribution as Record<string, unknown> | null,
@@ -631,8 +635,8 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false }: { outcome: Es
 
   return (
     <form ref={formRef} onSubmit={send} noValidate style={card} aria-labelledby="wy-lead-title">
-      <h2 id="wy-lead-title" style={h2}>{v4Contact ? V4.notice.title : withNumbers ? T.lead.titleRange : T.lead.titleFallback}</h2>
-      <p style={{ color: '#374151', fontSize: 15, lineHeight: 1.7, margin: '0 0 16px' }}>{v4Contact ? V4.notice.body : withNumbers ? T.lead.bodyRange : T.lead.bodyFallback}</p>
+      <h2 id="wy-lead-title" style={h2}>{v4Contact ? (v4NoData ? V4.notice.noData.title : V4.notice.title) : withNumbers ? T.lead.titleRange : T.lead.titleFallback}</h2>
+      <p style={{ color: '#374151', fontSize: 15, lineHeight: 1.7, margin: '0 0 16px' }}>{v4Contact ? (v4NoData ? V4.notice.noData.body : V4.notice.body) : withNumbers ? T.lead.bodyRange : T.lead.bodyFallback}</p>
       <div className="wy-grid">
         <Field id="wy-name" text={v4Contact ? `${V4.notice.firstName} *` : T.lead.name} error={errs.name}>
           <input id="wy-name" className="wy-field" type="text" autoComplete="given-name" required={v4Contact} aria-required={v4Contact} aria-invalid={!!errs.name} value={name} onChange={e => { setName(e.target.value); if (errs.name) setErrs(p => ({ ...p, name: undefined })) }} />
@@ -687,6 +691,7 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false }: { outcome: Es
         </label>
       </div>
 
+      {metaConsent.widget}
       {TURNSTILE_SITE_KEY && (
         <div style={{ marginTop: 16 }}>
           <Turnstile siteKey={TURNSTILE_SITE_KEY} resetKey={tsReset} onToken={onTsToken} onFail={onTsFail} />

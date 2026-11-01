@@ -55,7 +55,7 @@ const BENEFITS = [
 export default async function ZarzadzanieNajmemPage() {
   const [officeData, contentData] = await Promise.all([
     getOffice(),
-    fetch('https://investrent-crm-production.up.railway.app/api/public/content/zarzadzanie-najmem')
+    fetch('https://api.investrent.com.pl/api/public/content/zarzadzanie-najmem')
       .then(r => r.json()).catch(() => null),
   ])
   const office = officeData ?? FALLBACK_OFFICE

@@ -144,7 +144,7 @@ export default async function KolobrzegPage() {
               {[
                 { href: '/blog/nieruchomosci-koobrzeg-co-warto-wiedziec-przed-zakupem-sprzedaza-lub-wynajmem-na', title: 'Nieruchomości Kołobrzeg — co warto wiedzieć przed zakupem, sprzedażą lub wynajmem' },
                 { href: '/blog/doradztwo-przy-zakupie-i-sprzedazy-nieruchomosci-w-kolobrzegu-na-czym-realnie-polega-ryzyko', title: 'Doradztwo przy zakupie i sprzedaży nieruchomości — na czym realnie polega ryzyko' },
-                { href: '/blog/jak-wybrac-biuro-nieruchomosci-w-koobrzegu-praktyczny-przewodnik-przed-podpisani', title: 'Jak wybrać biuro nieruchomości w Kołobrzegu? Praktyczny przewodnik' },
+                { href: '/blog/jak-wybrac-biuro-nieruchomosci-w-kolobrzegu-praktyczny-przewodnik-przed-podpisan', title: 'Jak wybrać biuro nieruchomości w Kołobrzegu? Praktyczny przewodnik' },
               ].map(post => (
                 <a key={post.href} href={post.href} style={{ display: 'block', background: '#f8fafc', border: '1px solid #e5e7eb', borderRadius: 12, padding: '18px 20px', textDecoration: 'none', color: '#0d2a5c', fontSize: 13.5, fontWeight: 600, lineHeight: 1.6 }}>
                   {post.title} →

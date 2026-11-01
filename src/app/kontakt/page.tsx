@@ -15,7 +15,7 @@ export const revalidate = 300
 
 export const metadata: Metadata = {
   title: 'Kontakt — biuro nieruchomości Kołobrzeg',
-  description: 'Biuro nieruchomości InvestRent, ul. Ratuszowa 12/1, Kołobrzeg. Pn–pt 8–16, sob 10–15. Odpowiadamy w ciągu 24 godzin. Tel: +48 731 554 341',
+  description: 'Biuro nieruchomości InvestRent, ul. Ratuszowa 12/1 lok. 3, Kołobrzeg. Pn–pt 8–16, sob 10–15. Odpowiadamy w ciągu 24 godzin. Tel: +48 731 554 341',
   // NAPRAWA (audyt SEO 31.07.2026, punkt 3): brak kanonicznego URL na calej stronie.
   alternates: { canonical: 'https://www.investrent.com.pl/kontakt' },
 }
@@ -30,7 +30,7 @@ export default async function KontaktPage() {
   // te strone z wizytowka Google Business Profile.
   const [officeData, reviewsData] = await Promise.all([
     getOffice(),
-    fetch('https://investrent-crm-production.up.railway.app/api/public/google-reviews')
+    fetch('https://api.investrent.com.pl/api/public/google-reviews')
       .then(r => r.json()).catch(() => null),
   ])
   const office = officeData ?? FALLBACK_OFFICE

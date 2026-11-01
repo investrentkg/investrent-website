@@ -681,6 +681,7 @@ html:has(.wy-pad) { scroll-padding-bottom: calc(var(--consent-h, 0px) + 96px); }
 .wy-v4-market-disclaimer { margin: 10px 0 0; color: #475569; font-size: 12px; line-height: 1.45; }
 .wy-v4-market-filter-note { margin: 0 0 8px; color: #475569; font-size: 12px; }
 .wy-v4-market-note { margin: 10px 0 0; color: #334155; font-size: 13px; line-height: 1.5; }
+.wy-v4-market-source-note { margin: 4px 0 0; color: #334155; font-size: 13px; line-height: 1.5; }
 @media (max-width: 639px) { .wy-v4-market-grid { grid-template-columns: 1fr; gap: 10px; } .wy-v4-market-card { padding: 15px; } .wy-v4-market-condition { grid-template-columns: 1fr; gap: 6px; } }.wy-v4-market-heading { margin: 0 0 12px; }
 .wy-v4-market-heading p { margin: 0 0 3px; color: #64748b; font-size: 12px; font-weight: 700; }
 .wy-v4-market-heading h3 { margin: 0; color: #0d2a5c; font-size: 20px; line-height: 1.3; }

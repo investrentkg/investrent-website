@@ -1,10 +1,10 @@
 "use client"
 import { useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
-import { hasAttributionConsent } from '@/lib/consentStore'
+import { hasAdsConsent } from '@/lib/consentStore'
 import { onConsentChange } from '@/lib/consentStore'
 import { WYCENA_META_TRACKING_ON } from '@/lib/wycenaFlags'
-import { trackConsentedWycenaLead } from '@/lib/wycenaMetaPixel'
+import { pixelConsentAction, trackConsentedWycenaLead } from '@/lib/wycenaMetaPixel'
 
 declare global {
   interface Window { fbq?: ((...args: unknown[]) => void) & { callMethod?: (...args: unknown[]) => void; queue?: unknown[]; push?: (...args: unknown[]) => void; loaded?: boolean; version?: string } }
@@ -31,10 +31,10 @@ function loadPixel() {
 }
 
 export function trackWycenaMetaLead(eventId: string | null | undefined): void {
-  if (!WYCENA_META_TRACKING_ON || !PIXEL_ID || !hasAttributionConsent() || typeof window === 'undefined' || !window.fbq || !eventId) return
+  if (!WYCENA_META_TRACKING_ON || !PIXEL_ID || !hasAdsConsent() || typeof window === 'undefined' || !window.fbq || !eventId) return
   trackConsentedWycenaLead({
     enabled: WYCENA_META_TRACKING_ON,
-    marketingConsent: hasAttributionConsent(),
+    marketingConsent: hasAdsConsent(),
     pixelAvailable: true,
     eventId,
     track: (event, options) => window.fbq?.('track', event, {}, options),
@@ -57,15 +57,15 @@ export default function WycenaMetaPixel() {
       }
     }
     const sync = () => {
-      if (!WYCENA_META_TRACKING_ON || !PIXEL_ID) return
-      if (hasAttributionConsent()) grantAndTrackPageView()
-      else { callPixel('consent', 'revoke'); lastPageView.current = null }
+      const action = pixelConsentAction({ enabled: WYCENA_META_TRACKING_ON, pixelId: PIXEL_ID, marketingConsent: hasAdsConsent() })
+      if (action === 'grant') grantAndTrackPageView()
+      else if (action === 'revoke') { callPixel('consent', 'revoke'); lastPageView.current = null }
     }
     sync()
-    return onConsentChange((_analytics, marketing) => {
-      if (!WYCENA_META_TRACKING_ON || !PIXEL_ID) return
-      if (marketing) grantAndTrackPageView()
-      else { callPixel('consent', 'revoke'); lastPageView.current = null }
+    return onConsentChange((_analytics, _marketing, ads) => {
+      const action = pixelConsentAction({ enabled: WYCENA_META_TRACKING_ON, pixelId: PIXEL_ID, marketingConsent: ads })
+      if (action === 'grant') grantAndTrackPageView()
+      else if (action === 'revoke') { callPixel('consent', 'revoke'); lastPageView.current = null }
     })
   }, [pathname])
   return null

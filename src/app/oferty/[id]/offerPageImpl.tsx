@@ -12,6 +12,7 @@ import Footer from '@/components/Footer'
 import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
 import OfferDetailClient from './OfferDetailClient'
+import OfferAreaBlock from '@/components/OfferAreaBlock'
 import { OfferCard } from '@/components/OffersSection'
 import { getPublicOfferResult, getOffice, getPublicOffers } from '@/lib/api'
 import { notFound, permanentRedirect } from 'next/navigation'
@@ -180,7 +181,11 @@ function OfferJsonLd({ offer }: { offer: any }) {
       '@type': 'Offer',
       price: offer.price ?? undefined,
       priceCurrency: 'PLN',
-      availability: 'https://schema.org/InStock',
+      // SEO (31.10): oferta zarezerwowana nie jest w pelni dostepna - schema ma byc
+      // zgodna z widoczna na stronie etykieta "ZAREZERWOWANA".
+      availability: offer.status === 'zarezerwowana'
+        ? 'https://schema.org/LimitedAvailability'
+        : 'https://schema.org/InStock',
       businessFunction: offer.transaction_type === 'wynajem'
         ? 'http://purl.org/goodrelations/v1#LeaseOut'
         : 'http://purl.org/goodrelations/v1#Sell',
@@ -323,6 +328,7 @@ export async function renderOfferPage(params: { id: string }, previewToken?: str
           </div>
         </div>
         <OfferDetailClient offer={offer} />
+        <OfferAreaBlock city={offer.address_city} />
       </main>
       <Footer office={office} />
 

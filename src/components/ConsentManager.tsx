@@ -155,7 +155,7 @@ export default function ConsentManager() {
               {ADS_AVAILABLE
                 ? <label className="irc-sw"><input type="checkbox" role="switch" aria-labelledby="irc-ad" checked={ads} onChange={e => setAds(e.target.checked)} /><span /></label>
                 : <span className="irc-soon">{t.ads.badge}</span>}
-              <p>{t.ads.desc}</p>
+              <p>{ADS_AVAILABLE ? t.ads.liveDesc : t.ads.desc}</p>
             </div>
             <div className="irc-act" style={{ marginTop: 16, justifyContent: 'flex-end' }}>
               <button type="button" className="irc-btn irc-line" onClick={() => choose(REJECT_ALL)}>{t.rejectAll}</button>
