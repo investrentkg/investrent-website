@@ -9,6 +9,7 @@ import WycenaModal from '@/components/WycenaModal'
 import Turnstile from './Turnstile'
 import PhoneBlock from './PhoneBlock'
 import MarketCard from './MarketCard'
+import { showAiEstimate } from '@/lib/wycenaAiVisibility'
 import { PHONE_BLOCK_TEXTS } from './phoneBlockTexts'
 import { PHONE_BLOCK_ON, WYCENA_LAYOUT_V4_ACTIVE, WYCENA_META_TRACKING_ON } from '@/lib/wycenaFlags'
 import WycenaMetaPixel, { trackWycenaMetaLead } from '@/components/WycenaMetaPixel'
@@ -316,7 +317,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
         {available && phase === 'after' && outcome && (
           <div ref={resultRef} tabIndex={-1} style={{ outline: 'none', display: 'flex', flexDirection: 'column', gap: 24, scrollMarginTop: 88 }}>
             {/* flaga NEXT_PUBLIC_WYCENA_PHONE_BLOCK: dla wyniku z liczbami blok telefonu jest BEZPOSREDNIO pod przedzialem (w karcie wyniku), bez osobnej karty kontaktu pod spodem */}
-            <OutcomePanel outcome={outcome} scoped={!isOutOfScope(submittedValues)} wider={!isKolobrzeg(submittedValues.city)} onAgain={reset} onCta={() => goToLead('result')}
+            <OutcomePanel showAi={showAiEstimate(cardKind)} outcome={outcome} scoped={!isOutOfScope(submittedValues)} wider={!isKolobrzeg(submittedValues.city)} onAgain={reset} onCta={() => goToLead('result')}
               marketCardSlot={WYCENA_LAYOUT_V4_ACTIVE && outcome.kind === 'range' ? <MarketCard token={outcome.valuationToken ?? null} onKind={setCardKind} areaM2={Number(submittedValues.area_m2.trim().replace(',', '.')) || null} /> : undefined}
               leadSlot={WYCENA_LAYOUT_V4_ACTIVE && outcome?.kind === 'range' ? (
                 <div ref={leadWrapRef} id="wy-lead" style={{ scrollMarginTop: 88 }}>
@@ -396,7 +397,7 @@ function ContactFallback({ placement }: { placement: string }) {
   )
 }
 
-function OutcomePanel({ outcome, scoped, wider, onAgain, onCta, marketCardSlot, leadSlot }: { outcome: EstimateOutcome; scoped: boolean; wider: boolean; onAgain: () => void; onCta: () => void; marketCardSlot?: React.ReactNode; leadSlot?: React.ReactNode }) {
+function OutcomePanel({ outcome, scoped, wider, onAgain, onCta, marketCardSlot, leadSlot, showAi = true }: { outcome: EstimateOutcome; scoped: boolean; wider: boolean; onAgain: () => void; onCta: () => void; marketCardSlot?: React.ReactNode; leadSlot?: React.ReactNode; showAi?: boolean }) {
   if (outcome.kind === 'range') {
     return (
       <section style={card} aria-labelledby="wy-res-title">
@@ -445,7 +446,7 @@ function OutcomePanel({ outcome, scoped, wider, onAgain, onCta, marketCardSlot, 
           </div>
         ))}
         {marketCardSlot}
-        {WYCENA_LAYOUT_V4_ACTIVE && (
+        {WYCENA_LAYOUT_V4_ACTIVE && showAi && (
           <div className="wy-v4-ai" aria-label={V4.ai.title}>
             <p className="wy-v4-ai-title">{V4.ai.title}</p>
             <p className="wy-v4-ai-range">{formatRange(outcome.rangeCore ?? outcome.range)}</p>
