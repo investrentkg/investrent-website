@@ -306,9 +306,10 @@ export function buildConsentMarker(c: ConsentRecord): string {
 
 // Notatka musi zmiescic sie w NOTES_MAX (backend obcina po 500 znakach). Kolejnosc = priorytet: znacznik zgody PIERWSZY, UTM ostatni
 // (UTM jest obcinany; zgoda nigdy).
-export function buildLeadNotes(v: FormValues, o: EstimateOutcome | null, utm: string, c: ConsentRecord): string {
+export function buildLeadNotes(v: FormValues, o: EstimateOutcome | null, utm: string, c: ConsentRecord, contactWindow?: string | null): string {
   const lines = [
     buildConsentMarker(c),
+    contactWindow ? `Preferowany przedział rozmowy: ${contactWindow} (niewiążący).` : '',
     `Źródło: kalkulator wyceny (z wynikiem: ${o?.kind === 'range' ? 'tak' : 'nie'}) — strona /wycena.`,
     v.property_type ? `Dane: ${describeInput(v)}.` : '',
     describeOutcome(o),
@@ -328,16 +329,19 @@ export function buildLeadNotes(v: FormValues, o: EstimateOutcome | null, utm: st
 // v12: zrodlo leada z formularza numeru NA /wycena. Backend (retencja joba "calculator" przy CALCULATOR_SOURCES_NARROW=true) liczy
 // wylacznie 'wycena_lp'. Okienko "Zamow rozmowe" (WycenaModal, Hero, Contact itd.) zostaje 'wycena_modal' - nie uzywac tej stalej poza /wycena.
 export const CALCULATOR_LEAD_SOURCE = 'wycena_lp'
+const ALLOWED_CONTACT_WINDOWS = new Set(['9-12', '12-15', '15-18'])
 
 // v12: honeypot `hp_field` (backend #555: niepusty = bot) zawsze wysylany, w UI pusty; `turnstile_token` dolaczany, gdy widget go wydal (gdy nie wydal - komponent nie wysyla leada).
-export function buildLeadRequest(input: { name: string; phone: string; values: FormValues; outcome: EstimateOutcome | null; utm: string; turnstileToken?: string | null; honeypot?: string; attribution?: Attribution | null; consentVersion?: string }) {
+export function buildLeadRequest(input: { name: string; surname?: string; phone: string; values: FormValues; outcome: EstimateOutcome | null; utm: string; turnstileToken?: string | null; honeypot?: string; attribution?: Attribution | null; consentVersion?: string; contactWindow?: string | null }) {
+  const fullName = [input.name.trim(), input.surname?.trim()].filter(Boolean).join(' ')
+  const contactWindow = input.contactWindow && ALLOWED_CONTACT_WINDOWS.has(input.contactWindow) ? input.contactWindow : null
   return {
-    full_name: input.name.trim() || 'Właściciel',
+    full_name: fullName || 'Właściciel',
     phone: input.phone.trim(),
     source: CALCULATOR_LEAD_SOURCE,
     client_type: 'seller',
     preferred_city: input.values.city.trim(),
-    notes: buildLeadNotes(input.values, input.outcome, input.utm, input.consentVersion ? { version: input.consentVersion } : {}),
+    notes: buildLeadNotes(input.values, input.outcome, input.utm, input.consentVersion ? { version: input.consentVersion } : {}, contactWindow),
     hp_field: input.honeypot ?? '',
     ...(input.turnstileToken ? { turnstile_token: input.turnstileToken } : {}),
     ...(input.attribution && !isEmptyAttribution(input.attribution) ? { attribution: input.attribution } : {}),

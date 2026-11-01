@@ -1,4 +1,5 @@
 "use client"
+import { useEffect } from 'react'
 import {
   CARD_CONDITIONS, CONDITION_LABELS, fmtAsOfDate, fmtPpm, fmtRange, isSmallTransactionSample,
   type CardCondition, type OffersView, type TransactionsView,
@@ -116,8 +117,10 @@ function V4MarketCard({ view, areaM2, condition, setCondition, busy }: { view: N
   )
 }
 
-export default function MarketCard({ token, areaM2 = null }: { token: string | null; areaM2?: number | null }) {
+export default function MarketCard({ token, areaM2 = null, onKind }: { token: string | null; areaM2?: number | null; onKind?: (kind: 'card' | 'nodata' | 'none' | null) => void }) {
   const { view, condition, setCondition, busy } = useMarketCard(token)
+  const kind = view?.kind ?? null
+  useEffect(() => { onKind?.(kind) }, [kind, onKind])
 
   if (!view) return <p style={hintStyle} role="status">{WYCENA_LAYOUT_V4_ACTIVE ? V4.loading : M.loading}</p>
   if (view.kind === 'nodata' && WYCENA_LAYOUT_V4_ACTIVE) return null

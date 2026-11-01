@@ -25,7 +25,8 @@ test('flaga OFF (domyslnie): karta i checkbox nieaktywne mimo gotowego tekstu zg
   assert.equal(consentTextReady(CONSENT_TEXT), true)
   assert.equal(marketCardActive(false), false) // flaga OFF = nic sie nie zmienia, nawet z gotowym tekstem
   assert.equal(f.WYCENA_LAYOUT_V4_FLAG, process.env.NEXT_PUBLIC_WYCENA_LAYOUT_V4 === 'on')
-  assert.equal(f.WYCENA_LAYOUT_V4_ACTIVE, f.WYCENA_LAYOUT_V4_FLAG && f.MARKET_CARD_ACTIVE)
+  assert.equal(f.WYCENA_NOTICE_V4_FLAG, process.env.NEXT_PUBLIC_WYCENA_NOTICE_V4 === 'on')
+  assert.equal(f.WYCENA_LAYOUT_V4_ACTIVE, f.WYCENA_LAYOUT_V4_FLAG && f.MARKET_CARD_ACTIVE && f.WYCENA_NOTICE_V4_FLAG)
   assert.match(CONSENT_VERSION, PHONE_BLOCK_VERSION_FORMAT)
 })
 
