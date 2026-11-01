@@ -1,4 +1,9 @@
 // Teksty UI kalkulatora v4. Osobny moduł pozwala zachować bieżące copy przy fladze OFF.
+const fmtAmount = (n: number) => new Intl.NumberFormat('pl-PL', { maximumFractionDigits: 0 }).format(n)
+function amountLabelText(low: number, high: number, areaM2: number, basis: 'transakcji' | 'ofert'): string {
+  return `${fmtAmount(low)} – ${fmtAmount(high)} zł za podobne mieszkania o metrażu ${areaM2} m² (środkowe 50% ${basis}) — orientacyjnie, bez uwzględnienia stanu.`
+}
+
 export const WYCENA_V4_TEXTS = {
   transactions: {
     title: 'Ceny transakcyjne',
@@ -16,7 +21,11 @@ export const WYCENA_V4_TEXTS = {
     empty: 'Za mało danych o cenach ofertowych dla tego segmentu.',
     smallSample: (count: number) => `Mała próba: ${count} ofert. Przedział ma charakter orientacyjny.`,
   },
-  amountFor: (areaM2: number) => `dla ${areaM2} m²`,
+  /** Poz. 8 opinii Prawnika 30.10 (OPINIA_Prawnika_kalkulator_2026_10_30.md): kwota, słowo „podobne" i metraż w jednym zdaniu. Wdrożenie dopiero po akceptacji Daniela. */
+  amountLabel: {
+    transactions: (low: number, high: number, areaM2: number) => amountLabelText(low, high, areaM2, 'transakcji'),
+    offers: (low: number, high: number, areaM2: number) => amountLabelText(low, high, areaM2, 'ofert'),
+  },
   separateValues: 'To dwie różne wartości, nie uśredniamy ich.',
   noForecasts: 'Nie podajemy prognoz cen.',
   offersDisclaimer: 'To ceny, o jakie proszą sprzedający, nie ceny sprzedaży.',
