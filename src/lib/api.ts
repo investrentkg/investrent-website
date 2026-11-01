@@ -248,6 +248,7 @@ export async function submitLead(payload: {
   hp_field?: string // honeypot (backend: niepusty = bot)
   turnstile_token?: string
   attribution?: Attribution
+  heard_from?: string // opcjonalne "Skąd o nas wiesz?" (lista zamknięta, patrz lib/heardFrom.ts); poza attribution, bez zgody marketingowej
   /** Meta data only when the existing Marketing category is accepted; consumed server-side only under META_CAPI_ENABLED. */
   meta_tracking?: WycenaMetaTracking
 }) {
