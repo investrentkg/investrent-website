@@ -60,6 +60,13 @@ export default async function OffersPage({ searchParams }: { searchParams: { [k:
         </div>
         <OffersPageClient initialOffers={data?.data ?? []} initialTotal={data?.pagination?.total ?? 0} defaultType={property_type} defaultTransaction={transaction_type} agentId={agent_id} />
         {!agent_id && <AllOffersLinks filter={{ ...(property_type && { property_type }), ...(transaction_type && { transaction_type }) }} heading={transaction_type === 'wynajem' ? 'Wszystkie oferty wynajmu' : transaction_type === 'sprzedaz' ? 'Wszystkie oferty sprzedaży' : 'Wszystkie oferty'} />}
+        {!agent_id && (
+          <section className="container" style={{ padding: '8px 0 40px' }}>
+            <p style={{ fontSize: 15, lineHeight: 1.7, color: '#374151' }}>
+              Sprzedajesz nieruchomość w Kołobrzegu? Zobacz, jak wygląda <a href="/sprzedaz" style={{ color: '#1a4fa0', textDecoration: 'underline' }}>sprzedaż nieruchomości z naszym biurem</a> albo sprawdź orientacyjną wartość mieszkania w <a href="/wycena" style={{ color: '#1a4fa0', textDecoration: 'underline' }}>kalkulatorze wyceny</a>.
+            </p>
+          </section>
+        )}
       </main>
       <Footer office={office} />
 
