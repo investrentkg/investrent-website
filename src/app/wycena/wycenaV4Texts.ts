@@ -27,10 +27,10 @@ export const WYCENA_V4_TEXTS = {
     title: 'Orientacyjna ocena modelu AI',
     body: 'Automatyczna ocena modelu AI. Nie jest ceną transakcyjną ani ofertową.',
   },
-  /** DO AKCEPTACJI PRAWNIK/DANIEL — nie publikować; widoczne wyłącznie po NEXT_PUBLIC_WYCENA_NOTICE_V4=on. */
+  /** Nagłówek i treść zatwierdził Daniel 01.11 (wariant A); wcześniej oznaczone DO AKCEPTACJI — publikacja po scaleniu i decyzji o fladze; widoczne wyłącznie po NEXT_PUBLIC_WYCENA_NOTICE_V4=on. */
   notice: {
-    title: 'Nie widzimy Twojej nieruchomości',
-    body: 'Zostaw numer, jeśli chcesz porozmawiać o swojej nieruchomości. Oddzwonimy.',
+    title: 'Wycenimy dokładniej po rozmowie',
+    body: 'Kalkulator nie widzi stanu ani standardu Twojej nieruchomości. Zostaw kontakt, a agent powie, ile może być warta, po krótkiej rozmowie.',
     submit: 'Zostaw numer',
     /** Zatwierdzone przez Daniela 01.11 (forma Ty): blok kontaktu, gdy rejestry nie maja danych dla nieruchomosci (karta rynku: nodata). */
     noData: {
