@@ -2,7 +2,7 @@
 // Osobny plik bez importow, zeby test jednostkowy (node --test) mogl go wczytac.
 export const HOME_TITLE = 'Nieruchomości Kołobrzeg | Biuro nieruchomości InvestRent'
 export const HOME_DESCRIPTION =
-  'Biuro nieruchomości w Kołobrzegu: mieszkania na sprzedaż i wynajem, orientacyjna wycena online, obsługa sprzedaży i zakupu. Zadzwoń lub napisz.'
+  'Biuro nieruchomości w Kołobrzegu: oferty mieszkań, domów i działek, sprzedaż, kupno i wynajem. Wycena online i pomoc lokalnych agentów. Zobacz oferty.'
 
 // Stare wartosci zapisane w CRM (Strony -> strona-glowna) - zywa strona wciaz je serwuje,
 // bo wartosc z CRM ma pierwszenstwo nad domyslna z kodu. Traktowane jak "brak wlasnej
@@ -12,6 +12,8 @@ export const LEGACY_HOME_TITLES = ['Biuro Nieruchomości Kołobrzeg | Invest Ren
 export const LEGACY_HOME_DESCRIPTIONS = [
   'Invest Rent – biuro nieruchomości w Kołobrzegu. Kupno, sprzedaż i wynajem mieszkań, domów i działek. Sprawdź aktualne oferty i skontaktuj się z naszym agentem.',
   'Biuro nieruchomości w Kołobrzegu i okolicach: sprzedaż, kupno i wynajem mieszkań oraz domów. Bezpłatna wycena, odpowiedź do 60 minut.',
+  // opis z 18.10 (zastąpiony 1.11.2026 pod CTR); gdyby został zapisany w CRM, ustępuje nowemu
+  'Biuro nieruchomości w Kołobrzegu: mieszkania na sprzedaż i wynajem, orientacyjna wycena online, obsługa sprzedaży i zakupu. Zadzwoń lub napisz.',
 ]
 
 export function pickHomeMeta(crmTitle?: string | null, crmDescription?: string | null) {
