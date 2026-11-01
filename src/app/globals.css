@@ -620,6 +620,8 @@ html, body {
 .wy-linkbtn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; padding: 0 6px; background: none; border: none; font: inherit; color: #1a4fa0; text-decoration: underline; cursor: pointer; }
 /* D2: CTA do panelu kontaktu przy wyniku + przyklejony pasek (tylko telefon) */
 .wy-cta { margin: 14px auto 4px; max-width: 460px; }
+/* link w tekscie (klauzula informacyjna): cel dotyku >= 44 px bez zmiany tresci */
+.wy-inline-link { display: inline-block; padding: 12px 2px; min-height: 44px; box-sizing: border-box; }
 .wy-textlink { display: inline-flex; align-items: center; min-height: 44px; padding: 0 2px; font-size: 15px; color: #1a4fa0; font-weight: 600; text-decoration: underline; }
 .wy-sticky {
   position: fixed; left: 0; right: 0; bottom: var(--consent-h, 0px); z-index: 9990;
