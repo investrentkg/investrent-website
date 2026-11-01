@@ -10,8 +10,13 @@ test('title strony glownej dokladnie wg zatwierdzonego tekstu', () => {
 test('description strony glownej dokladnie wg zatwierdzonego tekstu', () => {
   assert.equal(
     HOME_DESCRIPTION,
-    'Biuro nieruchomości w Kołobrzegu: mieszkania na sprzedaż i wynajem, orientacyjna wycena online, obsługa sprzedaży i zakupu. Zadzwoń lub napisz.',
+    'Biuro nieruchomości w Kołobrzegu: oferty mieszkań, domów i działek, sprzedaż, kupno i wynajem. Wycena online i pomoc lokalnych agentów. Zobacz oferty.',
   )
+})
+
+test('opis z 18.10 zapisany w CRM ustępuje nowemu opisowi', () => {
+  const prev = 'Biuro nieruchomości w Kołobrzegu: mieszkania na sprzedaż i wynajem, orientacyjna wycena online, obsługa sprzedaży i zakupu. Zadzwoń lub napisz.'
+  assert.equal(pickHomeMeta(null, prev).description, HOME_DESCRIPTION)
 })
 
 test('stare wartosci z CRM ustepuja nowym; inna wlasna wartosc z CRM wygrywa', () => {
