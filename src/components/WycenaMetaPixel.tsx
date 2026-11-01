@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation'
 import { hasAdsConsent } from '@/lib/consentStore'
 import { onConsentChange } from '@/lib/consentStore'
 import { WYCENA_META_TRACKING_ON } from '@/lib/wycenaFlags'
-import { pixelConsentAction, trackConsentedWycenaLead } from '@/lib/wycenaMetaPixel'
+import { initPixelWithoutAutoMatching, pixelConsentAction, trackConsentedWycenaLead } from '@/lib/wycenaMetaPixel'
 
 declare global {
   interface Window { fbq?: ((...args: unknown[]) => void) & { callMethod?: (...args: unknown[]) => void; queue?: unknown[]; push?: (...args: unknown[]) => void; loaded?: boolean; version?: string } }
@@ -27,7 +27,7 @@ function loadPixel() {
   script.async = true
   script.src = 'https://connect.facebook.net/en_US/fbevents.js'
   document.head.appendChild(script)
-  fbq('init', PIXEL_ID)
+  initPixelWithoutAutoMatching(fbq, PIXEL_ID)
 }
 
 export function trackWycenaMetaLead(eventId: string | null | undefined): void {

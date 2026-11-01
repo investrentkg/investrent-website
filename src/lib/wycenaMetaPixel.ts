@@ -98,6 +98,16 @@ export async function requestMetaConsentReceipt(input: {
   } catch { return null }
 }
 
+/**
+ * Inicjalizacja Pixela bez Automatic Advanced Matching: `set autoConfig=false` MUSI byc przed `init`,
+ * a `init` idzie bez obiektu user data (zadnych em/ph/fn). Parametr `hme=` w zadaniach Pixela pochodzi
+ * wlasnie z automatycznego dopasowania danych z formularzy; po tej zmianie nie powinien sie pojawiac.
+ */
+export function initPixelWithoutAutoMatching(fbq: (...args: unknown[]) => void, pixelId: string): void {
+  fbq('set', 'autoConfig', false, pixelId)
+  fbq('init', pixelId)
+}
+
 /** Co zrobic z Pixelem po zmianie zgody Marketing: grant tylko przy fladze + ID + zgodzie, w kazdym innym razie revoke (lub nic, gdy Pixel wylaczony). */
 export function pixelConsentAction(input: { enabled: boolean; pixelId: string; marketingConsent: boolean }): 'grant' | 'revoke' | 'none' {
   if (!input.enabled || !input.pixelId) return 'none'
