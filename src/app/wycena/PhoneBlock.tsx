@@ -154,7 +154,7 @@ export default function PhoneBlock({ outcome, values, onDone }: { outcome: Estim
       )}
       {!mc && <p id="wy-pb-notice" style={{ margin: '10px 0 0', color: '#374151', fontSize: 14, lineHeight: 1.6 }}>{L.clickNotice}</p>}
       <p style={{ ...hintStyle, margin: '8px 0 0' }}>
-        {L.clauseBeforeLink}<a href={L.clauseLinkHref} target="_blank" rel="noopener noreferrer" style={{ color: '#1a4fa0', textDecoration: 'underline' }}>{L.clauseLinkLabel}</a>{L.clauseAfterLink}
+        {L.clauseBeforeLink}<a href={L.clauseLinkHref} className="wy-inline-link" target="_blank" rel="noopener noreferrer" style={{ color: '#1a4fa0', textDecoration: 'underline' }}>{L.clauseLinkLabel}</a>{L.clauseAfterLink}
       </p>
       {mc && <p style={{ ...hintStyle, margin: '8px 0 0' }}>{L.notAppraisal}</p>}
       <div className="wy-hp" aria-hidden="true">

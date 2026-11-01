@@ -84,7 +84,7 @@ test('lead awaryjny: klucze bez zmian; wersja zgody w znaczniku mozna nadpisac (
   assert.ok(b.notes.includes('wersja=wycena-2026-10-15-v1'))
 })
 
-test('licznik lejka: wylaczony = nic; wlaczony = fetch keepalive (credentials omit) z JSON {step, utm_source, utm_campaign, variant, reason} bez danych osobowych; fallback sendBeacon; nie rzuca', async () => {
+test('licznik lejka: wylaczony = nic; wlaczony = fetch keepalive (credentials omit) z JSON {step, utm_source, utm_campaign, variant, reason} bez danych osobowych; bez sendBeacon; nie rzuca', async () => {
   let sent = 0
   assert.equal(sendFunnelStep('entry', {}, { enabled: false, fetchImpl: () => { sent++; return Promise.resolve({}) } }), false)
   assert.equal(sent, 0)
@@ -98,17 +98,28 @@ test('licznik lejka: wylaczony = nic; wlaczony = fetch keepalive (credentials om
   assert.ok(!/512345678|fbclid/.test(captured.i.body), 'bez telefonu i fbclid')
   sendFunnelStep('reject', { variant: 'phone_block', reason: 'rate_limited' }, { enabled: true, search: '', fetchImpl })
   assert.deepEqual(JSON.parse(captured.i.body), { step: 'reject', variant: 'phone_block', reason: 'rate_limited' })
-  // brak fetch -> sendBeacon
+  // brak fetch: NIE ma zapasu w postaci sendBeacon (credentials=include)
   const g = globalThis.fetch; globalThis.fetch = undefined
-  let blobText = null
+  let beaconCalls = 0
+  const nav = Object.getOwnPropertyDescriptor(globalThis, 'navigator')
+  Object.defineProperty(globalThis, 'navigator', { value: { sendBeacon: () => { beaconCalls++; return true } }, configurable: true })
   try {
-    assert.equal(sendFunnelStep('submit', {}, { enabled: true, search: '', beacon: (u, b) => { blobText = b; return true } }), true)
-    assert.equal(JSON.parse(await blobText.text()).step, 'submit')
-  } finally { globalThis.fetch = g }
+    assert.equal(sendFunnelStep('submit', {}, { enabled: true, search: '' }), false)
+    assert.equal(beaconCalls, 0, 'sendBeacon nie jest uzywany')
+  } finally {
+    globalThis.fetch = g
+    if (nav) Object.defineProperty(globalThis, 'navigator', nav); else delete globalThis.navigator
+  }
+  assert.ok(!/sendBeacon\(/.test(fs.readFileSync(new URL('./funnel.ts', import.meta.url), 'utf8')), 'kod licznika nie wywoluje sendBeacon')
   // wyjatek transportu nie wychodzi na zewnatrz
   assert.equal(sendFunnelStep('entry', {}, { enabled: true, search: '', fetchImpl: () => { throw new Error('boom') } }), false)
   assert.doesNotThrow(() => sendFunnelStep('entry', {}, { enabled: true, search: '', fetchImpl: () => Promise.reject(new Error('x')) }))
-  assert.deepEqual(utmFromSearch('?utm_source=' + 'x'.repeat(100)), { utm_source: 'x'.repeat(64) })
+  // UTM: wartosc spoza [a-z0-9_-] (po zlowercase) lub dluzsza niz 40 jest POMIJANA, nie obcinana
+  assert.deepEqual(utmFromSearch('?utm_source=' + 'x'.repeat(100)), {})
+  assert.deepEqual(utmFromSearch('?utm_source=Meta&utm_campaign=Kol-04_2026'), { utm_source: 'meta', utm_campaign: 'kol-04_2026' })
+  for (const bad of ['jan.kowalski@example.com', '512 345 678', 'kampania jesien', 'wycena-kołobrzeg', 'a.b', 'a+b', 'a/b', '']) {
+    assert.deepEqual(utmFromSearch('?' + new URLSearchParams({ utm_source: bad, utm_campaign: bad }).toString()), {}, bad)
+  }
 })
 test('strona: blok telefonu tylko za flaga, pod przedzialem (leadSlot przed noty zakresu), osobna karta kontaktu pomijana tylko gdy blok aktywny; teksty zgod nietkniete', () => {
   const src = fs.readFileSync(new URL('../app/wycena/WycenaClient.tsx', import.meta.url), 'utf8')
