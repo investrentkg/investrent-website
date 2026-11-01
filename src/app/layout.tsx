@@ -4,6 +4,7 @@ import ConsentManager from '@/components/ConsentManager'
 import GoogleAnalytics from '@/components/GoogleAnalytics'
 import './globals.css'
 import AttributionCapture from '@/components/AttributionCapture'
+import TelClickTracker from '@/components/TelClickTracker'
 
 const montserrat = Montserrat({
   subsets: ['latin', 'latin-ext'],
@@ -107,6 +108,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="pl" className={`${montserrat.variable} ${inter.variable}`}>
       <body>
         <AttributionCapture />
+        <TelClickTracker />
         <div className="page-wrap">
           {children}
         </div>
