@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { trackConsentedWycenaLead, createWycenaMetaEventId, buildWycenaMetaTracking, requestMetaConsentReceipt, pixelConsentAction } from './wycenaMetaPixel.ts'
+import { trackConsentedWycenaLead, createWycenaMetaEventId, buildWycenaMetaTracking, requestMetaConsentReceipt, pixelConsentAction, initPixelWithoutAutoMatching } from './wycenaMetaPixel.ts'
 
 const eventId = 'wyc_1234567890abcdef'
 const receipt = 'v1.' + 'a'.repeat(20) + '.' + 'B'.repeat(43)
@@ -113,6 +113,30 @@ test('bez paragonu przegladarkowy Lead nie jest odpalany (eventId z braku parago
   let calls = 0
   assert.equal(trackConsentedWycenaLead({ enabled: true, marketingConsent: true, pixelAvailable: true, eventId: tracking?.event_id ?? '', track: () => calls++ }), false)
   assert.equal(calls, 0)
+})
+
+test('init Pixela: set autoConfig=false PRZED init, init bez user data (bez Automatic Advanced Matching)', () => {
+  const calls = []
+  initPixelWithoutAutoMatching((...args) => calls.push(args), '1234567890')
+  assert.deepEqual(calls, [['set', 'autoConfig', false, '1234567890'], ['init', '1234567890']])
+  assert.equal(calls[1].length, 2, 'init nie moze dostac obiektu user data (em/ph/fn)')
+})
+
+test('brak wywolan Pixela bez flagi/zgody: akcja none/revoke nie prowadzi do init', () => {
+  const calls = []
+  const fbq = (...args) => calls.push(args)
+  for (const input of [{ enabled: false, pixelId: '1', marketingConsent: true }, { enabled: true, pixelId: '', marketingConsent: true }, { enabled: true, pixelId: '1', marketingConsent: false }]) {
+    if (pixelConsentAction(input) === 'grant') initPixelWithoutAutoMatching(fbq, input.pixelId)
+  }
+  assert.deepEqual(calls, [])
+})
+
+test('komponent ladujacy Pixel nie wola init bezposrednio, tylko przez initPixelWithoutAutoMatching', async () => {
+  const { readFileSync } = await import('node:fs')
+  const src = readFileSync(new URL('../components/WycenaMetaPixel.tsx', import.meta.url), 'utf8')
+  assert.ok(!/fbq\(\s*'init'/.test(src))
+  assert.ok(src.includes('initPixelWithoutAutoMatching(fbq, PIXEL_ID)'))
+  assert.ok(!/advancedMatching|\bem:|\bph:|\bfn:/.test(src))
 })
 
 test('wycofanie zgody Marketing = revoke Pixela (nie grant), przy wylaczonej fladze/braku ID nic', () => {
