@@ -6,6 +6,7 @@ import { formatPhoneDisplay } from '@/lib/phone'
 import SuccessBadge from '@/components/SuccessBadge'
 import MapEmbed from '@/components/ConsentEmbed'
 import PrivacyNote from '@/components/PrivacyNote'
+import { HEARD_FROM_OPTIONS, normalizeHeardFrom } from '@/lib/heardFrom'
 import type { Office } from '@/types'
 
 const TOPICS = [
@@ -27,7 +28,7 @@ const CLIENT_TYPE: Record<string, string> = {
 }
 
 export default function Contact({ office }: { office: Office | null }) {
-  const [form, setForm] = useState({ topic: '', name: '', phone: '', email: '', notes: '' })
+  const [form, setForm] = useState({ topic: '', name: '', phone: '', email: '', notes: '', heardFrom: '' })
   const [status, setStatus] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle')
   // NAPRAWA (audyt wizualny 07.09.2026, P0 - przycisk "Wyślij" nie był w
   // ogóle w <form>, więc submit nic nie robił dla pustego formularza:
@@ -52,6 +53,7 @@ export default function Contact({ office }: { office: Office | null }) {
       notes: form.notes ? `[${form.topic}] ${form.notes}` : form.topic,
       source: 'contact_form',
       client_type: CLIENT_TYPE[form.topic] ?? 'buyer',
+      heard_from: normalizeHeardFrom(form.heardFrom),
     })
     setStatus(res?.ok ? 'ok' : 'error')
   }
@@ -143,6 +145,11 @@ export default function Contact({ office }: { office: Office | null }) {
                 <textarea placeholder="Opisz czego szukasz lub co chcesz sprzedać…" aria-label="Opisz czego szukasz lub co chcesz sprzedać"
                   value={form.notes} onChange={set('notes')} rows={3}
                   className="bg-white border border-slate-200 rounded-xl px-4 py-3 text-[13px] outline-none focus:border-blue resize-none" />
+                <select value={form.heardFrom} onChange={set('heardFrom')} aria-label="Skąd o nas wiesz? (opcjonalnie)"
+                  className="bg-white border border-slate-200 rounded-xl px-4 py-3 text-[13px] text-slate-700 outline-none focus:border-blue w-full">
+                  <option value="">Skąd o nas wiesz? (opcjonalnie)</option>
+                  {HEARD_FROM_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                </select>
                 <button type="submit" disabled={status === 'loading'}
                   className="btn-navy justify-center text-[14px] py-4 mt-1 disabled:opacity-60">
                   <Send size={15} />
