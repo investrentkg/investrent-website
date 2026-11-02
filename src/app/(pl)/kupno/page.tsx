@@ -4,6 +4,7 @@ import RelatedLinks from '@/components/RelatedLinks'
 import Footer from '@/components/Footer'
 import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
+import BeforeDeposit from '@/components/BeforeDeposit'
 import OffersPageClient from '@/app/(pl)/oferty/OffersPageClient'
 import { getPublicOffers, getOffice } from '@/lib/api'
 import { Search, ShieldCheck, Clock, Award, ArrowRight } from 'lucide-react'
@@ -89,6 +90,8 @@ export default async function KupnoPage() {
             </div>
           </div>
         </div>
+
+        <BeforeDeposit />
 
         <div style={{ background: '#f8fafc', padding: '40px 0 0' }}>
           <div className="container">
