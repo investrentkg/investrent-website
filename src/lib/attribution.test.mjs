@@ -3,7 +3,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import {
   ATTRIBUTION_STORAGE_KEY, captureAttribution, getAttribution, mergeAttribution,
-  normalizeAttributionValue, parseAttribution, readStoredAttribution, withAttribution, registerMarketingConsentCheck,
+  normalizeAttributionValue, normalizeLandingPage, parseAttribution, readStoredAttribution, withAttribution, registerMarketingConsentCheck,
 } from './attribution.ts'
 import { attributionAllowed, adsAllowed, makeConsent } from './consent.ts'
 import { postLead } from './leadSubmit.ts'
@@ -174,4 +174,33 @@ test('rozłączność zgód: UTM zależy WYŁĄCZNIE od attribution (nie od ads)
     st = makeConsent({ analytics: false, attribution: false, ads: false }, 1) // domyślnie oba wyłączone
     assert.equal(captureAttribution('?utm_source=x'), null)
   } finally { registerMarketingConsentCheck(null); delete globalThis.window }
+})
+
+test('landing_page: sciezka od "/", [a-z0-9/_.-], bez "//", max 80; niepoprawna jest pomijana', () => {
+  assert.equal(normalizeLandingPage('/Kontakt'), '/kontakt')
+  assert.equal(normalizeLandingPage('/oferty/mieszkania-1.2'), '/oferty/mieszkania-1.2')
+  assert.equal(normalizeLandingPage('/'), '/')
+  assert.equal(normalizeLandingPage('kontakt'), null)
+  assert.equal(normalizeLandingPage('//evil.pl'), null)
+  assert.equal(normalizeLandingPage('/a?b=1'), null)
+  assert.equal(normalizeLandingPage('/a#b'), null)
+  assert.equal(normalizeLandingPage('/sprzeda%C5%BC'), null)
+  assert.equal(normalizeLandingPage('https://www.investrent.com.pl/x'), null)
+  assert.equal(normalizeLandingPage('/' + 'a'.repeat(200)).length, 80)
+})
+
+test('landing_page: sam organiczny wchodzi (bez utm), pierwsza strona w sesji zostaje', () => {
+  const st = memStorage()
+  assert.deepEqual(captureAttribution('', st, '/sprzedaz'), { landing_page: '/sprzedaz' })
+  assert.deepEqual(captureAttribution('', st, '/kontakt'), { landing_page: '/sprzedaz' })
+  assert.deepEqual(captureAttribution('?fbclid=1', st, '/kontakt'), { landing_page: '/sprzedaz', fbclid_present: true })
+  assert.deepEqual(captureAttribution('?utm_source=facebook', st, '/wycena'), { utm_source: 'facebook', landing_page: '/wycena' })
+})
+
+test('landing_page: bez pathname zachowanie jak dotad; zapis z storage przechodzi walidacje', () => {
+  assert.equal(captureAttribution('', memStorage(), undefined), null)
+  const bad = memStorage({ [ATTRIBUTION_STORAGE_KEY]: JSON.stringify({ utm_source: 'x', landing_page: 'http://zle.pl' }) })
+  assert.deepEqual(readStoredAttribution(bad), { utm_source: 'x' })
+  const p = withAttribution({ a: 1 }, { landing_page: '/kontakt' })
+  assert.deepEqual(p, { a: 1, attribution: { landing_page: '/kontakt' } })
 })
