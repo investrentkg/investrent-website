@@ -23,7 +23,17 @@ export const ATTRIBUTION_MAX_LEN = 64
 const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'] as const
 type UtmKey = (typeof UTM_KEYS)[number]
 
-export type Attribution = Partial<Record<UtmKey, string>> & { fbclid_present?: true }
+export type Attribution = Partial<Record<UtmKey, string>> & { fbclid_present?: true; landing_page?: string }
+
+// Strona wejscia w sesji (sciezka od "/", bez domeny, query, hasha). Kontrakt CRM: [a-z0-9/_.-], bez "//", max 80 znakow.
+// Sciezka z innymi znakami (np. polskie litery po kodowaniu) jest pomijana, zeby CRM nie dostal wartosci do odrzucenia.
+export const LANDING_PAGE_MAX_LEN = 80
+export function normalizeLandingPage(raw: unknown): string | null {
+  if (typeof raw !== 'string') return null
+  const v = raw.trim().toLowerCase().slice(0, LANDING_PAGE_MAX_LEN)
+  if (!/^\/[a-z0-9/_.-]*$/.test(v) || v.includes('//')) return null
+  return v
+}
 
 // Zwraca znormalizowana wartosc albo null (pusta / niedozwolone znaki).
 export function normalizeAttributionValue(raw: unknown): string | null {
@@ -34,11 +44,11 @@ export function normalizeAttributionValue(raw: unknown): string | null {
 }
 
 export function isEmptyAttribution(a: Attribution | null | undefined): boolean {
-  return !a || (!a.fbclid_present && UTM_KEYS.every(k => !a[k]))
+  return !a || (!a.fbclid_present && !a.landing_page && UTM_KEYS.every(k => !a[k]))
 }
 
-// Parsuje location.search. Zwraca null, gdy brak jakichkolwiek poprawnych utm_* / fbclid.
-export function parseAttribution(search: string): Attribution | null {
+// Parsuje location.search (+ opcjonalnie pathname jako landing_page). Zwraca null, gdy brak utm_* / fbclid / poprawnej sciezki.
+export function parseAttribution(search: string, pathname?: string): Attribution | null {
   try {
     const p = new URLSearchParams(search)
     const out: Attribution = {}
@@ -47,6 +57,8 @@ export function parseAttribution(search: string): Attribution | null {
       if (v) out[k] = v
     }
     if ((p.get('fbclid') ?? '').trim()) out.fbclid_present = true
+    const lp = normalizeLandingPage(pathname)
+    if (lp) out.landing_page = lp
     return isEmptyAttribution(out) ? null : out
   } catch {
     return null
@@ -66,7 +78,11 @@ export function mergeAttribution(stored: Attribution | null, incoming: Attributi
   const st = stored as Attribution
   const incHasUtm = UTM_KEYS.some(k => inc[k])
   if (incHasUtm && !sameUtm(st, inc)) return inc
-  return inc.fbclid_present && !st.fbclid_present ? { ...st, fbclid_present: true } : st
+  // Pierwsza strona wejscia w sesji zostaje; uzupelniamy ja tylko gdy jej brakowalo.
+  const merged: Attribution = { ...st }
+  if (inc.fbclid_present) merged.fbclid_present = true
+  if (!st.landing_page && inc.landing_page) merged.landing_page = inc.landing_page
+  return merged.fbclid_present === st.fbclid_present && merged.landing_page === st.landing_page ? st : merged
 }
 
 type StorageLike = Pick<Storage, 'getItem' | 'setItem'>
@@ -100,6 +116,8 @@ export function readStoredAttribution(storage: StorageLike | null = getSessionSt
       if (v) out[k] = v
     }
     if (o.fbclid_present === true) out.fbclid_present = true
+    const lp = normalizeLandingPage(o.landing_page)
+    if (lp) out.landing_page = lp
     return isEmptyAttribution(out) ? null : out
   } catch {
     return null
@@ -107,10 +125,10 @@ export function readStoredAttribution(storage: StorageLike | null = getSessionSt
 }
 
 // Wywolywane przy wejsciu na dowolna strone. Zwraca aktualna atrybucje (po scaleniu).
-export function captureAttribution(search: string, storage?: StorageLike | null): Attribution | null {
+export function captureAttribution(search: string, storage?: StorageLike | null, pathname?: string): Attribution | null {
   if (storage === undefined) { if (!consentOk()) return null; storage = getSessionStorage() }
   const stored = readStoredAttribution(storage)
-  const merged = mergeAttribution(stored, parseAttribution(search))
+  const merged = mergeAttribution(stored, parseAttribution(search, pathname))
   if (merged && merged !== stored) {
     try { storage?.setItem(ATTRIBUTION_STORAGE_KEY, JSON.stringify(merged)) } catch { /* storage niedostepny - trudno */ }
   }

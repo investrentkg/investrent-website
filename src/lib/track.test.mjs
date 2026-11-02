@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
-import { trackContactEvent, trackPhoneLinkClick, PHONE_DEDUPE_MS } from './track.ts'
+import { trackContactEvent, trackPhoneLinkClick, trackWhatsappLinkClick, PHONE_DEDUPE_MS } from './track.ts'
 
 function withGtag(fn) {
   const calls = []
@@ -42,4 +42,19 @@ test('bez gtag (brak zgody na analityke) nic nie rzuca; nasluch w layoucie, bez 
   assert.ok(layout.includes('<TelClickTracker />'))
   const comp = fs.readFileSync(new URL('../components/TelClickTracker.tsx', import.meta.url), 'utf8')
   assert.ok(!/731|href\b.*getAttribute/.test(comp.replace(/\/\/.*$/gm, '')), 'komponent nie czyta ani nie wysyla numeru')
+})
+
+test('klik w link WhatsApp bez wlasnego onClick = jedno whatsapp_click z placement wa_<sciezka>; z wlasnym onClick (ChatWidget) bez dubla', () => {
+  const calls = withGtag(() => {
+    assert.equal(trackWhatsappLinkClick('wa_/kontakt', 5_000_000), true)
+    trackContactEvent('whatsapp_click', 'launcher', 6_000_000)
+    assert.equal(trackWhatsappLinkClick('wa_/', 6_000_000 + 5), false)
+    assert.equal(trackWhatsappLinkClick('wa_/', 6_000_000 + PHONE_DEDUPE_MS + 1), true)
+  })
+  assert.deepEqual(calls.map(c => [c[1], c[2].placement]), [['whatsapp_click', 'wa_/kontakt'], ['whatsapp_click', 'launcher'], ['whatsapp_click', 'wa_/']])
+})
+
+test('nasluch obsluguje wa.me i api.whatsapp.com, a telefon nadal liczy osobno', () => {
+  const comp = fs.readFileSync(new URL('../components/TelClickTracker.tsx', import.meta.url), 'utf8').replace(/\/\/.*$/gm, '')
+  assert.ok(comp.includes('wa.me/') && comp.includes('api.whatsapp.com/') && comp.includes('a[href^="tel:"]'))
 })
