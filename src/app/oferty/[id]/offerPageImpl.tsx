@@ -8,6 +8,7 @@
 // glownej, wiec balans przechyla sie bardziej w strone swiezosci danych.
 import { serializeJsonLd } from '@/lib/jsonLd'
 import { OFFER_SELLER, offerImages, offerDateModified } from '@/lib/offerJsonLd'
+import { GONE_OFFER_ROBOTS, offerAvailability } from '@/lib/offerIndexing'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import SocialSidebar from '@/components/SocialSidebar'
@@ -82,7 +83,7 @@ export async function buildOfferMetadata(params: { id: string }, previewToken?: 
   // sygnalem zeby Google nie indeksowal/usunal ta strone z indeksu, mimo ze
   // sama strona zwraca 200 (API backendu i tak juz zwraca prawdziwe 410).
   if (result.status === 'gone') {
-    return { title: 'Ta oferta nie jest już dostępna', robots: { index: false, follow: true } }
+    return { title: 'Ta oferta nie jest już dostępna', robots: GONE_OFFER_ROBOTS }
   }
   const offer = result.data as any
   // NAPRAWA (audyt SEO, punkt 5): opis byl bardzo ubogi ("{typ} w {miasto}.
@@ -189,9 +190,7 @@ function OfferJsonLd({ offer }: { offer: any }) {
       seller: OFFER_SELLER,
       // SEO (31.10): oferta zarezerwowana nie jest w pelni dostepna - schema ma byc
       // zgodna z widoczna na stronie etykieta "ZAREZERWOWANA".
-      availability: offer.status === 'zarezerwowana'
-        ? 'https://schema.org/LimitedAvailability'
-        : 'https://schema.org/InStock',
+      availability: offerAvailability(offer.status),
       businessFunction: offer.transaction_type === 'wynajem'
         ? 'http://purl.org/goodrelations/v1#LeaseOut'
         : 'http://purl.org/goodrelations/v1#Sell',
