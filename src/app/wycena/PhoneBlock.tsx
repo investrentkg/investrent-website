@@ -98,11 +98,11 @@ export default function PhoneBlock({ outcome, values, onDone }: { outcome: Estim
           callbackEnabled: CALLBACK_ON, callbackUrl: CALLBACK_URL,
           submitLeadFallback: async () => {
             const res = await submitLead({ ...buildLeadRequest({ name: '', phone, values, outcome, utm, attribution, turnstileToken: tsToken, honeypot: hp, consentVersion: mc ? CONSENT_VERSION : PHONE_BLOCK_CONSENT_VERSION }), ...(metaTracking ? { meta_tracking: metaTracking } : {}) })
-            return res.ok ? { ok: true } : { ok: false, reason: res.reason }
+            return res.ok ? { ok: true, metaCapi: res.metaCapi } : { ok: false, reason: res.reason }
           },
         },
       )
-      if (r.ok) { setState('ok'); trackValuation('wycena_lead', { mode, placement: 'phone_block', via: r.via }); trackWycenaMetaLead(metaTracking?.event_id) }
+      if (r.ok) { setState('ok'); trackValuation('wycena_lead', { mode, placement: 'phone_block', via: r.via }); trackWycenaMetaLead(metaTracking?.event_id, r.metaCapi) }
       else { setState('fail'); trackValuation('wycena_lead_submit_failed', { reason: r.reason, status: '', iab: iab(), placement: 'phone_block' }) }
     } catch {
       setState('fail')

@@ -7,6 +7,7 @@
 import { MetadataRoute } from 'next'
 import { getPublicOffers, getPublicBlogPosts } from '@/lib/api'
 import { LOCALITIES } from '@/content/miejscowosci'
+import { sitemapOfferEntries } from '@/lib/offerIndexing'
 
 const BASE_URL = 'https://www.investrent.com.pl'
 
@@ -80,12 +81,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }
       if (!res) break
       offerEntries = offerEntries.concat(
-        res.data.map(o => ({
-          url: `${BASE_URL}/oferty/${o.slug || o.id}`,
-          lastModified: new Date(o.created_at),
-          changeFrequency: 'weekly' as const,
-          priority: 0.7,
-        }))
+        sitemapOfferEntries(res.data as any[], BASE_URL)
       )
       pages = res.pagination.pages
       page++

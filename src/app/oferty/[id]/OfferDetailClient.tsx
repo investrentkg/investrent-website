@@ -322,13 +322,10 @@ function ContactForm({ refNumber }: { refNumber: string }) {
 
 // ── Główny komponent ──────────────────────────────────────────
 export default function OfferDetailClient({ offer }: { offer: OfferDetail }) {
-  const [isDesktop, setIsDesktop] = useState(false)
-  useEffect(() => {
-    const check = () => setIsDesktop(window.innerWidth >= 1024)
-    check()
-    window.addEventListener('resize', check)
-    return () => window.removeEventListener('resize', check)
-  }, [])
+  // ZMIANA (CLS ofert, plan SEO v4 krok 11): uklad desktop/mobile byl wybierany stanem isDesktop ustawianym
+  // dopiero po hydracji (start false), wiec na desktopie pierwszy render mial jedna kolumne, a po ~1,5 s
+  // przeskakiwal do dwoch (galeria 833 -> 739 px, naglowek 22 -> 28, cena 26 -> 32): CLS ok. 0,28.
+  // Teraz progi 1024 px siedza w CSS (klasy offer-* w globals.css), bez JS i bez przeskoku.
 
   // NAPRAWA (audyt SEO 31.07.2026, punkt 2): zdjecia mialy puste alt="" -
   // zero szansy na ruch z wyszukiwania obrazow Google, i zero kontekstowego
@@ -377,7 +374,7 @@ export default function OfferDetailClient({ offer }: { offer: OfferDetail }) {
           <ArrowLeft size={15} /> Wróć do ofert
         </Link>
 
-        <div style={{ display: 'grid', gridTemplateColumns: isDesktop ? '1fr 360px' : '1fr', gap: 24, alignItems: 'start' }}>
+        <div className="offer-layout">
 
           {/* ── Lewa kolumna ── */}
           <div style={{ minWidth: 0, maxWidth: '100%' }}>
@@ -386,14 +383,14 @@ export default function OfferDetailClient({ offer }: { offer: OfferDetail }) {
                 <Award size={13} /> NA WYŁĄCZNOŚCI
               </div>
             )}
-            <h1 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: isDesktop ? 28 : 22, color: '#0d2a5c', marginBottom: 8, lineHeight: 1.2 }}>
+            <h1 className="offer-title" style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, color: '#0d2a5c', marginBottom: 8, lineHeight: 1.2 }}>
               {offer.title ?? `${offer.property_type} · ${offer.address_city}`}
             </h1>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#6b7280', fontSize: 14, marginBottom: 10 }}>
               <MapPin size={14} />
               {offer.address_city}{offer.address_district ? `, ${offer.address_district}` : ''}{offer.address_street ? `, ${offer.address_street}` : ''}
             </div>
-            <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 900, fontSize: isDesktop ? 32 : 26, color: '#1a4fa0', marginBottom: 20 }}>
+            <div className="offer-price" style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 900, color: '#1a4fa0', marginBottom: 20 }}>
               {priceLabel}
               {offer.price_per_m2 && <span style={{ fontSize: 14, fontWeight: 400, color: '#9ca3af', marginLeft: 10 }}>{offer.price_per_m2.toLocaleString('pl-PL')} zł/m²</span>}
             </div>
@@ -434,7 +431,7 @@ export default function OfferDetailClient({ offer }: { offer: OfferDetail }) {
           </div>
 
           {/* ── Prawa kolumna (sidebar) ── */}
-          <div style={{ position: isDesktop ? 'sticky' : 'static', top: 100 }}>
+          <div className="offer-aside">
             {offer.agent && (
               <div style={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: 14, padding: '18px', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 14 }}>
                 <div style={{ width: 50, height: 50, borderRadius: '50%', background: 'linear-gradient(135deg,#1a4fa0,#0d2a5c)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: 'white', fontWeight: 800, fontSize: 18, overflow: 'hidden' }}>

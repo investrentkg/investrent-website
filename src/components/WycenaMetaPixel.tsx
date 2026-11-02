@@ -30,13 +30,15 @@ function loadPixel() {
   initPixelWithoutAutoMatching(fbq, PIXEL_ID)
 }
 
-export function trackWycenaMetaLead(eventId: string | null | undefined): void {
+/** capiSignal = pole meta_capi z odpowiedzi CRM (undefined = brak pola, dotychczasowe zachowanie); Lead tylko przy dispatched===true z tym samym event_id. */
+export function trackWycenaMetaLead(eventId: string | null | undefined, capiSignal?: unknown): void {
   if (!WYCENA_META_TRACKING_ON || !PIXEL_ID || !hasAdsConsent() || typeof window === 'undefined' || !window.fbq || !eventId) return
   trackConsentedWycenaLead({
     enabled: WYCENA_META_TRACKING_ON,
     marketingConsent: hasAdsConsent(),
     pixelAvailable: true,
     eventId,
+    capiSignal,
     track: (event, options) => window.fbq?.('track', event, {}, options),
   })
 }

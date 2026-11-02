@@ -692,3 +692,15 @@ html:has(.wy-pad) { scroll-padding-bottom: calc(var(--consent-h, 0px) + 96px); }
 .wy-v4-ai-range { margin: 0 0 6px; color: #334155; font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
 .wy-v4-ai-note { margin: 0; color: #64748b; font-size: 13px; line-height: 1.5; }
 @media (max-width: 639px) { .wy-v4-ai { padding: 14px; } }
+
+/* Uklad strony oferty (OfferDetailClient): progi w CSS zamiast stanu JS, zeby nie bylo przeskoku po hydracji (CLS). Prog 1024 px jak dotad. */
+.offer-layout { display: grid; grid-template-columns: 1fr; gap: 24px; align-items: start; }
+.offer-title { font-size: 22px; }
+.offer-price { font-size: 26px; }
+.offer-aside { position: static; top: 100px; }
+@media (min-width: 1024px) {
+  .offer-layout { grid-template-columns: 1fr 360px; }
+  .offer-title { font-size: 28px; }
+  .offer-price { font-size: 32px; }
+  .offer-aside { position: sticky; }
+}

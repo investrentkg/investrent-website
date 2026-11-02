@@ -70,6 +70,10 @@ const nextConfig = {
         destination: 'https://www.investrent.com.pl/:path*',
         permanent: true,
       },
+      // Opinie Google po transakcji (Marketing, 02.11.2026): krotki stabilny adres do kodow QR i kart; 302 (tymczasowy), zeby cel
+      // mozna bylo zmienic bez ponownego druku. Bez bramki i bez pytania o zadowolenie (formularz opinii Google od razu).
+      // Nie ma w sitemapie; query (np. ?src=qr) dziala i jest ignorowane przez Google.
+      { source: '/opinia', destination: 'https://search.google.com/local/writereview?placeid=ChIJeeKGItkVAEcR9xa56dLOQ_M', statusCode: 302 },
       // Proste zmiany nazw (czasowniki -> rzeczowniki)
       { source: '/kup',      destination: '/kupno',    permanent: true },
       { source: '/sprzedaj', destination: '/sprzedaz', permanent: true },

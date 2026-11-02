@@ -18,6 +18,7 @@ import ReadAlso from '@/components/ReadAlso'
 import Hero          from '@/components/Hero'
 import CallbackStrip from '@/components/CallbackStrip'
 import OffersSection from '@/components/OffersSection'
+import PathChoice    from '@/components/PathChoice'
 import About         from '@/components/About'
 import Services      from '@/components/Services'
 import ValuationCTA  from '@/components/ValuationCTA'
@@ -122,6 +123,7 @@ export default async function Home() {
         <Hero          stats={statsData} googleRating={rating?.rating ?? null} />
         <CallbackStrip />
         <OffersSection initialOffers={offersData} />
+        <PathChoice id="sciezki-home" />
         <About googleRating={rating?.rating ?? null} />
         <Services />
         <ValuationCTA />

@@ -12,9 +12,9 @@ registerMarketingConsentCheck(hasAttributionConsent)
 
 export default function AttributionCapture() {
   useEffect(() => {
-    if (hasAttributionConsent()) captureAttribution(window.location.search)
+    if (hasAttributionConsent()) captureAttribution(window.location.search, undefined, window.location.pathname)
     return onConsentChange((_analytics, attribution) => {
-      if (attribution) captureAttribution(window.location.search)
+      if (attribution) captureAttribution(window.location.search, undefined, window.location.pathname)
     })
   }, [])
   return null
