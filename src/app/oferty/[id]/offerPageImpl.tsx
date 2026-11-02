@@ -7,6 +7,7 @@
 // oferty moze sie zmienic bardziej "pilnie" niz ogolna lista na stronie
 // glownej, wiec balans przechyla sie bardziej w strone swiezosci danych.
 import { serializeJsonLd } from '@/lib/jsonLd'
+import { OFFER_SELLER, offerImages, offerDateModified } from '@/lib/offerJsonLd'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import SocialSidebar from '@/components/SocialSidebar'
@@ -155,15 +156,18 @@ export async function buildOfferMetadata(params: { id: string }, previewToken?: 
 function OfferJsonLd({ offer }: { offer: any }) {
   const schemaType = SCHEMA_TYPE_MAP[offer.property_type] ?? 'Accommodation'
   // NAPRAWA (23.09) - patrz komentarz przy generateMetadata wyżej.
-  const mainPhoto = offer.offer_photos?.[0]?.url
+  const images = offerImages(offer)
+  const dateModified = offerDateModified(offer)
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'RealEstateListing',
     url: `${BASE_URL}/oferty/${offer.slug || offer.id}`,
     name: offer.title ?? `${propertyTypeLabel(offer.property_type)} na ${transactionLabel(offer.transaction_type)}, ${offer.address_city}`,
     description: offer.description ?? undefined,
-    ...(mainPhoto ? { image: mainPhoto } : {}),
+    // SEO (plan v4 krok 13): wszystkie zdjecia (max 10, glowne pierwsze), dateModified z updated_at, seller = biuro.
+    ...(images.length ? { image: images } : {}),
     datePosted: offer.created_at,
+    ...(dateModified ? { dateModified } : {}),
     about: {
       '@type': schemaType,
       name: offer.title ?? propertyTypeLabel(offer.property_type),
@@ -182,6 +186,7 @@ function OfferJsonLd({ offer }: { offer: any }) {
       '@type': 'Offer',
       price: offer.price ?? undefined,
       priceCurrency: 'PLN',
+      seller: OFFER_SELLER,
       // SEO (31.10): oferta zarezerwowana nie jest w pelni dostepna - schema ma byc
       // zgodna z widoczna na stronie etykieta "ZAREZERWOWANA".
       availability: offer.status === 'zarezerwowana'
