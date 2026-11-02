@@ -7,12 +7,15 @@
 // oferty moze sie zmienic bardziej "pilnie" niz ogolna lista na stronie
 // glownej, wiec balans przechyla sie bardziej w strone swiezosci danych.
 import { serializeJsonLd } from '@/lib/jsonLd'
+import { OFFER_SELLER, offerImages, offerDateModified } from '@/lib/offerJsonLd'
+import { GONE_OFFER_ROBOTS, offerAvailability } from '@/lib/offerIndexing'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
 import OfferDetailClient from './OfferDetailClient'
 import OfferAreaBlock from '@/components/OfferAreaBlock'
+import RelatedOffers from '@/components/RelatedOffers'
 import { OfferCard } from '@/components/OffersSection'
 import { getPublicOfferResult, getOffice, getPublicOffers } from '@/lib/api'
 import { notFound, permanentRedirect } from 'next/navigation'
@@ -80,7 +83,7 @@ export async function buildOfferMetadata(params: { id: string }, previewToken?: 
   // sygnalem zeby Google nie indeksowal/usunal ta strone z indeksu, mimo ze
   // sama strona zwraca 200 (API backendu i tak juz zwraca prawdziwe 410).
   if (result.status === 'gone') {
-    return { title: 'Ta oferta nie jest już dostępna', robots: { index: false, follow: true } }
+    return { title: 'Ta oferta nie jest już dostępna', robots: GONE_OFFER_ROBOTS }
   }
   const offer = result.data as any
   // NAPRAWA (audyt SEO, punkt 5): opis byl bardzo ubogi ("{typ} w {miasto}.
@@ -154,15 +157,18 @@ export async function buildOfferMetadata(params: { id: string }, previewToken?: 
 function OfferJsonLd({ offer }: { offer: any }) {
   const schemaType = SCHEMA_TYPE_MAP[offer.property_type] ?? 'Accommodation'
   // NAPRAWA (23.09) - patrz komentarz przy generateMetadata wyżej.
-  const mainPhoto = offer.offer_photos?.[0]?.url
+  const images = offerImages(offer)
+  const dateModified = offerDateModified(offer)
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'RealEstateListing',
     url: `${BASE_URL}/oferty/${offer.slug || offer.id}`,
     name: offer.title ?? `${propertyTypeLabel(offer.property_type)} na ${transactionLabel(offer.transaction_type)}, ${offer.address_city}`,
     description: offer.description ?? undefined,
-    ...(mainPhoto ? { image: mainPhoto } : {}),
+    // SEO (plan v4 krok 13): wszystkie zdjecia (max 10, glowne pierwsze), dateModified z updated_at, seller = biuro.
+    ...(images.length ? { image: images } : {}),
     datePosted: offer.created_at,
+    ...(dateModified ? { dateModified } : {}),
     about: {
       '@type': schemaType,
       name: offer.title ?? propertyTypeLabel(offer.property_type),
@@ -181,11 +187,10 @@ function OfferJsonLd({ offer }: { offer: any }) {
       '@type': 'Offer',
       price: offer.price ?? undefined,
       priceCurrency: 'PLN',
+      seller: OFFER_SELLER,
       // SEO (31.10): oferta zarezerwowana nie jest w pelni dostepna - schema ma byc
       // zgodna z widoczna na stronie etykieta "ZAREZERWOWANA".
-      availability: offer.status === 'zarezerwowana'
-        ? 'https://schema.org/LimitedAvailability'
-        : 'https://schema.org/InStock',
+      availability: offerAvailability(offer.status),
       businessFunction: offer.transaction_type === 'wynajem'
         ? 'http://purl.org/goodrelations/v1#LeaseOut'
         : 'http://purl.org/goodrelations/v1#Sell',
@@ -329,6 +334,7 @@ export async function renderOfferPage(params: { id: string }, previewToken?: str
         </div>
         <OfferDetailClient offer={offer} />
         <OfferAreaBlock city={offer.address_city} />
+        {!previewToken && <RelatedOffers offer={offer} />}
       </main>
       <Footer office={office} />
 

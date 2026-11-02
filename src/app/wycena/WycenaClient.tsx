@@ -609,7 +609,7 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = fals
         attribution: attribution as Record<string, unknown> | null,
       })
       const r = await submitLead({ ...buildLeadRequest({ name, surname: v4Contact ? surname : undefined, phone, values, outcome, utm: readUtm(window.location.search), attribution, turnstileToken: tsToken, honeypot: hp, contactWindow: v4Contact ? contactWindow || null : null }), ...(metaTracking ? { meta_tracking: metaTracking } : {}) })
-      if (r?.ok) { setState('ok'); trackValuation('wycena_lead', { mode: outcome?.kind ?? 'none' }); trackWycenaMetaLead(metaTracking?.event_id) }
+      if (r?.ok) { setState('ok'); trackValuation('wycena_lead', { mode: outcome?.kind ?? 'none' }); trackWycenaMetaLead(metaTracking?.event_id, r.metaCapi) }
       else {
         setState('fail')
         trackValuation('wycena_lead_submit_failed', { reason: r && !r.ok ? r.reason : 'unknown', status: r && !r.ok && r.status ? String(r.status) : '', iab: iabClass() })

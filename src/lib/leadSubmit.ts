@@ -15,7 +15,8 @@ export type LeadFailReason = 'timeout' | 'network' | 'http' | 'invalid_response'
 // Przy porazce `error` zawsze niesie tekst do pokazania (komunikat serwera ze
 // znanego bledu walidacji albo ogolny LEAD_ERROR_MESSAGE) - MortgageMiniCalculator
 // czyta res.error, wiec porazka bez tego pola bylaby tam wzieta za sukces.
-export type LeadResult = { ok: true; error?: undefined } | { ok: false; reason: LeadFailReason; status?: number; error: string }
+// metaCapi: surowe pole meta_capi z odpowiedzi CRM (jest tylko gdy backend je zwrocil); interpretuje je shouldFireBrowserLead (wycenaMetaPixel.ts).
+export type LeadResult = { ok: true; error?: undefined; metaCapi?: unknown } | { ok: false; reason: LeadFailReason; status?: number; error: string }
 
 type FetchLike = (input: string, init?: RequestInit) => Promise<Response>
 
@@ -40,7 +41,7 @@ export async function postLead(
       body: JSON.stringify(payload),
       signal: controller.signal,
     })
-    let data: { ok?: unknown; error?: unknown } | null = null
+    let data: { ok?: unknown; error?: unknown; meta_capi?: unknown } | null = null
     try {
       data = await res.json()
     } catch {
@@ -48,7 +49,7 @@ export async function postLead(
       return fail(res.ok ? 'invalid_response' : 'http', res.status)
     }
     if (!res.ok) return fail('http', res.status, data)
-    if (data && data.ok === true) return { ok: true }
+    if (data && data.ok === true) return data.meta_capi !== undefined ? { ok: true, metaCapi: data.meta_capi } : { ok: true }
     return fail('rejected', res.status, data)
   } catch {
     return fail(timedOut ? 'timeout' : 'network')
