@@ -44,7 +44,7 @@ const POST_SALE = [
 
 const FAQ_BASE = [
   { q: 'Ile kosztuje wycena nieruchomości?', a: 'Bezpłatna wycena nie kosztuje nic i nie zobowiązuje do niczego. Analizujemy realne, aktualne transakcje z Twojej okolicy, nie tylko ceny ofertowe konkurencji, żeby dać Ci wycenę opartą na faktach rynkowych.' },
-  { q: 'Ile trwa sprzedaż nieruchomości?', a: 'To zależy od lokalizacji, ceny i stanu nieruchomości, ale nasz średni czas sprzedaży to około 45 dni — znacznie krócej niż średnia rynkowa w Kołobrzegu (90+ dni). Wynika to głównie z realistycznej wyceny na starcie i szerokiej widoczności oferty.' },
+  { q: 'Ile trwa sprzedaż nieruchomości?', a: 'To zależy od lokalizacji, ceny i stanu nieruchomości, ale z doświadczenia biura InvestRent typowo od miesiąca do dwóch; zdarza się kilka dni, a trudniejsze nieruchomości sprzedają się 3-4 miesiące. Pomaga realistyczna wycena na starcie i szeroka widoczność oferty.' },
   { q: 'Ile kosztuje prowizja za sprzedaż?', a: 'Pracujemy w modelu 3% prowizji netto, płatnej po skutecznej sprzedaży — nie pobieramy żadnych opłat z góry ani za samą wycenę czy sesję zdjęciową.' },
   { q: 'Co jeśli moja nieruchomość ma jakieś prawne komplikacje (hipoteka, brak księgi wieczystej, sprawa spadkowa)?', a: 'To akurat nasza specjalność — zobacz stronę Trudne nieruchomości. Weryfikujemy stan prawny na starcie i pomagamy uporządkować formalności, zanim zaczniemy szukać kupującego.', linkLabel: 'Trudne nieruchomości', linkHref: '/trudne-nieruchomosci' },
   { q: 'Czy muszę być obecny przy prezentacjach nieruchomości?', a: 'Nie musisz — możemy prowadzić prezentacje samodzielnie, informując Cię na bieżąco o zainteresowaniu i feedbacku od oglądających. Wielu naszych klientów sprzedaje nieruchomość, mieszkając w innym mieście.' },
@@ -103,7 +103,7 @@ export default async function SprzedazPage() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12 }}>
               {[
                 { val: '150+',   label: 'Zrealizowanych transakcji', sub: 'w Kołobrzegu i okolicach' },
-                { val: '45 dni', label: 'Średni czas sprzedaży',     sub: 'przy rynku: 90+ dni' },
+                { val: '1-2 mies.', label: 'Typowy czas sprzedaży',  sub: 'z doświadczenia biura InvestRent' },
                 ...(rating ? [{ val: `${rating.rating}/5`, label: 'Ocena klientów', sub: `${rating.total} opinii Google` }] : []),
                 { val: '0 zł',   label: 'Wycena nieruchomości',      sub: 'bezpłatnie, bez zobowiązań' },
               ].map((s, i) => (
@@ -155,7 +155,7 @@ export default async function SprzedazPage() {
               <div className="grid grid-cols-2 gap-4">
                 {[
                   { val: '150+',   label: 'Transakcji' },
-                  { val: '45 dni', label: 'Średni czas' },
+                  { val: '1-2 mies.', label: 'Typowy czas' },
                   ...(rating ? [{ val: `${rating.rating}/5`, label: 'Ocena' }] : []),
                   { val: '0 zł',   label: 'Wycena' },
                 ].map(s => (
