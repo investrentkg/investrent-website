@@ -63,5 +63,6 @@ test('postLead: pole meta_capi z odpowiedzi jest przekazane jako metaCapi; bez p
   const sig = { event_id: 'wyc_1234567890abcdef', dispatched: true }
   assert.deepEqual(await postLead('https://api.test/leads', {}, mk({ ok: true, meta_capi: sig })), { ok: true, metaCapi: sig })
   assert.deepEqual(await postLead('https://api.test/leads', {}, mk({ ok: true, meta_capi: { event_id: 'wyc_1234567890abcdef', dispatched: false } })), { ok: true, metaCapi: { event_id: 'wyc_1234567890abcdef', dispatched: false } })
+  assert.deepEqual(await postLead('https://api.test/leads', {}, mk({ ok: true, meta_capi: null })), { ok: true, metaCapi: null })
   assert.deepEqual(await postLead('https://api.test/leads', {}, mk({ ok: true })), { ok: true })
 })

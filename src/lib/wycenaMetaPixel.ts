@@ -62,14 +62,14 @@ export function buildWycenaMetaTracking(input: {
 /**
  * Czy odpalic Lead w przegladarce, majac odpowiedz CRM. Pixel Lead ma sens tylko razem z CAPI tego samego event_id (Meta deduplikuje pare);
  * Lead sam z przegladarki to zdarzenie bez dedupu. Backend (CRM #1856) dodaje do odpowiedzi meta_capi: { event_id, dispatched }:
- *  - pole BRAK (undefined/null; starszy backend albo zadanie bez meta_tracking) => wsteczna zgodnosc, true (dotychczasowe zachowanie);
+ *  - pole BRAK (undefined; starszy backend albo zadanie bez meta_tracking) => wsteczna zgodnosc, true (dotychczasowe zachowanie);
  *  - pole jest => true TYLKO gdy dispatched === true i event_id rowny wyslanemu; wszystko inne (dispatched:false, inny event_id,
  *    zly ksztalt/typ) => false (fail closed).
  * To jest dodatkowa bramka: flaga, zgoda ds, paragon i event_id sprawdzaja sie osobno i dalej musza byc spelnione.
  */
 export function shouldFireBrowserLead(sentEventId: string | null | undefined, capiSignal: unknown): boolean {
-  if (capiSignal === undefined || capiSignal === null) return true
-  if (typeof capiSignal !== 'object' || Array.isArray(capiSignal)) return false
+  if (capiSignal === undefined) return true
+  if (capiSignal === null || typeof capiSignal !== 'object' || Array.isArray(capiSignal)) return false
   const s = capiSignal as { event_id?: unknown; dispatched?: unknown }
   return s.dispatched === true && typeof sentEventId === 'string' && sentEventId !== '' && s.event_id === sentEventId
 }

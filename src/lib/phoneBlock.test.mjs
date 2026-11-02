@@ -138,8 +138,10 @@ test('adapter: meta_capi z odpowiedzi callbacku i z leada awaryjnego trafia do w
   const sig = { event_id: 'wyc_1234567890abcdef', dispatched: true }
   const cb = (body) => ({ callbackEnabled: true, callbackUrl: 'x', fetchImpl: async () => okRes(body), submitLeadFallback: async () => assert.fail('bez fallbacku') })
   assert.deepEqual(await sendPhoneRequest(base, cb({ ok: true, meta_capi: sig })), { ok: true, via: 'callback', metaCapi: sig })
+  assert.deepEqual(await sendPhoneRequest(base, cb({ ok: true, meta_capi: null })), { ok: true, via: 'callback', metaCapi: null })
   assert.deepEqual(await sendPhoneRequest(base, cb({ ok: true })), { ok: true, via: 'callback' })
   const fb = (metaCapi) => ({ callbackEnabled: false, callbackUrl: 'x', submitLeadFallback: async () => ({ ok: true, metaCapi }) })
   assert.deepEqual(await sendPhoneRequest(base, fb(sig)), { ok: true, via: 'lead', metaCapi: sig })
+  assert.deepEqual(await sendPhoneRequest(base, fb(null)), { ok: true, via: 'lead', metaCapi: null })
   assert.deepEqual(await sendPhoneRequest(base, fb(undefined)), { ok: true, via: 'lead' })
 })

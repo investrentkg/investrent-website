@@ -148,7 +148,7 @@ test('wycofanie zgody Marketing = revoke Pixela (nie grant), przy wylaczonej fla
 
 test('shouldFireBrowserLead: brak pola meta_capi (starszy backend) = dotychczasowe zachowanie (true)', () => {
   assert.equal(shouldFireBrowserLead(eventId, undefined), true)
-  assert.equal(shouldFireBrowserLead(eventId, null), true)
+  assert.equal(shouldFireBrowserLead(eventId, null), false)
 })
 
 test('shouldFireBrowserLead: Lead tylko dla dispatched===true z tym samym event_id', () => {
@@ -170,6 +170,7 @@ test('trackConsentedWycenaLead z sygnalem CAPI: dispatched:false / inny event_id
   const base = { enabled: true, marketingConsent: true, pixelAvailable: true, eventId }
   const events = []
   const track = (...a) => events.push(a)
+  assert.equal(trackConsentedWycenaLead({ ...base, track, capiSignal: null }), false)
   assert.equal(trackConsentedWycenaLead({ ...base, track, capiSignal: { event_id: eventId, dispatched: false } }), false)
   assert.equal(trackConsentedWycenaLead({ ...base, track, capiSignal: { event_id: 'wyc_innyinnyinnyinny', dispatched: true } }), false)
   assert.equal(events.length, 0)
