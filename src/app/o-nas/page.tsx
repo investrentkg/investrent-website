@@ -34,7 +34,7 @@ const FALLBACK_OFFICE = { name: 'InvestRent Nieruchomości', logo_url: '/logo.pn
 const VALUES = [
   { icon: Shield,     title: 'Bezpieczeństwo', desc: 'Każda transakcja przeprowadzana jest z pełną weryfikacją prawną. Zero niespodzianek.' },
   { icon: Heart,      title: 'Zaangażowanie',  desc: 'Traktujemy każdego klienta indywidualnie. Nie znikamy po podpisaniu umowy.' },
-  { icon: TrendingUp, title: 'Skuteczność',    desc: 'Średni czas sprzedaży u nas to 45 dni. Rynek w Kołobrzegu to 90+ dni.' },
+  { icon: TrendingUp, title: 'Skuteczność',    desc: 'Z doświadczenia biura InvestRent sprzedaż trwa zwykle od miesiąca do dwóch; zdarza się kilka dni, a trudniejsze nieruchomości sprzedają się 3-4 miesiące.' },
   { icon: Users,      title: 'Lokalność',      desc: 'Jesteśmy stąd. Znamy każdą ulicę, każdą lokalizację i każdą inwestycję.' },
 ]
 
@@ -116,7 +116,7 @@ export default async function ONasPage() {
                   {cms.mission_text || 'InvestRent Nieruchomości powstało z pasji do lokalnego rynku nadmorskiego i przekonania, że klienci zasługują na więcej niż standardową obsługę agencyjną. Specjalizujemy się w Kołobrzegu i całym Wybrzeżu Bałtyckim.'}
                 </p>
                 <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 12 }}>
-                  {['150+ transakcji w Kołobrzegu i okolicach','Średni czas sprzedaży: 45 dni (rynek: 90+ dni)','Pełna obsługa prawna i notarialna w cenie','Ekspozycja na głównych portalach i nie tylko',...(rating ? [`Ocena klientów: ${rating.rating}/5 na podstawie ${rating.total} opinii`] : [])].map(w => (
+                  {['150+ transakcji w Kołobrzegu i okolicach','Zwykle od miesiąca do dwóch do sprzedaży (z doświadczenia biura)','Pełna obsługa prawna i notarialna w cenie','Ekspozycja na głównych portalach i nie tylko',...(rating ? [`Ocena klientów: ${rating.rating}/5 na podstawie ${rating.total} opinii`] : [])].map(w => (
                     <div key={w} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
                       <CheckCircle size={16} color="#10b981" style={{ flexShrink: 0, marginTop: 2 }} />
                       <span style={{ fontSize: 14, color: '#374151' }}>{w}</span>
@@ -183,3 +183,4 @@ export default async function ONasPage() {
     </>
   )
 }
+// redeploy podgladu
