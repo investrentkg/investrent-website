@@ -12,6 +12,8 @@ import { getPublicBlogPosts, getOffice } from '@/lib/api'
 import Link from 'next/link'
 import Image from 'next/image'
 import type { Metadata } from 'next'
+import { serializeJsonLd } from '@/lib/jsonLd'
+import { buildBreadcrumbJsonLd, buildCollectionJsonLd } from '@/lib/seoSchemas'
 
 export const metadata: Metadata = {
   // NAPRAWA (audyt SEO 09.09.2026): marka byla zaszyta TU i JESZCZE RAZ
@@ -41,6 +43,13 @@ export default async function BlogPage() {
     <>
       <Nav office={office} />
       <main>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(buildBreadcrumbJsonLd([
+          { name: 'Strona główna', path: '/' }, { name: 'Blog', path: '/blog' },
+        ])) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(buildCollectionJsonLd({
+          name: 'Blog InvestRent', description: 'Poradniki i analizy rynku nieruchomości nad Bałtykiem.', path: '/blog',
+          items: (posts ?? []).map(post => ({ name: post.title, path: `/blog/${encodeURIComponent(post.slug)}`, image: post.cover_image_url })),
+        })) }} />
         <div style={{ background: 'linear-gradient(135deg, #0d2a5c, #1a4fa0)', padding: '40px 0 32px' }}>
           <div className="container">
             <Breadcrumb light={true} crumbs={[{ label: 'Strona główna', href: '/' }, { label: 'Blog' }]} />
