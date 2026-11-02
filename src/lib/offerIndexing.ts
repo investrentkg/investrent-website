@@ -32,10 +32,10 @@ export function offerLastModified(offer: SitemapOffer): Date | undefined {
 }
 
 // Do sitemapy trafiają tylko oferty w statusie indeksowalnym. Publiczne API zwraca dziś wyłącznie
-// takie oferty; filtr jest zabezpieczeniem na wypadek zmiany po stronie API.
+// takie oferty; filtr jest zabezpieczeniem na wypadek zmiany po stronie API. Brak pola status = indeksowalna (lista API i tak filtruje), by brak pola nie opróżnił sitemapy.
 export function sitemapOfferEntries(offers: SitemapOffer[], baseUrl: string) {
   return offers
-    .filter(o => isIndexableOfferStatus(o.status))
+    .filter(o => o.status == null || isIndexableOfferStatus(o.status))
     .map(o => {
       const lastModified = offerLastModified(o)
       return {

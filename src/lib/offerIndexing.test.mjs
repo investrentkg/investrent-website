@@ -28,7 +28,7 @@ test('dostępność w danych strukturalnych: zarezerwowana = LimitedAvailability
   assert.equal(offerAvailability('opublikowana'), 'https://schema.org/InStock')
 })
 
-test('sitemapa: sprzedane i wygasłe odpadają, zarezerwowana zostaje', () => {
+test('sitemapa: sprzedane i wygasłe odpadają, zarezerwowana zostaje, brak pola status nie wyklucza', () => {
   const entries = sitemapOfferEntries(
     [
       { id: '1', slug: 'a', status: 'opublikowana', created_at: '2026-10-01T10:00:00Z' },
@@ -39,7 +39,7 @@ test('sitemapa: sprzedane i wygasłe odpadają, zarezerwowana zostaje', () => {
     ],
     BASE,
   )
-  assert.deepEqual(entries.map(e => e.url), [`${BASE}/oferty/a`, `${BASE}/oferty/c`])
+  assert.deepEqual(entries.map(e => e.url), [`${BASE}/oferty/a`, `${BASE}/oferty/c`, `${BASE}/oferty/e`])
 })
 
 test('sitemapa: slug, a bez slugu id', () => {
