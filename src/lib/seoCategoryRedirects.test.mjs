@@ -36,3 +36,30 @@ test('stare kategorie ofert przekierowują 301 na dedykowane strony sprzedaży',
     assert.equal(redirect.permanent, true)
   }
 })
+
+test('stare adresy ofert Virgo z prefiksem typu trafiają na kategorię tego typu, przed katch-all na /oferty', async () => {
+  const redirects = await config.redirects()
+  // Uproszczone dopasowanie wzorców "…:slug/:id(\d+)" (te same wzorce co w next.config.js, bez path-to-regexp).
+  const matches = (source, path) => {
+    if (!source.includes(':slug/:id(\\d+)')) return false
+    const prefix = source.slice(0, source.indexOf(':slug')).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    return new RegExp('^' + prefix + '[^/]+/\\d+$').test(path)
+  }
+  const firstMatch = path => redirects.findIndex(item => matches(item.source, path))
+  const cases = [
+    ['/mieszkania-na-sprzedaz-419000zl-29m2-kolobrzeg-gw/7139368', '/mieszkania-na-sprzedaz-kolobrzeg'],
+    ['/domy-na-sprzedaz-660000zl-200m2-goscino-gw-wartkowo/6912627', '/domy-na-sprzedaz-kolobrzeg'],
+    ['/dzialki-na-sprzedaz-79000zl-470m2-kolobrzeg-gw-niekanin/7112188', '/dzialki-na-sprzedaz-kolobrzeg'],
+    ['/lokale-na-sprzedaz-990000zl-39m2-kolobrzeg-gw/7150766', '/oferty?property_type=lokal'],
+    ['/hale-na-sprzedaz-1390000zl-4000m2-gryfice/7150775', '/oferty?property_type=magazyn'],
+    ['/obiekty-na-sprzedaz-1190000zl-2984m2-trzebiatow-gw/7150774', '/oferty'],
+  ]
+  for (const [path, destination] of cases) {
+    const redirect = redirects[firstMatch(path)]
+    assert.ok(redirect, `brak reguły dla ${path}`)
+    assert.equal(redirect.destination, destination, path)
+    assert.equal(redirect.permanent, true)
+  }
+  assert.equal(firstMatch('/mieszkania-na-sprzedaz-kolobrzeg'), -1, 'sama kategoria nie jest przekierowywana')
+  assert.equal(firstMatch('/oferty/mieszkania/kolobrzeg'), -1)
+})

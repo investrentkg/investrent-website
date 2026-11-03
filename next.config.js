@@ -151,6 +151,18 @@ const nextConfig = {
       { source: '/blog/trudne-nieruchomosci-w-koobrzegu-czym-sa-i-jak-skutecznie-je-sprzedac-lub-kupic',
         destination: '/blog/trudne-nieruchomosci-w-kolobrzegu-czym-sa-i-jak-skutecznie-je-sprzedac-lub-kupic', permanent: true },
 
+      // SEO (03.11.2026, krok 2 planu SEO v4): stare adresy ofert Virgo z prefiksem typu
+      // ("/mieszkania-na-sprzedaz-419000zl-29m2-kolobrzeg-gw/7139368") kierujemy na
+      // kategorie tego samego typu zamiast na ogolne /oferty - przekierowanie na
+      // niepowiazana strone Google moze traktowac jak "miekki 404". Reguly musza byc
+      // PRZED katch-all ponizej (pierwsza pasujaca wygrywa); typ "obiekty" zostaje
+      // na /oferty (nowy system nie ma takiego typu).
+      { source: '/mieszkania-na-sprzedaz-:slug/:id(\\d+)', destination: '/mieszkania-na-sprzedaz-kolobrzeg', permanent: true },
+      { source: '/domy-na-sprzedaz-:slug/:id(\\d+)',       destination: '/domy-na-sprzedaz-kolobrzeg',      permanent: true },
+      { source: '/dzialki-na-sprzedaz-:slug/:id(\\d+)',    destination: '/dzialki-na-sprzedaz-kolobrzeg',   permanent: true },
+      { source: '/lokale-na-sprzedaz-:slug/:id(\\d+)',     destination: '/oferty?property_type=lokal',      permanent: true },
+      { source: '/hale-na-sprzedaz-:slug/:id(\\d+)',       destination: '/oferty?property_type=magazyn',    permanent: true },
+
       // KATCH-ALL: pojedyncze strony ofert na starej stronie mialy adresy typu
       // "/hale-na-sprzedaz-1390000zl-4000m2-gryfice/7150775" (slug + numeryczne
       // ID Virgo) - te ID nie maja zadnego odpowiednika w nowej bazie (inny
