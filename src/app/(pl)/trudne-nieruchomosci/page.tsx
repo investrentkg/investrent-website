@@ -8,13 +8,14 @@ import { getOffice } from '@/lib/api'
 import { Gavel, Scale, Building, Users, FileWarning, CreditCard, CheckCircle, Phone, ArrowRight } from 'lucide-react'
 import type { Metadata } from 'next'
 import { buildPageMeta } from '@/lib/buildPageMeta'
+import { TRUDNE_TITLE, TRUDNE_DESCRIPTION } from '@/lib/trudneMeta'
 
 export const metadata: Metadata = {
-  title: 'Trudne nieruchomości i doradztwo',
-  description: 'Sprawy spadkowe, hipoteki, współwłasność, licytacje komornicze. Pomagamy rozwiązać skomplikowane sprawy nieruchomości w Kołobrzegu.',
+  title: TRUDNE_TITLE,
+  description: TRUDNE_DESCRIPTION,
   // NAPRAWA (audyt SEO 31.07.2026, punkt 3): brak kanonicznego URL na calej stronie.
   alternates: { canonical: 'https://www.investrent.com.pl/trudne-nieruchomosci' },
-  ...buildPageMeta({ title: 'Trudne nieruchomości i doradztwo', description: 'Sprawy spadkowe, hipoteki, współwłasność, licytacje komornicze. Pomagamy rozwiązać skomplikowane sprawy nieruchomości w Kołobrzegu.', path: '/trudne-nieruchomosci' }),
+  ...buildPageMeta({ title: TRUDNE_TITLE, description: TRUDNE_DESCRIPTION, path: '/trudne-nieruchomosci' }),
 }
 
 const FALLBACK_OFFICE = {
