@@ -39,14 +39,14 @@ test('oferty: tylko typy komercyjne; strona za flaga OFF domyslnie', () => {
   process.env.NEXT_PUBLIC_COMMERCIAL_HUB = 'on'
   assert.equal(isCommercialHubOn(), true)
   if (prev === undefined) delete process.env.NEXT_PUBLIC_COMMERCIAL_HUB; else process.env.NEXT_PUBLIC_COMMERCIAL_HUB = prev
-  const page = fs.readFileSync(new URL('../app/nieruchomosci-komercyjne/page.tsx', import.meta.url), 'utf8')
+  const page = fs.readFileSync(new URL('../app/(pl)/nieruchomosci-komercyjne/page.tsx', import.meta.url), 'utf8')
   assert.match(page, /if \(!isCommercialHubOn\(\)\) notFound\(\)/)
   assert.match(page, /transaction_type: 'sprzedaz'/)
 })
 
 test('tekst publiczny: bez roboczych naglowkow/numerow wersji i bez przykladowych nazw konfiguracji w szablonie', () => {
   assert.ok(!/Zmiany v|szkic|do weryfikacji|\[dane od/i.test(flat))
-  const page = fs.readFileSync(new URL('../app/nieruchomosci-komercyjne/page.tsx', import.meta.url), 'utf8')
+  const page = fs.readFileSync(new URL('../app/(pl)/nieruchomosci-komercyjne/page.tsx', import.meta.url), 'utf8')
   assert.match(page, /o\.transaction_type === 'sprzedaz'/)
   assert.match(page, /COMMERCIAL_FILTER_CHIPS/)
 })
