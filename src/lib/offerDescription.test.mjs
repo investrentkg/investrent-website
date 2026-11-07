@@ -1,58 +1,75 @@
 // Uruchom: node --test src/lib/offerDescription.test.mjs
-import test from 'node:test'
+// Port 1:1 testow RP (CRM: offerDescriptionBlocks.test.ts, PR #2266) z vitest na node:test. Zmieniac razem z CRM.
+import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
-import { parseOfferDescription, normalizeForCompare, blocksToText } from './offerDescription.ts'
-
-const same = (raw) => assert.equal(normalizeForCompare(blocksToText(parseOfferDescription(raw))), normalizeForCompare(raw))
-
-test('naglowek WIELKIMI LITERAMI, lista, akapity, lead', () => {
-  const raw = 'Przytulne mieszkanie w centrum.\n\nUDOGODNIENIA\n* balkon\n• winda\n- piwnica\n\nZapraszamy na prezentacje.'
-  const b = parseOfferDescription(raw)
-  assert.deepEqual(b.map(x => x.type), ['lead', 'heading', 'list', 'paragraph'])
-  assert.deepEqual(b[2].items, ['balkon', 'winda', 'piwnica'])
-  same(raw)
+import { parseOfferDescription, shouldCollapseDescription } from './offerDescription.ts'
+const expect = (a) => ({
+  toEqual: (b) => assert.deepEqual(a, b),
+  toBeNull: () => assert.equal(a, null),
+  toBe: (b) => assert.equal(a, b),
+  toContain: (s) => assert.ok(String(a).includes(s)),
 })
 
-test('opis AI jednym ciagiem z " * " srodliniowymi', () => {
-  const raw = 'Mieszkanie 42 m². Sprzęty AGD: * zmywarka, * piekarnik, * lodówka'
-  const b = parseOfferDescription(raw)
-  const list = b.find(x => x.type === 'list')
-  assert.deepEqual(list.items, ['zmywarka,', 'piekarnik,', 'lodówka'])
-  same(raw)
+const types = (t) => parseOfferDescription(t).map(b => b.type)
+
+describe('parseOfferDescription', () => {
+  it('pusty/null → brak bloków', () => {
+    expect(parseOfferDescription('')).toEqual([])
+    expect(parseOfferDescription(null)).toEqual([])
+    expect(parseOfferDescription('  \n \n')).toEqual([])
+  })
+  it('pierwsza linia = lead, akapity rozdzielone pustą linią', () => {
+    expect(parseOfferDescription('Tytuł | 42 m²\n\nPierwszy akapit.\n\nDrugi akapit.')).toEqual([
+      { type: 'lead', text: 'Tytuł | 42 m²' }, { type: 'paragraph', text: 'Pierwszy akapit.' }, { type: 'paragraph', text: 'Drugi akapit.' },
+    ])
+  })
+  it('linie z * • ✔ – tworzą jedną listę; końcowe przecinki/średniki usunięte, treść poza tym bez zmian', () => {
+    const b = parseOfferDescription('Lead\n\nAGD:\n\n* zmywarka,\n* piekarnik,\n• pralka;\n✔ suszarka.')
+    const list = b.find(x => x.type === 'list')
+    expect(list.items).toEqual(['zmywarka', 'piekarnik', 'pralka', 'suszarka.'])
+  })
+  it('znaczniki śródliniowe: tekst przed znacznikiem zostaje akapitem, reszta listą', () => {
+    const b = parseOfferDescription('Lead\n\nDo dyspozycji AGD: * zmywarka, * piekarnik, * pralka')
+    expect(b[1]).toEqual({ type: 'paragraph', text: 'Do dyspozycji AGD:' })
+    expect((b[2]).items).toEqual(['zmywarka', 'piekarnik', 'pralka'])
+  })
+  it('śródtytuł: krótka linia sama w akapicie bez znaku końca zdania; zdanie z kropką to akapit', () => {
+    expect(types('Lead\n\nDodatkowe atuty nieruchomości\n\nWinda w budynku – wygoda codziennego użytkowania.')).toEqual(['lead', 'heading', 'paragraph'])
+    expect(types('Lead\n\nLinia z dwukropkiem:\n\nCoś tu jest.')).toEqual(['lead', 'paragraph', 'paragraph'])
+  })
+  it('linia WIELKIMI LITERAMI to śródtytuł; długa linia nie', () => {
+    expect(types('Lead\n\nCHARAKTERYSTYKA MIESZKANIA\n\ntekst.')).toEqual(['lead', 'heading', 'paragraph'])
+    expect(types('Lead\n\n' + 'A'.repeat(90) + '\n\ntekst.')).toEqual(['lead', 'paragraph', 'paragraph'])
+  })
+  it('lista par „Klucz: wartość” dostaje kv; zwykła lista nie', () => {
+    const b = parseOfferDescription('Lead\n\nNajważniejsze informacje\n\n* Piętro: 2 z 3\n* Rok budowy: 2020\n\n* salon\n* sypialnia')
+    expect(b[2].kv).toEqual([['Piętro', '2 z 3'], ['Rok budowy', '2020']])
+    expect(b[3].kv).toBeNull()
+  })
+  it('treść niezmieniona: konkatenacja tekstów zawiera wszystkie słowa wejścia (poza znacznikami)', () => {
+    const src = 'Lead tu\n\nSekcja pierwsza\n\nAkapit ze słowami: alfa, beta.\n\n* punkt jeden\n* punkt dwa'
+    const flat = parseOfferDescription(src).flatMap(b => b.type === 'list' ? b.items : [b.text]).join(' ')
+    for (const w of ['Lead', 'Sekcja', 'alfa', 'beta', 'punkt', 'jeden', 'dwa']) expect(flat).toContain(w)
+  })
+  it('CRLF jak LF', () => {
+    expect(parseOfferDescription('A\r\n\r\nB')).toEqual(parseOfferDescription('A\n\nB'))
+  })
 })
 
-test('krotki srodtytul przed gwiazdka: "Najwazniejsze informacje * Powierzchnia..."', () => {
-  const b = parseOfferDescription('Najważniejsze informacje * Powierzchnia 42 m² * Piętro 2')
-  assert.equal(b[0].type, 'heading')
-  assert.equal(b[1].type, 'list')
-  assert.equal(b[1].items.length, 2)
+describe('zwijanie', () => {
+  it('opisy krótsze niż 700 znaków bez zwijania', () => {
+    expect(shouldCollapseDescription('x'.repeat(699))).toBe(false)
+    expect(shouldCollapseDescription('x'.repeat(700))).toBe(true)
+    expect(shouldCollapseDescription(null)).toBe(false)
+  })
 })
 
-test('gwiazdka w liczbach/jednostkach nie dzieli', () => {
-  const raw = 'Wymiar 2 * 3 m oraz 5*6 m.'
-  const b = parseOfferDescription(raw)
-  assert.deepEqual(b.map(x => x.type), ['lead'])
-  assert.equal(b[0].text, raw)
-})
-
-test('zwykly tekst bez struktury = jeden lead, tresc identyczna', () => {
-  const raw = 'Jedno zdanie. Drugie zdanie.'
-  assert.deepEqual(parseOfferDescription(raw), [{ type: 'lead', text: raw }])
-})
-
-test('nigdy nie gubi tresci; brak h1/h2 w typach', () => {
-  const raw = 'LOKALIZACJA\nBlisko morza (200 m).\nWYPOSAŻENIE:\n* szafa\n* łóżko\nCena do negocjacji.'
-  same(raw)
-  for (const b of parseOfferDescription(raw)) assert.ok(['lead', 'heading', 'paragraph', 'list'].includes(b.type))
-})
-
-test('pusty opis', () => {
-  assert.deepEqual(parseOfferDescription(''), [])
-})
-
-test('samodzielna krotka linia bez kropki miedzy pustymi liniami = srodtytul', () => {
-  const raw = 'Tytul oferty | 42 m²\n\nWnętrze, które zachwyca i zapewnia komfort\n\nPrzemyślany układ pomieszczeń.\n\n* salon\n* sypialnia'
-  const b = parseOfferDescription(raw)
-  assert.deepEqual(b.map(x => x.type), ['lead', 'heading', 'paragraph', 'list'])
-  same(raw)
+// Dopisane po tescie na zywych ofertach (Polanki INV-2026-100); zmiana do odzwierciedlenia w CRM.
+describe('poprawki z testu na żywo (WWW)', () => {
+  it('WIELKIE LITERY jako śródtytuł także gdy tekst zaczyna się w następnej linii', () => {
+    expect(types('Lead\n\nAPARTAMENT - FUNKCJONALNOŚĆ I KOMFORT\nWnętrze zaprojektowane z myślą o przestrzeni.')).toEqual(['lead', 'heading', 'paragraph'])
+  })
+  it('wiersze cen/parametrów („Cena brutto: 950 000 zł”) to akapity, nie śródtytuły', () => {
+    expect(types('Lead\n\nCena netto: 772 357,72 zł\n\nVAT 23%: 177 642,28 zł\n\nCena brutto: 950 000 zł\n\ntekst.')).toEqual(['lead', 'paragraph', 'paragraph', 'paragraph', 'paragraph'])
+  })
 })
