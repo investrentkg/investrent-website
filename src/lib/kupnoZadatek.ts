@@ -7,11 +7,10 @@ export const ZADATEK_HEADING = 'Co sprawdzić przed zadatkiem'
 
 export type ZadatekItem = { id: string; title: string; desc: string }
 
-// Wariant bez punktu "kto mieszka w lokalu" (do oceny Daniela): usunąć jeden obiekt o id 'lokal-zamieszkany'.
+// Wariant zatwierdzony przez Daniela 07.11.2026: bez punktu "kto mieszka w lokalu" (3 punkty).
 export const ZADATEK_ITEMS: ZadatekItem[] = [
   { id: 'dzial-iii', title: 'Dział III księgi wieczystej', desc: 'Zawiera ograniczone prawa rzeczowe i roszczenia, m.in. służebności. Przeczytaj jego treść.' },
   { id: 'dzial-iv', title: 'Dział IV księgi wieczystej', desc: 'Zawiera hipoteki. Sprawdź, czy są wpisane.' },
-  { id: 'lokal-zamieszkany', title: 'Kto mieszka w lokalu', desc: 'Ustal, czy mieszkanie jest zamieszkane i przez kogo.' },
   { id: 'koszty-miesieczne', title: 'Koszty miesięczne', desc: 'Czynsz do wspólnoty lub spółdzielni, fundusz remontowy i opłaty za media.' },
 ]
 
