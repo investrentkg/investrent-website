@@ -22,7 +22,7 @@ export default function Nav({ office }: { office: Office | null }) {
   const [isDesktop, setIsDesktop] = useState(true)
 
   useEffect(() => {
-    const check = () => setIsDesktop(window.innerWidth >= 1024)
+    const check = () => setIsDesktop(window.innerWidth >= (isCommercialHubOn() ? 1180 : 1024))
     check()
     window.addEventListener('resize', check)
     const onScroll = () => setScrolled(window.scrollY > 10)
@@ -41,6 +41,7 @@ export default function Nav({ office }: { office: Office | null }) {
     // NOWE (25.09.2026): publiczny kalkulator wyceny (fraza "wycena mieszkania Kolobrzeg").
     { label: 'Wycena', href: '/wycena' },
     { label: 'Wynajem',  href: '/wynajem' },
+    // Komercyjne: dodatkowa pozycja zwiekszyla szerokosc menu (przycisk telefonu wypadal poza ekran przy 1024-1140 px), wiec przy fladze hamburger do 1180 px.
     // Komercyjne (Daniel 07.11.2026): pozycja tylko przy wlaczonej fladze NEXT_PUBLIC_COMMERCIAL_HUB (bez flagi = brak martwego linku).
     ...(isCommercialHubOn() ? [{ label: 'Komercyjne', href: COMMERCIAL_PATH }] : []),
     // NOWE (24.09.2026, SEO): GSC pokazal, ze /kolobrzeg nie ma zadnego linku wejsciowego wykrytego przez Google
