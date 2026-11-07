@@ -7,7 +7,7 @@
 //  4) srodtytul = linia SAMA w akapicie (puste linie przed i po), do 80 znakow, bez kropki/dwukropka/ssredniku/przecinka na koncu (pierwsza linia opisu to lead, nie srodtytul);
 //     linia pisana WIELKIMI LITERAMI (>= 4 litery, bez malych) jest srodtytulem zawsze, takze z kropka lub dwukropkiem na koncu nie - tylko bez znaku konca zdania;
 //  5) lista, w ktorej kazda pozycja ma postac "Klucz: wartosc" (klucz <= 40 znakow), jest oznaczona jako kv (tabelka).
-// Uniwersalne dla CRM (nie zalezy od biura).
+// Uniwersalne dla CRM (nie zalezy od biura). (WWW: flaga NEXT_PUBLIC_OFFER_DESC_LAYOUT)
 export type DescBlock =
   | { type: 'lead'; text: string }
   | { type: 'heading'; text: string }
