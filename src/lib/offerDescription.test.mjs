@@ -73,3 +73,9 @@ describe('poprawki z testu na żywo (WWW)', () => {
     expect(types('Lead\n\nCena netto: 772 357,72 zł\n\nVAT 23%: 177 642,28 zł\n\nCena brutto: 950 000 zł\n\ntekst.')).toEqual(['lead', 'paragraph', 'paragraph', 'paragraph', 'paragraph'])
   })
 })
+
+describe('gwiazdka między cyframi (z CRM)', () => {
+  it('„2 * 3” nie dzieli akapitu', () => {
+    expect(types('Lead\n\nWymiar 2 * 3 m oraz taras.')).toEqual(['lead', 'paragraph'])
+  })
+})
