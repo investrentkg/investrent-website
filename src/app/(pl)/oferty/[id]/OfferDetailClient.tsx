@@ -9,6 +9,26 @@ import MortgageMiniCalculator from '@/components/MortgageMiniCalculator'
 import Link from 'next/link'
 import PrivacyNote from '@/components/PrivacyNote'
 import MapEmbed, { ConsentGate } from '@/components/ConsentEmbed'
+import { parseOfferDescription } from '@/lib/offerDescription'
+
+// Flaga ukladu opisu (domyslnie OFF). Pelny tekst zawsze widoczny, bez zwijania.
+const DESC_LAYOUT = process.env.NEXT_PUBLIC_OFFER_DESC_LAYOUT === 'true'
+
+function OfferDescription({ text }: { text: string }) {
+  const blocks = parseOfferDescription(text)
+  return (
+    <div style={{ fontSize: 14, color: '#374151', lineHeight: 1.8 }}>
+      <style>{'.offer-desc-list li::marker{color:#c59a2e}.offer-desc-kv{display:grid;grid-template-columns:1fr}.offer-desc-kv-row{display:flex;justify-content:space-between;gap:12px;padding:8px 2px;border-bottom:1px dotted #d1d5db}.offer-desc-kv dt{color:#6b7280;font-size:13px}.offer-desc-kv dd{margin:0;font-weight:700;color:#0d2a5c;text-align:right}@media (min-width:900px){.offer-desc-kv{grid-template-columns:1fr 1fr;column-gap:24px}}'}</style>
+      {blocks.map((b, i) => {
+        if (b.type === 'heading') return <h3 key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 12.5, letterSpacing: '0.04em', textTransform: 'uppercase' as const, color: '#0d2a5c', margin: '22px 0 8px' }}><span>{b.text}</span><span aria-hidden style={{ flex: 1, height: 1, background: '#e5e7eb' }} /></h3>
+        if (b.type === 'list' && b.kv) return <dl key={i} className="offer-desc-kv" style={{ margin: '6px 0 12px' }}>{b.kv.map(([k, v], j) => <div key={j} className="offer-desc-kv-row"><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
+        if (b.type === 'list') return <ul key={i} className="offer-desc-list" style={{ margin: '6px 0 10px', paddingLeft: 20, listStyle: 'disc' }}>{b.items.map((it, j) => <li key={j} style={{ marginBottom: 3 }}>{it}</li>)}</ul>
+        if (b.type === 'lead') return <p key={i} style={{ margin: '0 0 12px', fontWeight: 600, fontSize: 15 }}>{b.text}</p>
+        return <p key={i} style={{ margin: '0 0 10px' }}>{b.text}</p>
+      })}
+    </div>
+  )
+}
 
 interface OfferDetail {
   id: string
@@ -416,7 +436,9 @@ export default function OfferDetailClient({ offer }: { offer: OfferDetail }) {
             {offer.description && !offer.description.startsWith('Oferta zaimportowana') && (
               <div style={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: 14, padding: '20px', marginTop: 14 }}>
                 <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 17, color: '#0d2a5c', marginBottom: 12 }}>Opis</h2>
-                <div style={{ fontSize: 14, color: '#374151', lineHeight: 1.8, whiteSpace: 'pre-wrap' as const }}>{offer.description}</div>
+                {DESC_LAYOUT ? <OfferDescription text={offer.description} /> : (
+                  <div style={{ fontSize: 14, color: '#374151', lineHeight: 1.8, whiteSpace: 'pre-wrap' as const }}>{offer.description}</div>
+                )}
               </div>
             )}
 
