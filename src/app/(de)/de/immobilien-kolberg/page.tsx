@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   title: { absolute: TITLE },
   description: DESC,
   robots: { index: true, follow: true },
-  alternates: { canonical: URL_DE, languages: { de: URL_DE, pl: 'https://www.investrent.com.pl' } },
+  alternates: { canonical: URL_DE, languages: { de: URL_DE, pl: 'https://www.investrent.com.pl', 'x-default': 'https://www.investrent.com.pl' } },
   openGraph: { title: TITLE, description: DESC, type: 'website', locale: 'de_DE', url: URL_DE, siteName: 'InvestRent Nieruchomości', images: [{ url: '/hero.jpg', width: 1920, height: 1080, alt: 'InvestRent Immobilien Kolberg' }] },
 }
 

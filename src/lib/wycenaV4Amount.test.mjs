@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { WYCENA_V4_TEXTS as V4 } from '../app/wycena/wycenaV4Texts.ts'
+import { WYCENA_V4_TEXTS as V4 } from '../app/(pl)/wycena/wycenaV4Texts.ts'
 
 // Poz. 8 opinii Prawnika 30.10: kwota, słowo „podobne" i metraż w jednym zdaniu, z podpisem „środkowe 50%".
 const norm = s => s.replace(/ | /g, ' ')
