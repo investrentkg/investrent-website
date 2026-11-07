@@ -61,3 +61,15 @@ test('FAQ klienci zagraniczni: tylko zdanie z dyktatu, bez przepisow i bez "omaw
   const q = C.faq.find(f => /z zagranicy/.test(f.q))
   assert.equal(q.a, 'Tak, mamy dostęp także do klientów z zagranicy.')
 })
+
+test('menu, stopka i kafel na glownej: link do huba tylko za flaga', () => {
+  const nav = fs.readFileSync(new URL('../components/Nav.tsx', import.meta.url), 'utf8')
+  const foot = fs.readFileSync(new URL('../components/Footer.tsx', import.meta.url), 'utf8')
+  const tile = fs.readFileSync(new URL('../components/CommercialTile.tsx', import.meta.url), 'utf8')
+  const home = fs.readFileSync(new URL('../app/(pl)/page.tsx', import.meta.url), 'utf8')
+  assert.match(nav, /isCommercialHubOn\(\) \? \[\{ label: 'Komercyjne', href: COMMERCIAL_PATH \}\]/)
+  assert.match(foot, /isCommercialHubOn\(\) \? \[\{ label: 'Nieruchomości komercyjne', href: COMMERCIAL_PATH \}\]/)
+  assert.match(tile, /if \(!isCommercialHubOn\(\)\) return null/)
+  assert.ok(home.includes('<CommercialTile />'))
+  assert.ok(!/\d|wynajm|Niemc/i.test(tile.replace(/[\s\S]*export default/, '')), 'kafel bez liczb, wynajmu, Niemcow')
+})
