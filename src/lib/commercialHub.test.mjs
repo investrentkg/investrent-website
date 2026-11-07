@@ -50,3 +50,9 @@ test('tekst publiczny: bez roboczych naglowkow/numerow wersji i bez przykladowyc
   assert.match(page, /o\.transaction_type === 'sprzedaz'/)
   assert.match(page, /COMMERCIAL_FILTER_CHIPS/)
 })
+
+test('wyroznik: bez Niemcow (decyzja Daniela 07.11); kontakty z biurami komercyjnymi; klienci zagraniczni tylko ogolnie, bez liczb', () => {
+  assert.ok(!/Niemc|niemieck/i.test(flat) && !/\bDE\b/.test(flat), 'bez Niemcow')
+  assert.match(C.basis.join(' '), /kontakty z biurami nieruchomości specjalizującymi się w obiektach komercyjnych/)
+  assert.ok(!/\d+\s*(klient|transakcj|biur)/i.test(flat), 'bez liczb')
+})
