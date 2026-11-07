@@ -8,6 +8,7 @@ import { MetadataRoute } from 'next'
 import { getPublicOffers, getPublicBlogPosts } from '@/lib/api'
 import { LOCALITIES } from '@/content/miejscowosci'
 import { sitemapOfferEntries } from '@/lib/offerIndexing'
+import { isCommercialHubOn } from '@/lib/commercialHub'
 
 const BASE_URL = 'https://www.investrent.com.pl'
 
@@ -53,7 +54,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // (oferty: created_at, blog: published_at).
   // Podstrony miejscowości trafiają do sitemap TYLKO ze statusem 'approved' (domyślnie 'draft' = noindex, poza mapą).
   const localityPages = LOCALITIES.filter(l => l.status === 'approved').map(l => ({ path: `/nadmorskie-miejscowosci-kolobrzeg/${l.slug}`, priority: 0.6, changeFrequency: 'monthly' as const }))
-  const staticEntries: MetadataRoute.Sitemap = [...STATIC_PAGES, ...localityPages].map(p => ({
+  // Strona komercyjna: w mapie TYLKO przy wlaczonej fladze (inaczej 404).
+  const commercialPage = isCommercialHubOn() ? [{ path: '/nieruchomosci-komercyjne', priority: 0.8, changeFrequency: 'weekly' as const }] : []
+  const staticEntries: MetadataRoute.Sitemap = [...STATIC_PAGES, ...commercialPage, ...localityPages].map(p => ({
     url: `${BASE_URL}${p.path}`,
     alternates: LANGUAGE_ALTERNATES[p.path] ? { languages: LANGUAGE_ALTERNATES[p.path] } : undefined,
     changeFrequency: p.changeFrequency,
