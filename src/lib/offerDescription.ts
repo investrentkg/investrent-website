@@ -61,9 +61,10 @@ export function parseOfferDescription(raw: string | null | undefined): DescBlock
     const b = BULLET_LINE.exec(line)
     if (b) { pushList([b[2]]); continue }
 
-    // znaczniki srodliniowe: tekst przed pierwszym znacznikiem = akapit, reszta = lista
-    if (INLINE_BULLET.test(` ${line}`)) {
-      const parts = ` ${line}`.split(/\s[*•✔✓]\s+/)
+    // znaczniki srodliniowe: tekst przed pierwszym znacznikiem = akapit, reszta = lista ("2 * 3" miedzy cyframi to nie znacznik)
+    const guarded = line.replace(/(\d)\s\*\s(\d)/g, '$1\u0000$2')
+    if (INLINE_BULLET.test(` ${guarded}`)) {
+      const parts = ` ${guarded}`.split(/\s[*•✔✓]\s+/).map(p => p.replace(/\u0000/g, ' * '))
       const head = parts.shift()!.trim()
       if (parts.length >= 2 || (parts.length === 1 && head)) {
         flushList()
@@ -79,12 +80,13 @@ export function parseOfferDescription(raw: string | null | undefined): DescBlock
     const prevBlank = i === 0 || !lines[i - 1].trim()
     const nextBlank = i === lines.length - 1 || !lines[i + 1].trim()
     if (!leadUsed) { blocks.push({ type: 'lead', text: line }); leadUsed = true; continue }
-    const endsSentence = /[.:;,]$/.test(line)
-    if (prevBlank && nextBlank && line.length <= MAX_HEADING_LEN && !endsSentence && !/^[*•✔✓–-]\s/.test(line) && !/[:\d]/.test(line)) { // [WWW] bez ':' i cyfr: wiersze cen/parametrow nie sa srodtytulami
-      blocks.push({ type: 'heading', text: line }); continue
-    }
+    // (z testu na żywo SEO, Witosa/Polanki) śródtytuł WIELKIMI LITERAMI także gdy tekst zaczyna się w następnej linii (wystarczy pusta linia PRZED);
+    // krótka linia-śródtytuł nie może zawierać ':' ani cyfry ("Cena brutto: 950 000 zł", "VAT 23%: ..." to dane, nie śródtytuł).
     if (prevBlank && isAllCaps(line) && line.length <= MAX_HEADING_LEN && !/[.;,]$/.test(line)) {
       blocks.push({ type: 'heading', text: line.replace(/:$/, '') }); continue
+    }
+    if (prevBlank && nextBlank && line.length <= MAX_HEADING_LEN && !/[.:;,]$/.test(line) && !/[:\d]/.test(line) && !/^[*•✔✓–-]\s/.test(line)) {
+      blocks.push({ type: 'heading', text: line }); continue
     }
     blocks.push({ type: 'paragraph', text: line })
   }
