@@ -71,5 +71,6 @@ test('menu, stopka i kafel na glownej: link do huba tylko za flaga', () => {
   assert.match(foot, /isCommercialHubOn\(\) \? \[\{ label: 'Nieruchomości komercyjne', href: COMMERCIAL_PATH \}\]/)
   assert.match(tile, /if \(!isCommercialHubOn\(\)\) return null/)
   assert.ok(home.includes('<CommercialTile />'))
-  assert.ok(!/\d|wynajm|Niemc/i.test(tile.replace(/[\s\S]*export default/, '')), 'kafel bez liczb, wynajmu, Niemcow')
+  const visible = [...tile.matchAll(/>([^<>{}]+)</g)].map(m => m[1]).join(' ')
+  assert.ok(visible.length > 20 && !/\d|wynajm|Niemc/i.test(visible), 'kafel bez liczb, wynajmu, Niemcow')
 })
