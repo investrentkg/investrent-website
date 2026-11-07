@@ -14,6 +14,8 @@ const PROP_TYPES = [
   { value: 'dom', label: 'Dom' },
   { value: 'dzialka', label: 'Działka' },
   { value: 'lokal', label: 'Lokal użytkowy' },
+  { value: 'magazyn', label: 'Hala / magazyn' },
+  { value: 'biuro', label: 'Biuro' },
   { value: 'inwestycja', label: 'Inwestycja' },
 ]
 const TRANS_TYPES = [
