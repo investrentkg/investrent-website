@@ -8,7 +8,7 @@ import Breadcrumb from '@/components/Breadcrumb'
 import { getOffice, getPublicOffers } from '@/lib/api'
 import { buildPageMeta } from '@/lib/buildPageMeta'
 import { isCommercialHubOn } from '@/lib/commercialHub'
-import { COMMERCIAL_CONFIG, COMMERCIAL_OFFER_TYPES, COMMERCIAL_PATH, buildCommercialContent } from '@/content/komercyjne'
+import { COMMERCIAL_CONFIG, COMMERCIAL_FILTER_CHIPS, COMMERCIAL_OFFER_TYPES, COMMERCIAL_PATH, COMMERCIAL_TYPE_LABEL, buildCommercialContent } from '@/content/komercyjne'
 
 // Strona "Nieruchomosci komercyjne" za flaga NEXT_PUBLIC_COMMERCIAL_HUB (domyslnie OFF = 404, poza sitemap).
 // Tresc i konfiguracja biura: src/content/komercyjne.ts (nic z nazwy biura/regionu nie jest wpisane tutaj).
@@ -17,10 +17,8 @@ export const revalidate = 120
 const BASE = 'https://www.investrent.com.pl'
 const C = buildCommercialContent(COMMERCIAL_CONFIG)
 const FALLBACK_OFFICE = { name: 'InvestRent Nieruchomości', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
-const TYPE_LABEL: Record<string, string> = { dzialka: 'Działka', lokal: 'Lokal', magazyn: 'Hala / magazyn', biuro: 'Biuro' }
-const CHIPS = [
-  { label: 'Działki', type: 'dzialka' }, { label: 'Hale i magazyny', type: 'magazyn' }, { label: 'Lokale', type: 'lokal' }, { label: 'Biura', type: 'biuro' },
-]
+const TYPE_LABEL = COMMERCIAL_TYPE_LABEL
+const CHIPS = COMMERCIAL_FILTER_CHIPS
 const money = (n: number | null | undefined) => (n ? `${Math.round(n).toLocaleString('pl-PL')} zł` : 'Cena do uzgodnienia')
 
 export const metadata: Metadata = {
@@ -35,7 +33,7 @@ async function loadOffers() {
   for (const t of COMMERCIAL_OFFER_TYPES) {
     try {
       const res: any = await getPublicOffers({ limit: 12, transaction_type: 'sprzedaz', property_type: t } as any)
-      out.push(...(res?.data ?? []))
+      out.push(...((res?.data ?? []) as any[]).filter(o => o.transaction_type === 'sprzedaz'))
     } catch { /* brak ofert jednego typu nie psuje strony */ }
   }
   return out.slice(0, 12)

@@ -23,7 +23,7 @@ test('tresc: nazwa biura i miejscowosc tylko z konfiguracji (kod tresci nie ma K
 })
 test('SEO: title <= 65, meta <= 160 znakow, jeden H1, wzmianka WZ rozwinieta', () => {
   assert.ok(C.title.length <= 65, 'title ' + C.title.length)
-  assert.ok(C.description.length <= 160, 'meta ' + C.description.length)
+  assert.ok(C.description.length <= 155, 'meta ' + C.description.length)
   assert.match(C.lead, /warunków zabudowy \(WZ\)/)
   assert.match(C.lead, /\(MPZP\)/)
 })
@@ -42,4 +42,11 @@ test('oferty: tylko typy komercyjne; strona za flaga OFF domyslnie', () => {
   const page = fs.readFileSync(new URL('../app/nieruchomosci-komercyjne/page.tsx', import.meta.url), 'utf8')
   assert.match(page, /if \(!isCommercialHubOn\(\)\) notFound\(\)/)
   assert.match(page, /transaction_type: 'sprzedaz'/)
+})
+
+test('tekst publiczny: bez roboczych naglowkow/numerow wersji i bez przykladowych nazw konfiguracji w szablonie', () => {
+  assert.ok(!/Zmiany v|szkic|do weryfikacji|\[dane od/i.test(flat))
+  const page = fs.readFileSync(new URL('../app/nieruchomosci-komercyjne/page.tsx', import.meta.url), 'utf8')
+  assert.match(page, /o\.transaction_type === 'sprzedaz'/)
+  assert.match(page, /COMMERCIAL_FILTER_CHIPS/)
 })

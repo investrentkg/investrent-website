@@ -41,10 +41,10 @@ export type CommercialContent = {
 export function buildCommercialContent(c: CommercialConfig): CommercialContent {
   return {
     title: `Hale, magazyny i działki inwestycyjne na sprzedaż | ${c.biuro}`,
-    description: `Pośredniczymy w sprzedaży działek, hal, magazynów i lokali ${c.region_w}. Pomagamy inwestorom znaleźć obiekt i sprawdzić plan miejscowy.`,
+    description: `Pośredniczymy w sprzedaży działek, hal, magazynów i lokali ${c.region_w}. Szukamy obiektów dla inwestorów i sprawdzamy plan miejscowy.`,
     h1: `Nieruchomości komercyjne i inwestycyjne ${c.region_w}`,
     lead: `Pośredniczymy w sprzedaży działek, hal, magazynów, lokali usługowych i obiektów inwestycyjnych ${c.region_w}. Pomagamy też inwestorom znaleźć obiekt oraz sprawdzić, co wynika z miejscowego planu zagospodarowania przestrzennego (MPZP) lub warunków zabudowy (WZ).`,
-    typesHeading: 'Jakie nieruchomości komercyjne sprzedajemy',
+    typesHeading: 'Nieruchomości komercyjne, w których sprzedaży pośredniczymy',
     types: [
       'Działki budowlane, inwestycyjne i rolne.',
       'Hale i magazyny na sprzedaż.',
@@ -83,3 +83,14 @@ export function buildCommercialContent(c: CommercialConfig): CommercialContent {
 
 // Typy ofert pokazywane w sekcji "Obiekty w ofercie" (TYLKO sprzedaz; wynajem komercyjnych wykluczony decyzja Daniela 07.11).
 export const COMMERCIAL_OFFER_TYPES = ['magazyn', 'lokal', 'dzialka', 'biuro'] as const
+
+// Mapowanie typow API na filtry huba (jawne; zatwierdzone po ocenie recenzenta faktow v5):
+//  - dzialka -> chip "Działki"; magazyn -> "Hale i magazyny"; lokal -> "Lokale";
+//  - biuro -> "Lokale" (osobnego chipa "Biura" nie ma; w CRM 0 ofert typu biuro, karta biura nosi etykiete "Lokal");
+//  - "obiekty inwestycyjne i specjalne" nie maja osobnego typu w danych (wpadaja do lokal albo inwestycja) -> widoczne tylko w "Wszystkie".
+export const COMMERCIAL_FILTER_CHIPS = [
+  { label: 'Działki', type: 'dzialka' },
+  { label: 'Hale i magazyny', type: 'magazyn' },
+  { label: 'Lokale', type: 'lokal' },
+] as const
+export const COMMERCIAL_TYPE_LABEL: Record<string, string> = { dzialka: 'Działka', lokal: 'Lokal', magazyn: 'Hala / magazyn', biuro: 'Lokal' }
