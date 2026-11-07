@@ -79,3 +79,12 @@ describe('gwiazdka między cyframi (z CRM)', () => {
     expect(types('Lead\n\nWymiar 2 * 3 m oraz taras.')).toEqual(['lead', 'paragraph'])
   })
 })
+
+describe('śródtytuł bez treści pod spodem (decyzja Daniela 07.11)', () => {
+  it('nagłówek tuż przed kolejnym nagłówkiem i nagłówek na końcu to akapity', () => {
+    expect(types('Lead\n\nSPOKOJNA LOKALIZACJA – KOŁOBRZEG\n\nOSIEDLE ZAMKNIĘTE\n\nMieszkanie na ładnym osiedlu.\n\nINVESTRENT – GWARANCJA TWOJEGO BEZPIECZEŃSTWA')).toEqual(['lead', 'paragraph', 'heading', 'paragraph', 'paragraph'])
+  })
+  it('nagłówek z treścią (akapit lub lista) zostaje nagłówkiem', () => {
+    expect(types('Lead\n\nSEKCJA ABC\n\n* punkt jeden\n* punkt dwa')).toEqual(['lead', 'heading', 'list'])
+  })
+})

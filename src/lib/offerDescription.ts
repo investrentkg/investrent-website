@@ -91,6 +91,13 @@ export function parseOfferDescription(raw: string | null | undefined): DescBlock
     blocks.push({ type: 'paragraph', text: line })
   }
   flushList()
+  // Srodtytul bez tresci pod spodem (tuz przed kolejnym naglowkiem albo na samym koncu) to zwykly akapit, nie naglowek.
+  for (let k = 0; k < blocks.length; k++) {
+    const cur = blocks[k]
+    if (cur.type === 'heading' && (k === blocks.length - 1 || blocks[k + 1].type === 'heading')) {
+      blocks[k] = { type: 'paragraph', text: cur.text }
+    }
+  }
   return blocks
 }
 
