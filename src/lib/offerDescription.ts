@@ -14,9 +14,10 @@ const MAX_HEADING_WORDS = 7
 function isCapsHeading(line: string): boolean {
   const t = line.trim().replace(/:$/, '')
   if (t.length < 3 || t.length > 80) return false
-  const letters = t.match(/\p{L}/gu) ?? []
+  const chars = t.split('')
+  const letters = chars.filter(c => c.toLowerCase() !== c.toUpperCase())
   if (letters.length < 3) return false
-  return !/\p{Ll}/u.test(t)
+  return !letters.some(c => c !== c.toUpperCase()) // brak malych liter
 }
 
 // Dzieli linie po znacznikach listy takze w srodku linii (" * ", " • "), z wyjatkiem "2 * 3" (cyfry po obu stronach).
