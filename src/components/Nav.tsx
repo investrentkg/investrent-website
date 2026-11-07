@@ -5,6 +5,8 @@ import { Phone, Menu, X } from 'lucide-react'
 import type { Office } from '@/types'
 import { formatPhoneDisplay } from '@/lib/phone'
 import ChatWidget from '@/components/ChatWidget'
+import { isCommercialHubOn } from '@/lib/commercialHub'
+import { COMMERCIAL_PATH } from '@/content/komercyjne'
 
 const HOUSES_ICON = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGIAAAAyCAYAAACnKw75AAAHVklEQVR42u2aa4xdVRXH//vcO53OtLYDSERBWnyVBilaEHkLhSAtoIiBL4AlSAwm+I1AEEEegqIN2FoIgSgaNMTGT4JGwPqCYCwlIYFQgbb0CfIohRZL8c7Mzw+sDaubc+5j5t47t/TsZHLPnH32Pnuv3157Pc6WeqwAFSBTWSYUQnDXJYyJABAFDywBzrLraimd7kKo2PVS3ilvAqfYvb5SShMDAQfj5FIzugthiQNwDfCgXW8H5pUwOguhatc/dRCutHvTgUcdjBNLGJ2FcKuD8F27N8l+h4B/Wt024EsljM5AuMVBuCoKOdmy9gL+5WAcXxrw9kJY5CBc7SBkPrBzMFbYs28Ax5Wa0R4IP/GGOYUADDoIsc2+wAsOxrEljPFBuNlBuNZBiIKfaqt/mWvfZ79zgVet7evAMSWMsUH4kYNwXQGEv7lnfgH0JzAOdzC2AkeXMFqDcJMT8A05EKYAy63+D8BKu34YGEq8qSOALQ7GUSWM+iCikG90EH6QA2EQ+LPVPwBkwH7AKrv3KDA9gXGkg/EacGQJIx9C1IQbHIQbCyA8ZPUPAgPOaB8I/NvqHol1DsYXTSMwKF8oYewKIQrqYgfhh1FLHIQB0wBMIwbtfuaemQE8Y8/83PURbcZRCYwjShi7GtWzgf8BI8DlDSAs9xBytjYP4/YcGMeYF4UZ8sP3aBhOMGcBNRPMeTlxwmTgj1b/F2BqCiEHxkHAc9bmthwYx1p8AfAK8Pk9EoYTyFcdhPNjnYPQ7yD8tR6EBjCW5sA4zsF4GfjcHgXDGeav2HYEcIGDEEwj+oH7rf5u4EONIOTA+ASw2vpYkgPjeMtJRRiHdRKGt2e9oglnOAgLkwReBHWb3+ebhZAD/JPAGutrcQ6MEyx1DvAfYE4nYCT2LPQChNOBt23iF6aakLixdzjBZWN4Z9SMTwFrrc9bc2CcaF/4AF4EDm0nDDevUxOPMEwUhPnATpvwRQUQrrf6O9sxYAfjM8A66/uWHBhHAxut/gXgs+OFkczrXOeeL/Jy6bZNOM1B+GYBhOus/q52rpoCGIvcO6rOpjxr9ZuBQ8YKw+YV7Ppq63O9y49d2DXnwE3wy8BbNoCLCyB8PycQCx0Yy8EmEIAf52jGDOdtbQJmtyow5/VVXfJypW2RmcuTfaPjMNzET3AQvlVgmK+JGdRO7p8JjKgZN+doxkznbW10MCotaN8gsMz6WAHs7TRl0Nxx3GGHvk5AqLgJrU8gpJrwPav/pXPxQgcXSBzbAW6buMktkKqLQ6K3tQGY1QiGa/sR4DFr+1tgn9TpMBh/N/d5brOgxzLRA91+e0mBJlxl9b/qBoScMU4D/pEkGVObsdbB2LdIYK7NXOBJa3NPgfsaYUw1jdvuYphKOyf4cafa3040IT5zpR9styAUwHg459uHj0PWuhRLXp4rPjvPpduXxKOhDdIxsyzNss59S8napfKrLXVxZjLQaBCvsMH+eiIg5KzM6ZY6B7jMLRwfhzzvMr8DOdqzMOe8Vd15uf4PtgTkE3YsKBsTDNfh/rYd1dJDXg7COTbY30wkhJyxT3fnor6eoxmfdjAeipphdfFjVg34jt+GW3QgthmM0DIMt6r2t/TzMHBSIvw42QVJxBwmNNx//xyG3FGcr7mFUnXbyHr3dXAGsNj+HxnrqXQnpzmW+vldS4s0PmgDWmWDmZeQzhII1/aCJtTRjCHn8ZxdAGOD+54Rg78F7XBD7SjQRufKN16sOUchT04IRwh7A6Muz9PXSxByYOxlAdgw8NGcdMVspxmbxpoOST7z/gy4F7jT2avF/gOZL0V7VlVSLYSw3DofTuqnSNopaanVj4QQ6DUQIYQRoC+EsFXSHZIqkvrfqw7DQDWEsErSfEmPSFoQQnjK2g23+kr7nSHpUklvSJpp7/2TpDmSZtu4slTgRSUDBkMIO3JWeyZpu6TtIYTRXtSGXRcqQdJkSdifhzUMZCGEpyXFs7VZCKE2zveuCSFcUmeRjDYDIg52tB6oOhrVa5oBgFux7xOKCf/d33G+sippwLb0US/Tor6LQDRroNAHpEQBjRNClMcW2zFGbRsKjbbuohX9fANt2B0LXXzHZkmvNtj6mwKx4YO02hMt78YCq0ia1EqDbJxb0+5Uttkq3dwFDclse2rakWlkrKPPG8zYZe/8vGv0YnAS7H5Pbv82hzWSdrTBEDdTJklaG0KoNWv86+1hhBD+m9wbMfdup8F6y4xQL29jNRvzjiKvqU0+ckjk1JJHWU8j+oAzbCLB7mWSttpvVdIsYEuPG+gpkg6QFKPl0IngM/ZpZ38n29+4QeyU9Lak3+esolckrZM0TdLSnKi710pF0qGSBiQ96RZVW7TAYpSZkk6R9DGLqvslbRpLSJ6+YEDSUOJhxIBoh4F6XNLpIYSNPe+3wjQDQQjh5Q69Y6rJqGbvqXVjYhlwH/BhlaUtpdqk8UlLv6SXJL22W0Rybi69mJysC6LegM2VrZjR7vkIvFeF78v/AbTpPkGgexozAAAAAElFTkSuQmCC'
 
@@ -20,7 +22,7 @@ export default function Nav({ office }: { office: Office | null }) {
   const [isDesktop, setIsDesktop] = useState(true)
 
   useEffect(() => {
-    const check = () => setIsDesktop(window.innerWidth >= 1024)
+    const check = () => setIsDesktop(window.innerWidth >= (isCommercialHubOn() ? 1180 : 1024))
     check()
     window.addEventListener('resize', check)
     const onScroll = () => setScrolled(window.scrollY > 10)
@@ -39,6 +41,9 @@ export default function Nav({ office }: { office: Office | null }) {
     // NOWE (25.09.2026): publiczny kalkulator wyceny (fraza "wycena mieszkania Kolobrzeg").
     { label: 'Wycena', href: '/wycena' },
     { label: 'Wynajem',  href: '/wynajem' },
+    // Komercyjne: dodatkowa pozycja zwiekszyla szerokosc menu (przycisk telefonu wypadal poza ekran przy 1024-1140 px), wiec przy fladze hamburger do 1180 px.
+    // Komercyjne (Daniel 07.11.2026): pozycja tylko przy wlaczonej fladze NEXT_PUBLIC_COMMERCIAL_HUB (bez flagi = brak martwego linku).
+    ...(isCommercialHubOn() ? [{ label: 'Komercyjne', href: COMMERCIAL_PATH }] : []),
     // NOWE (24.09.2026, SEO): GSC pokazal, ze /kolobrzeg nie ma zadnego linku wejsciowego wykrytego przez Google
     // ("wykryta - obecnie niezindeksowana") - link w glownym menu na kazdej podstronie. Krotka etykieta (menu jest ciasne).
     { label: 'Kołobrzeg', href: '/kolobrzeg' },

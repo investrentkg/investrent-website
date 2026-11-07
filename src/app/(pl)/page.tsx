@@ -19,6 +19,7 @@ import Hero          from '@/components/Hero'
 import CallbackStrip from '@/components/CallbackStrip'
 import OffersSection from '@/components/OffersSection'
 import PathChoice    from '@/components/PathChoice'
+import CommercialTile from '@/components/CommercialTile'
 import About         from '@/components/About'
 import Services      from '@/components/Services'
 import ValuationCTA  from '@/components/ValuationCTA'
@@ -124,6 +125,7 @@ export default async function Home() {
         <CallbackStrip />
         <OffersSection initialOffers={offersData} />
         <PathChoice id="sciezki-home" />
+        <CommercialTile />
         <About googleRating={rating?.rating ?? null} />
         <Services />
         <ValuationCTA />
