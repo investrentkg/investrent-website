@@ -38,7 +38,7 @@ test('po oknie dedupe kolejny klik liczy sie osobno; inne zdarzenia (whatsapp_cl
 
 test('bez gtag (brak zgody na analityke) nic nie rzuca; nasluch w layoucie, bez numeru w zdarzeniu', () => {
   assert.doesNotThrow(() => trackPhoneLinkClick('tel_/', 9_000_000))
-  const layout = fs.readFileSync(new URL('../app/layout.tsx', import.meta.url), 'utf8')
+  const layout = fs.readFileSync(new URL('../app/(pl)/layout.tsx', import.meta.url), 'utf8')
   assert.ok(layout.includes('<TelClickTracker />'))
   const comp = fs.readFileSync(new URL('../components/TelClickTracker.tsx', import.meta.url), 'utf8')
   assert.ok(!/731|href\b.*getAttribute/.test(comp.replace(/\/\/.*$/gm, '')), 'komponent nie czyta ani nie wysyla numeru')

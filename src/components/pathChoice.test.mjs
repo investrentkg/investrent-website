@@ -12,7 +12,7 @@ test('blok ścieżek: cztery równorzędne cele, sprzedający i kupujący obok s
 })
 
 test('blok jest na stronie głównej i na /oferty (poza widokiem agenta), nie zmienia metadanych', () => {
-  const home = fs.readFileSync(new URL('../app/page.tsx', import.meta.url), 'utf8')
+  const home = fs.readFileSync(new URL('../app/(pl)/page.tsx', import.meta.url), 'utf8')
   const oferty = fs.readFileSync(new URL('../app/(pl)/oferty/page.tsx', import.meta.url), 'utf8')
   assert.ok(home.includes('<PathChoice id="sciezki-home" />'))
   assert.ok(oferty.includes('{!agent_id && <PathChoice id="sciezki-oferty" />}'))

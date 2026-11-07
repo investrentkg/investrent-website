@@ -14,7 +14,7 @@ test('/opinia: stały 302 na formularz opinii Google (bez bramki), nie ma go w s
   assert.equal(r.destination, 'https://search.google.com/local/writereview?placeid=ChIJeeKGItkVAEcR9xa56dLOQ_M')
   assert.ok(!r.has, 'bez warunków: działa też z ?src=qr')
   const fs = await import('node:fs')
-  const sitemap = fs.readFileSync(new URL('../app/sitemap.ts', import.meta.url), 'utf8')
+  const sitemap = fs.readFileSync(new URL('../app/(pl)/sitemap.ts', import.meta.url), 'utf8')
   assert.ok(!/\/opinia\b/.test(sitemap), 'sitemap nie zawiera /opinia')
 })
 
