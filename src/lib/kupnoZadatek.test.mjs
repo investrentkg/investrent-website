@@ -2,15 +2,15 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { ZADATEK_ITEMS, ZADATEK_OUTRO, ZADATEK_HEADING, ZADATEK_CTA_HREF, zadatekIntro } from './kupnoZadatek.ts'
 
-test('wstęp liczy punkty listy (4 i 3 po usunięciu wariantu)', () => {
-  assert.equal(zadatekIntro(), 'Przed wpłatą zadatku sprawdź cztery rzeczy.')
-  assert.equal(zadatekIntro(ZADATEK_ITEMS.filter(i => i.id !== 'lokal-zamieszkany')), 'Przed wpłatą zadatku sprawdź trzy rzeczy.')
+test('wstęp liczy punkty listy (3 w wariancie zatwierdzonym)', () => {
+  assert.equal(ZADATEK_ITEMS.length, 3)
+  assert.equal(zadatekIntro(), 'Przed wpłatą zadatku sprawdź trzy rzeczy.')
 })
 
-test('punkty mają unikalne id, a wariant bez "kto mieszka" istnieje', () => {
+test('punkty mają unikalne id i nie ma punktu "kto mieszka"', () => {
   const ids = ZADATEK_ITEMS.map(i => i.id)
   assert.equal(new Set(ids).size, ids.length)
-  assert.ok(ids.includes('lokal-zamieszkany'))
+  assert.ok(!ids.includes('lokal-zamieszkany'))
 })
 
 test('tekst bez obietnic, cen i nazw inwestycji', () => {
