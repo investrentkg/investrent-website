@@ -1,96 +1,99 @@
-// Parser opisu oferty na stronie WWW (layout czytelny, BEZ zwijania: pelny tekst zawsze w HTML).
-// Czysta funkcja, bez zaleznosci. Tresc nie jest zmieniana: znika tylko znacznik listy (* / • / - ).
-
+// Parser opisu oferty -> bloki do czytelnego wyswietlenia (CRM: karta oferty; strona WWW: ten sam algorytm). CZYSTA logika, bez zaleznosci,
+// TRESC SIE NIE ZMIENIA (tylko uklad): nic nie jest dopisywane ani przepisywane, usuwamy wylacznie znaczniki list (* • ✔ – -) i koncowe przecinki/srednik pozycji listy.
+// Reguly (ustalone z Danielem 07.11, makieta MAKIETA_KARTA_OFERTY_07_11):
+//  1) puste linie rozdzielaja akapity;
+//  2) linia zaczynajaca sie od znacznika listy (* • ✔ – -) to pozycja listy; kolejne takie linie tworza jedna liste;
+//  3) znaczniki srodliniowe ("... AGD: * zmywarka, * piekarnik, ...") sa rozbijane na pozycje listy (tekst przed pierwszym znacznikiem zostaje akapitem);
+//  4) srodtytul = linia SAMA w akapicie (puste linie przed i po), do 80 znakow, bez kropki/dwukropka/ssredniku/przecinka na koncu (pierwsza linia opisu to lead, nie srodtytul);
+//     linia pisana WIELKIMI LITERAMI (>= 4 litery, bez malych) jest srodtytulem zawsze, takze z kropka lub dwukropkiem na koncu nie - tylko bez znaku konca zdania;
+//  5) lista, w ktorej kazda pozycja ma postac "Klucz: wartosc" (klucz <= 40 znakow), jest oznaczona jako kv (tabelka).
+// Uniwersalne dla CRM (nie zalezy od biura).
 export type DescBlock =
   | { type: 'lead'; text: string }
   | { type: 'heading'; text: string }
   | { type: 'paragraph'; text: string }
-  | { type: 'list'; items: string[] }
+  | { type: 'list'; items: string[]; kv: Array<[string, string]> | null }
 
-const BULLET_LINE = /^\s*(?:[*•✔✓✅►▪]\s*|[-–]\s+)(?=\S)/
-const MAX_HEADING_CHARS = 70
-const MAX_HEADING_WORDS = 7
+const BULLET_LINE = /^\s*([*•✔✓–-])\s+(.*\S)\s*$/
+const INLINE_BULLET = /\s[*•✔✓]\s+/
+const MAX_HEADING_LEN = 80
 
-function isCapsHeading(line: string): boolean {
-  const t = line.trim().replace(/:$/, '')
-  if (t.length < 3 || t.length > 80) return false
-  const chars = t.split('')
-  const letters = chars.filter(c => c.toLowerCase() !== c.toUpperCase())
-  if (letters.length < 3) return false
-  return !letters.some(c => c !== c.toUpperCase()) // brak malych liter
+function isAllCaps(line: string): boolean {
+  const letters = line.replace(/[^A-Za-zĄĆĘŁŃÓŚŹŻąćęłńóśźż]/g, '')
+  return letters.length >= 4 && letters === letters.toUpperCase()
 }
 
-// Dzieli linie po znacznikach listy takze w srodku linii (" * ", " • "), z wyjatkiem "2 * 3" (cyfry po obu stronach).
-function splitInlineBullets(line: string): { head: string; items: string[] } {
-  const re = /(^|\s)([*•])\s+(?=\S)/g
-  const cuts: { start: number; end: number }[] = []
-  let m: RegExpExecArray | null
-  while ((m = re.exec(line))) {
-    const start = m.index
-    const end = m.index + m[0].length
-    const before = line.slice(0, start).trimEnd().slice(-1)
-    const after = line.slice(end, end + 1)
-    if (/\d/.test(before) && /\d/.test(after)) continue
-    cuts.push({ start, end })
-  }
-  if (!cuts.length) return { head: line.trim(), items: [] }
-  const head = line.slice(0, cuts[0].start).trim()
-  const items: string[] = []
-  cuts.forEach((c, i) => {
-    const next = i + 1 < cuts.length ? cuts[i + 1].start : line.length
-    const t = line.slice(c.end, next).trim()
-    if (t) items.push(t)
-  })
-  return { head, items }
+function cleanItem(s: string): string {
+  return s.trim().replace(/[,;]+$/, '').trim()
 }
 
-function looksLikeShortHeading(text: string): boolean {
-  const t = text.trim()
-  if (!t || t.length > MAX_HEADING_CHARS) return false
-  if (/[.!?:;,]$/.test(t)) return false
-  if (/[:\d]/.test(t)) return false // ceny, parametry, pary klucz: wartosc nie sa srodtytulami
-  return t.split(/\s+/).length <= MAX_HEADING_WORDS
-}
-
-export function parseOfferDescription(raw: string): DescBlock[] {
-  const blocks: DescBlock[] = []
-  const pushItems = (items: string[]) => {
-    if (!items.length) return
-    const last = blocks[blocks.length - 1]
-    if (last && last.type === 'list') last.items.push(...items)
-    else blocks.push({ type: 'list', items: [...items] })
+function toKv(items: string[]): Array<[string, string]> | null {
+  if (items.length < 2) return null
+  const out: Array<[string, string]> = []
+  for (const it of items) {
+    const m = /^([^:]{2,40}):\s+(.+)$/.exec(it)
+    if (!m) return null
+    out.push([m[1].trim(), m[2].trim()])
   }
-  const lines = raw.replace(/\r\n?/g, '\n').split('\n')
-  for (let li = 0; li < lines.length; li++) {
-    const line = lines[li].trim()
-    const prevBlank = li > 0 && !lines[li - 1].trim()
-    const nextLine = (lines[li + 1] ?? '').trim()
-    const nextIsBreak = !nextLine || BULLET_LINE.test(nextLine)
-    if (!line) { blocks.push({ type: 'paragraph', text: '' }); continue } // znacznik odstepu, usuwany nizej
-    if (isCapsHeading(line)) { blocks.push({ type: 'heading', text: line }); continue }
-    // Samodzielna krotka linia miedzy pustymi liniami (lub przed lista), bez kropki na koncu = srodtytul (nie pierwsza linia).
-    if (li > 0 && prevBlank && nextIsBreak && !BULLET_LINE.test(line) && looksLikeShortHeading(line)) { blocks.push({ type: 'heading', text: line }); continue }
-    const lineBullet = BULLET_LINE.test(line)
-    const body = lineBullet ? line.replace(BULLET_LINE, '') : line
-    const { head, items } = splitInlineBullets(lineBullet ? '* ' + body : body)
-    if (head) {
-      if (items.length && looksLikeShortHeading(head)) blocks.push({ type: 'heading', text: head })
-      else blocks.push({ type: 'paragraph', text: head })
-    }
-    pushItems(items)
-    if (!items.length && lineBullet) pushItems([body])
-  }
-  const out = blocks.filter(b => !(b.type === 'paragraph' && b.text === ''))
-  // pierwszy blok tekstowy (akapit) = lead
-  const first = out[0]
-  if (first && first.type === 'paragraph') out[0] = { type: 'lead', text: first.text }
   return out
 }
 
-// Do testu "tresc bez zmian": tekst z blokow bez znacznikow list i bialych znakow.
-export function normalizeForCompare(s: string): string {
-  return s.replace(/(^|\s)[*•✔✓✅►▪]\s*/g, ' ').replace(/(^|\s)[-–]\s+/g, ' ').replace(/\s+/g, ' ').trim()
+export function parseOfferDescription(raw: string | null | undefined): DescBlock[] {
+  const text = String(raw ?? '').replace(/\r\n?/g, '\n')
+  if (!text.trim()) return []
+  const lines = text.split('\n')
+  const blocks: DescBlock[] = []
+  let list: string[] | null = null
+  let leadUsed = false
+  const flushList = () => {
+    if (list && list.length) blocks.push({ type: 'list', items: list, kv: toKv(list) })
+    list = null
+  }
+  const pushList = (items: string[]) => {
+    if (!list) list = []
+    for (const it of items) { const c = cleanItem(it); if (c) list.push(c) }
+  }
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim()
+    if (!line) { flushList(); continue }
+
+    const b = BULLET_LINE.exec(line)
+    if (b) { pushList([b[2]]); continue }
+
+    // znaczniki srodliniowe: tekst przed pierwszym znacznikiem = akapit, reszta = lista
+    if (INLINE_BULLET.test(` ${line}`)) {
+      const parts = ` ${line}`.split(/\s[*•✔✓]\s+/)
+      const head = parts.shift()!.trim()
+      if (parts.length >= 2 || (parts.length === 1 && head)) {
+        flushList()
+        if (head) {
+          if (!leadUsed) { blocks.push({ type: 'lead', text: head }); leadUsed = true } else blocks.push({ type: 'paragraph', text: head })
+        }
+        pushList(parts)
+        continue
+      }
+    }
+
+    flushList()
+    const prevBlank = i === 0 || !lines[i - 1].trim()
+    const nextBlank = i === lines.length - 1 || !lines[i + 1].trim()
+    if (!leadUsed) { blocks.push({ type: 'lead', text: line }); leadUsed = true; continue }
+    const endsSentence = /[.:;,]$/.test(line)
+    if (prevBlank && nextBlank && line.length <= MAX_HEADING_LEN && !endsSentence && !/^[*•✔✓–-]\s/.test(line) && !/[:\d]/.test(line)) { // [WWW] bez ':' i cyfr: wiersze cen/parametrow nie sa srodtytulami
+      blocks.push({ type: 'heading', text: line }); continue
+    }
+    if (prevBlank && isAllCaps(line) && line.length <= MAX_HEADING_LEN && !/[.;,]$/.test(line)) {
+      blocks.push({ type: 'heading', text: line.replace(/:$/, '') }); continue
+    }
+    blocks.push({ type: 'paragraph', text: line })
+  }
+  flushList()
+  return blocks
 }
-export function blocksToText(blocks: DescBlock[]): string {
-  return blocks.map(b => (b.type === 'list' ? b.items.join(' ') : b.text)).join(' ')
+
+/** Liczba wierszy (przyblizona) do decyzji o zwijaniu w CRM: opisy krotsze nie dostaja przycisku „Pokaz caly opis”. */
+export const DESC_COLLAPSE_MIN_CHARS = 700
+export function shouldCollapseDescription(raw: string | null | undefined): boolean {
+  return String(raw ?? '').length >= DESC_COLLAPSE_MIN_CHARS
 }
