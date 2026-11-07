@@ -66,7 +66,7 @@ export default async function CommercialHubPage() {
           .kom-type { background:#fff; border:1px solid #e5e7eb; border-radius:14px; padding:20px 22px; font-weight:700; color:#0d2a5c; font-size:15px; border-left:3px solid #c59a2e }
         `}</style>
         <div style={{ background: 'linear-gradient(135deg, #0f1a3a, #233a86)', padding: '56px 0 52px' }}>
-          <div className="container">
+          <div className="container" style={{ maxWidth: 1080 }}>
             <Breadcrumb light={true} crumbs={[{ label: 'Strona główna', href: '/' }, { label: 'Nieruchomości komercyjne' }]} />
             <h1 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 'clamp(26px, 7vw, 40px)', color: 'white', letterSpacing: '-1px', lineHeight: 1.1, marginBottom: 16, maxWidth: 760, overflowWrap: 'break-word' }}>{C.h1}</h1>
             <p style={{ color: 'rgba(255,255,255,.85)', fontSize: 16, maxWidth: 680, lineHeight: 1.8 }}>{C.lead}</p>
@@ -74,7 +74,7 @@ export default async function CommercialHubPage() {
         </div>
 
         <section style={{ padding: '56px 0 24px', background: '#f8fafc' }}>
-          <div className="container" style={{ maxWidth: 980 }}>
+          <div className="container" style={{ maxWidth: 1080 }}>
             <h2 style={h2}>{C.typesHeading}</h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
               {C.types.map(t => <div key={t} className="kom-type">{t}</div>)}
@@ -83,7 +83,7 @@ export default async function CommercialHubPage() {
         </section>
 
         <section style={{ padding: '40px 0 24px', background: '#f8fafc' }}>
-          <div className="container" style={{ maxWidth: 780 }}>
+          <div className="container" style={{ maxWidth: 1080 }}><div style={{ maxWidth: 780 }}>
             <h2 style={h2}>{C.helpHeading}</h2>
             <ul style={{ paddingLeft: 20, margin: 0, display: 'flex', flexDirection: 'column', gap: 10, listStyle: 'disc' }}>
               {C.help.map(h => <li key={h.label} style={p}><strong>{h.label}:</strong> {h.text}</li>)}
@@ -92,7 +92,7 @@ export default async function CommercialHubPage() {
             <ul style={{ paddingLeft: 20, margin: 0, display: 'flex', flexDirection: 'column', gap: 8, listStyle: 'disc' }}>
               {C.basis.map(b => <li key={b} style={p}>{b}</li>)}
             </ul>
-          </div>
+          </div></div>
         </section>
 
         <section style={{ padding: '48px 0', background: '#fff' }}>
@@ -124,15 +124,15 @@ export default async function CommercialHubPage() {
         </section>
 
         <section style={{ padding: '24px 0 40px', background: '#fff' }}>
-          <div className="container" style={{ maxWidth: 780 }}>
+          <div className="container" style={{ maxWidth: 1080 }}><div style={{ maxWidth: 780 }}>
             <h2 style={h2}>{C.startHeading}</h2>
             <p style={p}>{C.start}</p>
-          </div>
+          </div></div>
         </section>
 
         <section style={{ padding: '56px 0', background: '#f8fafc' }}>
-          <div className="container" style={{ maxWidth: 780 }}>
-            <h2 style={{ ...h2, textAlign: 'center', marginBottom: 28 }}>{C.faqHeading}</h2>
+          <div className="container" style={{ maxWidth: 1080 }}><div style={{ maxWidth: 780 }}>
+            <h2 style={{ ...h2, marginBottom: 28 }}>{C.faqHeading}</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               {C.faq.map(f => (
                 <div key={f.q} style={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: 14, padding: '20px 24px' }}>
@@ -142,7 +142,7 @@ export default async function CommercialHubPage() {
               ))}
             </div>
             <p style={{ fontSize: 12.5, color: '#6b7280', lineHeight: 1.7, marginTop: 24 }}>{C.disclaimer}</p>
-          </div>
+          </div></div>
         </section>
 
         <section style={{ background: '#0f1a3a', padding: '52px 0', textAlign: 'center' }}>
