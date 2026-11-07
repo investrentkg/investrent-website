@@ -56,3 +56,8 @@ test('wyroznik: bez Niemcow (decyzja Daniela 07.11); kontakty z biurami komercyj
   assert.match(C.basis.join(' '), /kontakty z biurami nieruchomości specjalizującymi się w obiektach komercyjnych/)
   assert.ok(!/\d+\s*(klient|transakcj|biur)/i.test(flat), 'bez liczb')
 })
+
+test('FAQ klienci zagraniczni: tylko zdanie z dyktatu, bez przepisow i bez "omawiamy"', () => {
+  const q = C.faq.find(f => /z zagranicy/.test(f.q))
+  assert.equal(q.a, 'Tak, mamy dostęp także do klientów z zagranicy.')
+})
