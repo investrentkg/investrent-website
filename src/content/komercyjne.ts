@@ -74,7 +74,7 @@ export function buildCommercialContent(c: CommercialConfig): CommercialContent {
       { q: 'Czy zrobicie wstępną wycenę mojej nieruchomości?', a: 'Tak, przygotowujemy wstępną wycenę na podstawie analiz rynku. To nie jest operat szacunkowy.' },
       { q: 'Czy pośredniczycie w sprzedaży działek rolnych?', a: 'Tak, działki rolne należą do obiektów, w których sprzedaży pośredniczymy. Obrót nieruchomościami rolnymi podlega ograniczeniom wynikającym z przepisów o obrocie ziemią rolną, więc zakres omawiamy przy konkretnej działce.' },
       { q: 'Szukam obiektu pod inwestycję. Jak mogę zacząć?', a: `Opisz, czego szukasz: typ obiektu, wielkość, lokalizację i cel. Na tej podstawie pomożemy Ci znaleźć obiekt ${c.region_w}.` },
-      { q: 'Czy macie dostęp do klientów z zagranicy?', a: 'Tak, mamy dostęp także do klientów z zagranicy. Zasady nabywania nieruchomości przez cudzoziemców określają przepisy, więc omawiamy je przy konkretnym obiekcie.' },
+      { q: 'Czy macie dostęp do klientów z zagranicy?', a: 'Tak, mamy dostęp także do klientów z zagranicy.' },
     ],
     disclaimer: 'Informacje na tej stronie mają charakter ogólny i nie są poradą prawną ani inwestycyjną. W sprawach umowy i planu miejscowego skonsultuj się z prawnikiem.',
     ctaLead: 'Masz obiekt do sprzedaży albo szukasz inwestycji?',
