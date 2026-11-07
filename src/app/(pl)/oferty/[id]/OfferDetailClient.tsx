@@ -9,6 +9,24 @@ import MortgageMiniCalculator from '@/components/MortgageMiniCalculator'
 import Link from 'next/link'
 import PrivacyNote from '@/components/PrivacyNote'
 import MapEmbed, { ConsentGate } from '@/components/ConsentEmbed'
+import { parseOfferDescription } from '@/lib/offerDescription'
+
+// Flaga ukladu opisu (domyslnie OFF). Pelny tekst zawsze widoczny, bez zwijania.
+const DESC_LAYOUT = process.env.NEXT_PUBLIC_OFFER_DESC_LAYOUT === 'true'
+
+function OfferDescription({ text }: { text: string }) {
+  const blocks = parseOfferDescription(text)
+  return (
+    <div style={{ fontSize: 14, color: '#374151', lineHeight: 1.8 }}>
+      {blocks.map((b, i) => {
+        if (b.type === 'heading') return <h3 key={i} style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 15, color: '#0d2a5c', margin: '18px 0 6px' }}>{b.text}</h3>
+        if (b.type === 'list') return <ul key={i} style={{ margin: '6px 0 10px', paddingLeft: 20 }}>{b.items.map((it, j) => <li key={j} style={{ marginBottom: 3 }}>{it}</li>)}</ul>
+        if (b.type === 'lead') return <p key={i} style={{ margin: '0 0 12px', fontWeight: 600, fontSize: 15 }}>{b.text}</p>
+        return <p key={i} style={{ margin: '0 0 10px' }}>{b.text}</p>
+      })}
+    </div>
+  )
+}
 
 interface OfferDetail {
   id: string
@@ -416,7 +434,9 @@ export default function OfferDetailClient({ offer }: { offer: OfferDetail }) {
             {offer.description && !offer.description.startsWith('Oferta zaimportowana') && (
               <div style={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: 14, padding: '20px', marginTop: 14 }}>
                 <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 17, color: '#0d2a5c', marginBottom: 12 }}>Opis</h2>
-                <div style={{ fontSize: 14, color: '#374151', lineHeight: 1.8, whiteSpace: 'pre-wrap' as const }}>{offer.description}</div>
+                {DESC_LAYOUT ? <OfferDescription text={offer.description} /> : (
+                  <div style={{ fontSize: 14, color: '#374151', lineHeight: 1.8, whiteSpace: 'pre-wrap' as const }}>{offer.description}</div>
+                )}
               </div>
             )}
 
