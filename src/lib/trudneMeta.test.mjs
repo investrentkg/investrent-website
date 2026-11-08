@@ -17,7 +17,7 @@ test('description 120-160 znaków, bez obietnic i bez zwrotu "Państwo"', () => 
 })
 
 test('strona /trudne-nieruchomosci używa stałych (title, description, buildPageMeta)', () => {
-  const src = fs.readFileSync(new URL('../app/trudne-nieruchomosci/page.tsx', import.meta.url), 'utf8')
+  const src = fs.readFileSync(new URL('../app/(pl)/trudne-nieruchomosci/page.tsx', import.meta.url), 'utf8')
   assert.match(src, /title: TRUDNE_TITLE/)
   assert.match(src, /description: TRUDNE_DESCRIPTION/)
   assert.match(src, /buildPageMeta\(\{ title: TRUDNE_TITLE, description: TRUDNE_DESCRIPTION/)
