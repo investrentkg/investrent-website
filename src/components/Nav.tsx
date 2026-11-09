@@ -1,7 +1,7 @@
 "use client"
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
-import { Phone, Menu, X } from 'lucide-react'
+import { Phone, Menu, X, ChevronDown } from 'lucide-react'
 import type { Office } from '@/types'
 import { formatPhoneDisplay } from '@/lib/phone'
 import ChatWidget from '@/components/ChatWidget'
@@ -18,22 +18,59 @@ export default function Nav({ office }: { office: Office | null }) {
   const languageLabel = pathname.startsWith('/de/') ? 'PL' : 'DE'
   const languageCode = pathname.startsWith('/de/') ? 'pl' : 'de'
   const [open, setOpen] = useState(false)
+  const [moreOpen, setMoreOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const [isDesktop, setIsDesktop] = useState(true)
+  const moreRef = useRef<HTMLDivElement>(null)
+  const moreBtnRef = useRef<HTMLButtonElement>(null)
+  const burgerRef = useRef<HTMLButtonElement>(null)
+  const navRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
-    const check = () => setIsDesktop(window.innerWidth >= (isCommercialHubOn() ? 1340 : 1240))
-    check()
-    window.addEventListener('resize', check)
     const onScroll = () => setScrolled(window.scrollY > 10)
     window.addEventListener('scroll', onScroll)
-    return () => {
-      window.removeEventListener('resize', check)
-      window.removeEventListener('scroll', onScroll)
-    }
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  // Zamykanie: zmiana strony, klik poza "Wiecej", Esc (fokus wraca na przycisk), fokus poza grupa.
+  useEffect(() => { setOpen(false); setMoreOpen(false) }, [pathname])
+  useEffect(() => {
+    if (!moreOpen && !open) return
+    const onDown = (e: MouseEvent) => {
+      if (moreOpen && moreRef.current && !moreRef.current.contains(e.target as Node)) setMoreOpen(false)
+    }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (moreOpen) { setMoreOpen(false); moreBtnRef.current?.focus() }
+        else if (open) { setOpen(false); burgerRef.current?.focus() }
+        return
+      }
+      // Panel mobilny: fokus uwieziony w naglowku (burger, logo, telefon, linki panelu).
+      if (e.key === 'Tab' && open && navRef.current && burgerRef.current && burgerRef.current.offsetParent !== null) {
+        const f = Array.from(navRef.current.querySelectorAll<HTMLElement>('a[href], button')).filter(el => el.offsetParent !== null)
+        if (!f.length) return
+        const first = f[0], last = f[f.length - 1]
+        const a = document.activeElement
+        if (e.shiftKey && (a === first || !navRef.current.contains(a))) { e.preventDefault(); last.focus() }
+        else if (!e.shiftKey && (a === last || !navRef.current.contains(a))) { e.preventDefault(); first.focus() }
+      }
+    }
+    document.addEventListener('mousedown', onDown)
+    document.addEventListener('keydown', onKey)
+    return () => { document.removeEventListener('mousedown', onDown); document.removeEventListener('keydown', onKey) }
+  }, [moreOpen, open])
+
+  // Blokada przewijania tla, gdy panel mobilny jest otwarty.
+  useEffect(() => {
+    if (!open) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = prev }
+  }, [open])
+
   const phone = formatPhoneDisplay(office?.phone) || '+48 731 554 341'
+  const tel = `tel:${phone.replace(/\s/g, '')}`
+  // Wariant A "premium" (makieta RP 09.11): 8 pozycji w rzedzie + "Wiecej". Zadna dotychczasowa pozycja nie znika.
+  // Wszystkie linki to zwykle <a href> w HTML od razu (takze na mobile - ten sam DOM, rozne style w globals.css, .ir-nav*).
   const links = [
     { label: 'Oferty',   href: '/oferty' },
     { label: 'Kupno',    href: '/kupno' },
@@ -41,98 +78,75 @@ export default function Nav({ office }: { office: Office | null }) {
     // NOWE (25.09.2026): publiczny kalkulator wyceny (fraza "wycena mieszkania Kolobrzeg").
     { label: 'Wycena', href: '/wycena' },
     { label: 'Wynajem',  href: '/wynajem' },
-    // Menu poziome potrzebuje ok. 1300 px na sam wiersz (12 pozycji + PL/DE + telefon, bez zawijania) - pomiar 09.11: przy 1280 wychodzilo poza ekran. Cala strona siedzi w ramce .page-wrap 1320 px, wiec menu ma max ok. 1280 px: odstep 12 px, hamburger ponizej 1340 px (z Komercyjne) / 1240 px (bez).
-    // Komercyjne (Daniel 07.11.2026): pozycja tylko przy wlaczonej fladze NEXT_PUBLIC_COMMERCIAL_HUB (bez flagi = brak martwego linku).
-    ...(isCommercialHubOn() ? [{ label: 'Komercyjne', href: COMMERCIAL_PATH }] : []),
-    // NOWE (24.09.2026, SEO): GSC pokazal, ze /kolobrzeg nie ma zadnego linku wejsciowego wykrytego przez Google
-    // ("wykryta - obecnie niezindeksowana") - link w glownym menu na kazdej podstronie. Krotka etykieta (menu jest ciasne).
+    // NOWE (24.09.2026, SEO): /kolobrzeg musi miec link w glownym menu na kazdej podstronie.
     { label: 'Kołobrzeg', href: '/kolobrzeg' },
-    // NAPRAWA (audyt tresci, Daniel 30.07.2026): bylo w glownym menu starej
-    // strony, brakowalo calkowicie w nowym - realna usluga firmy.
-    { label: 'Zarządzanie najmem', href: '/zarzadzanie-najmem' },
-    { label: 'O nas',    href: '/o-nas' },
-    { label: 'Trudne sprawy', href: '/trudne-nieruchomosci' },
-    // ZMIANA (16.08, Daniel: "w gornym menu zrobilo sie za ciasno po
-    // dodaniu Bloga, to opcjonalna zakladka, nie wnosi tyle na topie -
-    // powinna byc na dole strony przy mapie strony/kontakcie zamiast tutaj").
-    // Link przeniesiony do Footer.tsx (patrz tam) - wciaz dostepny dla
-    // odwiedzajacych bez bezposredniego linku, tylko nie zajmuje miejsca
-    // w gornym, ciasnym pasku nawigacji.
+    // Komercyjne (Daniel 07.11.2026): tylko przy wlaczonej fladze NEXT_PUBLIC_COMMERCIAL_HUB (bez flagi = brak martwego linku).
+    ...(isCommercialHubOn() ? [{ label: 'Komercyjne', href: COMMERCIAL_PATH }] : []),
     { label: 'Kontakt',  href: '/kontakt' },
   ]
+  // Pod "Wiecej" (opisy wg makiety). Blog i Kalkulator: pozycje z makiety (Blog byl od 16.08 tylko w stopce).
+  const moreLinks = [
+    { label: 'Zarządzanie najmem', desc: 'Najem krótko- i długoterminowy pod klucz', href: '/zarzadzanie-najmem' },
+    { label: 'O nas', desc: 'Zespół i sposób pracy', href: '/o-nas' },
+    { label: 'Trudne sprawy', desc: 'Spadki, współwłasność, długi, zasiedzenie', href: '/trudne-nieruchomosci' },
+    { label: 'Blog', desc: 'Poradniki o rynku w Kołobrzegu', href: '/blog' },
+    { label: 'Kalkulator', desc: 'Kalkulator kredytowy i wycena', href: '/kalkulator' },
+  ]
+  const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/')
+  const moreActive = moreLinks.some(l => isActive(l.href))
+  const close = () => { setOpen(false); setMoreOpen(false) }
+  const closeToBurger = () => { setOpen(false); burgerRef.current?.focus() }
 
   return (
     <>
-      <nav style={{
-        overflowX: 'hidden', maxWidth: '100vw',
-        backgroundColor: '#0d2a5c', padding: '13px 0',
-        position: 'sticky', top: 0, zIndex: 100,
-        boxShadow: scrolled ? '0 4px 20px rgba(0,0,0,.3)' : 'none',
-        transition: 'box-shadow .3s',
-      }}>
-        {/* Menu ma wlasna, szersza kolumne niz .container (1280 px): przy 12 pozycjach + telefon nie miesci sie w 1280 i logo nachodzilo na "Oferty" (zgloszenie Daniela 09.11). */}
-        <div style={{ width: '100%', maxWidth: 1680, margin: '0 auto', padding: '0 20px', boxSizing: 'border-box' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
+      <nav ref={navRef} className={`ir-nav${scrolled ? ' is-scrolled' : ''}${open ? ' is-open' : ''}`} aria-label="Menu główne">
+        <div className="ir-nav-inner">
+          <a href="/" className="ir-nav-logo">
+            {/* Białe kontury domków bezpośrednio na granatowym tle */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={HOUSES_ICON} alt="InvestRent" />
+            <div>
+              <span className="ir-nav-brand">INVEST RENT</span>
+              <span className="ir-nav-sub">NIERUCHOMOŚCI</span>
+            </div>
+          </a>
 
-            <a href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 11, flexShrink: 0 }}>
-              {/* Białe kontury domków bezpośrednio na granatowym tle */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={HOUSES_ICON} alt="InvestRent"
-                style={{ height: 50, width: 'auto', display: 'block' }} />
-              <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
-                <span style={{ fontFamily: 'var(--font-montserrat), Arial Black, sans-serif', fontWeight: 800, color: 'white', fontSize: 17, letterSpacing: '.5px' }}>INVEST RENT</span>
-                <span style={{ color: 'rgba(255,255,255,.45)', fontSize: 9, letterSpacing: '2px', textTransform: 'uppercase' as const, marginTop: 3 }}>NIERUCHOMOŚCI</span>
-              </div>
-            </a>
+          <a href={tel} className="ir-nav-mphone" aria-label={`Zadzwoń: ${phone}`}><Phone size={14} /> <span className="ir-nav-mphone-t">{phone}</span></a>
+          <button type="button" ref={burgerRef} className="ir-nav-burger" onClick={() => setOpen(o => !o)}
+            aria-label={open ? 'Zamknij menu' : 'Otwórz menu'} aria-expanded={open} aria-controls="ir-nav-panel">
+            {open ? <X size={24} /> : <Menu size={24} />}
+          </button>
 
-            {isDesktop && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12, whiteSpace: 'nowrap' }}>
-                {links.map(l => (
-                  <a key={l.label} href={l.href} style={{ color: 'rgba(255,255,255,.65)', fontSize: 13, fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0 }}>{l.label}</a>
-                ))}
-                <a href={languageTarget} lang={languageCode} aria-label={languageCode.toUpperCase()} style={{ color: 'rgba(255,255,255,.65)', fontSize: 13, fontWeight: 700, textDecoration: 'none' }}>{languageLabel}</a>
-                <a href={`tel:${phone.replace(/\s/g, '')}`}
-                  style={{ background: '#f5a623', color: '#1a1a1a', fontSize: 13, fontWeight: 700, padding: '10px 14px', borderRadius: 9, display: 'flex', alignItems: 'center', gap: 7, textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0 }}>
-                  <Phone size={13} /> {phone}
-                </a>
-              </div>
-            )}
-
-            {!isDesktop && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <a href={`tel:${phone.replace(/\s/g, '')}`}
-                  style={{ background: '#f5a623', color: '#1a1a1a', fontSize: 12, fontWeight: 700, padding: '8px 12px', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 6, textDecoration: 'none', whiteSpace: 'nowrap' }}>
-                  <Phone size={12} /> {phone}
-                </a>
-                <button onClick={() => setOpen(true)} aria-label="Otwórz menu" style={{ color: 'rgba(255,255,255,.7)', background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
-                  <Menu size={22} />
+          <div id="ir-nav-panel" className="ir-nav-panel">
+            <div className="ir-nav-main">
+              {links.map(l => (
+                <a key={l.href} href={l.href} onClick={close} className="ir-nav-link"
+                  aria-current={isActive(l.href) ? 'page' : undefined}>{l.label}</a>
+              ))}
+              <div className="ir-nav-more" ref={moreRef}
+                onBlur={e => { if (moreOpen && !e.currentTarget.contains(e.relatedTarget as Node | null)) setMoreOpen(false) }}>
+                <button type="button" ref={moreBtnRef} className={`ir-nav-morebtn${moreActive ? ' is-active' : ''}`}
+                  aria-expanded={moreOpen} aria-controls="ir-nav-more-list" onClick={() => setMoreOpen(o => !o)}>
+                  Więcej <ChevronDown size={14} aria-hidden="true" />
                 </button>
+                <div className="ir-nav-morelabel" aria-hidden="true">Więcej</div>
+                <div id="ir-nav-more-list" className={`ir-nav-morelist${moreOpen ? ' is-open' : ''}`}>
+                  {moreLinks.map(l => (
+                    <a key={l.href} href={l.href} onClick={close} aria-current={isActive(l.href) ? 'page' : undefined}>
+                      <span>{l.label}</span><small>{l.desc}</small>
+                    </a>
+                  ))}
+                </div>
               </div>
-            )}
+            </div>
+            <div className="ir-nav-right">
+              <a href={languageTarget} lang={languageCode} aria-label={languageCode.toUpperCase()} onClick={close} className="ir-nav-lang">{languageLabel}</a>
+              <a href={tel} className="ir-nav-phone"><Phone size={13} /> {phone}</a>
+            </div>
           </div>
         </div>
       </nav>
-
-      {open && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 200, background: 'rgba(9,30,64,.97)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 28 }}>
-          {/* NAPRAWA (audyt Safari/iOS): top:20 stały mógł siedzieć pod paskiem
-              statusu/notchem na iPhone (viewport-fit=cover teraz aktywne w
-              layout.tsx) - dodany env(safe-area-inset-top). */}
-          <button onClick={() => setOpen(false)} aria-label="Zamknij menu" style={{ position: 'absolute', top: 'calc(20px + env(safe-area-inset-top, 0px))', right: 24, color: 'rgba(255,255,255,.6)', background: 'none', border: 'none', cursor: 'pointer' }}>
-            <X size={28} />
-          </button>
-          {links.map(l => (
-            <a key={l.label} href={l.href} onClick={() => setOpen(false)}
-              style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 700, fontSize: 22, color: 'rgba(255,255,255,.85)', textDecoration: 'none' }}>{l.label}</a>
-          ))}
-          <a href={languageTarget} lang={languageCode} onClick={() => setOpen(false)}
-            style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 700, fontSize: 22, color: 'rgba(255,255,255,.85)', textDecoration: 'none' }}>{languageLabel}</a>
-          <a href={`tel:${phone.replace(/\s/g, '')}`}
-            style={{ color: '#f5a623', fontFamily: 'var(--font-montserrat)', fontWeight: 700, fontSize: 20, marginTop: 8, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Phone size={20} /> {phone}
-          </a>
-        </div>
-      )}
+      {open && <div className="ir-nav-backdrop" onClick={closeToBurger} aria-hidden="true" />}
       <ChatWidget />
     </>
   )
