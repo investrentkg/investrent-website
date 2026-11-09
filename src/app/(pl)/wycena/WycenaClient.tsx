@@ -11,7 +11,7 @@ import PhoneBlock from './PhoneBlock'
 import MarketCard from './MarketCard'
 import { showAiEstimate } from '@/lib/wycenaAiVisibility'
 import { PHONE_BLOCK_TEXTS } from './phoneBlockTexts'
-import { PHONE_BLOCK_ON, WYCENA_LAYOUT_V4_ACTIVE, WYCENA_META_TRACKING_ON } from '@/lib/wycenaFlags'
+import { PHONE_BLOCK_ON, WYCENA_LAYOUT_V4_ACTIVE, WYCENA_META_TRACKING_ON, WYCENA_RESULT_V2_MODE, WYCENA_RESULT_V2_ELIGIBLE } from '@/lib/wycenaFlags'
 import WycenaMetaPixel, { trackWycenaMetaLead } from '@/components/WycenaMetaPixel'
 import { hasAdsConsent } from '@/lib/consentStore'
 import { buildWycenaMetaTracking } from '@/lib/wycenaMetaPixel'
@@ -25,6 +25,7 @@ import {
 } from '@/lib/valuation'
 import { T } from './texts'
 import { WYCENA_V4_TEXTS as V4 } from './wycenaV4Texts'
+import { WYCENA_V2_TEXTS as V2 } from './wycenaV2Texts'
 import { CITY_LIST, KOLOBRZEG_DISTRICTS, OTHER_CITY, OTHER_DISTRICT } from '@/lib/localities'
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.investrent.com.pl'
@@ -82,11 +83,21 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
   const [leadDone, setLeadDone] = useState(false)
   const [cardKind, setCardKind] = useState<'card' | 'nodata' | 'none' | null>(null)
   const stickyLogged = useRef(false)
-  const funnelVariant = PHONE_BLOCK_ON ? { variant: 'phone_block' } : {}
+  // wynik_v2: tryb 'ab' losuje wariant 50/50 przy wejsciu (bez cookies i storage); do czasu losowania (SSR/hydracja) obowiazuje uklad dotychczasowy.
+  const [v2Arm, setV2Arm] = useState<'v2' | 'v1' | null>(WYCENA_RESULT_V2_ELIGIBLE && WYCENA_RESULT_V2_MODE === 'on' ? 'v2' : null)
+  useEffect(() => { if (WYCENA_RESULT_V2_ELIGIBLE && WYCENA_RESULT_V2_MODE === 'ab') setV2Arm(Math.random() < 0.5 ? 'v2' : 'v1') }, [])
+  const v2Active = WYCENA_RESULT_V2_ELIGIBLE && v2Arm === 'v2'
+  const funnelVariant = WYCENA_RESULT_V2_ELIGIBLE && v2Arm ? { variant: v2Arm === 'v2' ? 'wynik_v2' : 'wynik_v1' } : PHONE_BLOCK_ON ? { variant: 'phone_block' } : {}
   const startLogged = useRef(false)
   const showSticky = available && phase === 'after' && !!outcome && armed && !leadInView && !ctaInView && !leadDone
 
-  useEffect(() => { trackValuation('wycena_view'); sendFunnelStep('entry', funnelVariant) }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { trackValuation('wycena_view') }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  const entryLogged = useRef(false)
+  useEffect(() => { // krok 'entry' po ustaleniu ramienia testu (w trybie 'ab' tuz po losowaniu), zeby wariant byl poprawny
+    if (entryLogged.current) return
+    if (WYCENA_RESULT_V2_ELIGIBLE && WYCENA_RESULT_V2_MODE === 'ab' && !v2Arm) return
+    entryLogged.current = true; sendFunnelStep('entry', funnelVariant)
+  }, [v2Arm]) // eslint-disable-line react-hooks/exhaustive-deps
   // licznik lejka (flaga NEXT_PUBLIC_WYCENA_FUNNEL, domyslnie wylaczony): consent_screen = pojawienie sie bloku/panelu telefonu po wyniku
   const consentLogged = useRef(false)
   useEffect(() => {
@@ -317,8 +328,8 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
         {available && phase === 'after' && outcome && (
           <div ref={resultRef} tabIndex={-1} style={{ outline: 'none', display: 'flex', flexDirection: 'column', gap: 24, scrollMarginTop: 88 }}>
             {/* flaga NEXT_PUBLIC_WYCENA_PHONE_BLOCK: dla wyniku z liczbami blok telefonu jest BEZPOSREDNIO pod przedzialem (w karcie wyniku), bez osobnej karty kontaktu pod spodem */}
-            <OutcomePanel showAi={showAiEstimate(cardKind)} outcome={outcome} scoped={!isOutOfScope(submittedValues)} wider={!isKolobrzeg(submittedValues.city)} onAgain={reset} onCta={() => goToLead('result')}
-              marketCardSlot={WYCENA_LAYOUT_V4_ACTIVE && outcome.kind === 'range' ? <MarketCard token={outcome.valuationToken ?? null} onKind={setCardKind} areaM2={Number(submittedValues.area_m2.trim().replace(',', '.')) || null} /> : undefined}
+            <OutcomePanel v2={v2Active} showAi={!v2Active && showAiEstimate(cardKind)} outcome={outcome} scoped={!isOutOfScope(submittedValues)} wider={!isKolobrzeg(submittedValues.city)} onAgain={reset} onCta={() => goToLead('result')}
+              marketCardSlot={WYCENA_LAYOUT_V4_ACTIVE && outcome.kind === 'range' ? <MarketCard token={outcome.valuationToken ?? null} onKind={setCardKind} v2={v2Active} areaM2={Number(submittedValues.area_m2.trim().replace(',', '.')) || null} /> : undefined}
               leadSlot={WYCENA_LAYOUT_V4_ACTIVE && outcome?.kind === 'range' ? (
                 <div ref={leadWrapRef} id="wy-lead" style={{ scrollMarginTop: 88 }}>
                   <LeadPanel outcome={outcome} values={submittedValues} v4Contact v4NoData={cardKind === 'nodata'} onDone={() => { setLeadDone(true); sendFunnelStep('submit', funnelVariant) }} />
@@ -397,7 +408,7 @@ function ContactFallback({ placement }: { placement: string }) {
   )
 }
 
-function OutcomePanel({ outcome, scoped, wider, onAgain, onCta, marketCardSlot, leadSlot, showAi = true }: { outcome: EstimateOutcome; scoped: boolean; wider: boolean; onAgain: () => void; onCta: () => void; marketCardSlot?: React.ReactNode; leadSlot?: React.ReactNode; showAi?: boolean }) {
+function OutcomePanel({ outcome, scoped, wider, onAgain, onCta, marketCardSlot, leadSlot, showAi = true, v2 = false }: { v2?: boolean; outcome: EstimateOutcome; scoped: boolean; wider: boolean; onAgain: () => void; onCta: () => void; marketCardSlot?: React.ReactNode; leadSlot?: React.ReactNode; showAi?: boolean }) {
   if (outcome.kind === 'range') {
     return (
       <section style={card} aria-labelledby="wy-res-title">
@@ -454,6 +465,7 @@ function OutcomePanel({ outcome, scoped, wider, onAgain, onCta, marketCardSlot, 
           </div>
         )}
         {leadSlot ?? <ResultCta label={T.cta.primary} onClick={onCta} />}
+        {v2 && <p className="wy-v2-disclaimer">{V2.disclaimer} <a href="#wy-v2-diff">{V2.disclaimerLink}</a></p>}
         <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '14px 0 8px' }}><strong>{T.result.scopeNote}</strong></p>
         {wider && <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '0 0 8px' }}>{T.result.scopeNoteWider}</p>}
         {outcome.comparables && <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '0 0 8px' }}>{T.result.comparables(outcome.comparables.min, outcome.comparables.max)}</p>}

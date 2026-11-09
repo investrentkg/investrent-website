@@ -21,3 +21,7 @@ export const WYCENA_LAYOUT_V4_FLAG: boolean = process.env.NEXT_PUBLIC_WYCENA_LAY
 /** Blok kontaktu v4 musi być zaakceptowany razem z nową kwotą; domyślnie OFF do akceptacji tekstu przez Prawnika i Daniela. */
 export const WYCENA_NOTICE_V4_FLAG: boolean = process.env.NEXT_PUBLIC_WYCENA_NOTICE_V4 === 'on'
 export const WYCENA_LAYOUT_V4_ACTIVE: boolean = WYCENA_LAYOUT_V4_FLAG && MARKET_CARD_ACTIVE && WYCENA_NOTICE_V4_FLAG
+
+/** wynik_v2 (makieta 3, 09.11.2026): dwa osobne bloki cen (oferty / sprzedane), ramka roznicy, stale zastrzezenie. Wartosci: "on" = dla wszystkich, "ab" = test A/B 50/50 losowany przy wejsciu na strone (bez cookies i storage). Dziala WYLACZNIE razem z aktywnym ukladem v4. */
+export const WYCENA_RESULT_V2_MODE: 'on' | 'ab' | 'off' = process.env.NEXT_PUBLIC_WYCENA_RESULT_V2 === 'on' ? 'on' : process.env.NEXT_PUBLIC_WYCENA_RESULT_V2 === 'ab' ? 'ab' : 'off'
+export const WYCENA_RESULT_V2_ELIGIBLE: boolean = WYCENA_RESULT_V2_MODE !== 'off' && WYCENA_LAYOUT_V4_ACTIVE

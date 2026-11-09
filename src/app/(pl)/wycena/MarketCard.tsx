@@ -9,6 +9,7 @@ import { summarizeMarketCardV4 } from '@/lib/marketCardV4'
 import { WYCENA_LAYOUT_V4_ACTIVE } from '@/lib/wycenaFlags'
 import { MARKET_CARD_TEXTS as M } from './marketCardTexts'
 import { WYCENA_V4_TEXTS as V4 } from './wycenaV4Texts'
+import { WYCENA_V2_TEXTS as V2 } from './wycenaV2Texts'
 
 // Karta rynku pod wynikiem (flaga NEXT_PUBLIC_WYCENA_MARKET_CARD + gotowy tekst zgody): DWIE wartosci osobno, bez mediany lacznej.
 // Gdy API nie ma danych / blad: karta sie nie renderuje (blok telefonu dziala dalej bez niej).
@@ -112,7 +113,59 @@ function V4MarketCard({ view, areaM2, condition, setCondition, busy }: { view: N
   )
 }
 
-export default function MarketCard({ token, areaM2 = null, onKind }: { token: string | null; areaM2?: number | null; onKind?: (kind: 'card' | 'nodata' | 'none' | null) => void }) {
+/** wynik_v2 (makieta 3): dwa rownorzedne bloki obok siebie, oferty i sprzedane, bez laczenia i usredniania; filtr stanu dotyczy tylko ofert. */
+function V2MarketCard({ view, areaM2, condition, setCondition, busy }: { view: NonNullable<ReturnType<typeof useMarketCard>['view']>; areaM2: number | null; condition: CardCondition | null; setCondition: (value: CardCondition | null) => void; busy: boolean }) {
+  const summary = summarizeMarketCardV4(view, areaM2)
+  const offers = view.kind === 'card' ? view.offers : null
+  const transactions = view.kind === 'card' ? view.transactions : null
+  const asOfDate = view.kind === 'card' ? fmtAsOfDate(view.asOfDate) : null
+  const offerCount = offers ? (offers.conditionCount ?? offers.count) : 0
+  const area = areaM2 && areaM2 > 0 ? areaM2 : null
+  if (!area || (!summary.transactions && !summary.offers && !transactions)) return null
+  return (
+    <section className="wy-v2" aria-label="Ceny w okolicy dla podobnego metrażu" aria-busy={busy}>
+      <p className="wy-v2-heading">{V2.heading(area)}</p>
+      <div className="wy-v2-grid">
+        <article className="wy-v2-box wy-v2-offers" aria-labelledby="wy-v2-offers-title">
+          <h4 id="wy-v2-offers-title">{V2.offers.title}</h4>
+          {summary.offers ? <>
+            <p className="wy-v2-amount">{V2.offers.amount(summary.offers.low, summary.offers.high)}</p>
+            <p className="wy-v2-desc">{V2.offers.desc(area, condition !== null)}</p>
+            <p className="wy-v2-meta">{V2.offers.meta(offerCount, asOfDate)}</p>
+          </> : <p className="wy-v2-desc">{V2.offers.empty}</p>}
+        </article>
+        <article className="wy-v2-box wy-v2-sold" aria-labelledby="wy-v2-sold-title">
+          <h4 id="wy-v2-sold-title">{V2.sold.title}</h4>
+          {summary.transactions && transactions ? <>
+            <p className="wy-v2-amount">{V2.sold.amount(summary.transactions.low, summary.transactions.high)}</p>
+            <p className="wy-v2-desc">{V2.sold.desc(area)}</p>
+            <p className="wy-v2-meta">{V2.sold.meta(transactions.count, transactions.asOf)}</p>
+          </> : <>
+            <p className="wy-v2-amount wy-v2-amount-empty">{V2.sold.emptyTitle}</p>
+            <p className="wy-v2-desc">{V2.sold.emptyBody}</p>
+            {transactions && <p className="wy-v2-meta">{V2.sold.meta(transactions.count, transactions.asOf)}</p>}
+          </>}
+        </article>
+      </div>
+      <div className="wy-v2-condition">
+        <label htmlFor="wy-v2-cond">{M.conditionLabel}</label>
+        <select id="wy-v2-cond" className="wy-field" value={condition ?? ''} onChange={e => setCondition((e.target.value || null) as CardCondition | null)}>
+          <option value="">{M.conditionAll}</option>
+          {CARD_CONDITIONS.map(c => <option key={c} value={c}>{CONDITION_LABELS[c]}</option>)}
+        </select>
+      </div>
+      <div className="wy-v2-diff" id="wy-v2-diff">
+        <p><strong>{V2.diff.title}</strong> {V2.diff.body}</p>
+        <details>
+          <summary>{V2.diff.more}</summary>
+          <p>{V2.diff.moreBody}</p>
+        </details>
+      </div>
+    </section>
+  )
+}
+
+export default function MarketCard({ token, areaM2 = null, onKind, v2 = false }: { token: string | null; areaM2?: number | null; onKind?: (kind: 'card' | 'nodata' | 'none' | null) => void; v2?: boolean }) {
   const { view, condition, setCondition, busy } = useMarketCard(token)
   const kind = view?.kind ?? null
   useEffect(() => { onKind?.(kind) }, [kind, onKind])
@@ -121,6 +174,7 @@ export default function MarketCard({ token, areaM2 = null, onKind }: { token: st
   if (view.kind === 'nodata' && WYCENA_LAYOUT_V4_ACTIVE) return null
   if (view.kind === 'none' && condition === null) return null // blad/flaga CRM off: bez karty, formularz telefonu dziala dalej
   if (view.kind === 'nodata' && condition === null && !WYCENA_LAYOUT_V4_ACTIVE) return <p role="status" style={{ ...hintStyle, margin: '0 0 12px' }}>{M.noData}</p>
+  if (WYCENA_LAYOUT_V4_ACTIVE && v2) return <V2MarketCard view={view} areaM2={areaM2} condition={condition} setCondition={setCondition} busy={busy} />
   if (WYCENA_LAYOUT_V4_ACTIVE) return <V4MarketCard view={view} areaM2={areaM2} condition={condition} setCondition={setCondition} busy={busy} />
   const card = view.kind === 'card' ? view : { asOfDate: null, band: null, offers: null, transactions: null }
   return (
