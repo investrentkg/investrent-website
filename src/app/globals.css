@@ -640,7 +640,7 @@ html, body {
 .wy-details > summary { display: flex; align-items: center; min-height: 44px; cursor: pointer; color: #1a4fa0; font-weight: 600; text-decoration: underline; }
 .wy-details[open] > summary { margin-bottom: 8px; }
 
-/* ¦¦ /wycena: blok telefonu pod wynikiem + telefon (375 px) ¦¦ */
+/* ï¿½ï¿½ /wycena: blok telefonu pod wynikiem + telefon (375 px) ï¿½ï¿½ */
 .wy-phoneblock { margin: 16px 0 4px; padding: 16px; background: #f0f6ff; border: 1px solid #bfdbfe; border-radius: 14px; }
 .wy-pb-title { font-family: var(--font-montserrat); font-weight: 800; font-size: 18px; color: #0d2a5c; margin: 0 0 8px; line-height: 1.3; }
 .wy-consent-row { display: flex; gap: 12px; align-items: flex-start; margin-top: 14px; }
@@ -703,4 +703,75 @@ html:has(.wy-pad) { scroll-padding-bottom: calc(var(--consent-h, 0px) + 96px); }
   .offer-title { font-size: 28px; }
   .offer-price { font-size: 32px; }
   .offer-aside { position: sticky; }
+}
+/* ===== Stopka wg makiet M1/M2 (09.11.2026) - Footer.tsx, FooterGroup.tsx ===== */
+.ft { background: #0d2a5c; color: rgba(255,255,255,.9); border-top: 4px solid #f5a623; padding: 48px 0 0; font-size: 14px; }
+.ft a { color: inherit; text-decoration: none; }
+.ft a:hover { color: #fff; text-decoration: underline; }
+.ft-cols { display: grid; grid-template-columns: 1.3fr 1fr 1fr 1.5fr; gap: 40px; }
+.ft-logo { display: flex; align-items: center; gap: 11px; }
+.ft-logo img { height: 50px; width: auto; display: block; }
+.ft-logo b { display: block; font-family: var(--font-montserrat), Arial Black, sans-serif; font-weight: 800; font-size: 17px; letter-spacing: .5px; line-height: 1; color: #fff; }
+.ft-logo i { display: block; font-style: normal; font-size: 9px; letter-spacing: 2px; color: rgba(255,255,255,.8); margin-top: 3px; }
+.ft-desc { font-size: 14px; line-height: 1.55; margin: 14px 0 16px; max-width: 260px; }
+.ft-soc { display: flex; flex-wrap: wrap; gap: 10px; }
+.ft-soc a { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; min-height: 44px; }
+.ft-soc .social-icon { flex-shrink: 0; width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.55); display: flex; align-items: center; justify-content: center; }
+.ft-soc svg { width: 18px; height: 18px; fill: #fff; }
+.ft h4, .ft summary { font-size: 12px; letter-spacing: 1.8px; text-transform: uppercase; color: #f5a623; font-weight: 700; margin: 0 0 14px; }
+.ft summary { list-style: none; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
+.ft summary::-webkit-details-marker { display: none; }
+.ft summary span { display: none; }
+.ft-list { list-style: none; margin: 0; padding: 0; }
+.ft-list li { padding: 0; }
+.ft-list a { display: inline-flex; align-items: center; min-height: 32px; padding: 4px 0; }
+.ft-kon { font-style: normal; }
+.ft-kon p { margin: 0; padding: 4px 0; line-height: 1.45; }
+.ft-kon .ft-ph { font-size: 19px; font-weight: 800; color: #fff; }
+.ft-kon p a { display: inline-flex; align-items: center; min-height: 44px; }
+.ft-btn { display: inline-flex; align-items: center; justify-content: center; margin-top: 10px; min-height: 44px; padding: 0 18px; border-radius: 10px; background: #f5a623; color: #1a1a1a !important; font-weight: 700; font-size: 13.5px; }
+.ft-btn:hover { text-decoration: none !important; filter: brightness(1.05); }
+.ft-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0 22px; border-top: 1px solid rgba(255,255,255,.18); padding: 6px 0; margin-top: 30px; }
+.ft-row + .ft-row { margin-top: 0; border-top: 0; padding-top: 0; }
+.ft-row h5 { font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,.8); width: 80px; font-weight: 700; margin: 0; }
+.ft-row a { display: inline-flex; align-items: center; min-height: 44px; }
+.ft-bot { border-top: 1px solid rgba(255,255,255,.18); padding: 18px 0 22px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px; font-size: 13px; }
+.ft-r { text-align: right; }
+.ft-r a, .ft-r button { display: inline-flex; align-items: center; min-height: 44px; }
+.ft-r button { background: none; border: none; padding: 0; cursor: pointer; font: inherit; color: inherit; }
+.ft-r button:hover { text-decoration: underline !important; color: #fff; }
+.ft-de { font-size: 14px; color: #fff; display: flex; flex-wrap: wrap; justify-content: flex-end; }
+.ft-de span { display: inline-flex; align-items: center; }
+.ft-dot { margin: 0 8px; }
+.ft-co { line-height: 1.7; }
+@media (max-width: 767px) {
+  .ft { padding-top: 20px; }
+  .ft > .container { display: flex; flex-direction: column; }
+  .ft-cols { display: contents; }
+  .ft-biuro { order: 4; }
+  .ft-okolice { order: 5; }
+  .ft-bot { order: 7; }
+  .ft-kon { order: 1; margin-bottom: 8px; }
+  .ft-oferty { order: 2; }
+  .ft-uslugi { order: 3; }
+  .ft-brand { order: 6; border-top: 1px solid rgba(255,255,255,.2); padding-top: 14px; }
+  .ft-kon h4 { margin-bottom: 4px; }
+  .ft-kon p { padding: 2px 0; }
+  .ft-kon .ft-btn { width: 100%; font-size: 16px; min-height: 48px; margin-top: 6px; }
+  .ft-group { border-top: 1px solid rgba(255,255,255,.2); }
+  .ft-group summary { pointer-events: auto; cursor: pointer; min-height: 48px; margin: 0; font-size: 15px; letter-spacing: 0; text-transform: none; color: #fff; }
+  .ft-group summary span { display: inline; font-size: 22px; color: #f5a623; font-weight: 400; }
+  .ft-group[open] summary span { display: none; }
+  .ft-group[open] summary::after { content: "\2212"; font-size: 22px; color: #f5a623; font-weight: 400; }
+  .ft-list a { min-height: 44px; }
+  .ft-row { display: grid; grid-template-columns: 1fr 1fr; column-gap: 12px; border-top: 1px solid rgba(255,255,255,.2); margin-top: 0; }
+  .ft-row h5 { grid-column: 1 / -1; width: auto; padding-top: 6px; }
+  .ft-okolice { display: flex; flex-wrap: wrap; column-gap: 22px; border-top: 0; }
+  .ft-okolice h5 { width: 100%; }
+  .ft-brand .ft-logo { display: none; }
+  .ft-desc { font-size: 13px; margin: 8px 0 0; max-width: none; }
+  .ft-bot { grid-template-columns: 1fr; gap: 8px; padding: 12px 0 16px; }
+  .ft-r { text-align: left; order: 1; }
+  .ft-co { order: 2; line-height: 1.5; }
+  .ft-de { justify-content: flex-start; }
 }
