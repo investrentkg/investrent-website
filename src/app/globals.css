@@ -840,8 +840,8 @@ html:has(.wy-pad) { scroll-padding-bottom: calc(var(--consent-h, 0px) + 96px); }
   .m3-team { gap: 14px; }
   .m3-mem { flex-basis: calc((100% - 14px) / 1.5); padding: 22px 10px 20px; }
   .m3-pic { width: 112px; height: 112px; }
-  .m3-car-nav { flex-wrap: wrap; }
-  .m3-car-dots { order: 3; width: calc(100% + 40px); margin: 0 -20px; justify-content: center; flex-wrap: wrap; }
+  .m3-car-nav { flex-wrap: nowrap; gap: 4px; }
+  .m3-car-dots button { width: 26px; }
 }
 @media (prefers-reduced-motion: reduce) { .m3-tile, .m3-mem { transition: none; } }
 
@@ -899,7 +899,7 @@ html:has(.wy-pad) { scroll-padding-bottom: calc(var(--consent-h, 0px) + 96px); }
 .m3-map-frame { border: 0 !important; border-radius: 0 !important; overflow: visible !important; }
 .m3-map-frame > div > div:first-child { border: 1px solid #dde3ee; }
 
-@media (max-width: 767px) { h1.heading.m3-h1 { font-size: clamp(22px, 6.6vw, 32px) !important; } }
+@media (max-width: 767px) { h1.heading.m3-h1 { font-size: clamp(26px, 8.2vw, 32px) !important; margin-right: -28px; } }
 
 .m3-ogrid { display: grid; grid-template-columns: repeat(var(--ocols, 3), minmax(0, 1fr)); gap: 28px; }
 @media (max-width: 700px) { .m3-ogrid { gap: 20px; } }
@@ -1042,3 +1042,5 @@ html:has(.wy-pad) { scroll-padding-bottom: calc(var(--consent-h, 0px) + 96px); }
   .ft-co { order: 2; line-height: 1.5; }
   .ft-de { justify-content: flex-start; }
 }
+
+@media (max-width: 700px) { .m3-tabs { flex-wrap: nowrap; font-size: 13px; gap: 4px 8px; } .m3-tabs .more { white-space: nowrap; } }
