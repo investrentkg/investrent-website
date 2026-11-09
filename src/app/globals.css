@@ -948,6 +948,7 @@ html:has(.wy-pad) { scroll-padding-bottom: calc(var(--consent-h, 0px) + 96px); }
   .ir-nav-logo { padding:10px 0; margin-right:auto; }
   .ir-nav-mphone { display:flex; align-items:center; gap:6px; min-height:44px; padding:0 12px; background:#f5a623; color:#1a1a1a; border-radius:8px; font:700 12px var(--font-montserrat), Arial, sans-serif; text-decoration:none; white-space:nowrap; }
   .ir-nav-burger { display:flex; align-items:center; justify-content:center; width:44px; height:44px; color:#fff; background:none; border:0; cursor:pointer; padding:0; }
+  .ir-nav.is-open .ir-nav-mphone { display:none; }
   .ir-nav-panel { display:none; position:absolute; left:0; right:0; top:100%; z-index:101; background:rgba(13,42,92,.98); padding:0 16px 16px; flex-direction:column; justify-content:flex-start; gap:0; border-top:1px solid rgba(255,255,255,.12); box-shadow:0 18px 40px rgba(9,30,64,.35); max-height:calc(100vh - 72px); max-height:calc(100dvh - 72px); overflow-y:auto; overscroll-behavior:contain; }
   .ir-nav-backdrop { display:block; position:fixed; inset:0; z-index:99; background:rgba(5,15,35,.55); }
   .ir-nav.is-open .ir-nav-panel { display:flex; }
