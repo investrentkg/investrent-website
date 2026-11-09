@@ -1,21 +1,21 @@
 import type { Metadata, Viewport } from 'next'
-import { Montserrat, Inter } from 'next/font/google'
+import localFont from 'next/font/local'
 import ConsentManager from '@/components/ConsentManager'
 import GoogleAnalytics from '@/components/GoogleAnalytics'
 import '../globals.css'
 import AttributionCapture from '@/components/AttributionCapture'
 import TelClickTracker from '@/components/TelClickTracker'
 
-const montserrat = Montserrat({
-  subsets: ['latin', 'latin-ext'],
-  weight: ['400', '500', '600', '700', '800', '900'],
+// Fonty self-hostowane (src/fonts, licencja OFL): build NIE pobiera CSS z Google Fonts (09.11.2026 next/font/google
+// zaczal padac na Vercelu: "Cannot read properties of null (reading '1')" - rowniez dla main). Zakres znakow: latin + latin-ext.
+const montserrat = localFont({
+  src: [{ path: '../../fonts/Montserrat-latin-ext-VF.woff2', weight: '100 900', style: 'normal' }],
   variable: '--font-montserrat',
   display: 'swap',
 })
 
-const inter = Inter({
-  subsets: ['latin', 'latin-ext'],
-  weight: ['400', '500', '600', '700'],
+const inter = localFont({
+  src: [{ path: '../../fonts/Inter-latin-ext-VF.woff2', weight: '100 900', style: 'normal' }],
   variable: '--font-inter',
   display: 'swap',
 })
