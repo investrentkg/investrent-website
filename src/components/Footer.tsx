@@ -37,9 +37,11 @@ const BIURO: L[] = [
 ]
 // Okolice: z danych (zatwierdzone miejscowosci huba), bez twardo wpisanych nazw -
 // dla innego biura zestaw bedzie inny (docelowo z CRM).
+// Zestaw wg makiety M1 (konfiguracja stopki; docelowo per biuro z CRM).
+const FOOTER_LOCALITY_SLUGS = ['ustronie-morskie']
 const OKOLICE: L[] = [
   { label: 'Kołobrzeg', href: '/kolobrzeg' },
-  ...LOCALITIES.filter(l => l.status === 'approved').map(l => ({ label: l.name, href: `${HUB.path}/${l.slug}` })),
+  ...LOCALITIES.filter(l => l.status === 'approved' && FOOTER_LOCALITY_SLUGS.includes(l.slug)).map(l => ({ label: l.name, href: `${HUB.path}/${l.slug}` })),
 ]
 const DE_LINKS: L[] = [
   { label: 'Immobilien Kolberg (DE)', href: '/de/immobilien-kolberg' },
@@ -50,6 +52,8 @@ const DE_LINKS: L[] = [
 // Dane NAP: najpierw dane biura z API (jedno zrodlo prawdy), w razie braku ten sam
 // fallback co w not-found.tsx / offerPageImpl.tsx.
 const FALLBACK_NAP = { address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl' }
+// Social: zawsze w stopce - dane biura, a gdy API zwroci pusto, te same adresy co na zywej stronie.
+const FALLBACK_SOCIAL = { facebook: 'https://www.facebook.com/profile.php?id=61578147880836', instagram: 'https://www.instagram.com/invest.rent/' }
 const OFFICE_NAME = 'InvestRent Nieruchomości'
 // Godziny zgodne z openingHoursSpecification w src/lib/officeSchema.ts (Pn-Pt 08-16, Sob 10-15).
 const HOURS = 'Pon–Pt 8:00–16:00, Sob 10:00–15:00'
@@ -67,6 +71,8 @@ export default function Footer({ office }: { office: Office | null }) {
   const [street, ...rest] = addr.split(/,\s*/)
   const phone = office?.phone || FALLBACK_NAP.phone
   const email = office?.email || FALLBACK_NAP.email
+  const fbUrl = office?.facebook_url || FALLBACK_SOCIAL.facebook
+  const igUrl = office?.instagram_url || FALLBACK_SOCIAL.instagram
   const telHref = 'tel:' + phone.replace(/[^+\d]/g, '')
   return (
     <footer className="ft">
@@ -81,15 +87,15 @@ export default function Footer({ office }: { office: Office | null }) {
             <p className="ft-desc">Biuro nieruchomości w Kołobrzegu. Kupno, sprzedaż, wynajem.</p>
             {/* Social: tylko gdy link ustawiony w Ustawieniach biura. Footer to Server Component -
                 hover wylacznie przez CSS (.social-icon), bez handlerow zdarzen (naprawa 17.07.2026). */}
-            {(office?.facebook_url || office?.instagram_url) && (
+            {(
               <div className="ft-soc">
-                {office?.facebook_url && (
-                  <a href={office.facebook_url} target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                {(
+                  <a href={fbUrl} target="_blank" rel="noopener noreferrer" aria-label="Facebook">
                     <span className="social-icon"><svg viewBox="0 0 24 24"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.9c0-.9.3-1.5 1.6-1.5h1.7V4.5c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.5-4 4.1v2.3H7.7V14h2.7v8z"/></svg></span>Facebook
                   </a>
                 )}
-                {office?.instagram_url && (
-                  <a href={office.instagram_url} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                {(
+                  <a href={igUrl} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                     <span className="social-icon"><svg viewBox="0 0 24 24"><path d="M7.5 2h9A5.5 5.5 0 0122 7.5v9a5.5 5.5 0 01-5.5 5.5h-9A5.5 5.5 0 012 16.5v-9A5.5 5.5 0 017.5 2zm0 2A3.5 3.5 0 004 7.5v9A3.5 3.5 0 007.5 20h9a3.5 3.5 0 003.5-3.5v-9A3.5 3.5 0 0016.5 4zM12 7a5 5 0 110 10 5 5 0 010-10zm0 2a3 3 0 100 6 3 3 0 000-6zm5.3-3.2a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"/></svg></span>Instagram
                   </a>
                 )}
