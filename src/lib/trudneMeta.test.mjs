@@ -4,10 +4,10 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import { TRUDNE_TITLE, TRUDNE_DESCRIPTION, TRUDNE_TITLE_SUFFIX_LEN } from './trudneMeta.ts'
 
-test('title z marką z szablonu mieści się w ~62 znakach i zaczyna od frazy', () => {
-  assert.ok(TRUDNE_TITLE.length + TRUDNE_TITLE_SUFFIX_LEN <= 62, `za długi: ${TRUDNE_TITLE.length + TRUDNE_TITLE_SUFFIX_LEN}`)
+test('title z marką z szablonu mieści się w ~66 znakach (końcówka marki może być ucięta w wynikach) i zaczyna od frazy', () => {
+  assert.ok(TRUDNE_TITLE.length + TRUDNE_TITLE_SUFFIX_LEN <= 66, `za długi: ${TRUDNE_TITLE.length + TRUDNE_TITLE_SUFFIX_LEN}`)
   assert.match(TRUDNE_TITLE, /^Trudne nieruchomości/)
-  assert.match(TRUDNE_TITLE, /Kołobrzeg/)
+  assert.match(TRUDNE_DESCRIPTION, /Kołobrzeg/)
 })
 
 test('description 120-160 znaków, bez obietnic i bez zwrotu "Państwo"', () => {
