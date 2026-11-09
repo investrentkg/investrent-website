@@ -14,6 +14,11 @@ test('blok ścieżek: cztery równorzędne cele, sprzedający i kupujący obok s
 test('blok jest na stronie głównej i na /oferty (poza widokiem agenta), nie zmienia metadanych', () => {
   const home = fs.readFileSync(new URL('../app/(pl)/page.tsx', import.meta.url), 'utf8')
   const oferty = fs.readFileSync(new URL('../app/(pl)/oferty/page.tsx', import.meta.url), 'utf8')
-  assert.ok(home.includes('<PathChoice id="sciezki-home" />'))
+  // makieta M3 (09.11.2026): na głównej jedna rodzina usług (HomeServices) zastępuje PathChoice; wszystkie cele bloku zostają
+  assert.ok(home.includes('<HomeServices id="sciezki-home" />'))
+  const hs = fs.readFileSync(new URL('./HomeServices.tsx', import.meta.url), 'utf8')
+  for (const l of PATH_CHOICE_LINKS) { assert.ok(hs.includes(`href: '${l.href}'`), `HomeServices zachowuje link ${l.href}`) }
+  for (const h of ['/oferty', '/wynajem', '/trudne-nieruchomosci', '/sprzedaz']) { assert.ok(hs.includes(`'${h}'`), `HomeServices zachowuje link ${h}`) }
+  assert.ok(hs.includes('Czego dziś szukasz?') && hs.includes('Kompleksowa obsługa nieruchomości'))
   assert.ok(oferty.includes('{!agent_id && <PathChoice id="sciezki-oferty" />}'))
 })

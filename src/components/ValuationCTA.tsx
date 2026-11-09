@@ -39,7 +39,7 @@ export default function ValuationCTA() {
             <a href="/wycena" className="btn-gold cta-pulse text-[16px] font-extrabold px-11 py-4">
               <Award size={18} /> Chcę bezpłatną wycenę
             </a>
-            <span className="text-white/40 text-[12px] text-center">
+            <span className="text-white/80 text-[12px] text-center">
               Odpowiadamy najpóźniej w ciągu 24 godzin · +48 731 554 341
             </span>
           </div>

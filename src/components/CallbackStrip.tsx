@@ -1,10 +1,11 @@
 "use client"
 import { useState } from 'react'
-import { PhoneForwarded } from 'lucide-react'
 import { submitLead } from '@/lib/api'
 import PrivacyNote from '@/components/PrivacyNote'
 import SuccessBadge from '@/components/SuccessBadge'
 
+// Pas oddzwonienia (makieta M3): biały pas z 3 korzyściami, jedno pole telefonu, WhatsApp jako link tekstowy.
+// Logika wysyłki bez zmian (source callback_strip).
 export default function CallbackStrip() {
   const [phone, setPhone] = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle')
@@ -14,7 +15,8 @@ export default function CallbackStrip() {
     return /^(\+?[1-9]\d{7,14}|\d{9})$/.test(cleaned)
   }
 
-  async function handleCall() {
+  async function handleCall(e: React.FormEvent) {
+    e.preventDefault()
     if (!phone.trim()) return
     if (!isValidPhone(phone)) {
       setStatus('error')
@@ -26,51 +28,39 @@ export default function CallbackStrip() {
   }
 
   return (
-    <div style={{ backgroundColor: '#f5a623', padding: '20px 0' }}>
+    <section className="m3-call" aria-label="Oddzwonimy">
       <div className="container">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <div style={{ width: 48, height: 48, background: 'rgba(255,255,255,.22)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }} className="cta-pulse-navy">
-              <PhoneForwarded size={22} color="white" />
-            </div>
-            <div>
-              <div style={{ fontFamily: 'var(--font-montserrat), Arial, sans-serif', fontWeight: 800, color: 'white', fontSize: 17, letterSpacing: -0.3, marginBottom: 2 }}>
-                Oddzwonimy najpóźniej w ciągu 24 godzin
-              </div>
-              <div style={{ color: 'rgba(255,255,255,.8)', fontSize: 12 }}>
-                Zostaw numer — nasz doradca do Ciebie oddzwoni
-              </div>
-            </div>
+        <div className="m3-call-in">
+          <div>
+            <div className="ttl">Oddzwonimy najpóźniej w ciągu 24 godzin</div>
+            <p className="sub">Zostaw numer — nasz doradca do Ciebie oddzwoni.</p>
+            <ul className="m3-bens">
+              <li>Bez zobowiązań</li>
+              <li>Kontakt w 24 h</li>
+              <li>Rzetelna wycena</li>
+            </ul>
           </div>
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+          <form className="m3-cf" onSubmit={handleCall} noValidate>
             {status === 'ok' ? (
-              <SuccessBadge text="Oddzwonimy wkrótce!" style={{ background: 'rgba(255,255,255,.2)', color: 'white', fontWeight: 700, padding: '12px 24px', borderRadius: 12, fontSize: 13 }} />
+              <SuccessBadge text="Oddzwonimy wkrótce!" style={{ color: '#047857', fontWeight: 700, fontSize: 15, padding: '12px 0' }} />
             ) : (
               <>
                 <input
                   type="tel" aria-label="Numer telefonu" value={phone} onChange={e => setPhone(e.target.value)}
-                  placeholder="+48 … wpisz numer telefonu"
-                  style={{ background: 'rgba(255,255,255,.95)', borderRadius: 10, padding: '11px 16px', fontSize: 13, color: '#374151', width: 210, border: 'none', outline: 'none' }}
+                  placeholder="+48 Numer telefonu" autoComplete="tel"
+                  aria-invalid={status === 'error'}
                 />
-                <button onClick={handleCall} disabled={status === 'loading'}
-                  className="cta-pulse-navy"
-                  style={{ background: '#0d2a5c', color: 'white', fontSize: 12, fontWeight: 700, padding: '12px 20px', borderRadius: 10, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 7, whiteSpace: 'nowrap' }}>
-                  <PhoneForwarded size={14} />
+                <button type="submit" disabled={status === 'loading'}>
                   {status === 'loading' ? '…' : 'Zostaw numer, oddzwonimy!'}
                 </button>
-                <a href="https://wa.me/48731554341" target="_blank" rel="noopener noreferrer"
-                  style={{ background: '#25D366', color: 'white', fontSize: 12, fontWeight: 700, padding: '12px 16px', borderRadius: 10, display: 'flex', alignItems: 'center', gap: 5, whiteSpace: 'nowrap', textDecoration: 'none' }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21zm4.5-2.4a7 7 0 1 0-1.1-1.1l-.9 2 2-.9z"/>
-                  </svg>
-                  WhatsApp
-                </a>
-                <PrivacyNote color="rgba(255,255,255,.75)" linkColor="white" style={{ flexBasis: '100%', textAlign: 'left' }} />
+                {status === 'error' && <p role="alert" style={{ flexBasis: '100%', color: '#b91c1c', fontSize: 13, margin: 0 }}>Nie udało się wysłać. Sprawdź numer telefonu i spróbuj ponownie.</p>}
+                <span className="m3-wa">lub napisz na <a href="https://wa.me/48731554341" target="_blank" rel="noopener noreferrer">WhatsApp</a></span>
+                <PrivacyNote color="#5a6680" size={11} style={{ flexBasis: '100%', textAlign: 'left' }} />
               </>
             )}
-          </div>
+          </form>
         </div>
       </div>
-    </div>
+    </section>
   )
 }

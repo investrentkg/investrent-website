@@ -4,22 +4,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import type { TeamMember } from '@/types'
-import ScrollReveal from '@/components/ScrollReveal'
 
-const BADGE_STYLE: Record<string, { bg: string; text: string; label: string }> = {
-  manager:    { bg: 'bg-amber-100',   text: 'text-amber-800',   label: 'Management' },
-  agent:      { bg: 'bg-blue/8',      text: 'text-blue',        label: 'Agent' },
-  superadmin: { bg: 'bg-slate-100',   text: 'text-slate-600',   label: 'Admin' },
-}
-const AVATAR_GRADIENT: string[] = [
-  'from-blue to-navy',
-  'from-gold to-amber-500',
-  'from-emerald-500 to-emerald-700',
-  'from-violet-500 to-violet-700',
-  'from-red-500 to-red-700',
-  'from-sky-500 to-sky-700',
-]
-
+const BADGE_LABEL: Record<string, string> = { manager: 'Management', agent: 'Agent', superadmin: 'Admin' }
 interface Props { members: TeamMember[] }
 
 export default function Team({ members }: Props) {
@@ -30,9 +16,9 @@ export default function Team({ members }: Props) {
   const scrollerRef = useRef<HTMLDivElement>(null)
   const [cur, setCur] = useState(0)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
-  const [perView, setPerView] = useState(3)
+  const [perView, setPerView] = useState(4.3)
   useEffect(() => {
-    const update = () => setPerView(window.innerWidth < 640 ? 1 : window.innerWidth < 1024 ? 2 : 3)
+    const update = () => setPerView(window.innerWidth <= 700 ? 1.5 : window.innerWidth < 1024 ? 2.3 : 4.3)
     update()
     window.addEventListener('resize', update)
     return () => window.removeEventListener('resize', update)
@@ -50,7 +36,7 @@ export default function Team({ members }: Props) {
     { id: 'f9', full_name: 'Sara Kida', role: 'agent', role_label: 'Agent nieruchomości', avatar_url: null, bio: 'Młody i dynamiczny agent z pasją do rynku nieruchomości. Specjalizuje się w obsłudze klientów indywidualnych.', specialization: 'Obsługa klientów indywidualnych' },
   ]
   const displayMembers = members.length > 0 ? members : FALLBACK_MEMBERS
-  const maxSlide = Math.max(0, displayMembers.length - perView)
+  const maxSlide = Math.max(0, Math.ceil(displayMembers.length - perView))
 
   function scrollToIndex(i: number) {
     const el = scrollerRef.current
@@ -58,14 +44,14 @@ export default function Team({ members }: Props) {
     const clamped = Math.max(0, Math.min(maxSlide, i))
     const card = el.children[0] as HTMLElement | undefined
     if (!card) return
-    const cardWidth = card.getBoundingClientRect().width + 20 // + gap (gap-5 = 20px)
+    const cardWidth = card.getBoundingClientRect().width + (parseFloat(getComputedStyle(el).columnGap) || 20)
     el.scrollTo({ left: clamped * cardWidth, behavior: 'smooth' })
   }
 
   function handleScroll() {
     const el = scrollerRef.current
     if (!el || !el.children[0]) return
-    const cardWidth = (el.children[0] as HTMLElement).getBoundingClientRect().width + 20
+    const cardWidth = (el.children[0] as HTMLElement).getBoundingClientRect().width + (parseFloat(getComputedStyle(el).columnGap) || 20)
     if (cardWidth <= 0) return
     setCur(Math.round(el.scrollLeft / cardWidth))
   }
@@ -95,90 +81,57 @@ export default function Team({ members }: Props) {
   }
   return (
     <section id="zespol" className="section section-alt">
-      <style jsx>{`
-        .team-scroller::-webkit-scrollbar { display: none; }
-        .team-scroller { scrollbar-width: none; -ms-overflow-style: none; }
-      `}</style>
       <div className="container">
-        <div className="text-center mb-10">
-          <div className="tag bg-blue/8 text-blue mb-3">Nasz zespół</div>
-          <h2 className="heading text-[30px] text-navy mb-2.5">Eksperci, którym możesz zaufać</h2>
-          <p className="text-slate-500 text-[14px] max-w-lg mx-auto">
-            Każdy klient ma przydzielonego opiekuna prowadzącego przez całą transakcję.
-          </p>
-        </div>
+        <h2 className="heading text-[30px] text-navy mb-2.5" style={{ fontSize: 'clamp(25px, 3.4vw, 30px)' }}>Eksperci, którym możesz zaufać</h2>
+        <p style={{ color: '#5a6680', fontSize: 15 }}>
+          Każdy klient ma przydzielonego opiekuna prowadzącego przez całą transakcję.
+        </p>
 
+        {/* Karuzela zespołu (makieta M3): okrągłe zdjęcia 1:1, wszyscy z API w kolejności ze źródła, przewijanie natywne (scroll-snap) */}
         <div ref={scrollerRef} onScroll={handleScroll} onMouseEnter={pauseAuto} onMouseLeave={resumeAuto}
-          className="team-scroller flex gap-5"
-          style={{ overflowX: 'auto', scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch', paddingBottom: 4 }}>
-            {displayMembers.map((m, idx) => {
-              const b = BADGE_STYLE[m.role] ?? BADGE_STYLE.agent
-              const grad = AVATAR_GRADIENT[idx % AVATAR_GRADIENT.length]
-              return (
-                <ScrollReveal key={m.id} delay={(idx % perView) * 110} style={{ flexShrink: 0, scrollSnapAlign: 'start' as const, width: `calc(${100 / perView}% - ${(perView - 1) * 20 / perView}px)` }}>
-                <Link href={m.offer_count ? `/oferty?agent_id=${m.id}` : '/oferty'}
-                  style={{ textDecoration: 'none', display: 'block' }}>
-              <div className="bg-white rounded-2xl border border-slate-200 p-7 text-center hover:-translate-y-0.5 hover:shadow-lg transition-all cursor-pointer h-full">
-                    <div className="relative w-32 h-32 mx-auto mb-4">
-                      {m.avatar_url ? (
-                        <Image src={m.avatar_url} alt={m.full_name} fill unoptimized
-                          className="rounded-full object-cover shadow-md" sizes="128px" />
-                      ) : (
-                        <div className={`w-32 h-32 rounded-full bg-gradient-to-br ${grad} flex items-center justify-center shadow-md`}>
-                          <span className="font-mont font-black text-[40px] text-white">
-                            {m.full_name.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                          </span>
-                        </div>
-                      )}
-                      {(m.offer_count ?? 0) > 0 && (
-                        <div className="absolute -bottom-1 -right-1 w-12 h-12 rounded-full bg-orange-500 border-4 border-white shadow-md flex flex-col items-center justify-center leading-none">
-                          <span className="text-white font-black text-[15px]">{m.offer_count}</span>
-                          <span className="text-white font-bold text-[7px] tracking-wide">OFERT</span>
-                        </div>
-                      )}
-                    </div>
-                    <div className="text-[15px] font-bold text-slate-900 mb-1">{m.full_name}</div>
-                    <div className="text-[12px] text-slate-500 mb-2 leading-[1.5]">{m.role_label}</div>
-                    {m.specialization && (
-                      <div className="text-[11px] text-slate-400 mb-3">{m.specialization}</div>
-                    )}
-                    <span className={`text-[10px] font-bold px-3 py-1 rounded-md ${b.bg} ${b.text}`}>
-                      {b.label}
-                    </span>
+          className="m3-team" role="region" aria-label="Zespół InvestRent" tabIndex={0}>
+          {displayMembers.map(m => (
+            <Link key={m.id} href={m.offer_count ? `/oferty?agent_id=${m.id}` : '/oferty'} className="m3-mem">
+              <div className="m3-pic">
+                {m.avatar_url ? (
+                  <div className="img">
+                    <Image src={m.avatar_url} alt={m.full_name} fill unoptimized
+                      style={{ objectFit: 'cover', objectPosition: 'center top' }} sizes="128px" />
                   </div>
-                </Link>
-                </ScrollReveal>
-              )
-            })}
+                ) : (
+                  <div className="ini" aria-hidden="true">
+                    {m.full_name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                  </div>
+                )}
+                {(m.offer_count ?? 0) > 0 && (
+                  <span className="m3-ofc" aria-label={`${m.offer_count} ofert`}>
+                    {m.offer_count}
+                    <small>OFERT</small>
+                  </span>
+                )}
+              </div>
+              <b>{m.full_name}</b>
+              <span className="role">{m.role_label}</span>
+              {m.specialization && <span className="role" style={{ marginTop: -6 }}>{m.specialization}</span>}
+              <span className="bdg">{BADGE_LABEL[m.role] ?? 'Agent'}</span>
+            </Link>
+          ))}
         </div>
 
         {displayMembers.length > perView && (
-          <div className="flex items-center justify-center gap-4 mt-6">
-            <button onClick={() => scrollToIndex(cur - 1)} disabled={cur === 0} aria-label="Poprzedni"
-              className="w-9 h-9 rounded-full border-[1.5px] border-slate-200 flex items-center justify-center hover:border-blue hover:text-blue transition-all disabled:opacity-30">
-              <ChevronLeft size={16} />
+          <div className="m3-car-nav">
+            <button type="button" className="m3-car-b" onClick={() => scrollToIndex(cur - 1)} disabled={cur === 0} aria-label="Poprzedni">
+              <ChevronLeft size={18} />
             </button>
-            <div className="flex gap-2">
+            <div className="m3-car-dots">
               {Array.from({ length: maxSlide + 1 }).map((_, i) => (
-                <div key={i} onClick={() => scrollToIndex(i)} role="button"
-                  style={{
-                    display: 'inline-block',
-                    width: i === cur ? 22 : 8,
-                    height: 8,
-                    borderRadius: i === cur ? 4 : 50,
-                    background: i === cur ? '#1a4fa0' : '#d1d5db',
-                    cursor: 'pointer',
-                    border: 'none',
-                    padding: 0,
-                    margin: 0,
-                    flexShrink: 0,
-                    transition: 'width .25s, background .25s',
-                  }} />
+                <button type="button" key={i} onClick={() => scrollToIndex(i)} aria-label={`Pokaż osoby od ${i + 1}`} aria-current={i === cur}>
+                  <span />
+                </button>
               ))}
             </div>
-            <button onClick={() => scrollToIndex(cur + 1)} disabled={cur === maxSlide} aria-label="Następny"
-              className="w-9 h-9 rounded-full border-[1.5px] border-slate-200 flex items-center justify-center hover:border-blue hover:text-blue transition-all disabled:opacity-30">
-              <ChevronRight size={16} />
+            <button type="button" className="m3-car-b" onClick={() => scrollToIndex(cur + 1)} disabled={cur === maxSlide} aria-label="Następny">
+              <ChevronRight size={18} />
             </button>
           </div>
         )}

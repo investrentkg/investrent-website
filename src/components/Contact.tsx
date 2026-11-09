@@ -92,7 +92,7 @@ export default function Contact({ office }: { office: Office | null }) {
                       <Icon size={19} className="text-blue" />
                     </div>
                     <div>
-                      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-[.8px] mb-0.5">{item.label}</div>
+                      <div className="text-[10px] font-bold text-slate-600 uppercase tracking-[.8px] mb-0.5">{item.label}</div>
                       {item.href ? (
                         <a href={item.href} className="text-[15px] font-bold text-blue hover:underline">{item.val}</a>
                       ) : (

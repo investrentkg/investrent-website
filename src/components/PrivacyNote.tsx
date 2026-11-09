@@ -5,7 +5,7 @@ import type { CSSProperties } from 'react'
 // Uzywana pod kazdym formularzem korzystajacym z submitLead (przeglad prawny, runda 2).
 // Strona jest wylacznie po polsku - formularze DE nie istnieja; dla ruchu z DE
 // polityka DE: /de/datenschutz (osobna klauzula, gdy powstanie wersja DE formularzy).
-export default function PrivacyNote({ color = '#9ca3af', linkColor, size = 10, style }: {
+export default function PrivacyNote({ color = '#5a6680', linkColor, size = 11, style }: {
   color?: string
   linkColor?: string
   size?: number

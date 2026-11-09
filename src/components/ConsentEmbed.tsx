@@ -95,7 +95,7 @@ export function ConsentGate({
         type="button"
         aria-label={t.aria[provider]}
         onClick={() => { setInnerLoaded(true); onLoad?.() }}
-        style={{ padding: '10px 22px', background: '#1a4fa0', color: 'white', border: 'none', borderRadius: 8, fontWeight: 700, fontSize: 14, cursor: 'pointer' }}
+        style={{ padding: '10px 22px', minHeight: 44, background: '#1a4fa0', color: 'white', border: 'none', borderRadius: 8, fontWeight: 700, fontSize: 14, cursor: 'pointer' }}
       >
         {t.button[provider]}
       </button>

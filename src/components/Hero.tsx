@@ -1,9 +1,8 @@
 "use client"
 import { useState, useEffect, useRef } from 'react'
-import { Search, Handshake, Clock, Star, Award, Home } from 'lucide-react'
-import HeroWidget from '@/components/HeroWidget'
+import { Star, Award } from 'lucide-react'
+import HeroSearch from '@/components/HeroSearch'
 import { RESPONSE_BADGE } from '@/lib/responseTime'
-import AnimatedCounter from '@/components/AnimatedCounter'
 import type { PublicStats } from '@/types'
 
 interface HeroProps {
@@ -12,6 +11,9 @@ interface HeroProps {
   // (patrz src/lib/schemaRating.ts) - kafelek z ocena jest wtedy ukrywany
   // zamiast pokazywac sztywne "4.9/5".
   googleRating?: number | null
+  // Liczba opinii z TEGO SAMEGO obiektu getVerifiedRating co ocena i JSON-LD (jedno źródło).
+  // null = ocena i liczba w ogóle się nie pokazują.
+  googleTotal?: number | null
 }
 
 // Każdy wiersz nagłówka jako lista słów, żeby móc odsłaniać je pojedynczo
@@ -35,7 +37,7 @@ const HEADLINE_LINES: { words: string[]; gold?: boolean }[] = [
   { words: ['w', 'Kołobrzegu'] },
 ]
 
-export default function Hero({ stats, googleRating = null }: HeroProps) {
+export default function Hero({ stats, googleRating = null, googleTotal = null }: HeroProps) {
   const s = { active_offers: stats?.active_offers ?? 30, completed_transactions: Math.max(stats?.completed_transactions ?? 0, 150), team_size: stats?.team_size ?? 7 }
   const [isDesktop, setIsDesktop] = useState(false)
   const [videoReady, setVideoReady] = useState(false)
@@ -75,12 +77,10 @@ export default function Hero({ stats, googleRating = null }: HeroProps) {
     }
   }, [])
 
-  const STATS = [
-    { icon: <Handshake size={20} />, val: `${Math.max(s.completed_transactions, 150)}+`, label: 'transakcji' },
-    { icon: <Clock size={20} />,     val: RESPONSE_BADGE,         label: 'kontakt' },
-    ...(googleRating ? [{ icon: <Star size={20} />, val: `${googleRating}/5`, label: 'ocena klientów' }] : []),
-    { icon: <Award size={20} />,     val: 'Bezpłatna',         label: 'wycena' },
-  ]
+  // Jeden pasek zaufania (makieta M3): 150+ transakcji, ocena i liczba opinii z JEDNEGO źródła
+  // (getVerifiedRating), czas kontaktu. Brak wiarygodnych danych oceny = ocena się nie pokazuje.
+  const showRating = !!googleRating && !!googleTotal
+  const ratingText = googleRating ? googleRating.toLocaleString('pl-PL', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : ''
 
   // Indeks globalny słowa (do wyliczenia narastającego opóźnienia niezależnie od wiersza)
   let wordIndex = -1
@@ -139,7 +139,7 @@ export default function Hero({ stats, googleRating = null }: HeroProps) {
           opacity: 1 - scrollProgress * 0.55,
         }}
       >
-        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_.9fr] gap-16 items-center">
+        <div>
 
           <div>
             <div className={`tag bg-gold/20 border border-gold/35 text-gold mb-5 hero-reveal ${mounted ? 'hero-reveal-in' : ''}`} style={{ transitionDelay: '80ms' }}>
@@ -166,47 +166,33 @@ export default function Hero({ stats, googleRating = null }: HeroProps) {
               ))}
             </h1>
 
-            <p className={`text-white/70 text-[15px] leading-[1.8] max-w-[480px] mb-8 hero-reveal ${mounted ? 'hero-reveal-in' : ''}`} style={{ transitionDelay: '1200ms' }}>
-              Twoje wymarzone nieruchomości w Kołobrzegu i okolicach — pomagamy je kupować, sprzedawać
-              i <a href="/wynajem" className="text-white/90 underline underline-offset-2 hover:text-gold">wynajmować</a>.
-              Bezpiecznie, skutecznie i bez stresu — od pierwszego kontaktu po klucze.
-              {' '}<a href="/kolobrzeg" className="text-white/90 underline underline-offset-2 hover:text-gold">Poznaj rynek nieruchomości w Kołobrzegu</a>.
+            <p className={`text-white/90 text-[16px] md:text-[17px] leading-[1.7] max-w-[560px] mb-7 hero-reveal ${mounted ? 'hero-reveal-in' : ''}`} style={{ transitionDelay: '1200ms' }}>
+              Pomagamy kupować, sprzedawać i <a href="/wynajem" className="text-white underline underline-offset-2 hover:text-gold">wynajmować</a> nieruchomości
+              nad Bałtykiem. Bezpiecznie, skutecznie i bez stresu — od pierwszego kontaktu po klucze.
             </p>
-            <div className={`flex gap-3 mb-8 flex-wrap hero-reveal ${mounted ? 'hero-reveal-in' : ''}`} style={{ transitionDelay: '1380ms' }}>
-              <a href="/oferty" className="btn-gold text-[14px] font-bold">
-                <Search size={17} /> Szukam nieruchomości
+            <div className={`m3-hero-ctas hero-reveal ${mounted ? 'hero-reveal-in' : ''}`} style={{ transitionDelay: '1380ms' }}>
+              <a href="/wycena" className="btn-gold text-[15px] font-extrabold" style={{ minHeight: 48 }}>
+                Bezpłatna wycena
               </a>
-              <a href="/wycena"
-                className="cta-pulse inline-flex items-center gap-2 bg-white/12 text-white font-semibold text-[14px] px-7 py-3.5 rounded-xl border border-white/28 hover:bg-white/18 transition-all"
-                style={{ textDecoration: 'none' }}>
-                <Home size={17} /> Bezpłatna wycena
+              <a href="tel:+48731554341" className="m3-btn-ghost">
+                Zadzwoń 731 554 341
               </a>
             </div>
-            <div className="flex gap-7 pt-5 border-t border-white/15 flex-wrap">
-              {STATS.map((st, i) => {
-                const revealDelay = 1600 + i * 300
-                return (
-                  <div
-                    key={st.label}
-                    className={`flex items-center gap-2.5 hero-reveal ${mounted ? 'hero-reveal-in' : ''}`}
-                    style={{ transitionDelay: `${revealDelay}ms` }}
-                  >
-                    <span className="text-gold">{st.icon}</span>
-                    <div>
-                      <div className="font-mont font-black text-white text-[15px]">
-                        <AnimatedCounter value={st.val} startDelay={revealDelay + 250} />
-                      </div>
-                      <div className="text-white/65 text-[10px] uppercase tracking-[.8px]">{st.label}</div>
-                    </div>
-                  </div>
-                )
-              })}
+            <div className={`hero-reveal ${mounted ? 'hero-reveal-in' : ''}`} style={{ transitionDelay: '1500ms' }}>
+              <HeroSearch />
+              <a href="/kolobrzeg" className="m3-seo">Poznaj rynek nieruchomości w Kołobrzegu →</a>
+            </div>
+            <div className={`m3-trust hero-reveal ${mounted ? 'hero-reveal-in' : ''}`} style={{ transitionDelay: '1700ms' }}>
+              <span className="m3-stat"><b>{Math.max(s.completed_transactions, 150)}+</b><small>transakcji</small></span>
+              {showRating && (
+                <>
+                  <span>{ratingText} <Star size={15} fill="#f5a623" color="#f5a623" aria-hidden="true" /></span>
+                  <span>{googleTotal} opinii w Google</span>
+                </>
+              )}
+              <span>kontakt {RESPONSE_BADGE}</span>
             </div>
           </div>
-          <div className={`hero-reveal ${mounted ? 'hero-reveal-in' : ''}`} style={{ display: isDesktop ? 'block' : 'none', transitionDelay: '480ms' }}>
-            <HeroWidget />
-          </div>
-
         </div>
       </div>
 

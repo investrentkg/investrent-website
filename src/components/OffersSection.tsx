@@ -77,7 +77,7 @@ export function OfferCard({ offer, tab }: { offer: Offer; tab: string }) {
             {offer.area && <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#6b7280' }}><Ruler size={12} /> {offer.area} m²</span>}
           </div>
           <span style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 18, color: '#1a4fa0' }}>{priceLabel(offer.price)}</span>
-          {offer.price_per_m2 && <div style={{ fontSize: 11, color: '#9ca3af', whiteSpace: 'nowrap' }}>{offer.price_per_m2.toLocaleString('pl-PL')} zł/m²</div>}
+          {offer.price_per_m2 && <div style={{ fontSize: 11, color: '#5a6680', whiteSpace: 'nowrap' }}>{offer.price_per_m2.toLocaleString('pl-PL')} zł/m²</div>}
         </div>
       </div>
     </a>
@@ -196,12 +196,12 @@ export default function OffersSection({ initialOffers }: { initialOffers: Pagina
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' as const }}>
               {TABS.map(t => (
                 <button key={t.key} onClick={() => switchTab(t.key)}
-                  style={{ padding: '7px 18px', borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: '1.5px solid', transition: 'all .2s', background: tab === t.key ? '#1a4fa0' : 'transparent', color: tab === t.key ? 'white' : '#6b7280', borderColor: tab === t.key ? '#1a4fa0' : '#e5e7eb' }}>
+                  style={{ padding: '10px 18px', minHeight: 44, borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: '1.5px solid', transition: 'all .2s', background: tab === t.key ? '#1a4fa0' : 'transparent', color: tab === t.key ? 'white' : '#6b7280', borderColor: tab === t.key ? '#1a4fa0' : '#e5e7eb' }}>
                   {t.label}
                 </button>
               ))}
             </div>
-            <Link href="/oferty" style={{ fontSize: 13, fontWeight: 700, color: '#1a4fa0', border: '1.5px solid #1a4fa0', padding: '8px 18px', borderRadius: 9, display: 'flex', alignItems: 'center', gap: 5, textDecoration: 'none' }}>
+            <Link href="/oferty" style={{ fontSize: 13, fontWeight: 700, color: '#1a4fa0', border: '1.5px solid #1a4fa0', padding: '8px 18px', minHeight: 44, borderRadius: 9, display: 'flex', alignItems: 'center', gap: 5, textDecoration: 'none' }}>
               Wszystkie <ArrowRight size={14} />
             </Link>
           </div>
@@ -226,7 +226,7 @@ export default function OffersSection({ initialOffers }: { initialOffers: Pagina
             {offers.length > perView && (
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, marginTop: 24 }}>
                 <button onClick={() => scrollToIndex(cur - 1)} disabled={cur === 0} aria-label="Poprzedni"
-                  style={{ width: 36, height: 36, borderRadius: '50%', border: '1.5px solid #e5e7eb', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: cur === 0 ? .3 : 1 }}>
+                  style={{ width: 44, height: 44, borderRadius: '50%', border: '1.5px solid #e5e7eb', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: cur === 0 ? .3 : 1 }}>
                   <ChevronLeft size={16} />
                 </button>
                 <div style={{ display: 'flex', gap: 7 }}>
@@ -236,7 +236,7 @@ export default function OffersSection({ initialOffers }: { initialOffers: Pagina
                   ))}
                 </div>
                 <button onClick={() => scrollToIndex(cur + 1)} disabled={cur === maxSlide} aria-label="Następny"
-                  style={{ width: 36, height: 36, borderRadius: '50%', border: '1.5px solid #e5e7eb', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: cur === maxSlide ? .3 : 1 }}>
+                  style={{ width: 44, height: 44, borderRadius: '50%', border: '1.5px solid #e5e7eb', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: cur === maxSlide ? .3 : 1 }}>
                   <ChevronRight size={16} />
                 </button>
               </div>
@@ -248,7 +248,7 @@ export default function OffersSection({ initialOffers }: { initialOffers: Pagina
             publikacje, lub inne powody biznesowe) celowo nie trafia na
             strone, wiec warto to wprost zakomunikowac zamiast zostawiac
             odwiedzajacego z wrazeniem "to widocznie caly nasz katalog". */}
-        <p style={{ textAlign: 'center', fontSize: 13, color: '#9ca3af', marginTop: 28 }}>
+        <p style={{ textAlign: 'center', fontSize: 13, color: '#5a6680', marginTop: 28 }}>
           Nie wszystkie nieruchomości trafiają od razu na stronę.{' '}
           <a href="#kontakt" style={{ color: '#1a4fa0', fontWeight: 600, textDecoration: 'none' }}>
             Skontaktuj się z nami aby poznać naszą pełną ofertę.
