@@ -722,7 +722,7 @@ html:has(.wy-pad) { scroll-padding-bottom: calc(var(--consent-h, 0px) + 96px); }
 .ir-nav-link[aria-current="page"], .ir-nav-morebtn.is-active { color:#fff; border-bottom-color:#f5a623; }
 .ir-nav-link:focus-visible, .ir-nav-morebtn:focus-visible, .ir-nav-lang:focus-visible, .ir-nav-phone:focus-visible, .ir-nav-burger:focus-visible, .ir-nav-morelist a:focus-visible, .ir-nav-mphone:focus-visible { outline:2px solid #f5a623; outline-offset:2px; }
 .ir-nav-more { position:relative; display:flex; align-items:stretch; }
-.ir-nav-morebtn[aria-expanded="true"] { background:#fff; color:#0d2a5c; font-weight:700; padding:0 12px; margin:0 -12px; border-bottom-color:transparent; }
+.ir-nav-morebtn[aria-expanded="true"] { color:#fff; }
 .ir-nav-morebtn[aria-expanded="true"] svg { transform:rotate(180deg); }
 .ir-nav-morelabel { display:none; }
 .ir-nav-morelist { display:none; position:absolute; right:-12px; top:100%; background:#fff; box-shadow:0 18px 40px rgba(9,30,64,.28); border-top:3px solid #f5a623; padding:8px 24px 12px; min-width:340px; z-index:20; }
@@ -758,14 +758,18 @@ html:has(.wy-pad) { scroll-padding-bottom: calc(var(--consent-h, 0px) + 96px); }
   .ir-nav-morelist, .ir-nav-morelist.is-open { display:block; position:static; background:none; box-shadow:none; border:0; padding:0 0 0 14px; min-width:0; }
   .ir-nav-morelist a { display:flex; align-items:center; min-height:44px; padding:0; color:rgba(255,255,255,.85); font-size:15px; font-weight:500; border-bottom:1px solid rgba(255,255,255,.1); }
   .ir-nav-morelist a small { display:none; }
-  .ir-nav-right { order:-1; margin:12px 0 4px; gap:12px; justify-content:flex-start; }
-  .ir-nav-lang { display:flex; align-items:center; justify-content:center; min-width:56px; min-height:44px; border:1px solid rgba(255,255,255,.25); border-radius:9px; }
-  .ir-nav-phone { flex:1; justify-content:center; min-height:44px; font-size:15px; padding:0 14px; }
+  .ir-nav-right { margin:0; padding-left:14px; display:block; }
+  .ir-nav-phone { display:none; }
+  .ir-nav-lang { display:flex; align-items:center; min-height:44px; font-size:0; border-bottom:1px solid rgba(255,255,255,.1); }
+  .ir-nav-lang::after { content:attr(data-label); font:500 15px var(--font-montserrat), Arial, sans-serif; color:rgba(255,255,255,.85); }
 }
 @media (max-width:520px) {
-  .ir-nav-mphone { width:44px; padding:0; justify-content:center; }
-  .ir-nav-mphone-t { display:none; }
-  .ir-nav-logo img { height:44px; }
+  .ir-nav-inner { gap:8px; padding:0 12px; }
+  .ir-nav-mphone { padding:0 10px; gap:5px; font-size:12px; }
+  .ir-nav-cc { display:none; }
+  .ir-nav-logo { gap:8px; }
+  .ir-nav-logo img { height:34px; }
+  .ir-nav-brand { font-size:15px; }
 }
 
 /* ===== Stopka wg makiet M1/M2 (09.11.2026) - Footer.tsx, FooterGroup.tsx ===== */

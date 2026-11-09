@@ -68,6 +68,9 @@ export default function Nav({ office }: { office: Office | null }) {
   }, [open])
 
   const phone = formatPhoneDisplay(office?.phone) || '+48 731 554 341'
+  const ccMatch = phone.match(/^(\+\d{2}\s)(.+)$/)
+  const phoneCc = ccMatch ? ccMatch[1] : ''
+  const phoneRest = ccMatch ? ccMatch[2] : phone
   const tel = `tel:${phone.replace(/\s/g, '')}`
   // Wariant A "premium" (makieta RP 09.11): 8 pozycji w rzedzie + "Wiecej". Zadna dotychczasowa pozycja nie znika.
   // Wszystkie linki to zwykle <a href> w HTML od razu (takze na mobile - ten sam DOM, rozne style w globals.css, .ir-nav*).
@@ -111,7 +114,7 @@ export default function Nav({ office }: { office: Office | null }) {
             </div>
           </a>
 
-          <a href={tel} className="ir-nav-mphone" aria-label={`Zadzwoń: ${phone}`}><Phone size={14} /> <span className="ir-nav-mphone-t">{phone}</span></a>
+          <a href={tel} className="ir-nav-mphone" aria-label={`Zadzwoń: ${phone}`}><Phone size={14} /> <span className="ir-nav-mphone-t">{phoneCc && <span className="ir-nav-cc">{phoneCc}</span>}{phoneRest}</span></a>
           <button type="button" ref={burgerRef} className="ir-nav-burger" onClick={() => setOpen(o => !o)}
             aria-label={open ? 'Zamknij menu' : 'Otwórz menu'} aria-expanded={open} aria-controls="ir-nav-panel">
             {open ? <X size={24} /> : <Menu size={24} />}
@@ -140,7 +143,7 @@ export default function Nav({ office }: { office: Office | null }) {
               </div>
             </div>
             <div className="ir-nav-right">
-              <a href={languageTarget} lang={languageCode} aria-label={languageCode.toUpperCase()} onClick={close} className="ir-nav-lang">{languageLabel}</a>
+              <a href={languageTarget} lang={languageCode} aria-label={languageCode.toUpperCase()} data-label={languageCode === 'de' ? 'Deutsch (DE)' : 'Polski (PL)'} onClick={close} className="ir-nav-lang">{languageLabel}</a>
               <a href={tel} className="ir-nav-phone"><Phone size={13} /> {phone}</a>
             </div>
           </div>
