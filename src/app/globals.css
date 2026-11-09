@@ -1046,6 +1046,11 @@ html:has(.wy-pad) { scroll-padding-bottom: calc(var(--consent-h, 0px) + 96px); }
   .ft-r { text-align: left; order: 1; }
   .ft-co { order: 2; line-height: 1.5; }
   .ft-de { justify-content: flex-start; }
+  /* mobile wg M2: Immobilien Kolberg w osobnym wierszu, Datenschutz i Impressum razem w drugim,
+     bez osieroconego separatora na poczatku wiersza */
+  .ft-de > span { white-space: nowrap; }
+  .ft-de > span:first-child { flex-basis: 100%; }
+  .ft-de > span:nth-child(2) .ft-dot { display: none; }
 }
 
 @media (max-width: 700px) { .m3-tabs { flex-wrap: nowrap; font-size: 13px; gap: 4px 8px; } .m3-tabs .more { white-space: nowrap; } }
