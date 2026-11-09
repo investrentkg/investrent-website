@@ -22,7 +22,7 @@ export default function Nav({ office }: { office: Office | null }) {
   const [isDesktop, setIsDesktop] = useState(true)
 
   useEffect(() => {
-    const check = () => setIsDesktop(window.innerWidth >= (isCommercialHubOn() ? 1180 : 1024))
+    const check = () => setIsDesktop(window.innerWidth >= (isCommercialHubOn() ? 1340 : 1240))
     check()
     window.addEventListener('resize', check)
     const onScroll = () => setScrolled(window.scrollY > 10)
@@ -41,7 +41,7 @@ export default function Nav({ office }: { office: Office | null }) {
     // NOWE (25.09.2026): publiczny kalkulator wyceny (fraza "wycena mieszkania Kolobrzeg").
     { label: 'Wycena', href: '/wycena' },
     { label: 'Wynajem',  href: '/wynajem' },
-    // Komercyjne: dodatkowa pozycja zwiekszyla szerokosc menu (przycisk telefonu wypadal poza ekran przy 1024-1140 px), wiec przy fladze hamburger do 1180 px.
+    // Menu poziome potrzebuje ok. 1300 px na sam wiersz (12 pozycji + PL/DE + telefon, bez zawijania) - pomiar 09.11: przy 1280 wychodzilo poza ekran. Cala strona siedzi w ramce .page-wrap 1320 px, wiec menu ma max ok. 1280 px: odstep 12 px, hamburger ponizej 1340 px (z Komercyjne) / 1240 px (bez).
     // Komercyjne (Daniel 07.11.2026): pozycja tylko przy wlaczonej fladze NEXT_PUBLIC_COMMERCIAL_HUB (bez flagi = brak martwego linku).
     ...(isCommercialHubOn() ? [{ label: 'Komercyjne', href: COMMERCIAL_PATH }] : []),
     // NOWE (24.09.2026, SEO): GSC pokazal, ze /kolobrzeg nie ma zadnego linku wejsciowego wykrytego przez Google
@@ -70,10 +70,11 @@ export default function Nav({ office }: { office: Office | null }) {
         boxShadow: scrolled ? '0 4px 20px rgba(0,0,0,.3)' : 'none',
         transition: 'box-shadow .3s',
       }}>
-        <div className="container">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        {/* Menu ma wlasna, szersza kolumne niz .container (1280 px): przy 12 pozycjach + telefon nie miesci sie w 1280 i logo nachodzilo na "Oferty" (zgloszenie Daniela 09.11). */}
+        <div style={{ width: '100%', maxWidth: 1680, margin: '0 auto', padding: '0 20px', boxSizing: 'border-box' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
 
-            <a href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 11 }}>
+            <a href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 11, flexShrink: 0 }}>
               {/* Białe kontury domków bezpośrednio na granatowym tle */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={HOUSES_ICON} alt="InvestRent"
@@ -85,13 +86,13 @@ export default function Nav({ office }: { office: Office | null }) {
             </a>
 
             {isDesktop && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, whiteSpace: 'nowrap' }}>
                 {links.map(l => (
-                  <a key={l.label} href={l.href} style={{ color: 'rgba(255,255,255,.65)', fontSize: 13, fontWeight: 500, textDecoration: 'none' }}>{l.label}</a>
+                  <a key={l.label} href={l.href} style={{ color: 'rgba(255,255,255,.65)', fontSize: 13, fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0 }}>{l.label}</a>
                 ))}
                 <a href={languageTarget} lang={languageCode} aria-label={languageCode.toUpperCase()} style={{ color: 'rgba(255,255,255,.65)', fontSize: 13, fontWeight: 700, textDecoration: 'none' }}>{languageLabel}</a>
                 <a href={`tel:${phone.replace(/\s/g, '')}`}
-                  style={{ background: '#f5a623', color: '#1a1a1a', fontSize: 13, fontWeight: 700, padding: '10px 20px', borderRadius: 9, display: 'flex', alignItems: 'center', gap: 7, textDecoration: 'none' }}>
+                  style={{ background: '#f5a623', color: '#1a1a1a', fontSize: 13, fontWeight: 700, padding: '10px 14px', borderRadius: 9, display: 'flex', alignItems: 'center', gap: 7, textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0 }}>
                   <Phone size={13} /> {phone}
                 </a>
               </div>
@@ -100,7 +101,7 @@ export default function Nav({ office }: { office: Office | null }) {
             {!isDesktop && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <a href={`tel:${phone.replace(/\s/g, '')}`}
-                  style={{ background: '#f5a623', color: '#1a1a1a', fontSize: 12, fontWeight: 700, padding: '8px 12px', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 6, textDecoration: 'none' }}>
+                  style={{ background: '#f5a623', color: '#1a1a1a', fontSize: 12, fontWeight: 700, padding: '8px 12px', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 6, textDecoration: 'none', whiteSpace: 'nowrap' }}>
                   <Phone size={12} /> {phone}
                 </a>
                 <button onClick={() => setOpen(true)} aria-label="Otwórz menu" style={{ color: 'rgba(255,255,255,.7)', background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
