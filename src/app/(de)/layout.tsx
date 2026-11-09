@@ -1,20 +1,19 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter, Montserrat } from 'next/font/google'
+import localFont from 'next/font/local'
 import ConsentManager from '@/components/ConsentManager'
 import GoogleAnalytics from '@/components/GoogleAnalytics'
 import AttributionCapture from '@/components/AttributionCapture'
 import '../globals.css'
 
-const montserrat = Montserrat({
-  subsets: ['latin', 'latin-ext'],
-  weight: ['400', '500', '600', '700', '800', '900'],
+// Fonty self-hostowane (src/fonts, licencja OFL): build NIE pobiera CSS z Google Fonts (patrz (pl)/layout.tsx).
+const montserrat = localFont({
+  src: [{ path: '../../fonts/Montserrat-latin-ext-VF.woff2', weight: '100 900', style: 'normal' }],
   variable: '--font-montserrat',
   display: 'swap',
 })
 
-const inter = Inter({
-  subsets: ['latin', 'latin-ext'],
-  weight: ['400', '500', '600', '700'],
+const inter = localFont({
+  src: [{ path: '../../fonts/Inter-latin-ext-VF.woff2', weight: '100 900', style: 'normal' }],
   variable: '--font-inter',
   display: 'swap',
 })
