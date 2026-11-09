@@ -4,7 +4,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { MapPin, LayoutGrid, Ruler, Layers, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { Offer, PaginatedOffers } from '@/types'
-import ScrollReveal from '@/components/ScrollReveal'
 
 
 const TABS = [
@@ -115,8 +114,6 @@ function HomeOfferCard({ offer, tab }: { offer: Offer; tab: string }) {
 
 export default function OffersSection({ initialOffers }: { initialOffers: PaginatedOffers | null }) {
   const hasRealOffers = (initialOffers?.data?.length ?? 0) > 0
-  const [cols, setCols] = useState(3)
-  useEffect(() => { const u = () => setCols(window.innerWidth < 640 ? 1 : window.innerWidth < 1024 ? 2 : 3); u(); window.addEventListener('resize', u); return () => window.removeEventListener('resize', u) }, [])
   const [tab, setTab]       = useState<'new' | 'promo' | 'exclusive'>('new')
   const [offers, setOffers] = useState<Offer[]>(hasRealOffers ? initialOffers!.data : [])
   const [loading, setLoading] = useState(false)
@@ -134,7 +131,6 @@ export default function OffersSection({ initialOffers }: { initialOffers: Pagina
   const [usingSamples, setUsingSamples] = useState(!hasRealOffers)
 
   const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.investrent.com.pl'
-  const perView = cols
 
   // NAPRAWA (Daniel 31.07, drugie podejście po zrzutach z telefonu -
   // "dalej jest do dupy"): poprzednia wersja liczyła przesunięcie karuzeli
@@ -145,47 +141,67 @@ export default function OffersSection({ initialOffers }: { initialOffers: Pagina
   // przewijanie przeglądarki (scroll-snap). Przeglądarka sama dba o to,
   // żeby zatrzymać się dokładnie na granicy karty, niezależnie od tego jak
   // szeroka faktycznie jest - eliminuje tę całą klasę błędów u źródła.
+  // Karuzela ofert (decyzja Daniela 09.11): SSR renderuje CALY tor (wszystkie karty w HTML,
+  // zwykle <a href>), a JS steruje wylacznie przewijaniem natywnego scroll-snap.
   const scrollerRef = useRef<HTMLDivElement>(null)
   const [cur, setCur] = useState(0)
-  const maxSlide = Math.max(0, offers.length - perView)
+  const [atEnd, setAtEnd] = useState(false)
+  const [perView, setPerView] = useState(1) // ile kart miesci sie w widoku (po hydratacji); SSR: 1 = kropka na kazda oferte
+  const count = offers.length
+  const dotCount = Math.max(1, count - perView + 1)
+
+  useEffect(() => {
+    const measure = () => {
+      const el = scrollerRef.current
+      const first = el?.children[0] as HTMLElement | undefined
+      if (!el || !first || first.offsetWidth === 0) return
+      setPerView(Math.max(1, Math.round((el.clientWidth - 8) / first.offsetWidth)))
+    }
+    measure()
+    window.addEventListener('resize', measure)
+    return () => window.removeEventListener('resize', measure)
+  }, [offers.length, loading])
+
+  function smooth(): ScrollBehavior {
+    return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+  }
 
   function scrollToIndex(i: number) {
     const el = scrollerRef.current
     if (!el) return
-    const clamped = Math.max(0, Math.min(maxSlide, i))
-    const card = el.children[0] as HTMLElement | undefined
+    const card = el.children[Math.max(0, Math.min(count - 1, i))] as HTMLElement | undefined
     if (!card) return
-    const cardWidth = card.getBoundingClientRect().width + 28 // + gap
-    el.scrollTo({ left: clamped * cardWidth, behavior: 'smooth' })
+    el.scrollTo({ left: card.offsetLeft - el.offsetLeft, behavior: smooth() })
   }
 
-  // Śledzenie aktualnej pozycji na podstawie realnego scrolla (nie liczonej
-  // ręcznie wartości) - kropki i strzałki zawsze zgadzają się z tym co
-  // faktycznie widać, bo pytamy przeglądarkę, nie liczymy sami.
-  function handleScroll() {
+  function page(dir: 1 | -1) {
     const el = scrollerRef.current
-    if (!el || !el.children[0]) return
-    const cardWidth = (el.children[0] as HTMLElement).getBoundingClientRect().width + 28
-    if (cardWidth <= 0) return
-    setCur(Math.round(el.scrollLeft / cardWidth))
+    if (!el) return
+    const gap = parseFloat(getComputedStyle(el).columnGap) || 0
+    el.scrollBy({ left: dir * (el.clientWidth + gap), behavior: smooth() })
   }
 
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
-  useEffect(() => {
-    return // makieta M3: statyczna lista 3 ofert, bez autoprzewijania
-    if (maxSlide === 0) return
-    timerRef.current = setInterval(() => {
-      setCur(c => {
-        const next = c >= maxSlide ? 0 : c + 1
-        scrollToIndex(next)
-        return next
-      })
-    }, 4000)
-    return () => { if (timerRef.current) clearInterval(timerRef.current) }
-  }, [maxSlide, offers.length, perView])
+  // Pozycja z realnego scrolla (nie z liczonej recznie wartosci).
+  const handleScroll = useCallback(() => {
+    const el = scrollerRef.current
+    if (!el || el.children.length === 0) return
+    const end = el.scrollLeft + el.clientWidth >= el.scrollWidth - 2
+    setAtEnd(end)
+    let best = 0, bestD = Infinity
+    for (let i = 0; i < el.children.length; i++) {
+      const d = Math.abs((el.children[i] as HTMLElement).offsetLeft - el.offsetLeft - el.scrollLeft)
+      if (d < bestD) { bestD = d; best = i }
+    }
+    setCur(best)
+  }, [])
+
+  function onKeyDown(e: React.KeyboardEvent) {
+    if (e.key === 'ArrowRight') { e.preventDefault(); page(1) }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); page(-1) }
+  }
 
   const fetchOffers = useCallback(async (newTab: typeof tab) => {
-    setLoading(true); setCur(0)
+    setLoading(true); setCur(0); setAtEnd(false)
     if (scrollerRef.current) scrollerRef.current.scrollLeft = 0
     try {
       const res = await fetch(`${API}/api/public/offers?tab=${newTab}&limit=9`)
@@ -210,10 +226,6 @@ export default function OffersSection({ initialOffers }: { initialOffers: Pagina
 
   return (
     <section id="oferty" className="m3-offers">
-      <style jsx>{`
-        .offers-scroller::-webkit-scrollbar { display: none; }
-        .offers-scroller { scrollbar-width: none; -ms-overflow-style: none; }
-      `}</style>
       <div className="container">
         <div className="m3-sechead">
           <div>
@@ -234,31 +246,31 @@ export default function OffersSection({ initialOffers }: { initialOffers: Pagina
           <div style={{ textAlign: 'center', padding: '64px 0', color: '#9ca3af' }}>Ładowanie ofert…</div>
         ) : (
           <>
-            <div className="m3-ogrid" style={{ ['--ocols' as string]: cols }}>
-              {offers.map((o, i) => (
-                <ScrollReveal key={o.id} delay={(i % 3) * 110}>
-                  <HomeOfferCard offer={o} tab={tab} />
-                </ScrollReveal>
-              ))}
-            </div>
-            {false && offers.length > perView && (
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, marginTop: 24 }}>
-                <button onClick={() => scrollToIndex(cur - 1)} disabled={cur === 0} aria-label="Poprzedni"
-                  style={{ width: 44, height: 44, borderRadius: '50%', border: '1.5px solid #e5e7eb', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: cur === 0 ? .3 : 1 }}>
-                  <ChevronLeft size={16} />
-                </button>
-                <div style={{ display: 'flex', gap: 7 }}>
-                  {Array.from({ length: maxSlide + 1 }).map((_, i) => (
-                    <div key={i} onClick={() => scrollToIndex(i)}
-                      style={{ display: 'inline-block', width: i === cur ? 22 : 8, height: 8, borderRadius: i === cur ? 4 : 50, background: i === cur ? '#1a4fa0' : '#e5e7eb', cursor: 'pointer', transition: 'all .25s' }} />
-                  ))}
-                </div>
-                <button onClick={() => scrollToIndex(cur + 1)} disabled={cur === maxSlide} aria-label="Następny"
-                  style={{ width: 44, height: 44, borderRadius: '50%', border: '1.5px solid #e5e7eb', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: cur === maxSlide ? .3 : 1 }}>
-                  <ChevronRight size={16} />
-                </button>
+            <div className="m3-ocar" role="region" aria-roledescription="karuzela" aria-label="Oferty nieruchomości" onKeyDown={onKeyDown}>
+              <div className="m3-ocar-track" ref={scrollerRef} onScroll={handleScroll} role="group" aria-label="Lista ofert">
+                {offers.map((o, i) => (
+                  <div className="m3-ocar-slide" key={o.id} role="group" aria-roledescription="slajd" aria-label={`Oferta ${i + 1} z ${count}`}>
+                    <HomeOfferCard offer={o} tab={tab} />
+                  </div>
+                ))}
               </div>
-            )}
+              {count > 1 && (
+                <div className="m3-ocar-ctl">
+                  <button type="button" className="m3-ocar-arrow" onClick={() => cur > 0 && page(-1)} aria-disabled={cur === 0} aria-label="Poprzednie oferty">
+                    <ChevronLeft size={20} aria-hidden="true" />
+                  </button>
+                  <div className={`m3-ocar-dots${dotCount > 6 ? ' many' : ''}`}>
+                    {offers.slice(0, dotCount).map((o, i) => (
+                      <button key={o.id} type="button" className="m3-ocar-dot" onClick={() => scrollToIndex(i)}
+                        aria-label={`Oferta ${i + 1} z ${count}`} aria-current={i === cur ? 'true' : undefined}><span /></button>
+                    ))}
+                  </div>
+                  <button type="button" className="m3-ocar-arrow" onClick={() => !atEnd && page(1)} aria-disabled={atEnd} aria-label="Następne oferty">
+                    <ChevronRight size={20} aria-hidden="true" />
+                  </button>
+                </div>
+              )}
+            </div>
           </>
         )}
         {/* NAPRAWA TRESCI (Weronika, feedback 01.08): brakowalo tego
