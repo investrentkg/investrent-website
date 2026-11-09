@@ -235,7 +235,7 @@ export default function OffersSection({ initialOffers }: { initialOffers: Pagina
         ) : (
           <>
             <div className="m3-ogrid" style={{ ['--ocols' as string]: cols }}>
-              {offers.slice(0, 3).map((o, i) => (
+              {offers.map((o, i) => (
                 <ScrollReveal key={o.id} delay={(i % 3) * 110}>
                   <HomeOfferCard offer={o} tab={tab} />
                 </ScrollReveal>

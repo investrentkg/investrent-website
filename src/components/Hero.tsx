@@ -146,7 +146,7 @@ export default function Hero({ stats, googleRating = null, googleTotal = null }:
 
             <h1 className="heading m3-h1 text-[25px] min-[480px]:text-[32px] md:text-[52px] text-white leading-[1.08] mb-5" style={{ maxWidth: 700, letterSpacing: -1 }}>
               {HEADLINE_LINES.map((line, lineIdx) => (
-                <span key={lineIdx} style={{ overflow: 'visible' }}>
+                <span key={lineIdx} style={{ display: 'flex', flexWrap: 'wrap', overflow: 'visible' }}>
                   {line.words.map((word) => {
                     wordIndex++
                     const delay = 280 + wordIndex * 190
