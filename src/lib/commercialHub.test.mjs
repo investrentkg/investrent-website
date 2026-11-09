@@ -65,12 +65,14 @@ test('FAQ klienci zagraniczni: tylko zdanie z dyktatu, bez przepisow i bez "omaw
 test('menu, stopka i kafel na glownej: link do huba tylko za flaga', () => {
   const nav = fs.readFileSync(new URL('../components/Nav.tsx', import.meta.url), 'utf8')
   const foot = fs.readFileSync(new URL('../components/Footer.tsx', import.meta.url), 'utf8')
-  const tile = fs.readFileSync(new URL('../components/CommercialTile.tsx', import.meta.url), 'utf8')
+  const tile = fs.readFileSync(new URL('../components/HomeServices.tsx', import.meta.url), 'utf8')
   const home = fs.readFileSync(new URL('../app/(pl)/page.tsx', import.meta.url), 'utf8')
   assert.match(nav, /isCommercialHubOn\(\) \? \[\{ label: 'Komercyjne', href: COMMERCIAL_PATH \}\]/)
   assert.match(foot, /isCommercialHubOn\(\) \? \[\{ label: 'Nieruchomości komercyjne', href: COMMERCIAL_PATH \}\]/)
-  assert.match(tile, /if \(!isCommercialHubOn\(\)\) return null/)
-  assert.ok(home.includes('<CommercialTile />'))
-  const visible = [...tile.matchAll(/>([^<>{}]+)</g)].map(m => m[1]).join(' ')
+  // makieta M3: kafel komercyjnych jest w rodzinie usług (HomeServices), dodawany tylko przy fladze
+  assert.match(tile, /isCommercialHubOn\(\) \? \[COMMERCIAL\] : \[\]/)
+  assert.ok(home.includes('<HomeServices'))
+  const cm = tile.match(/const COMMERCIAL: Tile = \{[\s\S]*?\n\}/)[0]
+  const visible = [...cm.matchAll(/(?:title|desc|action): '([^']+)'/g)].map(m => m[1]).join(' ')
   assert.ok(visible.length > 20 && !/\d|wynajm|Niemc/i.test(visible), 'kafel bez liczb, wynajmu, Niemcow')
 })

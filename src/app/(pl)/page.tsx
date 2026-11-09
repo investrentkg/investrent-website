@@ -18,10 +18,8 @@ import ReadAlso from '@/components/ReadAlso'
 import Hero          from '@/components/Hero'
 import CallbackStrip from '@/components/CallbackStrip'
 import OffersSection from '@/components/OffersSection'
-import PathChoice    from '@/components/PathChoice'
-import CommercialTile from '@/components/CommercialTile'
+import HomeServices  from '@/components/HomeServices'
 import About         from '@/components/About'
-import Services      from '@/components/Services'
 import ValuationCTA  from '@/components/ValuationCTA'
 import Reviews       from '@/components/Reviews'
 import { JsonLd }    from '@/components/JsonLd'
@@ -120,21 +118,22 @@ export default async function Home() {
       <link rel="preload" as="image" href="/hero-m.webp" media="(max-width: 768px)" fetchPriority="high" />
       <link rel="preload" as="image" href="/hero.webp" media="(min-width: 769px)" fetchPriority="high" />
       <Nav           office={office} />
-      <main>
-        <Hero          stats={statsData} googleRating={rating?.rating ?? null} />
+      <main className="m3-home">
+        <Hero          stats={statsData} googleRating={rating?.rating ?? null} googleTotal={rating?.total ?? null} />
         <CallbackStrip />
         <OffersSection initialOffers={offersData} />
-        <PathChoice id="sciezki-home" />
-        <CommercialTile />
-        <About googleRating={rating?.rating ?? null} />
-        <Services />
+        {/* Makieta M3 (09.11.2026): jedna rodzina usług zamiast PathChoice + CommercialTile + Services */}
+        <HomeServices id="sciezki-home" />
+        <About />
         <ValuationCTA />
         <Reviews initial={reviewsData?.ok ? { rating: rating?.rating ?? null, total: rating?.total ?? null, reviews: reviewsData.reviews } : null} />
         <Team          members={teamData?.data ?? []} />
         <Contact       office={office} />
         <MortgageCalcSection />
-        <ReadAlso />
-        <RelatedLinks page="home" />
+        <div className="m3-rel"><div className="m3-rel-in">
+          <ReadAlso />
+          <RelatedLinks page="home" />
+        </div></div>
       </main>
       <Footer        office={office} />
 

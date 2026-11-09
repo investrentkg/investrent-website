@@ -60,7 +60,7 @@ export default function MortgageCalcSection() {
   }
 
   return (
-    <section id="kalkulator" style={{ padding: '64px 0', background: 'white' }}>
+    <section id="kalkulator" style={{ padding: 'clamp(40px, 6vw, 64px) 0', background: '#f1f4f9' }}>
       <div className="container">
         <ScrollReveal>
         {/* Nagłówek */}
@@ -71,15 +71,15 @@ export default function MortgageCalcSection() {
           <h2 className="heading" style={{ fontSize: 'clamp(24px,4vw,32px)', color: '#0d2a5c', marginBottom: 12 }}>
             Sprawdź swoją orientacyjną ratę kredytu
           </h2>
-          <p style={{ fontSize: 14, color: '#6b7280', maxWidth: 520, margin: '0 auto' }}>
+          <p style={{ fontSize: 14, color: '#5a6680', maxWidth: 520, margin: '0 auto' }}>
             Kalkulator uwzględnia aktualną stopę referencyjną NBP. Wynik ma charakter wyłącznie orientacyjny
             i nie stanowi oferty kredytowej banku.
           </p>
           {rateSource && (
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 10, fontSize: 12,
-              color: baseRate ? '#10b981' : '#9ca3af', background: baseRate ? '#f0fdf4' : '#f9fafb',
+              color: baseRate ? '#047857' : '#5a6680', background: baseRate ? '#f0fdf4' : '#f9fafb',
               border: `1px solid ${baseRate ? '#bbf7d0' : '#e5e7eb'}`, borderRadius: 20, padding: '4px 12px' }}>
-              {baseRate ? '✓ Dane aktualne z NBP' : '⚠ Dane orientacyjne'} — {rateSource}
+              {baseRate ? `✓ Dane aktualne z NBP — ${rateSource}` : '⚠ Dane orientacyjne — wartości domyślne, zmień je, aby zobaczyć swoją ratę'}
             </div>
           )}
         </div>
@@ -101,8 +101,8 @@ export default function MortgageCalcSection() {
                 </div>
                 <input type="range" aria-label={sl.label} min={sl.min} max={sl.max} step={sl.step}
                   value={sl.val} onChange={e => sl.set(parseFloat(e.target.value))}
-                  style={{ width: '100%', accentColor: '#1a4fa0', cursor: 'pointer' }} />
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#9ca3af', marginTop: 2 }}>
+                  style={{ width: '100%', height: 44, accentColor: '#1a4fa0', cursor: 'pointer' }} />
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#5a6680', marginTop: 2 }}>
                   <span>{sl.fmt(sl.min)}</span><span>{sl.fmt(sl.max)}</span>
                 </div>
               </div>
@@ -145,24 +145,24 @@ export default function MortgageCalcSection() {
               {leadStatus === 'ok' ? (
                 <SuccessBadge text="Oddzwonimy wkrótce!" style={{ background: '#f0fdf4', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#065f46', fontWeight: 600, justifyContent: 'center' }} />
               ) : (
-                <div style={{ display: 'flex', gap: 8 }}>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                   <input type="tel" aria-label="Numer telefonu" placeholder="Twój numer telefonu"
                     value={phone} onChange={e => setPhone(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && submitCreditLead()}
-                    style={{ flex: 1, padding: '10px 12px', borderRadius: 10, border: '1.5px solid #e5e7eb',
+                    style={{ flex: 1, padding: '12px 12px', minHeight: 44, borderRadius: 10, border: '1.5px solid #8a94a8',
                       fontSize: 13, outline: 'none', minWidth: 0 }} />
                   <button onClick={submitCreditLead} disabled={!phone.trim() || leadStatus === 'loading'}
                     className="cta-pulse"
                     style={{ background: '#f5a623', color: '#1a1a1a', border: 'none', borderRadius: 10,
-                      padding: '10px 16px', fontSize: 13, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' as const }}>
+                      padding: '10px 16px', minHeight: 44, fontSize: 13, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' as const }}>
                     Zamów rozmowę
                   </button>
                 </div>
               )}
-              {leadStatus !== 'ok' && <PrivacyNote style={{ marginTop: 8 }} />}
+              {leadStatus !== 'ok' && <PrivacyNote color="#5a6680" size={11} style={{ marginTop: 8 }} />}
             </div>
 
-            <p style={{ fontSize: 10, color: '#9ca3af', textAlign: 'center' as const, marginTop: 12, lineHeight: 1.5 }}>
+            <p style={{ fontSize: 11, color: '#5a6680', textAlign: 'center' as const, marginTop: 12, lineHeight: 1.5 }}>
               * Kalkulator ma charakter wyłącznie informacyjny. Rzeczywiste warunki kredytu zależą od decyzji
               banku, Twojej zdolności kredytowej i aktualnej oferty. Wynik nie stanowi oferty w rozumieniu
               Kodeksu Cywilnego.

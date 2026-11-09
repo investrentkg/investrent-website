@@ -63,7 +63,7 @@ export default function Contact({ office }: { office: Office | null }) {
   const address = office?.address ?? 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg'
 
   return (
-    <section id="kontakt" className="section">
+    <section id="kontakt" className="section" style={{ background: '#fff' }}>
       <div className="container">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-12 items-start">
           {/* Left: contact details */}
@@ -71,7 +71,7 @@ export default function Contact({ office }: { office: Office | null }) {
             <div className="tag bg-blue/8 text-blue mb-4">
               <MessageSquare size={12} /> Skontaktuj się
             </div>
-            <h2 className="heading text-[36px] text-navy leading-[1.1] mb-4">
+            <h2 className="heading text-navy leading-[1.2] mb-4" style={{ fontSize: 'clamp(24px, 3.4vw, 30px)' }}>
               Odpowiemy jak najszybciej,<br />nie później niż w ciągu 24 godzin
             </h2>
             <p className="text-slate-500 text-[14px] leading-[1.8] mb-7">
@@ -92,7 +92,7 @@ export default function Contact({ office }: { office: Office | null }) {
                       <Icon size={19} className="text-blue" />
                     </div>
                     <div>
-                      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-[.8px] mb-0.5">{item.label}</div>
+                      <div className="text-[10px] font-bold text-slate-600 uppercase tracking-[.8px] mb-0.5">{item.label}</div>
                       {item.href ? (
                         <a href={item.href} className="text-[15px] font-bold text-blue hover:underline">{item.val}</a>
                       ) : (
@@ -113,9 +113,9 @@ export default function Contact({ office }: { office: Office | null }) {
           </div>
 
           {/* Right: form */}
-          <div className="bg-slate-50 rounded-2xl border border-slate-200 p-8">
-            <h3 className="heading text-[22px] text-navy mb-5 flex items-center gap-2">
-              <Send size={18} /> Wyślij wiadomość
+          <div className="bg-slate-50 rounded-2xl border border-slate-200 p-5 sm:p-8">
+            <h3 className="heading m3-fh text-navy mb-5 flex items-center gap-2" style={{ fontSize: 18 }}>
+              <Send size={18} style={{ flexShrink: 0 }} /> Wyślij wiadomość
             </h3>
             {status === 'ok' ? (
               <div className="py-12 text-center">
@@ -161,19 +161,21 @@ export default function Contact({ office }: { office: Office | null }) {
                 {status === 'error' && (
                   <p className="text-red-500 text-[12px] text-center">Błąd wysyłania. Spróbuj ponownie lub zadzwoń.</p>
                 )}
-                <PrivacyNote style={{ marginTop: 4 }} />
+                <PrivacyNote color="#5a6680" size={11} style={{ marginTop: 4 }} />
               </form>
             )}
           </div>
         </div>
 
         {/* Map — pełna szerokość, pod obiema kolumnami */}
-        <div className="mt-10 rounded-2xl overflow-hidden border border-slate-200">
+        <div className="mt-10 m3-map">
+          <div className="m3-map-frame">
           {/* Click-to-load (25.09.2026): mapa Google laduje sie dopiero po kliknieciu (ConsentEmbed); link "Wyznacz trase" ponizej to zwykly link zewnetrzny. */}
-          <MapEmbed query="Ratuszowa+12%2F1+lok.+3+Ko%C5%82obrzeg" zoom={17} paddingBottom="28%" minHeight={260} hideLink title="InvestRent — lokalizacja biura" />
+          <MapEmbed query="Ratuszowa+12%2F1+lok.+3+Ko%C5%82obrzeg" zoom={17} paddingBottom="20%" minHeight={250} hideLink radius={14} title="InvestRent — lokalizacja biura" />
+          </div>
           <a href="https://www.google.com/maps/dir/?api=1&destination=Ratuszowa+12%2F1+lok.+3+Ko%C5%82obrzeg"
             target="_blank" rel="noopener noreferrer"
-            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, background: '#1a4fa0', color: 'white', padding: '15px 20px', fontWeight: 700, fontSize: 14, textDecoration: 'none' }}>
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, background: '#1a4fa0', color: 'white', padding: '15px 20px', minHeight: 48, borderRadius: 10, marginTop: 10, fontWeight: 800, fontSize: 14, textDecoration: 'none' }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
             Wyznacz trasę do biura
           </a>

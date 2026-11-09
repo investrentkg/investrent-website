@@ -1,114 +1,48 @@
-"use client"
-import { useState, useEffect } from 'react'
-import { MapPin, ShieldCheck, Clock, Star } from 'lucide-react'
-import Image from 'next/image'
 import ScrollReveal from '@/components/ScrollReveal'
 import { HOME_TEXT_A } from '@/lib/sprzedazSeo'
 
+// Sekcja "O nas" wg makiety M3: tekst (z linkami SEO bez zmian) + trzy filary obok. Stockowe zdjęcie z plakietką
+// oceny usunięte: ocena Google jest teraz w JEDNYM pasku zaufania w hero (i w stopce bloku opinii), nie w trzech miejscach.
 const POINTS = [
-  { icon: MapPin,       title: 'Lokalny ekspert',          desc: 'Znamy każdą ulicę Kołobrzegu i okolic. Wiemy które lokalizacje zyskają na wartości.' },
-  { icon: ShieldCheck,  title: 'Bezpieczna transakcja',    desc: 'Weryfikujemy stan prawny każdej nieruchomości. Zero niespodzianek po zakupie.' },
-  { icon: Clock,        title: 'Odpowiadamy jak najszybciej',  desc: 'Nie później niż w ciągu 24 godzin, bez zbędnego czekania.' },
+  { title: 'Lokalny ekspert', desc: 'Znamy każdą ulicę Kołobrzegu i okolic. Wiemy które lokalizacje zyskają na wartości.' },
+  { title: 'Bezpieczna transakcja', desc: 'Weryfikujemy stan prawny każdej nieruchomości. Zero niespodzianek po zakupie.' },
+  { title: 'Odpowiadamy jak najszybciej', desc: 'Nie później niż w ciągu 24 godzin, bez zbędnego czekania.' },
 ]
 
-const IMG = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80&fit=crop&h=600'
-
-// ZMIANA (04.10.2026): plakietka z ocena tylko przy wiarygodnych, swiezych danych
-// (src/lib/schemaRating.ts) - zamiast sztywnego "4.9/5".
-export default function About({ googleRating = null }: { googleRating?: number | null }) {
-  const [isDesktop, setIsDesktop] = useState(false)
-
-  useEffect(() => {
-    const check = () => setIsDesktop(window.innerWidth >= 1024)
-    check()
-    window.addEventListener('resize', check)
-    return () => window.removeEventListener('resize', check)
-  }, [])
-
+export default function About() {
   return (
-    <section id="o-nas" className="section">
+    <section id="o-nas" className="m3-about">
       <div className="container">
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: isDesktop ? '1fr 1.2fr' : '1fr',
-          gap: isDesktop ? '72px' : '32px',
-          alignItems: 'center',
-        }}>
-
-          {/* Zdjęcie */}
-          <ScrollReveal>
-          <div style={{ borderRadius: 18, overflow: 'hidden', position: 'relative' }}>
-            {/* Prywatnosc (25.09.2026): zdjecie Unsplash idzie przez optymalizator next/image
-                (pobiera je serwer Vercel) - przegladarka odwiedzajacego nie laczy sie z
-                images.unsplash.com. Lokalna kopia w /public = odlozona (wymaga zgody na pobranie pliku). */}
-            <div style={{ position: 'relative', width: '100%', height: isDesktop ? 500 : 280 }}>
-              <Image
-                src={IMG}
-                alt="Biuro nieruchomości InvestRent w Kołobrzegu"
-                fill
-                sizes="(max-width: 768px) 100vw, 600px"
-                style={{ objectFit: 'cover' }}
-              />
-            </div>
-            {googleRating ? (
-            <ScrollReveal delay={280} style={{ position: 'absolute', bottom: 24, left: 24 }}>
-            <div style={{
-              background: 'white', borderRadius: 12, padding: '16px 20px',
-              boxShadow: '0 8px 24px rgba(0,0,0,.12)',
-              display: 'flex', alignItems: 'center', gap: 14,
-            }}>
-              <div style={{ width: 44, height: 44, background: '#f5a623', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <Star size={22} color="white" fill="white" />
-              </div>
-              <div>
-                <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 16, color: '#0d2a5c' }}>{googleRating}/5</div>
-                <div style={{ fontSize: 12, color: '#6b7280' }}>ocena klientów (Google)</div>
-              </div>
-            </div>
-            </ScrollReveal>
-            ) : null}
-          </div>
-          </ScrollReveal>
-
-          {/* Tekst */}
+        <div className="m3-about-grid">
           <div>
-            <div className="tag" style={{ background: 'rgba(26,79,160,.08)', color: '#1a4fa0', marginBottom: 16 }}>
+            <div style={{ color: '#9a5b00', fontSize: 12, fontWeight: 800, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 }}>
               O nas
             </div>
-            <h2 className="heading" style={{ fontSize: isDesktop ? 32 : 26, color: '#0d2a5c', lineHeight: 1.15, marginBottom: 16 }}>
+            <h2 className="heading" style={{ fontSize: 'clamp(26px, 3.4vw, 32px)', color: '#0d2a5c', lineHeight: 1.15, marginBottom: 16 }}>
               Nieruchomości nad Bałtykiem&nbsp;— to nasza specjalność
             </h2>
-            <p style={{ fontSize: 14, color: '#6b7280', lineHeight: 1.8, marginBottom: 16 }}>
-              InvestRent to kołobrzeskie <a href="/kolobrzeg" style={{ color: '#1a4fa0', textDecoration: 'underline' }}>biuro nieruchomości</a> z wieloletnim doświadczeniem na rynku nadmorskim. Doskonale znamy lokalne realia — od cen po prawne zawiłości rynku wakacyjnego.
+            <p style={{ fontSize: 15, color: '#3d4963', lineHeight: 1.7, marginBottom: 14 }}>
+              InvestRent to kołobrzeskie <a href="/kolobrzeg" style={{ color: '#0d2a5c', textDecoration: 'underline' }}>biuro nieruchomości</a> z wieloletnim doświadczeniem na rynku nadmorskim. Doskonale znamy lokalne realia — od cen po prawne zawiłości rynku wakacyjnego.
             </p>
-            <p style={{ fontSize: 14, color: '#6b7280', lineHeight: 1.8, marginBottom: 24 }}>
+            <p style={{ fontSize: 15, color: '#3d4963', lineHeight: 1.7, marginBottom: 14 }}>
               Naszą misją jest przeprowadzenie klientów przez każdą transakcję bezpiecznie i bez stresu. Nie znikamy po podpisaniu umowy — jesteśmy do dyspozycji przez cały proces i długo po nim.
             </p>
             {/* SEO krok 2 (18.10.2026): tekst A (zaakceptowany dosłownie) + link do /sprzedaz */}
-            <p style={{ fontSize: 14, color: '#6b7280', lineHeight: 1.8, marginBottom: 24 }}>
+            <p style={{ fontSize: 15, color: '#3d4963', lineHeight: 1.7 }}>
               {HOME_TEXT_A}{' '}
-              Zobacz, jak wygląda <a href="/sprzedaz" style={{ color: '#1a4fa0', textDecoration: 'underline' }}>sprzedaż nieruchomości w Kołobrzegu</a> z naszym biurem.
+              Zobacz, jak wygląda <a href="/sprzedaz" style={{ color: '#0d2a5c', textDecoration: 'underline' }}>sprzedaż nieruchomości w Kołobrzegu</a> z naszym biurem.
             </p>
-            <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 14 }}>
-              {POINTS.map((pt, i) => {
-                const Icon = pt.icon
-                return (
-                  <ScrollReveal key={pt.title} delay={i * 120}>
-                  <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
-                    <div style={{ width: 36, height: 36, background: 'rgba(26,79,160,.08)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <Icon size={15} color="#1a4fa0" />
-                    </div>
-                    <div>
-                      <strong style={{ fontSize: 13, fontWeight: 700, color: '#0d2a5c', display: 'block', marginBottom: 2 }}>{pt.title}</strong>
-                      <span style={{ fontSize: 12, color: '#6b7280', lineHeight: 1.6 }}>{pt.desc}</span>
-                    </div>
-                  </div>
-                  </ScrollReveal>
-                )
-              })}
-            </div>
           </div>
-
+          <div className="m3-pil">
+            {POINTS.map((pt, i) => (
+              <ScrollReveal key={pt.title} delay={i * 120}>
+                <div>
+                  <b>{pt.title}</b>
+                  <span>{pt.desc}</span>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
         </div>
       </div>
     </section>
