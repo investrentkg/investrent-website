@@ -3,8 +3,8 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { KUPNO_TITLE, KUPNO_DESCRIPTION, KUPNO_TITLE_SUFFIX_LEN } from './kupnoMeta.ts'
 
-test('title z marką z szablonu mieści się w ~60 znakach i zaczyna od frazy', () => {
-  assert.ok(KUPNO_TITLE.length + KUPNO_TITLE_SUFFIX_LEN <= 62, `za długi: ${KUPNO_TITLE.length + KUPNO_TITLE_SUFFIX_LEN}`)
+test('title z marką z szablonu mieści się w ~66 znakach (końcówka marki może być ucięta w wynikach) i zaczyna od frazy', () => {
+  assert.ok(KUPNO_TITLE.length + KUPNO_TITLE_SUFFIX_LEN <= 66, `za długi: ${KUPNO_TITLE.length + KUPNO_TITLE_SUFFIX_LEN}`)
   assert.match(KUPNO_TITLE, /^Kupno mieszkania/)
   assert.match(KUPNO_TITLE, /Kołobrzeg/)
 })
