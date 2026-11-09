@@ -68,7 +68,7 @@ export default function Contact({ office }: { office: Office | null }) {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-12 items-start">
           {/* Left: contact details */}
           <div>
-            <div className="tag bg-blue/8 text-blue mb-4">
+            <div className="tag mb-4" style={{ background: 'rgba(26,79,160,.10)', color: '#0d2a5c' }}>
               <MessageSquare size={12} /> Skontaktuj się
             </div>
             <h2 className="heading text-navy leading-[1.2] mb-4" style={{ fontSize: 'clamp(24px, 3.4vw, 30px)' }}>
