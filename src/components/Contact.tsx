@@ -113,8 +113,8 @@ export default function Contact({ office }: { office: Office | null }) {
           </div>
 
           {/* Right: form */}
-          <div className="bg-slate-50 rounded-2xl border border-slate-200 p-8">
-            <h3 className="heading text-navy mb-5 flex items-center gap-2" style={{ fontSize: 18 }}>
+          <div className="bg-slate-50 rounded-2xl border border-slate-200 p-5 sm:p-8">
+            <h3 className="heading m3-fh text-navy mb-5 flex items-center gap-2" style={{ fontSize: 18 }}>
               <Send size={18} style={{ flexShrink: 0 }} /> Wyślij wiadomość
             </h3>
             {status === 'ok' ? (

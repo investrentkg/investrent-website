@@ -118,7 +118,7 @@ export default async function Home() {
       <link rel="preload" as="image" href="/hero-m.webp" media="(max-width: 768px)" fetchPriority="high" />
       <link rel="preload" as="image" href="/hero.webp" media="(min-width: 769px)" fetchPriority="high" />
       <Nav           office={office} />
-      <main>
+      <main className="m3-home">
         <Hero          stats={statsData} googleRating={rating?.rating ?? null} googleTotal={rating?.total ?? null} />
         <CallbackStrip />
         <OffersSection initialOffers={offersData} />
