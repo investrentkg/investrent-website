@@ -172,6 +172,7 @@ export default function OffersSection({ initialOffers }: { initialOffers: Pagina
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   useEffect(() => {
+    return // makieta M3: statyczna lista 3 ofert, bez autoprzewijania
     if (maxSlide === 0) return
     timerRef.current = setInterval(() => {
       setCur(c => {
@@ -233,17 +234,14 @@ export default function OffersSection({ initialOffers }: { initialOffers: Pagina
           <div style={{ textAlign: 'center', padding: '64px 0', color: '#9ca3af' }}>Ładowanie ofert…</div>
         ) : (
           <>
-            <div ref={scrollerRef} onScroll={handleScroll}
-              className="offers-scroller"
-              style={{ display: 'flex', gap: 28, overflowX: 'auto', scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch', paddingBottom: 4 }}>
-              {offers.map((o, i) => (
-                <ScrollReveal key={o.id} delay={(i % 3) * 110}
-                  style={{ flexShrink: 0, scrollSnapAlign: 'start' as const, width: `calc(${100 / perView}% - ${28 * (perView - 1) / perView}px)` }}>
+            <div className="m3-ogrid" style={{ ['--ocols' as string]: cols }}>
+              {offers.slice(0, 3).map((o, i) => (
+                <ScrollReveal key={o.id} delay={(i % 3) * 110}>
                   <HomeOfferCard offer={o} tab={tab} />
                 </ScrollReveal>
               ))}
             </div>
-            {offers.length > perView && (
+            {false && offers.length > perView && (
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, marginTop: 24 }}>
                 <button onClick={() => scrollToIndex(cur - 1)} disabled={cur === 0} aria-label="Poprzedni"
                   style={{ width: 44, height: 44, borderRadius: '50%', border: '1.5px solid #e5e7eb', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: cur === 0 ? .3 : 1 }}>

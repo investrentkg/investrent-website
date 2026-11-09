@@ -124,7 +124,7 @@ export default function Reviews({ initial }: { initial?: InitialData | null }) {
               {isReal ? 'Prawdziwe opinie z Google, aktualizowane na bieżąco' : 'Opinie klientów z Google'}
             </p>
           </div>
-          {count > 1 && (
+          {/* makieta M3: bez strzałek, opinie zmieniają się automatycznie */ false && count > 1 && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <button onClick={prev} aria-label="Poprzednia opinia" style={{ width: 44, height: 44, borderRadius: '50%', border: '1.5px solid #cbd5e1', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <ChevronLeft size={18} color="#374151" />

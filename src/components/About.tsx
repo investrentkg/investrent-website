@@ -15,7 +15,7 @@ export default function About() {
       <div className="container">
         <div className="m3-about-grid">
           <div>
-            <div className="tag" style={{ background: 'rgba(26,79,160,.08)', color: '#1a4fa0', marginBottom: 16 }}>
+            <div style={{ color: '#9a5b00', fontSize: 12, fontWeight: 800, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 }}>
               O nas
             </div>
             <h2 className="heading" style={{ fontSize: 'clamp(26px, 3.4vw, 32px)', color: '#0d2a5c', lineHeight: 1.15, marginBottom: 16 }}>

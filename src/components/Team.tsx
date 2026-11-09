@@ -38,6 +38,12 @@ export default function Team({ members }: Props) {
   const displayMembers = members.length > 0 ? members : FALLBACK_MEMBERS
   const maxSlide = Math.max(0, Math.ceil(displayMembers.length - perView))
 
+  // kropki = strony (grupy widocznych kart), nie pojedyncze karty
+  const pages = Math.max(1, Math.ceil(displayMembers.length / perView))
+  const pageTarget = (p: number) => (p >= pages - 1 ? maxSlide : Math.round(p * perView))
+  let curPage = 0
+  for (let p = 1; p < pages; p++) { if (Math.abs(pageTarget(p) - cur) < Math.abs(pageTarget(curPage) - cur)) curPage = p }
+
   function scrollToIndex(i: number) {
     const el = scrollerRef.current
     if (!el) return
@@ -124,8 +130,8 @@ export default function Team({ members }: Props) {
               <ChevronLeft size={18} />
             </button>
             <div className="m3-car-dots">
-              {Array.from({ length: maxSlide + 1 }).map((_, i) => (
-                <button type="button" key={i} onClick={() => scrollToIndex(i)} aria-label={`Pokaż osoby od ${i + 1}`} aria-current={i === cur}>
+              {Array.from({ length: pages }).map((_, i) => (
+                <button type="button" key={i} onClick={() => scrollToIndex(pageTarget(i))} aria-label={`Pokaż osoby od ${pageTarget(i) + 1}`} aria-current={i === curPage}>
                   <span />
                 </button>
               ))}

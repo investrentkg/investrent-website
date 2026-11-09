@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Home, FileText, Handshake, Search, KeyRound, Building2, ShieldCheck, type LucideIcon } from 'lucide-react'
+import { Home, FileText, Search, KeyRound, Lock, Building2, Shield, type LucideIcon } from 'lucide-react'
 import { isCommercialHubOn } from '@/lib/commercialHub'
 import { COMMERCIAL_PATH } from '@/content/komercyjne'
 
@@ -25,19 +25,19 @@ const TILES: Tile[] = [
     desc: 'Profesjonalne zdjęcia, ekspozycja na wszystkich portalach, aktywna sprzedaż. Sprzedajemy szybko i za dobrą cenę.' },
   { icon: FileText, title: 'Chcę poznać wartość', href: '/wycena', action: 'Sprawdź wartość',
     desc: 'Orientacyjna wycena w kalkulatorze online, a potem bezpłatna wycena eksperta.' },
-  { icon: Handshake, title: 'Kupuję nieruchomość', href: '/kupno', action: 'Jak wygląda zakup',
+  { icon: KeyRound, title: 'Kupuję nieruchomość', href: '/kupno', action: 'Jak wygląda zakup',
     desc: 'Szukamy dla Ciebie nieruchomości dopasowanej do budżetu i oczekiwań. Cały proces od pierwszego oglądania po akt notarialny.',
     second: { href: '/oferty', label: 'Sprawdź oferty' } },
   { icon: Search, title: 'Szukam oferty', href: '/mieszkania-na-sprzedaz-kolobrzeg', action: 'Zobacz mieszkania',
     desc: 'Aktualne mieszkania na sprzedaż w Kołobrzegu.' },
-  { icon: KeyRound, title: 'Wynajem i zarządzanie', href: '/wynajem', action: 'Sprawdź oferty',
+  { icon: Lock, title: 'Wynajem i zarządzanie', href: '/wynajem', action: 'Sprawdź oferty',
     desc: 'Szukasz lokalu lub chcesz wynajmować bez stresu? Obsługujemy kompletnie — lokatorzy, umowy, rozliczenia, naprawy.' },
 ]
 
 const COMMERCIAL: Tile = { icon: Building2, title: 'Nieruchomości komercyjne', href: COMMERCIAL_PATH, action: 'Zobacz',
   desc: 'Działki, hale i magazyny, lokale usługowe i obiekty inwestycyjne. Sprzedaż oraz szukanie obiektu dla inwestora.' }
 
-const HARD: Tile = { icon: ShieldCheck, title: 'Trudne nieruchomości i doradztwo', href: '/trudne-nieruchomosci', action: 'Dowiedz się więcej',
+const HARD: Tile = { icon: Shield, title: 'Trudne nieruchomości i doradztwo', href: '/trudne-nieruchomosci', action: 'Dowiedz się więcej',
   desc: 'Sprawy spadkowe, hipoteki, współwłasność. Pomagamy też z kredytami hipotecznymi i ubezpieczeniami.' }
 
 export default function HomeServices({ id = 'sciezki-home' }: { id?: string }) {
