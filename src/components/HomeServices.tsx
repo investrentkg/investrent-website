@@ -49,8 +49,10 @@ export default function HomeServices({ id = 'sciezki-home' }: { id?: string }) {
       <ul className="m3-tiles">
         <li className="m3-tile intro">
           <span className="kick">Nasze usługi</span>
-          <h2>Kompleksowa obsługa nieruchomości</h2>
-          <p>Od kupna po obsługę prawną — wszystko czego potrzebujesz w jednym miejscu.</p>
+          <div className="intro-txt">
+            <h2>Kompleksowa obsługa nieruchomości</h2>
+            <span> — od kupna po obsługę prawną, wszystko czego potrzebujesz w jednym miejscu.</span>
+          </div>
         </li>
         {tiles.map((t, idx) => {
           const Icon = t.icon

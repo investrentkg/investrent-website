@@ -117,7 +117,7 @@ export default function Reviews({ initial }: { initial?: InitialData | null }) {
         {/* Nagłówek (makieta M3): jedna linia o ocenie jest pod kartami, nie w trzech miejscach */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: 16, flexWrap: 'wrap' as const }}>
           <div>
-            <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 30, color: '#0d2a5c', letterSpacing: '-.5px', marginBottom: 6 }}>
+            <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 'clamp(25px, 3.4vw, 30px)', color: '#0d2a5c', letterSpacing: '-.5px', marginBottom: 6 }}>
               Co sądzą o nas klienci?
             </h2>
             <p style={{ color: '#5a6680', fontSize: 15 }}>

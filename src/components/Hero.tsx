@@ -1,6 +1,6 @@
 "use client"
 import { useState, useEffect, useRef } from 'react'
-import { Star, Award } from 'lucide-react'
+import { Star } from 'lucide-react'
 import HeroSearch from '@/components/HeroSearch'
 import { RESPONSE_BADGE } from '@/lib/responseTime'
 import type { PublicStats } from '@/types'
@@ -32,9 +32,7 @@ interface HeroProps {
 // bardziej emocjonalny przekaz ("Twoje wymarzone nieruchomosci") zostaje w
 // tekscie pod naglowkiem.
 const HEADLINE_LINES: { words: string[]; gold?: boolean }[] = [
-  { words: ['Biuro'] },
-  { words: ['nieruchomości'], gold: true },
-  { words: ['w', 'Kołobrzegu'] },
+  { words: ['Biuro', 'nieruchomości', 'w', 'Kołobrzegu'] },
 ]
 
 export default function Hero({ stats, googleRating = null, googleTotal = null }: HeroProps) {
@@ -142,20 +140,20 @@ export default function Hero({ stats, googleRating = null, googleTotal = null }:
         <div>
 
           <div>
-            <div className={`tag bg-gold/20 border border-gold/35 text-gold mb-5 hero-reveal ${mounted ? 'hero-reveal-in' : ''}`} style={{ transitionDelay: '80ms' }}>
-              <Award size={14} /> Kołobrzeg i okolice
+            <div className={`text-gold mb-5 hero-reveal ${mounted ? 'hero-reveal-in' : ''}`} style={{ transitionDelay: '80ms', fontSize: 12, fontWeight: 800, letterSpacing: 2, textTransform: 'uppercase' }}>
+              Kołobrzeg i okolice
             </div>
 
-            <h1 className="heading text-[32px] md:text-[50px] text-white leading-[1.1] mb-5">
+            <h1 className="heading m3-h1 text-[25px] min-[480px]:text-[32px] md:text-[52px] text-white leading-[1.08] mb-5" style={{ maxWidth: 700, letterSpacing: -1 }}>
               {HEADLINE_LINES.map((line, lineIdx) => (
-                <span key={lineIdx} className="block" style={{ overflow: 'visible' }}>
+                <span key={lineIdx} style={{ overflow: 'visible' }}>
                   {line.words.map((word) => {
                     wordIndex++
                     const delay = 280 + wordIndex * 190
                     return (
                       <span
                         key={word}
-                        className={`word-reveal ${line.gold ? 'text-gold' : ''} ${mounted ? 'word-reveal-in' : ''}`}
+                        className={`word-reveal ${mounted ? 'word-reveal-in' : ''}`}
                         style={{ transitionDelay: `${delay}ms` }}
                       >
                         {word}&nbsp;

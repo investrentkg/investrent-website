@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import SuccessBadge from '@/components/SuccessBadge'
 import { submitLead } from '@/lib/api'
+import { CALCULATOR_CONFIG } from '@/lib/localities'
 import PrivacyNote from '@/components/PrivacyNote'
 
 // Zakładki "Szukam" / "Chcę sprzedać" + pasek wyszukiwarki w hero (makieta M3). Zastępuje dawny HeroWidget
@@ -9,9 +10,9 @@ import PrivacyNote from '@/components/PrivacyNote'
 // wysyła lead (source hero_sell). Teraz działa też na telefonie (makieta mobile 390).
 export default function HeroSearch() {
   const [tab, setTab] = useState<'search' | 'sell'>('search')
-  const [propType, setPropType] = useState('')
-  const [transType, setTransType] = useState('')
-  const [city, setCity] = useState('')
+  const [propType, setPropType] = useState('mieszkanie')
+  const [transType, setTransType] = useState('sprzedaz')
+  const [city, setCity] = useState(CALCULATOR_CONFIG.homeCity)
   const [sellName, setSellName] = useState('')
   const [sellPhone, setSellPhone] = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle')
@@ -63,7 +64,10 @@ export default function HeroSearch() {
           </div>
           <div className="m3-fld">
             <label htmlFor="hs-city">Lokalizacja</label>
-            <input id="hs-city" type="text" placeholder="np. Kołobrzeg, Mielno…" value={city} onChange={e => setCity(e.target.value)} autoComplete="off" />
+            <select id="hs-city" value={city} onChange={e => setCity(e.target.value)}>
+              <option value="">Wszystkie miejscowości</option>
+              {CALCULATOR_CONFIG.cities.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
           </div>
           <button type="submit" className="m3-search-btn">Szukam ofert</button>
         </form>

@@ -1,7 +1,10 @@
 "use client"
 import { useState, useEffect, useCallback } from 'react'
+import { submitLead } from '@/lib/api'
+import PrivacyNote from '@/components/PrivacyNote'
 import LiveNumber from '@/components/LiveNumber'
 import ScrollReveal from '@/components/ScrollReveal'
+import SuccessBadge from '@/components/SuccessBadge'
 
 const DEFAULT_RATE = 7.5  // fallback gdy API niedostępne
 
@@ -12,6 +15,8 @@ export default function MortgageCalcSection() {
   const [rate,     setRate]     = useState(DEFAULT_RATE)
   const [baseRate, setBaseRate] = useState<number | null>(null)
   const [rateSource, setRateSource] = useState('domyślna')
+  const [phone,    setPhone]    = useState('')
+  const [leadStatus, setLeadStatus] = useState<'idle'|'loading'|'ok'|'error'>('idle')
 
   // Pobierz stopę referencyjną NBP
   useEffect(() => {
@@ -44,6 +49,16 @@ export default function MortgageCalcSection() {
 
   const fmt = (n: number) => Math.round(n).toLocaleString('pl-PL')
 
+  async function submitCreditLead() {
+    if (!phone.trim()) return
+    setLeadStatus('loading')
+    const r = await submitLead({
+      phone, source: 'kredyt', client_type: 'buyer',
+      notes: `Zainteresowanie kredytem. Kwota: ${fmt(amount)} zł, okres: ${years} lat, wkład: ${own}%`
+    })
+    setLeadStatus(r?.ok ? 'ok' : 'error')
+  }
+
   return (
     <section id="kalkulator" style={{ padding: 'clamp(40px, 6vw, 64px) 0', background: '#f1f4f9' }}>
       <div className="container">
@@ -56,13 +71,13 @@ export default function MortgageCalcSection() {
           <h2 className="heading" style={{ fontSize: 'clamp(24px,4vw,32px)', color: '#0d2a5c', marginBottom: 12 }}>
             Sprawdź swoją orientacyjną ratę kredytu
           </h2>
-          <p style={{ fontSize: 14, color: '#6b7280', maxWidth: 520, margin: '0 auto' }}>
+          <p style={{ fontSize: 14, color: '#5a6680', maxWidth: 520, margin: '0 auto' }}>
             Kalkulator uwzględnia aktualną stopę referencyjną NBP. Wynik ma charakter wyłącznie orientacyjny
             i nie stanowi oferty kredytowej banku.
           </p>
           {rateSource && (
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 10, fontSize: 12,
-              color: baseRate ? '#10b981' : '#9ca3af', background: baseRate ? '#f0fdf4' : '#f9fafb',
+              color: baseRate ? '#047857' : '#5a6680', background: baseRate ? '#f0fdf4' : '#f9fafb',
               border: `1px solid ${baseRate ? '#bbf7d0' : '#e5e7eb'}`, borderRadius: 20, padding: '4px 12px' }}>
               {baseRate ? `✓ Dane aktualne z NBP — ${rateSource}` : '⚠ Dane orientacyjne — wartości domyślne, zmień je, aby zobaczyć swoją ratę'}
             </div>
@@ -127,12 +142,24 @@ export default function MortgageCalcSection() {
                 Sprawdzamy oferty wielu banków i wybieramy najkorzystniejszą na dzień zgłoszenia.
                 Konsultacja oraz cały proces kredytowy są dla naszych klientów w 100% bezpłatne.
               </p>
-              {/* Makieta M3: jedna ścieżka kontaktu - bez drugiego pola na numer, przejście do pełnego formularza */}
-              <a href="#kontakt" className="cta-pulse"
-                style={{ display: 'inline-flex', alignItems: 'center', minHeight: 48, background: '#f5a623', color: '#0d2a5c', borderRadius: 10,
-                  padding: '12px 22px', fontSize: 14, fontWeight: 800, textDecoration: 'none' }}>
-                Przejdź do formularza kontaktu
-              </a>
+              {leadStatus === 'ok' ? (
+                <SuccessBadge text="Oddzwonimy wkrótce!" style={{ background: '#f0fdf4', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#065f46', fontWeight: 600, justifyContent: 'center' }} />
+              ) : (
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  <input type="tel" aria-label="Numer telefonu" placeholder="Twój numer telefonu"
+                    value={phone} onChange={e => setPhone(e.target.value)}
+                    onKeyDown={e => e.key === 'Enter' && submitCreditLead()}
+                    style={{ flex: 1, padding: '12px 12px', minHeight: 44, borderRadius: 10, border: '1.5px solid #8a94a8',
+                      fontSize: 13, outline: 'none', minWidth: 0 }} />
+                  <button onClick={submitCreditLead} disabled={!phone.trim() || leadStatus === 'loading'}
+                    className="cta-pulse"
+                    style={{ background: '#f5a623', color: '#1a1a1a', border: 'none', borderRadius: 10,
+                      padding: '10px 16px', minHeight: 44, fontSize: 13, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' as const }}>
+                    Zamów rozmowę
+                  </button>
+                </div>
+              )}
+              {leadStatus !== 'ok' && <PrivacyNote color="#5a6680" size={11} style={{ marginTop: 8 }} />}
             </div>
 
             <p style={{ fontSize: 11, color: '#5a6680', textAlign: 'center' as const, marginTop: 12, lineHeight: 1.5 }}>

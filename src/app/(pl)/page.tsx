@@ -130,8 +130,10 @@ export default async function Home() {
         <Team          members={teamData?.data ?? []} />
         <Contact       office={office} />
         <MortgageCalcSection />
-        <ReadAlso />
-        <RelatedLinks page="home" />
+        <div className="m3-rel"><div className="m3-rel-in">
+          <ReadAlso />
+          <RelatedLinks page="home" />
+        </div></div>
       </main>
       <Footer        office={office} />
 

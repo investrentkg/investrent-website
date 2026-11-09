@@ -84,6 +84,35 @@ export function OfferCard({ offer, tab }: { offer: Offer; tab: string }) {
   )
 }
 
+const TYPE_LABEL: Record<string, string> = { mieszkanie: 'Mieszkanie', dom: 'Dom', dzialka: 'Działka', lokal: 'Lokal', biuro: 'Biuro', magazyn: 'Magazyn', garaz: 'Garaż', inwestycja: 'Inwestycja' }
+
+// Karta oferty na stronie głównej wg makiety M3 (tylko wygląd; dane i link jak w OfferCard).
+function HomeOfferCard({ offer, tab }: { offer: Offer; tab: string }) {
+  const badge = getBadge(offer, tab)
+  const fmtArea = offer.area ? offer.area.toLocaleString('pl-PL') : null
+  const type = TYPE_LABEL[offer.property_type] ?? ''
+  return (
+    <a href={`/oferty/${offer.slug || offer.id}`} className="m3-oc">
+      <div className="ph">
+        {offer.main_photo ? (
+          <Image src={offer.main_photo_thumb || offer.main_photo} alt={offer.title ?? 'Oferta'}
+            fill sizes="(max-width: 700px) 100vw, (max-width: 1200px) 50vw, 400px"
+            loading="lazy" unoptimized style={{ objectFit: 'cover' }} />
+        ) : (
+          <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f0f4ff', fontSize: 48 }} aria-hidden="true">🏠</div>
+        )}
+        {badge && <span className="tag" style={badge.color === '#10b981' ? { background: '#047857' } : undefined}>{badge.label}</span>}
+      </div>
+      <div className="ob">
+        <div className="pr">{priceLabel(offer.price)}</div>
+        <div className="pm">{offer.price_per_m2 ? `${offer.price_per_m2.toLocaleString('pl-PL')} zł/m²` : ''}{offer.price_per_m2 && fmtArea ? ' · ' : ''}{fmtArea ? `${fmtArea} m²` : ''}</div>
+        <div className="lc"><MapPin size={16} aria-hidden="true" />{offer.address_city}{offer.address_district ? `, ${offer.address_district}` : ''}</div>
+        <div className="tt">{type}{offer.rooms_count ? `, ${offer.rooms_count} pok.` : ''}{offer.ref_number ? ` · ${offer.ref_number}` : ''}</div>
+      </div>
+    </a>
+  )
+}
+
 export default function OffersSection({ initialOffers }: { initialOffers: PaginatedOffers | null }) {
   const hasRealOffers = (initialOffers?.data?.length ?? 0) > 0
   const [cols, setCols] = useState(3)
@@ -126,7 +155,7 @@ export default function OffersSection({ initialOffers }: { initialOffers: Pagina
     const clamped = Math.max(0, Math.min(maxSlide, i))
     const card = el.children[0] as HTMLElement | undefined
     if (!card) return
-    const cardWidth = card.getBoundingClientRect().width + 22 // + gap
+    const cardWidth = card.getBoundingClientRect().width + 28 // + gap
     el.scrollTo({ left: clamped * cardWidth, behavior: 'smooth' })
   }
 
@@ -136,7 +165,7 @@ export default function OffersSection({ initialOffers }: { initialOffers: Pagina
   function handleScroll() {
     const el = scrollerRef.current
     if (!el || !el.children[0]) return
-    const cardWidth = (el.children[0] as HTMLElement).getBoundingClientRect().width + 22
+    const cardWidth = (el.children[0] as HTMLElement).getBoundingClientRect().width + 28
     if (cardWidth <= 0) return
     setCur(Math.round(el.scrollLeft / cardWidth))
   }
@@ -179,35 +208,26 @@ export default function OffersSection({ initialOffers }: { initialOffers: Pagina
   function switchTab(t: typeof tab) { setTab(t); fetchOffers(t) }
 
   return (
-    <section id="oferty" style={{ padding: '56px 0', background: '#f8fafc' }}>
+    <section id="oferty" className="m3-offers">
       <style jsx>{`
         .offers-scroller::-webkit-scrollbar { display: none; }
         .offers-scroller { scrollbar-width: none; -ms-overflow-style: none; }
       `}</style>
       <div className="container">
-        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 26, flexWrap: 'wrap', gap: 12 }}>
+        <div className="m3-sechead">
           <div>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '4px 12px', borderRadius: 100, background: 'rgba(26,79,160,.08)', color: '#1a4fa0', fontSize: 10, fontWeight: 700, letterSpacing: '.5px', textTransform: 'uppercase' as const, marginBottom: 8 }}>
-              Nieruchomości
-            </div>
-            <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 26, color: '#0d2a5c', letterSpacing: '-.4px' }}>Nasze oferty</h2>
+            <h2 className="m3-h2">Nasze oferty</h2>
+            <p className="lead">Aktualne nieruchomości w Kołobrzegu i okolicach</p>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' as const }}>
-            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' as const }}>
-              {TABS.map(t => (
-                <button key={t.key} onClick={() => switchTab(t.key)}
-                  style={{ padding: '10px 18px', minHeight: 44, borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: '1.5px solid', transition: 'all .2s', background: tab === t.key ? '#1a4fa0' : 'transparent', color: tab === t.key ? 'white' : '#6b7280', borderColor: tab === t.key ? '#1a4fa0' : '#e5e7eb' }}>
-                  {t.label}
-                </button>
-              ))}
-            </div>
-            <Link href="/oferty" style={{ fontSize: 13, fontWeight: 700, color: '#1a4fa0', border: '1.5px solid #1a4fa0', padding: '8px 18px', minHeight: 44, borderRadius: 9, display: 'flex', alignItems: 'center', gap: 5, textDecoration: 'none' }}>
-              Wszystkie <ArrowRight size={14} />
-            </Link>
+          <div className="m3-tabs">
+            {TABS.map(t => (
+              <button key={t.key} type="button" onClick={() => switchTab(t.key)} aria-pressed={tab === t.key} className={tab === t.key ? 'on' : ''}>
+                {t.label}
+              </button>
+            ))}
+            <Link href="/oferty" className="more">Wszystkie →</Link>
           </div>
         </div>
-
-
 
         {loading ? (
           <div style={{ textAlign: 'center', padding: '64px 0', color: '#9ca3af' }}>Ładowanie ofert…</div>
@@ -215,11 +235,11 @@ export default function OffersSection({ initialOffers }: { initialOffers: Pagina
           <>
             <div ref={scrollerRef} onScroll={handleScroll}
               className="offers-scroller"
-              style={{ display: 'flex', gap: 22, overflowX: 'auto', scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch', paddingBottom: 4 }}>
+              style={{ display: 'flex', gap: 28, overflowX: 'auto', scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch', paddingBottom: 4 }}>
               {offers.map((o, i) => (
                 <ScrollReveal key={o.id} delay={(i % 3) * 110}
-                  style={{ flexShrink: 0, scrollSnapAlign: 'start' as const, width: `calc(${100 / perView}% - ${22 * (perView - 1) / perView}px)` }}>
-                  <OfferCard offer={o} tab={tab} />
+                  style={{ flexShrink: 0, scrollSnapAlign: 'start' as const, width: `calc(${100 / perView}% - ${28 * (perView - 1) / perView}px)` }}>
+                  <HomeOfferCard offer={o} tab={tab} />
                 </ScrollReveal>
               ))}
             </div>
@@ -248,9 +268,9 @@ export default function OffersSection({ initialOffers }: { initialOffers: Pagina
             publikacje, lub inne powody biznesowe) celowo nie trafia na
             strone, wiec warto to wprost zakomunikowac zamiast zostawiac
             odwiedzajacego z wrazeniem "to widocznie caly nasz katalog". */}
-        <p style={{ textAlign: 'center', fontSize: 13, color: '#5a6680', marginTop: 28 }}>
+        <p style={{ textAlign: 'center', fontSize: 14, color: '#3d4963', marginTop: 30 }}>
           Nie wszystkie nieruchomości trafiają od razu na stronę.{' '}
-          <a href="#kontakt" style={{ color: '#1a4fa0', fontWeight: 600, textDecoration: 'none' }}>
+          <a href="#kontakt" style={{ color: '#9a5b00', fontWeight: 800, textDecoration: 'none' }}>
             Skontaktuj się z nami aby poznać naszą pełną ofertę.
           </a>
         </p>
