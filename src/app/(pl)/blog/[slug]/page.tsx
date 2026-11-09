@@ -18,6 +18,7 @@ import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
+import CurrentOffersLinks from '@/components/CurrentOffersLinks'
 import { getPublicBlogPost, getOffice } from '@/lib/api'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
@@ -117,6 +118,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
             <ReactMarkdown components={{ h1: ({ children }) => <h2>{children}</h2> }}>{post.content}</ReactMarkdown>
           </div>
         </article>
+        <CurrentOffersLinks />
       </main>
       <Footer office={office} />
       <SocialSidebar office={office} />
