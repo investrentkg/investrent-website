@@ -22,6 +22,8 @@ export default function Nav({ office }: { office: Office | null }) {
   const [scrolled, setScrolled] = useState(false)
   const moreRef = useRef<HTMLDivElement>(null)
   const moreBtnRef = useRef<HTMLButtonElement>(null)
+  const burgerRef = useRef<HTMLButtonElement>(null)
+  const navRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10)
@@ -37,14 +39,33 @@ export default function Nav({ office }: { office: Office | null }) {
       if (moreOpen && moreRef.current && !moreRef.current.contains(e.target as Node)) setMoreOpen(false)
     }
     const onKey = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape') return
-      if (moreOpen) { setMoreOpen(false); moreBtnRef.current?.focus() }
-      else if (open) setOpen(false)
+      if (e.key === 'Escape') {
+        if (moreOpen) { setMoreOpen(false); moreBtnRef.current?.focus() }
+        else if (open) { setOpen(false); burgerRef.current?.focus() }
+        return
+      }
+      // Panel mobilny: fokus uwieziony w naglowku (burger, logo, telefon, linki panelu).
+      if (e.key === 'Tab' && open && navRef.current && burgerRef.current && burgerRef.current.offsetParent !== null) {
+        const f = Array.from(navRef.current.querySelectorAll<HTMLElement>('a[href], button')).filter(el => el.offsetParent !== null)
+        if (!f.length) return
+        const first = f[0], last = f[f.length - 1]
+        const a = document.activeElement
+        if (e.shiftKey && (a === first || !navRef.current.contains(a))) { e.preventDefault(); last.focus() }
+        else if (!e.shiftKey && (a === last || !navRef.current.contains(a))) { e.preventDefault(); first.focus() }
+      }
     }
     document.addEventListener('mousedown', onDown)
     document.addEventListener('keydown', onKey)
     return () => { document.removeEventListener('mousedown', onDown); document.removeEventListener('keydown', onKey) }
   }, [moreOpen, open])
+
+  // Blokada przewijania tla, gdy panel mobilny jest otwarty.
+  useEffect(() => {
+    if (!open) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = prev }
+  }, [open])
 
   const phone = formatPhoneDisplay(office?.phone) || '+48 731 554 341'
   const tel = `tel:${phone.replace(/\s/g, '')}`
@@ -74,10 +95,11 @@ export default function Nav({ office }: { office: Office | null }) {
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/')
   const moreActive = moreLinks.some(l => isActive(l.href))
   const close = () => { setOpen(false); setMoreOpen(false) }
+  const closeToBurger = () => { setOpen(false); burgerRef.current?.focus() }
 
   return (
     <>
-      <nav className={`ir-nav${scrolled ? ' is-scrolled' : ''}${open ? ' is-open' : ''}`} aria-label="Menu główne">
+      <nav ref={navRef} className={`ir-nav${scrolled ? ' is-scrolled' : ''}${open ? ' is-open' : ''}`} aria-label="Menu główne">
         <div className="ir-nav-inner">
           <a href="/" className="ir-nav-logo">
             {/* Białe kontury domków bezpośrednio na granatowym tle */}
@@ -90,7 +112,7 @@ export default function Nav({ office }: { office: Office | null }) {
           </a>
 
           <a href={tel} className="ir-nav-mphone" aria-label={`Zadzwoń: ${phone}`}><Phone size={14} /> <span className="ir-nav-mphone-t">{phone}</span></a>
-          <button type="button" className="ir-nav-burger" onClick={() => setOpen(o => !o)}
+          <button type="button" ref={burgerRef} className="ir-nav-burger" onClick={() => setOpen(o => !o)}
             aria-label={open ? 'Zamknij menu' : 'Otwórz menu'} aria-expanded={open} aria-controls="ir-nav-panel">
             {open ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -124,6 +146,7 @@ export default function Nav({ office }: { office: Office | null }) {
           </div>
         </div>
       </nav>
+      {open && <div className="ir-nav-backdrop" onClick={closeToBurger} aria-hidden="true" />}
       <ChatWidget />
     </>
   )
