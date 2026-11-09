@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { ChevronLeft, ChevronRight, Star, ExternalLink } from 'lucide-react'
 import ScrollReveal from '@/components/ScrollReveal'
 import { getVerifiedRating, type VerifiedRating } from '@/lib/schemaRating'
+import { truncateAtWord } from '@/lib/truncateAtWord'
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.investrent.com.pl'
 const GOOGLE_URL = 'https://www.google.com/maps/place/Invest+Rent+Nieruchomo%C5%9Bci/@54.1770073,15.5744432,17z/#reviews'
@@ -151,7 +152,7 @@ export default function Reviews({ initial }: { initial?: InitialData | null }) {
                 <Stars n={r.rating} />
                 {G}
               </div>
-              <q>{r.text.length > 240 ? r.text.slice(0, 240) + '…' : r.text}</q>
+              <q>{truncateAtWord(r.text, 240)}</q>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <Avatar author={r.author} avatar={r.avatar} />
                 <div>

@@ -121,7 +121,7 @@ export default function Footer({ office }: { office: Office | null }) {
           <div className="ft-co">
             © {new Date().getFullYear()} {OFFICE_NAME}
             {/* Dane rejestrowe spolki (odpis aktualny KRS, zgodne z /rodo i /de/datenschutz; 09.11.2026). Specyficzne dla InvestRent - przy sprzedazy CRM/strony innym biurom wynies do konfiguracji biura. */}
-            <span className="ft-spolka">INVESTRENT sp.&nbsp;z&nbsp;o.o. · KRS&nbsp;0001069797 · NIP&nbsp;671&nbsp;185&nbsp;85&nbsp;59 · REGON&nbsp;526973936</span>
+            <span className="ft-spolka"><span className="ft-sp-g ft-sp-g1">INVESTRENT sp.&nbsp;z&nbsp;o.o. · KRS&nbsp;0001069797</span> <span className="ft-sp-g">NIP&nbsp;671&nbsp;185&nbsp;85&nbsp;59 · REGON&nbsp;526973936</span></span>
           </div>
           <div className="ft-r">
             <div>
