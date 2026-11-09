@@ -1044,6 +1044,8 @@ html:has(.wy-pad) { scroll-padding-bottom: calc(var(--consent-h, 0px) + 96px); }
   .ft-bot { grid-template-columns: 1fr; gap: 8px; padding: 12px 0 16px; }
   .ft-r { text-align: left; order: 1; }
   .ft-co { order: 2; line-height: 1.5; }
+  /* linia spolki zawija przed pływającym launcherem kontaktu (52 px + 16 px marginesu) */
+  .ft-spolka { padding-right: 68px; }
   .ft-de { justify-content: flex-start; }
   /* mobile wg M2: Immobilien Kolberg w osobnym wierszu, Datenschutz i Impressum razem w drugim,
      bez osieroconego separatora na poczatku wiersza */
