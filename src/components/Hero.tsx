@@ -84,7 +84,7 @@ export default function Hero({ stats, googleRating = null, googleTotal = null }:
   let wordIndex = -1
 
   return (
-    <section ref={sectionRef} className="relative flex items-center" style={{ minHeight: '620px', padding: '90px 0 96px', overflow: 'hidden' }}>
+    <section ref={sectionRef} className="m3-hero relative flex items-center" style={{ minHeight: '620px', padding: '90px 0 96px', overflow: 'hidden' }}>
 
       <div className="absolute inset-0" style={{ overflow: 'hidden' }}>
         {/* NAPRAWA (audyt webmasterski, Daniel 30.07.2026): wideo w tle

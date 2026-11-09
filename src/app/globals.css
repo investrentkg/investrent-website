@@ -740,6 +740,11 @@ html:has(.wy-pad) { scroll-padding-bottom: calc(var(--consent-h, 0px) + 96px); }
   .m3-search { flex-direction: column; border-radius: 0 0 14px 14px; padding: 10px; }
   .m3-fld { border-right: 0; border-bottom: 1px solid #e3e8f0; padding: 10px 12px; }
   .m3-search-btn { width: 100%; }
+  /* hero mobile wg makiety M3 (390): ~50 px nad kickerem i ~28 px pod paskiem zaufania
+     zamiast 90/96 px (puste tlo pod paskiem), ciasniejsze pola wyszukiwarki */
+  .m3-hero { padding-top: 48px !important; padding-bottom: 28px !important; min-height: 0 !important; }
+  .m3-hero .m3-fld { padding-top: 4px; padding-bottom: 4px; }
+  .m3-hero .m3-hero-ctas { gap: 10px; }
 }
 
 /* pas oddzwonienia */
@@ -1041,6 +1046,11 @@ html:has(.wy-pad) { scroll-padding-bottom: calc(var(--consent-h, 0px) + 96px); }
   .ft-r { text-align: left; order: 1; }
   .ft-co { order: 2; line-height: 1.5; }
   .ft-de { justify-content: flex-start; }
+  /* mobile wg M2: Immobilien Kolberg w osobnym wierszu, Datenschutz i Impressum razem w drugim,
+     bez osieroconego separatora na poczatku wiersza */
+  .ft-de > span { white-space: nowrap; }
+  .ft-de > span:first-child { flex-basis: 100%; }
+  .ft-de > span:nth-child(2) .ft-dot { display: none; }
 }
 
 @media (max-width: 700px) { .m3-tabs { flex-wrap: nowrap; font-size: 13px; gap: 4px 8px; } .m3-tabs .more { white-space: nowrap; } }
