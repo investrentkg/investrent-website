@@ -89,7 +89,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
   const v2Active = WYCENA_RESULT_V2_ELIGIBLE && v2Arm === 'v2'
   const funnelVariant = WYCENA_RESULT_V2_ELIGIBLE && v2Arm ? { variant: v2Arm === 'v2' ? 'wynik_v2' : 'wynik_v1' } : PHONE_BLOCK_ON ? { variant: 'phone_block' } : {}
   const startLogged = useRef(false)
-  const showSticky = available && phase === 'after' && !!outcome && armed && !leadInView && !ctaInView && !leadDone
+  const showSticky = !v2Active && available && phase === 'after' && !!outcome && armed && !leadInView && !ctaInView && !leadDone
 
   useEffect(() => { trackValuation('wycena_view') }, []) // eslint-disable-line react-hooks/exhaustive-deps
   const entryLogged = useRef(false)
@@ -214,7 +214,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
       <div className="container" style={{ maxWidth: 860 }}>
         <Breadcrumb light={true} crumbs={[{ label: 'Strona główna', href: '/' }, { label: 'Wycena nieruchomości' }]} />
         <h1 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 'clamp(26px, 5vw, 38px)', color: 'white', letterSpacing: '-1px', lineHeight: 1.15, marginBottom: 14 }}>
-          {available ? T.h1 : T.h1Off}
+          {available ? (v2Active && phase === 'after' && outcome?.kind === 'range' ? V2.resultH1 : T.h1) : T.h1Off}
         </h1>
         <p className={available ? 'wy-intro-full' : undefined} style={{ color: 'rgba(255,255,255,.9)', fontSize: 16, lineHeight: 1.7, maxWidth: 620, margin: 0 }}>{available ? T.intro : T.introOff}</p>
         {available && <p className="wy-intro-short" style={{ color: 'rgba(255,255,255,.9)', fontSize: 15, lineHeight: 1.55, maxWidth: 620, margin: 0 }}>{PHONE_BLOCK_TEXTS.mobileIntroShort}</p>}
@@ -580,7 +580,7 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = fals
   async function attempt(fromQueue: boolean) {
     if (inFlight.current) return
     const next: typeof errs = {}
-    if (v4Contact && !name.trim()) next.name = 'Podaj imię.'
+    if (v4Contact && !v2 && !name.trim()) next.name = 'Podaj imię.' // v2: sam numer (imię opcjonalne, nie ma pola)
     if (!isValidPhone(phone)) next.phone = T.lead.errPhone
     if (!consent) next.consent = T.lead.errConsent
     setErrs(next)
@@ -650,10 +650,10 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = fals
       <h2 id="wy-lead-title" style={h2}>{v4Contact ? (v4NoData ? V4.notice.noData.title : V4.notice.title) : withNumbers ? T.lead.titleRange : T.lead.titleFallback}</h2>
       <p style={{ color: '#374151', fontSize: 15, lineHeight: 1.7, margin: '0 0 16px' }}>{v4Contact ? (v4NoData ? V4.notice.noData.body : V4.notice.body + (v2 ? ` ${V2.freeNote}` : '')) : withNumbers ? T.lead.bodyRange : T.lead.bodyFallback}</p>
       <div className="wy-grid">
-        <Field id="wy-name" text={v4Contact ? `${V4.notice.firstName} *` : T.lead.name} error={errs.name}>
+        {!(v4Contact && v2) && <Field id="wy-name" text={v4Contact ? `${V4.notice.firstName} *` : T.lead.name} error={errs.name}>
           <input id="wy-name" className="wy-field" type="text" autoComplete="given-name" required={v4Contact} aria-required={v4Contact} aria-invalid={!!errs.name} value={name} onChange={e => { setName(e.target.value); if (errs.name) setErrs(p => ({ ...p, name: undefined })) }} />
-        </Field>
-        {v4Contact && <Field id="wy-surname" text={V4.notice.lastName}>
+        </Field>}
+        {v4Contact && !v2 && <Field id="wy-surname" text={V4.notice.lastName}>
           <input id="wy-surname" className="wy-field" type="text" autoComplete="family-name" value={surname} onChange={e => setSurname(e.target.value)} />
         </Field>}
         <Field id="wy-phone" text={`${T.lead.phone} *`} hintText={T.lead.phoneHint} error={errs.phone}>
@@ -662,7 +662,16 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = fals
             onChange={e => { setPhone(e.target.value); if (errs.phone) setErrs(p => ({ ...p, phone: undefined })) }} />
         </Field>
       </div>
-      {v4Contact && <div style={{ marginTop: 12 }}>
+      {v4Contact && v2 && <div className="wy-v2-window" role="group" aria-labelledby="wy-v2-window-label" style={{ marginTop: 12 }}>
+        <div id="wy-v2-window-label" style={label}>{V2.windowLabel}</div>
+        <div className="wy-v2-chips">
+          {V4.notice.timeOptions.map(option => (
+            <button key={option.value} type="button" className="wy-v2-chip" aria-pressed={contactWindow === option.value}
+              onClick={() => setContactWindow(contactWindow === option.value ? '' : option.value)}>{option.label}</button>
+          ))}
+        </div>
+      </div>}
+      {v4Contact && !v2 && <div style={{ marginTop: 12 }}>
         <label htmlFor="wy-v4-contact-window" style={label}>{V4.notice.timeLabel}</label>
         <select id="wy-v4-contact-window" className="wy-field" value={contactWindow} onChange={e => setContactWindow(e.target.value)}>
           <option value="">Nie mam preferencji</option>
@@ -729,7 +738,7 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = fals
 
       <div style={{ marginTop: 20 }}>
         <button type="submit" className="wy-btn" disabled={state === 'sending' || queued}>
-          <Phone size={18} aria-hidden="true" /> {state === 'sending' || queued ? T.lead.submitting : v4Contact ? V4.notice.submit : T.lead.submit}
+          <Phone size={18} aria-hidden="true" /> {state === 'sending' || queued ? T.lead.submitting : v4Contact ? (v2 ? V2.submit : V4.notice.submit) : T.lead.submit}
         </button>
       </div>
 

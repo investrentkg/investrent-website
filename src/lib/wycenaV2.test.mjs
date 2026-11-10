@@ -71,3 +71,16 @@ test('blok kontaktu v2: dopisek "Bezpłatnie i bez zobowiązań." tylko w v2, za
   const v4 = await readFile(new URL('../app/(pl)/wycena/wycenaV4Texts.ts', import.meta.url), 'utf8')
   assert.doesNotMatch(v4, /bez zobowiązań/)
 })
+
+test('blok numeru v2 (uproszczony): bez pol imie/nazwisko, pora jako chipy, przycisk zatwierdzony 15.10, bez sticky, naglowek po wyniku; stary uklad bez zmian', async () => {
+  assert.equal(V2.submit, 'Poproś o bezpłatny telefon od agenta')
+  assert.equal(V2.resultH1, 'Ile może być warte Twoje mieszkanie?')
+  const client = await readFile(new URL('../app/(pl)/wycena/WycenaClient.tsx', import.meta.url), 'utf8')
+  assert.match(client, /\{!\(v4Contact && v2\) && <Field id="wy-name"/)
+  assert.match(client, /\{v4Contact && !v2 && <Field id="wy-surname"/)
+  assert.match(client, /if \(v4Contact && !v2 && !name\.trim\(\)\)/)
+  assert.match(client, /\{v4Contact && v2 && <div className="wy-v2-window"/)
+  assert.match(client, /\{v4Contact && !v2 && <div style=\{\{ marginTop: 12 \}\}>/)
+  assert.match(client, /const showSticky = !v2Active && available/)
+  assert.match(client, /v4Contact \? \(v2 \? V2\.submit : V4\.notice\.submit\)/)
+})
