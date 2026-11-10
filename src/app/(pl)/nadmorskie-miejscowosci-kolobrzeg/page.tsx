@@ -12,7 +12,7 @@ import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
 import { getOffice } from '@/lib/api'
 import { loadAllOffers } from '@/lib/allOffers'
-import { HUB, LOCALITIES, BEACH_RANGE } from '@/content/miejscowosci'
+import { HUB, LOCALITIES, BEACH_RANGE, isLocalityVisible } from '@/content/miejscowosci'
 import { summarizeCity, formatOffersCount, formatPriceCell, formatRcnCell } from '@/lib/localityOffers'
 import type { Metadata } from 'next'
 import { buildPageMeta } from '@/lib/buildPageMeta'
@@ -32,7 +32,7 @@ export default async function HubPage() {
   const [office, loaded] = await Promise.all([getOffice(), loadAllOffers()])
   const { offers, complete } = loaded
   const o = office ?? FALLBACK_OFFICE
-  const rows = LOCALITIES.map(l => ({ l, s: summarizeCity(offers, l.cityNames) }))
+  const rows = LOCALITIES.filter(isLocalityVisible).map(l => ({ l, s: summarizeCity(offers, l.cityNames) }))
   const th: React.CSSProperties = { textAlign: 'left', padding: '10px 12px', fontSize: 13, color: '#0d2a5c', background: '#eff6ff', whiteSpace: 'nowrap' }
   const td: React.CSSProperties = { padding: '10px 12px', fontSize: 13.5, color: '#374151', borderTop: '1px solid #e5e7eb', verticalAlign: 'top' }
   const h2: React.CSSProperties = { fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 22, color: '#0d2a5c', margin: '32px 0 12px' }

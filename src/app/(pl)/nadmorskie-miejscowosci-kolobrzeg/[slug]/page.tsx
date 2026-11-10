@@ -12,7 +12,7 @@ import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
 import { getOffice } from '@/lib/api'
 import { loadAllOffers } from '@/lib/allOffers'
-import { HUB, LOCALITIES, BEACH_RANGE, getLocality } from '@/content/miejscowosci'
+import { HUB, LOCALITIES, BEACH_RANGE, getLocality, isLocalityVisible } from '@/content/miejscowosci'
 import { summarizeCity, formatOffersCount, formatPriceCell, formatRcnCell } from '@/lib/localityOffers'
 import { serializeJsonLd } from '@/lib/jsonLd'
 import type { Metadata } from 'next'
@@ -22,7 +22,8 @@ import { buildPageMeta } from '@/lib/buildPageMeta'
 const BASE_URL = 'https://www.investrent.com.pl'
 
 export function generateStaticParams() {
-  return LOCALITIES.map(l => ({ slug: l.slug }))
+  // 'hidden' (szkice) tylko poza produkcją - na produkcji dynamicParams=false daje 404.
+  return LOCALITIES.filter(isLocalityVisible).map(l => ({ slug: l.slug }))
 }
 
 export function generateMetadata({ params }: { params: { slug: string } }): Metadata {

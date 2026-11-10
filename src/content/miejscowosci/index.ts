@@ -6,7 +6,17 @@
 
 import type { RcnSample } from '@/lib/localityOffers'
 
-export type LocalityStatus = 'draft' | 'approved'
+/**
+ * 'hidden'   = szkic w repo: NIE jest renderowany na produkcji (ani na hubie, ani pod własnym URL - 404), widoczny tylko w podglądach Vercel (VERCEL_ENV != production).
+ * 'draft'    = strona dostępna, ale noindex,follow i poza sitemap.
+ * 'approved' = indeksowalna, w sitemap.
+ */
+export type LocalityStatus = 'hidden' | 'draft' | 'approved'
+
+/** Czy miejscowość ma być renderowana w tym środowisku (hidden tylko poza produkcją). */
+export function isLocalityVisible(l: { status: LocalityStatus }): boolean {
+  return l.status !== 'hidden' || process.env.VERCEL_ENV !== 'production'
+}
 
 export interface LocalityContent {
   slug: string
@@ -122,6 +132,36 @@ export const LOCALITIES: LocalityContent[] = [
     status: 'draft',
     summary:
       'Dźwirzyno leży w gminie Kołobrzeg, ok. 14 km od centrum miasta (ok. 22 minuty autem), między morzem a jeziorem Resko Przymorskie. Stałych mieszkańców jest ok. 660, a latem miejscowość żyje turystyką. Do Kołobrzegu kursują autobusy Express Bus i PKS; w miejscowości są szkoła podstawowa i sklepy. W ofercie bywa apartament w kameralnym kompleksie, kilka minut spacerem od plaży.',
+  },
+  {
+    // SZKIC 10.11.2026 (SEO): status 'hidden' - nic publicznego do czasu: Krytyk >= 9 + Prawnik + niezależny recenzent faktów + zgoda Daniela.
+    // Fakty i źródła: _wspolne_pliki/SEO_fakty_trzebiatow_rewal_2026_11_10.md (pewność przy każdym polu).
+    // DO POTWIERDZENIA przed awansem: mieszkańcy NSP 2021 (GUS BDL), przychodnia, połączenia kolejowe wg przewoźnika, rozkład autobusów, odległość do morza (Wikipedia: ok. 9 km), szkoły (źródło wtórne).
+    slug: 'trzebiatow',
+    name: 'Trzebiatów',
+    cityNames: ['Trzebiatów', 'Trzebiatow'],
+    gmina: 'Trzebiatów',
+    // OSRM (publiczny router), centrum Trzebiatowa -> Kołobrzeg, 10.11.2026: 28,9 km, 33 min (czas teoretyczny, w sezonie dłuższy)
+    distanceKm: 'ok. 29 km',
+    driveMin: 'ok. 33 min',
+    residents: null,
+    bus: 'Express Bus Kołobrzeg–Trzebiatów (rozkład u przewoźnika)',
+    school: 'w Trzebiatowie',
+    rcn: null,
+    status: 'hidden',
+    summary:
+      'Trzebiatów to historyczne miasto w powiecie gryfickim, ok. 29 km i ok. 33 minuty autem od centrum Kołobrzegu. Ma zachowane Stare Miasto z gotyckim kościołem z XIII wieku i fragmentami murów obronnych, a do Bałtyku jest stąd około 9 km. Szukasz domu, działki albo mieszkania w mniejszym mieście, z dojazdem do Kołobrzegu — w naszym katalogu bywają tu oferty różnych typów.',
+    sections: [
+      { heading: 'Charakter miejscowości', paragraphs: ['Trzebiatów to miasto, a nie nadmorski kurort: siedziba gminy miejsko-wiejskiej w powiecie gryfickim, położona około 9 km od Morza Bałtyckiego. Najcenniejszą częścią jest Stare Miasto z szachownicowym układem ulic, ujęte w całości w rejestr zabytków. Zachowały się gotycki kościół Macierzyństwa NMP z XIII wieku, fragmenty ceglanych murów miejskich i Baszta Kaszana, jest też park Królewski Gaj. Dla kupującego oznacza to inną skalę niż w miejscowościach przy plaży: zabudowa jest miejska, a życie nie kręci się wokół sezonu.'] },
+      { heading: 'Dojazd i komunikacja', paragraphs: ['Do centrum Kołobrzegu jedzie się samochodem około 33 minut (około 29 km); to czas teoretyczny, w sezonie letnim droga bywa dłuższa. Na trasie Kołobrzeg–Trzebiatów kursuje Express Bus. Miasto jest też związane z koleją od końca XIX wieku, ale aktualne połączenia pociągów i godziny odjazdów sprawdź w rozkładzie przewoźnika, bo mogą się zmieniać. W Trzebiatowie działają dwie szkoły podstawowe i szkoły ponadpodstawowe; przypisanie dziecka do obwodu potwierdza gmina.'] },
+      { heading: 'Oferty w Trzebiatowie', paragraphs: ['W naszym katalogu pojawiają się w Trzebiatowie mieszkania, domy, działki i lokale użytkowe. Aktualną listę widzisz poniżej na tej stronie; jeśli nic nie pasuje do Twoich potrzeb, zapytaj w biurze o propozycje, które mamy w tej miejscowości i okolicy.'] },
+      { heading: 'Praktyczne wskazówki przy zakupie', paragraphs: ['Przy zakupie w Trzebiatowie sprawdź na miejscu realną drogę do plaży i czas dojazdu do pracy lub szkoły, bo odległość z ogłoszenia bywa podawana w linii prostej. Przy domach i działkach zajrzyj do miejscowego planu zagospodarowania przestrzennego i sprawdź dostęp do mediów oraz drogi. Przy starszej zabudowie w ścisłym centrum zapytaj, czy budynek podlega ochronie konserwatorskiej, bo wpływa to na zakres remontu.'] },
+    ],
+    faq: [
+      { q: 'Ile jest z Trzebiatowa do centrum Kołobrzegu?', a: 'Około 29 km, czyli około 33 minut samochodem (czas teoretyczny, w sezonie dłuższy). Kursuje też Express Bus; rozkład sprawdź u przewoźnika.' },
+      { q: 'Czy Trzebiatów leży nad morzem?', a: 'Nie bezpośrednio: do Bałtyku jest stąd około 9 km. To miasto z historycznym Starym Miastem, a nie miejscowość przy plaży.' },
+      { q: 'Jakie nieruchomości są w Trzebiatowie?', a: 'W katalogu bywają mieszkania, domy, działki i lokale użytkowe; aktualna lista jest na tej stronie.' },
+    ],
   },
 ]
 
