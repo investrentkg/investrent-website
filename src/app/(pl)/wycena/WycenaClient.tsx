@@ -33,6 +33,8 @@ const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ''
 const ESTIMATE_URL = `${API}/api/public/valuation/estimate`
 
 const card: React.CSSProperties = { background: 'white', borderRadius: 20, padding: 'clamp(20px, 4vw, 32px)', boxShadow: '0 8px 32px rgba(13,42,92,.08)', border: '1px solid #e2e8f0' }
+// v2: blok numeru bez zagnieżdżonej karty (jest już w karcie wyniku) - tylko linia oddzielająca, bez własnego tła/cienia/paddingu
+const flatLead: React.CSSProperties = { borderTop: '1px solid #e2e8f0', paddingTop: 16, marginTop: 8 }
 const label: React.CSSProperties = { display: 'block', fontWeight: 600, fontSize: 14, color: '#0d2a5c', marginBottom: 6 }
 const hint: React.CSSProperties = { fontSize: 13, color: '#475569', marginTop: 4 }
 const errStyle: React.CSSProperties = { fontSize: 13, color: '#b91c1c', marginTop: 4, fontWeight: 600 }
@@ -649,7 +651,7 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = fals
   }
 
   return (
-    <form ref={formRef} onSubmit={send} noValidate style={card} aria-labelledby="wy-lead-title">
+    <form ref={formRef} onSubmit={send} noValidate style={v4Contact && v2 ? flatLead : card} aria-labelledby="wy-lead-title">
       <h2 id="wy-lead-title" style={h2}>{v4Contact ? (v4NoData ? V4.notice.noData.title : V4.notice.title) : withNumbers ? T.lead.titleRange : T.lead.titleFallback}</h2>
       <p style={{ color: '#374151', fontSize: 15, lineHeight: 1.7, margin: '0 0 16px' }}>{v4Contact ? (v4NoData ? V4.notice.noData.body : (v2 ? V2.noticeBody : V4.notice.body)) : withNumbers ? T.lead.bodyRange : T.lead.bodyFallback}</p>
       <div className="wy-grid">
