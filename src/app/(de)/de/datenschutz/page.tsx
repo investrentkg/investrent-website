@@ -29,11 +29,7 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: 'https://www.investrent.com.pl/de/datenschutz',
-    languages: {
-      pl: 'https://www.investrent.com.pl/rodo',
-      de: 'https://www.investrent.com.pl/de/datenschutz',
-      'x-default': 'https://www.investrent.com.pl/rodo',
-    },
+    // Q3 (audyt SEO 09.11): /rodo ma noindex, wiec nie moze byc celem hreflang (para musi byc wzajemna i indeksowalna).
   },
 }
 
