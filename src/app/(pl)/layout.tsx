@@ -18,6 +18,8 @@ const inter = localFont({
   src: [{ path: '../../fonts/Inter-latin-ext-VF.woff2', weight: '100 900', style: 'normal' }],
   variable: '--font-inter',
   display: 'swap',
+  // Q2 (audyt SEO 09.11): preload tylko Montserrat (naglowki/LCP); Inter (tekst) laduje sie bez preloadu, zeby nie konkurowal o lacze z LCP.
+  preload: false,
 })
 
 // NAPRAWA (audyt Safari/iOS): Next.js bez jawnego eksportu `viewport` generuje
