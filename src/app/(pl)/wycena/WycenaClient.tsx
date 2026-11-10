@@ -465,7 +465,7 @@ function OutcomePanel({ outcome, scoped, wider, onAgain, onCta, marketCardSlot, 
           </div>
         )}
         {leadSlot ?? <ResultCta label={T.cta.primary} onClick={onCta} />}
-        {v2 && <p className="wy-v2-disclaimer">{V2.disclaimer} <a href="#wy-v2-diff">{V2.disclaimerLink}</a></p>}
+        {v2 && <p className="wy-v2-disclaimer">{V2.disclaimer} <a href="#wy-v2-diff" onClick={() => { const d = document.getElementById('wy-v2-diff') as HTMLDetailsElement | null; if (d) d.open = true }}>{V2.disclaimerLink}</a></p>}
         {/* v2: V2.disclaimer (OK Prawnika 09.11, poz. 20) zastępuje stary pogrubiony akapit zakresu; ramka disclaimerTop zostaje zawsze */}
         {!v2 && <>
         <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '14px 0 8px' }}><strong>{T.result.scopeNote}</strong></p>
@@ -651,7 +651,7 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = fals
   return (
     <form ref={formRef} onSubmit={send} noValidate style={card} aria-labelledby="wy-lead-title">
       <h2 id="wy-lead-title" style={h2}>{v4Contact ? (v4NoData ? V4.notice.noData.title : V4.notice.title) : withNumbers ? T.lead.titleRange : T.lead.titleFallback}</h2>
-      <p style={{ color: '#374151', fontSize: 15, lineHeight: 1.7, margin: '0 0 16px' }}>{v4Contact ? (v4NoData ? V4.notice.noData.body : V4.notice.body + (v2 ? ` ${V2.freeNote}` : '')) : withNumbers ? T.lead.bodyRange : T.lead.bodyFallback}</p>
+      <p style={{ color: '#374151', fontSize: 15, lineHeight: 1.7, margin: '0 0 16px' }}>{v4Contact ? (v4NoData ? V4.notice.noData.body : (v2 ? V2.noticeBody : V4.notice.body)) : withNumbers ? T.lead.bodyRange : T.lead.bodyFallback}</p>
       <div className="wy-grid">
         {!(v4Contact && v2) && <Field id="wy-name" text={v4Contact ? `${V4.notice.firstName} *` : T.lead.name} error={errs.name}>
           <input id="wy-name" className="wy-field" type="text" autoComplete="given-name" required={v4Contact} aria-required={v4Contact} aria-invalid={!!errs.name} value={name} onChange={e => { setName(e.target.value); if (errs.name) setErrs(p => ({ ...p, name: undefined })) }} />
@@ -659,7 +659,7 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = fals
         {v4Contact && !v2 && <Field id="wy-surname" text={V4.notice.lastName}>
           <input id="wy-surname" className="wy-field" type="text" autoComplete="family-name" value={surname} onChange={e => setSurname(e.target.value)} />
         </Field>}
-        <Field id="wy-phone" text={`${T.lead.phone} *`} hintText={T.lead.phoneHint} error={errs.phone}>
+        <Field id="wy-phone" text={`${T.lead.phone} *`} hintText={v2 ? undefined : T.lead.phoneHint} error={errs.phone}>
           <input id="wy-phone" className="wy-field" type="tel" inputMode="tel" autoComplete="tel" required aria-required="true" placeholder={v2 ? V2.phonePlaceholder : undefined}
             value={phone} aria-invalid={!!errs.phone} aria-describedby={describedBy('wy-phone', true, !!errs.phone)}
             onChange={e => { setPhone(e.target.value); if (errs.phone) setErrs(p => ({ ...p, phone: undefined })) }} />

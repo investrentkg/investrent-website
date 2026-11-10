@@ -1106,9 +1106,9 @@ h1.m3-h1 > span::after { content: ''; flex-basis: 100%; height: 0; order: 2; }
 .wy-v2-meta { margin: 0; padding-top: 8px; border-top: 1px solid #e2e8f0; color: #64748b; font-size: 12.5px; line-height: 1.5; }
 .wy-v2-condition { display: grid; grid-template-columns: minmax(0, 1fr) minmax(180px, 320px); gap: 12px; align-items: center; margin: 12px 0 0; color: #0d2a5c; font-size: 14px; font-weight: 600; }
 .wy-v2-diff { margin: 12px 0 0; padding: 10px 14px; border-radius: 10px; background: #f1f5f9; color: #475569; font-size: 13.5px; line-height: 1.55; }
-.wy-v2-diff p { margin: 0; }
-.wy-v2-diff details { margin-top: 6px; }
-.wy-v2-diff summary { cursor: pointer; color: #0d2a5c; text-decoration: underline; }
+.wy-v2-diff p { margin: 8px 0 0; }
+.wy-v2-diff summary { cursor: pointer; min-height: 24px; color: #0d2a5c; }
+.wy-v2-diff-more { text-decoration: underline; margin-left: 6px; font-weight: 400; }
 .wy-v2-disclaimer { margin: 12px 0 0; color: #475569; font-size: 13.5px; line-height: 1.55; }
 .wy-v2-disclaimer a { color: #0d2a5c; text-decoration: underline; }
 @media (max-width: 639px) { .wy-v2-grid { grid-template-columns: 1fr; gap: 10px; } .wy-v2-box { padding: 14px; } .wy-v2-condition { grid-template-columns: 1fr; gap: 6px; } }
