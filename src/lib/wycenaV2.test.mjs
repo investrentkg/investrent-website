@@ -63,3 +63,11 @@ test('zgoda v2: nowy tag wersji w formacie wycena-RRRR-MM-DD-vN, link do klauzul
   const texts = await readFile(new URL('../app/(pl)/wycena/texts.ts', import.meta.url), 'utf8')
   assert.match(texts, /consentCall/) // tresc zgody nadal z texts.ts, nietknieta
 })
+
+test('blok kontaktu v2: dopisek "Bezpłatnie i bez zobowiązań." tylko w v2, zatwierdzony tekst 01.11 nietknięty', async () => {
+  assert.equal(V2.freeNote, 'Bezpłatnie i bez zobowiązań.')
+  const client = await readFile(new URL('../app/(pl)/wycena/WycenaClient.tsx', import.meta.url), 'utf8')
+  assert.match(client, /V4\.notice\.body \+ \(v2 \? ` \$\{V2\.freeNote\}` : ''\)/)
+  const v4 = await readFile(new URL('../app/(pl)/wycena/wycenaV4Texts.ts', import.meta.url), 'utf8')
+  assert.doesNotMatch(v4, /bez zobowiązań/)
+})

@@ -648,7 +648,7 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = fals
   return (
     <form ref={formRef} onSubmit={send} noValidate style={card} aria-labelledby="wy-lead-title">
       <h2 id="wy-lead-title" style={h2}>{v4Contact ? (v4NoData ? V4.notice.noData.title : V4.notice.title) : withNumbers ? T.lead.titleRange : T.lead.titleFallback}</h2>
-      <p style={{ color: '#374151', fontSize: 15, lineHeight: 1.7, margin: '0 0 16px' }}>{v4Contact ? (v4NoData ? V4.notice.noData.body : V4.notice.body) : withNumbers ? T.lead.bodyRange : T.lead.bodyFallback}</p>
+      <p style={{ color: '#374151', fontSize: 15, lineHeight: 1.7, margin: '0 0 16px' }}>{v4Contact ? (v4NoData ? V4.notice.noData.body : V4.notice.body + (v2 ? ` ${V2.freeNote}` : '')) : withNumbers ? T.lead.bodyRange : T.lead.bodyFallback}</p>
       <div className="wy-grid">
         <Field id="wy-name" text={v4Contact ? `${V4.notice.firstName} *` : T.lead.name} error={errs.name}>
           <input id="wy-name" className="wy-field" type="text" autoComplete="given-name" required={v4Contact} aria-required={v4Contact} aria-invalid={!!errs.name} value={name} onChange={e => { setName(e.target.value); if (errs.name) setErrs(p => ({ ...p, name: undefined })) }} />

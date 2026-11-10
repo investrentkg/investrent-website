@@ -34,6 +34,8 @@ export const WYCENA_V2_TEXTS = {
   disclaimerLink: 'Dlaczego cena sprzedaży może być inna',
   loading: 'Ładowanie danych rynkowych…',
   /** Opinia Prawnika 09.11 (poz. 4) i decyzja Daniela 10.11: link do pelnej klauzuli widoczny i klikalny PRZED zaznaczeniem zgody; nowy tag wersji, bo zmienia sie to, co uzytkownik WIDZI w chwili zgody (tresc zgody bez zmian). CRM: dopisac te wersje do CALCULATOR_CONSENT_VERSIONS (jesli ustawiona) PRZED wlaczeniem flagi. */
+  /** Makieta 3 + zielone swiatlo Prawnika (poz. 3); Daniel 10.11 potwierdzil, ze telefon od agenta jest bezplatny i nie rodzi zobowiazan. Dopisek do zatwierdzonego 01.11 tekstu bloku kontaktu, tylko w v2. */
+  freeNote: 'Bezpłatnie i bez zobowiązań.',
   consentVersion: 'wycena-2026-11-10-v1',
   consentLinkIntro: 'Zanim zaznaczysz zgodę:',
   consentLinkLabel: 'pełna informacja o danych',
