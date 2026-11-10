@@ -25,3 +25,4 @@ export const WYCENA_LAYOUT_V4_ACTIVE: boolean = WYCENA_LAYOUT_V4_FLAG && MARKET_
 /** wynik_v2 (makieta 3, 09.11.2026): dwa osobne bloki cen (oferty / sprzedane), ramka roznicy, stale zastrzezenie. Wartosci: "on" = dla wszystkich, "ab" = test A/B 50/50 losowany przy wejsciu na strone (bez cookies i storage). Dziala WYLACZNIE razem z aktywnym ukladem v4. */
 export const WYCENA_RESULT_V2_MODE: 'on' | 'ab' | 'off' = process.env.NEXT_PUBLIC_WYCENA_RESULT_V2 === 'on' ? 'on' : process.env.NEXT_PUBLIC_WYCENA_RESULT_V2 === 'ab' ? 'ab' : 'off'
 export const WYCENA_RESULT_V2_ELIGIBLE: boolean = WYCENA_RESULT_V2_MODE !== 'off' && WYCENA_LAYOUT_V4_ACTIVE
+// podglad testowy RP 10.11 (tylko galaz rp/preview-wycena-v2-test, nie do scalenia)
