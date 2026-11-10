@@ -11,7 +11,7 @@ import PhoneBlock from './PhoneBlock'
 import MarketCard from './MarketCard'
 import { showAiEstimate } from '@/lib/wycenaAiVisibility'
 import { PHONE_BLOCK_TEXTS } from './phoneBlockTexts'
-import { PHONE_BLOCK_ON, WYCENA_LAYOUT_V4_ACTIVE, WYCENA_META_TRACKING_ON } from '@/lib/wycenaFlags'
+import { PHONE_BLOCK_ON, WYCENA_LAYOUT_V4_ACTIVE, WYCENA_META_TRACKING_ON, WYCENA_RESULT_V2_MODE, WYCENA_RESULT_V2_ELIGIBLE } from '@/lib/wycenaFlags'
 import WycenaMetaPixel, { trackWycenaMetaLead } from '@/components/WycenaMetaPixel'
 import { hasAdsConsent } from '@/lib/consentStore'
 import { buildWycenaMetaTracking } from '@/lib/wycenaMetaPixel'
@@ -25,6 +25,7 @@ import {
 } from '@/lib/valuation'
 import { T } from './texts'
 import { WYCENA_V4_TEXTS as V4 } from './wycenaV4Texts'
+import { WYCENA_V2_TEXTS as V2 } from './wycenaV2Texts'
 import { CITY_LIST, KOLOBRZEG_DISTRICTS, OTHER_CITY, OTHER_DISTRICT } from '@/lib/localities'
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.investrent.com.pl'
@@ -82,11 +83,21 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
   const [leadDone, setLeadDone] = useState(false)
   const [cardKind, setCardKind] = useState<'card' | 'nodata' | 'none' | null>(null)
   const stickyLogged = useRef(false)
-  const funnelVariant = PHONE_BLOCK_ON ? { variant: 'phone_block' } : {}
+  // wynik_v2: tryb 'ab' losuje wariant 50/50 przy wejsciu (bez cookies i storage); do czasu losowania (SSR/hydracja) obowiazuje uklad dotychczasowy.
+  const [v2Arm, setV2Arm] = useState<'v2' | 'v1' | null>(WYCENA_RESULT_V2_ELIGIBLE && WYCENA_RESULT_V2_MODE === 'on' ? 'v2' : null)
+  useEffect(() => { if (WYCENA_RESULT_V2_ELIGIBLE && WYCENA_RESULT_V2_MODE === 'ab') setV2Arm(Math.random() < 0.5 ? 'v2' : 'v1') }, [])
+  const v2Active = WYCENA_RESULT_V2_ELIGIBLE && v2Arm === 'v2'
+  const funnelVariant = WYCENA_RESULT_V2_ELIGIBLE && v2Arm ? { variant: v2Arm === 'v2' ? 'wynik_v2' : 'wynik_v1' } : PHONE_BLOCK_ON ? { variant: 'phone_block' } : {}
   const startLogged = useRef(false)
   const showSticky = available && phase === 'after' && !!outcome && armed && !leadInView && !ctaInView && !leadDone
 
-  useEffect(() => { trackValuation('wycena_view'); sendFunnelStep('entry', funnelVariant) }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { trackValuation('wycena_view') }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  const entryLogged = useRef(false)
+  useEffect(() => { // krok 'entry' po ustaleniu ramienia testu (w trybie 'ab' tuz po losowaniu), zeby wariant byl poprawny
+    if (entryLogged.current) return
+    if (WYCENA_RESULT_V2_ELIGIBLE && WYCENA_RESULT_V2_MODE === 'ab' && !v2Arm) return
+    entryLogged.current = true; sendFunnelStep('entry', funnelVariant)
+  }, [v2Arm]) // eslint-disable-line react-hooks/exhaustive-deps
   // licznik lejka (flaga NEXT_PUBLIC_WYCENA_FUNNEL, domyslnie wylaczony): consent_screen = pojawienie sie bloku/panelu telefonu po wyniku
   const consentLogged = useRef(false)
   useEffect(() => {
@@ -317,11 +328,11 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
         {available && phase === 'after' && outcome && (
           <div ref={resultRef} tabIndex={-1} style={{ outline: 'none', display: 'flex', flexDirection: 'column', gap: 24, scrollMarginTop: 88 }}>
             {/* flaga NEXT_PUBLIC_WYCENA_PHONE_BLOCK: dla wyniku z liczbami blok telefonu jest BEZPOSREDNIO pod przedzialem (w karcie wyniku), bez osobnej karty kontaktu pod spodem */}
-            <OutcomePanel showAi={showAiEstimate(cardKind)} outcome={outcome} scoped={!isOutOfScope(submittedValues)} wider={!isKolobrzeg(submittedValues.city)} onAgain={reset} onCta={() => goToLead('result')}
-              marketCardSlot={WYCENA_LAYOUT_V4_ACTIVE && outcome.kind === 'range' ? <MarketCard token={outcome.valuationToken ?? null} onKind={setCardKind} areaM2={Number(submittedValues.area_m2.trim().replace(',', '.')) || null} /> : undefined}
+            <OutcomePanel v2={v2Active} showAi={!v2Active && showAiEstimate(cardKind)} outcome={outcome} scoped={!isOutOfScope(submittedValues)} wider={!isKolobrzeg(submittedValues.city)} onAgain={reset} onCta={() => goToLead('result')}
+              marketCardSlot={WYCENA_LAYOUT_V4_ACTIVE && outcome.kind === 'range' ? <MarketCard token={outcome.valuationToken ?? null} onKind={setCardKind} v2={v2Active} areaM2={Number(submittedValues.area_m2.trim().replace(',', '.')) || null} /> : undefined}
               leadSlot={WYCENA_LAYOUT_V4_ACTIVE && outcome?.kind === 'range' ? (
                 <div ref={leadWrapRef} id="wy-lead" style={{ scrollMarginTop: 88 }}>
-                  <LeadPanel outcome={outcome} values={submittedValues} v4Contact v4NoData={cardKind === 'nodata'} onDone={() => { setLeadDone(true); sendFunnelStep('submit', funnelVariant) }} />
+                  <LeadPanel outcome={outcome} values={submittedValues} v4Contact v2={v2Active} v4NoData={cardKind === 'nodata'} onDone={() => { setLeadDone(true); sendFunnelStep('submit', funnelVariant) }} />
                 </div>
               ) : PHONE_BLOCK_ON && outcome?.kind === 'range' ? (
                 <div ref={leadWrapRef} id="wy-lead" style={{ scrollMarginTop: 88 }}>
@@ -397,7 +408,7 @@ function ContactFallback({ placement }: { placement: string }) {
   )
 }
 
-function OutcomePanel({ outcome, scoped, wider, onAgain, onCta, marketCardSlot, leadSlot, showAi = true }: { outcome: EstimateOutcome; scoped: boolean; wider: boolean; onAgain: () => void; onCta: () => void; marketCardSlot?: React.ReactNode; leadSlot?: React.ReactNode; showAi?: boolean }) {
+function OutcomePanel({ outcome, scoped, wider, onAgain, onCta, marketCardSlot, leadSlot, showAi = true, v2 = false }: { v2?: boolean; outcome: EstimateOutcome; scoped: boolean; wider: boolean; onAgain: () => void; onCta: () => void; marketCardSlot?: React.ReactNode; leadSlot?: React.ReactNode; showAi?: boolean }) {
   if (outcome.kind === 'range') {
     return (
       <section style={card} aria-labelledby="wy-res-title">
@@ -454,6 +465,7 @@ function OutcomePanel({ outcome, scoped, wider, onAgain, onCta, marketCardSlot, 
           </div>
         )}
         {leadSlot ?? <ResultCta label={T.cta.primary} onClick={onCta} />}
+        {v2 && <p className="wy-v2-disclaimer">{V2.disclaimer} <a href="#wy-v2-diff">{V2.disclaimerLink}</a></p>}
         <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '14px 0 8px' }}><strong>{T.result.scopeNote}</strong></p>
         {wider && <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '0 0 8px' }}>{T.result.scopeNoteWider}</p>}
         {outcome.comparables && <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '0 0 8px' }}>{T.result.comparables(outcome.comparables.min, outcome.comparables.max)}</p>}
@@ -487,7 +499,7 @@ function OutcomePanel({ outcome, scoped, wider, onAgain, onCta, marketCardSlot, 
   )
 }
 
-function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = false }: { outcome: EstimateOutcome | null; values: FormValues; onDone?: () => void; v4Contact?: boolean; v4NoData?: boolean }) {
+function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = false, v2 = false }: { outcome: EstimateOutcome | null; values: FormValues; onDone?: () => void; v4Contact?: boolean; v4NoData?: boolean; v2?: boolean }) {
   const [name, setName] = useState('')
   const [surname, setSurname] = useState('')
   const [phone, setPhone] = useState('')
@@ -608,7 +620,7 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = fals
         search: window.location.search,
         attribution: attribution as Record<string, unknown> | null,
       })
-      const r = await submitLead({ ...buildLeadRequest({ name, surname: v4Contact ? surname : undefined, phone, values, outcome, utm: readUtm(window.location.search), attribution, turnstileToken: tsToken, honeypot: hp, contactWindow: v4Contact ? contactWindow || null : null }), ...(metaTracking ? { meta_tracking: metaTracking } : {}) })
+      const r = await submitLead({ ...buildLeadRequest({ name, surname: v4Contact ? surname : undefined, phone, values, outcome, utm: readUtm(window.location.search), attribution, turnstileToken: tsToken, honeypot: hp, contactWindow: v4Contact ? contactWindow || null : null, ...(v2 ? { consentVersion: V2.consentVersion } : {}) }), ...(metaTracking ? { meta_tracking: metaTracking } : {}) })
       if (r?.ok) { setState('ok'); trackValuation('wycena_lead', { mode: outcome?.kind ?? 'none' }); trackWycenaMetaLead(metaTracking?.event_id, r.metaCapi) }
       else {
         setState('fail')
@@ -636,7 +648,7 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = fals
   return (
     <form ref={formRef} onSubmit={send} noValidate style={card} aria-labelledby="wy-lead-title">
       <h2 id="wy-lead-title" style={h2}>{v4Contact ? (v4NoData ? V4.notice.noData.title : V4.notice.title) : withNumbers ? T.lead.titleRange : T.lead.titleFallback}</h2>
-      <p style={{ color: '#374151', fontSize: 15, lineHeight: 1.7, margin: '0 0 16px' }}>{v4Contact ? (v4NoData ? V4.notice.noData.body : V4.notice.body) : withNumbers ? T.lead.bodyRange : T.lead.bodyFallback}</p>
+      <p style={{ color: '#374151', fontSize: 15, lineHeight: 1.7, margin: '0 0 16px' }}>{v4Contact ? (v4NoData ? V4.notice.noData.body : V4.notice.body + (v2 ? ` ${V2.freeNote}` : '')) : withNumbers ? T.lead.bodyRange : T.lead.bodyFallback}</p>
       <div className="wy-grid">
         <Field id="wy-name" text={v4Contact ? `${V4.notice.firstName} *` : T.lead.name} error={errs.name}>
           <input id="wy-name" className="wy-field" type="text" autoComplete="given-name" required={v4Contact} aria-required={v4Contact} aria-invalid={!!errs.name} value={name} onChange={e => { setName(e.target.value); if (errs.name) setErrs(p => ({ ...p, name: undefined })) }} />
@@ -660,6 +672,7 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = fals
 
       <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 14 }}>
         <div>
+          {v2 && <p className="wy-v2-consent-link">{V2.consentLinkIntro} <a href="/rodo" target="_blank" rel="noopener noreferrer">{V2.consentLinkLabel}</a></p>}
           <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
             <input id="wy-consent" className="wy-check" type="checkbox" checked={consent} required aria-required="true"
               aria-invalid={!!errs.consent} aria-describedby={describedBy('wy-consent', false, !!errs.consent)}

@@ -233,6 +233,7 @@ test('mala proba transakcji: granica 7 (ostrzezenie) / 8 (brak), n=0 bez ostrzez
     .replace("'@/lib/useMarketCard'", `'file:///${hookFile.replace(/\\/g, '/')}'`)
     .replace("'./marketCardTexts'", `'${here('../app/(pl)/wycena/marketCardTexts.ts')}'`)
     .replace("'./wycenaV4Texts'", `'${here('../app/(pl)/wycena/wycenaV4Texts.ts')}'`)
+    .replace("'./wycenaV2Texts'", `'${here('../app/(pl)/wycena/wycenaV2Texts.ts')}'`)
   const file = path.join(dir, 'MarketCard.mjs'); fs.writeFileSync(file, js)
   const { TransactionsBox } = await import(new URL(`file:///${file.replace(/\\/g, '/')}`).href)
   const html = (count) => renderToStaticMarkup(React.createElement(TransactionsBox, { t: count == null ? null : { count, median: 11500, p25: 10200, p75: 12900, asOf: '08.2026', note: 'x' } }))

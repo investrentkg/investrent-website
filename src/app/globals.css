@@ -1090,3 +1090,27 @@ h1.m3-h1 > span::after { content: ''; flex-basis: 100%; height: 0; order: 2; }
 .m3-ocar-dot[aria-current="true"] > span { width: 24px; border-radius: 5px; background: #0d2a5c; }
 .m3-ocar-arrow:focus-visible, .m3-ocar-dot:focus-visible, .m3-ocar-slide .m3-oc:focus-visible { outline: 3px solid #f5a623; outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) { .m3-ocar-track { scroll-behavior: auto; } .m3-ocar-dot > span { transition: none; } }
+
+/* wynik_v2 (flaga NEXT_PUBLIC_WYCENA_RESULT_V2): dwa rownorzedne bloki cen; liczby przedzialow dominuja nad opisami. */
+.wy-v2 { margin: 14px 0; }
+.wy-v2-heading { margin: 0 0 8px; color: #64748b; font-size: 12.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.wy-v2-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.wy-v2-box { min-width: 0; padding: 16px 18px; border: 1px solid #cbd5e1; border-radius: 14px; background: #fff; }
+.wy-v2-offers { border-top: 4px solid #0d2a5c; }
+.wy-v2-sold { border-top: 4px solid #2a9d8f; }
+.wy-v2-box h4 { margin: 0 0 6px; color: #475569; font-size: 12.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.wy-v2-amount { margin: 0 0 6px; color: #0d2a5c; font-size: clamp(22px, 2.6vw, 27px); line-height: 1.2; font-weight: 800; font-variant-numeric: tabular-nums; }
+.wy-v2-sold .wy-v2-amount { color: #1c6f66; }
+.wy-v2-amount-empty { font-size: 18px; color: #64748b !important; }
+.wy-v2-desc { margin: 0 0 10px; color: #1f2937; font-size: 14px; line-height: 1.5; }
+.wy-v2-meta { margin: 0; padding-top: 8px; border-top: 1px solid #e2e8f0; color: #64748b; font-size: 12.5px; line-height: 1.5; }
+.wy-v2-condition { display: grid; grid-template-columns: minmax(0, 1fr) minmax(180px, 320px); gap: 12px; align-items: center; margin: 12px 0 0; color: #0d2a5c; font-size: 14px; font-weight: 600; }
+.wy-v2-diff { margin: 12px 0 0; padding: 10px 14px; border-radius: 10px; background: #f1f5f9; color: #475569; font-size: 13.5px; line-height: 1.55; }
+.wy-v2-diff p { margin: 0; }
+.wy-v2-diff details { margin-top: 6px; }
+.wy-v2-diff summary { cursor: pointer; color: #0d2a5c; text-decoration: underline; }
+.wy-v2-disclaimer { margin: 12px 0 0; color: #475569; font-size: 13.5px; line-height: 1.55; }
+.wy-v2-disclaimer a { color: #0d2a5c; text-decoration: underline; }
+@media (max-width: 639px) { .wy-v2-grid { grid-template-columns: 1fr; gap: 10px; } .wy-v2-box { padding: 14px; } .wy-v2-condition { grid-template-columns: 1fr; gap: 6px; } }
+.wy-v2-consent-link { margin: 0 0 8px; color: #374151; font-size: 14px; line-height: 1.5; }
+.wy-v2-consent-link a { color: #0d2a5c; text-decoration: underline; font-weight: 600; }
