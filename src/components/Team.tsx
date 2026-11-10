@@ -101,7 +101,8 @@ export default function Team({ members }: Props) {
               <div className="m3-pic">
                 {m.avatar_url ? (
                   <div className="img">
-                    <Image src={m.avatar_url} alt={m.full_name} fill unoptimized
+                    {/* Q1 (audyt SEO 09.11): bez unoptimized - oryginaly PNG 1,5-2 MB -> webp 128/256 px przez next/image (cache 31 dni, ~9 zrodel = znikomy koszt limitu transformacji) */}
+                    <Image src={m.avatar_url} alt={m.full_name} fill
                       style={{ objectFit: 'cover', objectPosition: 'center top' }} sizes="128px" />
                   </div>
                 ) : (
