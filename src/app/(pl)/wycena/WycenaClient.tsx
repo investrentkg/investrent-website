@@ -466,9 +466,12 @@ function OutcomePanel({ outcome, scoped, wider, onAgain, onCta, marketCardSlot, 
         )}
         {leadSlot ?? <ResultCta label={T.cta.primary} onClick={onCta} />}
         {v2 && <p className="wy-v2-disclaimer">{V2.disclaimer} <a href="#wy-v2-diff">{V2.disclaimerLink}</a></p>}
+        {/* v2: V2.disclaimer (OK Prawnika 09.11, poz. 20) zastępuje stary pogrubiony akapit zakresu; ramka disclaimerTop zostaje zawsze */}
+        {!v2 && <>
         <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '14px 0 8px' }}><strong>{T.result.scopeNote}</strong></p>
         {wider && <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '0 0 8px' }}>{T.result.scopeNoteWider}</p>}
         {outcome.comparables && <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '0 0 8px' }}>{T.result.comparables(outcome.comparables.min, outcome.comparables.max)}</p>}
+        </>}
         <p style={{ color: '#7c2d12', background: '#fff7ed', border: '1px solid #fed7aa', borderRadius: 10, padding: '10px 14px', fontSize: 14, lineHeight: 1.6, margin: '12px 0 0' }}>
           <strong>{T.disclaimerTop}</strong> {T.result.disclaimerFallback}
         </p>
@@ -657,7 +660,7 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = fals
           <input id="wy-surname" className="wy-field" type="text" autoComplete="family-name" value={surname} onChange={e => setSurname(e.target.value)} />
         </Field>}
         <Field id="wy-phone" text={`${T.lead.phone} *`} hintText={T.lead.phoneHint} error={errs.phone}>
-          <input id="wy-phone" className="wy-field" type="tel" inputMode="tel" autoComplete="tel" required aria-required="true"
+          <input id="wy-phone" className="wy-field" type="tel" inputMode="tel" autoComplete="tel" required aria-required="true" placeholder={v2 ? V2.phonePlaceholder : undefined}
             value={phone} aria-invalid={!!errs.phone} aria-describedby={describedBy('wy-phone', true, !!errs.phone)}
             onChange={e => { setPhone(e.target.value); if (errs.phone) setErrs(p => ({ ...p, phone: undefined })) }} />
         </Field>

@@ -40,6 +40,8 @@ export const WYCENA_V2_TEXTS = {
   submit: 'Poproś o bezpłatny telefon od agenta',
   /** Nagłówek strony po wyniku w v2 (makieta 3). */
   resultH1: 'Ile może być warte Twoje mieszkanie?',
+  /** Placeholder pola numeru (makieta 3). */
+  phonePlaceholder: 'np. 600 123 456',
   /** Pora kontaktu jako trzy chipy (makieta 3); brak wyboru = bez preferencji. */
   windowLabel: 'Kiedy najwygodniej zadzwonić? (opcjonalnie)',
   /** Skrócona zgoda (Prawnik OK 10.11: wystarcza, link do pełnej informacji widoczny i klikalny PRZED wysłaniem). Wdrożenie dopiero po akceptacji tekstu przez Daniela. */
