@@ -52,3 +52,14 @@ test('flagi: wynik_v2 domyślnie OFF i tylko z układem v4; WycenaClient nie wys
   assert.match(client, /variant: v2Arm === 'v2' \? 'wynik_v2' : 'wynik_v1'/)
   assert.match(client, /showAi=\{!v2Active && showAiEstimate\(cardKind\)\}/)
 })
+
+test('zgoda v2: nowy tag wersji w formacie wycena-RRRR-MM-DD-vN, link do klauzuli przed checkboxem tylko w v2, tresc zgody bez zmian', async () => {
+  assert.match(V2.consentVersion, /^wycena-\d{4}-\d{2}-\d{2}-v\d+$/)
+  assert.notEqual(V2.consentVersion, 'wycena-2026-09-28-v13')
+  const client = await readFile(new URL('../app/(pl)/wycena/WycenaClient.tsx', import.meta.url), 'utf8')
+  const linkAt = client.indexOf('wy-v2-consent-link'), boxAt = client.indexOf('id="wy-consent" className="wy-check"')
+  assert.ok(linkAt > 0 && boxAt > linkAt, 'link do pelnej klauzuli musi byc przed checkboxem')
+  assert.match(client, /\.\.\.\(v2 \? \{ consentVersion: V2\.consentVersion \} : \{\}\)/)
+  const texts = await readFile(new URL('../app/(pl)/wycena/texts.ts', import.meta.url), 'utf8')
+  assert.match(texts, /consentCall/) // tresc zgody nadal z texts.ts, nietknieta
+})

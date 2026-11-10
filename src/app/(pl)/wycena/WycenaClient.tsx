@@ -332,7 +332,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
               marketCardSlot={WYCENA_LAYOUT_V4_ACTIVE && outcome.kind === 'range' ? <MarketCard token={outcome.valuationToken ?? null} onKind={setCardKind} v2={v2Active} areaM2={Number(submittedValues.area_m2.trim().replace(',', '.')) || null} /> : undefined}
               leadSlot={WYCENA_LAYOUT_V4_ACTIVE && outcome?.kind === 'range' ? (
                 <div ref={leadWrapRef} id="wy-lead" style={{ scrollMarginTop: 88 }}>
-                  <LeadPanel outcome={outcome} values={submittedValues} v4Contact v4NoData={cardKind === 'nodata'} onDone={() => { setLeadDone(true); sendFunnelStep('submit', funnelVariant) }} />
+                  <LeadPanel outcome={outcome} values={submittedValues} v4Contact v2={v2Active} v4NoData={cardKind === 'nodata'} onDone={() => { setLeadDone(true); sendFunnelStep('submit', funnelVariant) }} />
                 </div>
               ) : PHONE_BLOCK_ON && outcome?.kind === 'range' ? (
                 <div ref={leadWrapRef} id="wy-lead" style={{ scrollMarginTop: 88 }}>
@@ -499,7 +499,7 @@ function OutcomePanel({ outcome, scoped, wider, onAgain, onCta, marketCardSlot, 
   )
 }
 
-function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = false }: { outcome: EstimateOutcome | null; values: FormValues; onDone?: () => void; v4Contact?: boolean; v4NoData?: boolean }) {
+function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = false, v2 = false }: { outcome: EstimateOutcome | null; values: FormValues; onDone?: () => void; v4Contact?: boolean; v4NoData?: boolean; v2?: boolean }) {
   const [name, setName] = useState('')
   const [surname, setSurname] = useState('')
   const [phone, setPhone] = useState('')
@@ -620,7 +620,7 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = fals
         search: window.location.search,
         attribution: attribution as Record<string, unknown> | null,
       })
-      const r = await submitLead({ ...buildLeadRequest({ name, surname: v4Contact ? surname : undefined, phone, values, outcome, utm: readUtm(window.location.search), attribution, turnstileToken: tsToken, honeypot: hp, contactWindow: v4Contact ? contactWindow || null : null }), ...(metaTracking ? { meta_tracking: metaTracking } : {}) })
+      const r = await submitLead({ ...buildLeadRequest({ name, surname: v4Contact ? surname : undefined, phone, values, outcome, utm: readUtm(window.location.search), attribution, turnstileToken: tsToken, honeypot: hp, contactWindow: v4Contact ? contactWindow || null : null, ...(v2 ? { consentVersion: V2.consentVersion } : {}) }), ...(metaTracking ? { meta_tracking: metaTracking } : {}) })
       if (r?.ok) { setState('ok'); trackValuation('wycena_lead', { mode: outcome?.kind ?? 'none' }); trackWycenaMetaLead(metaTracking?.event_id, r.metaCapi) }
       else {
         setState('fail')
@@ -672,6 +672,7 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = fals
 
       <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 14 }}>
         <div>
+          {v2 && <p className="wy-v2-consent-link">{V2.consentLinkIntro} <a href="/rodo" target="_blank" rel="noopener noreferrer">{V2.consentLinkLabel}</a></p>}
           <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
             <input id="wy-consent" className="wy-check" type="checkbox" checked={consent} required aria-required="true"
               aria-invalid={!!errs.consent} aria-describedby={describedBy('wy-consent', false, !!errs.consent)}

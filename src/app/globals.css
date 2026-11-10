@@ -1112,3 +1112,5 @@ h1.m3-h1 > span::after { content: ''; flex-basis: 100%; height: 0; order: 2; }
 .wy-v2-disclaimer { margin: 12px 0 0; color: #475569; font-size: 13.5px; line-height: 1.55; }
 .wy-v2-disclaimer a { color: #0d2a5c; text-decoration: underline; }
 @media (max-width: 639px) { .wy-v2-grid { grid-template-columns: 1fr; gap: 10px; } .wy-v2-box { padding: 14px; } .wy-v2-condition { grid-template-columns: 1fr; gap: 6px; } }
+.wy-v2-consent-link { margin: 0 0 8px; color: #374151; font-size: 14px; line-height: 1.5; }
+.wy-v2-consent-link a { color: #0d2a5c; text-decoration: underline; font-weight: 600; }
