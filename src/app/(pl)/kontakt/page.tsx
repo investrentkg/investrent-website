@@ -50,6 +50,11 @@ export default async function KontaktPage() {
               Skontaktuj się z nami
             </h1>
             <p style={{ color: 'rgba(255,255,255,.7)', fontSize: 15 }}>Odpowiadamy jak najszybciej, nie później niż w ciągu 24 godzin</p>
+            {rating && (
+              <p style={{ color: 'rgba(255,255,255,.85)', fontSize: 14, marginTop: 8 }}>
+                Ocena w Google: {String(rating.rating).replace('.', ',')} / 5 ({rating.total} opinii)
+              </p>
+            )}
           </div>
         </div>
         <Contact office={office} />
