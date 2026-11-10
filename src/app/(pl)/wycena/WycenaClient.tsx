@@ -33,6 +33,8 @@ const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ''
 const ESTIMATE_URL = `${API}/api/public/valuation/estimate`
 
 const card: React.CSSProperties = { background: 'white', borderRadius: 20, padding: 'clamp(20px, 4vw, 32px)', boxShadow: '0 8px 32px rgba(13,42,92,.08)', border: '1px solid #e2e8f0' }
+// v2: blok numeru bez zagnieżdżonej karty (jest już w karcie wyniku) - tylko linia oddzielająca, bez własnego tła/cienia/paddingu
+const flatLead: React.CSSProperties = { borderTop: '1px solid #e2e8f0', paddingTop: 16, marginTop: 8 }
 const label: React.CSSProperties = { display: 'block', fontWeight: 600, fontSize: 14, color: '#0d2a5c', marginBottom: 6 }
 const hint: React.CSSProperties = { fontSize: 13, color: '#475569', marginTop: 4 }
 const errStyle: React.CSSProperties = { fontSize: 13, color: '#b91c1c', marginTop: 4, fontWeight: 600 }
@@ -89,7 +91,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
   const v2Active = WYCENA_RESULT_V2_ELIGIBLE && v2Arm === 'v2'
   const funnelVariant = WYCENA_RESULT_V2_ELIGIBLE && v2Arm ? { variant: v2Arm === 'v2' ? 'wynik_v2' : 'wynik_v1' } : PHONE_BLOCK_ON ? { variant: 'phone_block' } : {}
   const startLogged = useRef(false)
-  const showSticky = available && phase === 'after' && !!outcome && armed && !leadInView && !ctaInView && !leadDone
+  const showSticky = !v2Active && available && phase === 'after' && !!outcome && armed && !leadInView && !ctaInView && !leadDone
 
   useEffect(() => { trackValuation('wycena_view') }, []) // eslint-disable-line react-hooks/exhaustive-deps
   const entryLogged = useRef(false)
@@ -214,7 +216,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
       <div className="container" style={{ maxWidth: 860 }}>
         <Breadcrumb light={true} crumbs={[{ label: 'Strona główna', href: '/' }, { label: 'Wycena nieruchomości' }]} />
         <h1 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 'clamp(26px, 5vw, 38px)', color: 'white', letterSpacing: '-1px', lineHeight: 1.15, marginBottom: 14 }}>
-          {available ? T.h1 : T.h1Off}
+          {available ? (v2Active && phase === 'after' && outcome?.kind === 'range' ? V2.resultH1 : T.h1) : T.h1Off}
         </h1>
         <p className={available ? 'wy-intro-full' : undefined} style={{ color: 'rgba(255,255,255,.9)', fontSize: 16, lineHeight: 1.7, maxWidth: 620, margin: 0 }}>{available ? T.intro : T.introOff}</p>
         {available && <p className="wy-intro-short" style={{ color: 'rgba(255,255,255,.9)', fontSize: 15, lineHeight: 1.55, maxWidth: 620, margin: 0 }}>{PHONE_BLOCK_TEXTS.mobileIntroShort}</p>}
@@ -465,10 +467,13 @@ function OutcomePanel({ outcome, scoped, wider, onAgain, onCta, marketCardSlot, 
           </div>
         )}
         {leadSlot ?? <ResultCta label={T.cta.primary} onClick={onCta} />}
-        {v2 && <p className="wy-v2-disclaimer">{V2.disclaimer} <a href="#wy-v2-diff">{V2.disclaimerLink}</a></p>}
+        {v2 && <p className="wy-v2-disclaimer">{V2.disclaimer} <a href="#wy-v2-diff" onClick={() => { const d = document.getElementById('wy-v2-diff') as HTMLDetailsElement | null; if (d) d.open = true }}>{V2.disclaimerLink}</a></p>}
+        {/* v2: V2.disclaimer (OK Prawnika 09.11, poz. 20) zastępuje stary pogrubiony akapit zakresu; ramka disclaimerTop zostaje zawsze */}
+        {!v2 && <>
         <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '14px 0 8px' }}><strong>{T.result.scopeNote}</strong></p>
         {wider && <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '0 0 8px' }}>{T.result.scopeNoteWider}</p>}
         {outcome.comparables && <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '0 0 8px' }}>{T.result.comparables(outcome.comparables.min, outcome.comparables.max)}</p>}
+        </>}
         <p style={{ color: '#7c2d12', background: '#fff7ed', border: '1px solid #fed7aa', borderRadius: 10, padding: '10px 14px', fontSize: 14, lineHeight: 1.6, margin: '12px 0 0' }}>
           <strong>{T.disclaimerTop}</strong> {T.result.disclaimerFallback}
         </p>
@@ -580,7 +585,7 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = fals
   async function attempt(fromQueue: boolean) {
     if (inFlight.current) return
     const next: typeof errs = {}
-    if (v4Contact && !name.trim()) next.name = 'Podaj imię.'
+    if (v4Contact && !v2 && !name.trim()) next.name = 'Podaj imię.' // v2: sam numer (imię opcjonalne, nie ma pola)
     if (!isValidPhone(phone)) next.phone = T.lead.errPhone
     if (!consent) next.consent = T.lead.errConsent
     setErrs(next)
@@ -646,23 +651,32 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = fals
   }
 
   return (
-    <form ref={formRef} onSubmit={send} noValidate style={card} aria-labelledby="wy-lead-title">
+    <form ref={formRef} onSubmit={send} noValidate style={v4Contact && v2 ? flatLead : card} aria-labelledby="wy-lead-title">
       <h2 id="wy-lead-title" style={h2}>{v4Contact ? (v4NoData ? V4.notice.noData.title : V4.notice.title) : withNumbers ? T.lead.titleRange : T.lead.titleFallback}</h2>
-      <p style={{ color: '#374151', fontSize: 15, lineHeight: 1.7, margin: '0 0 16px' }}>{v4Contact ? (v4NoData ? V4.notice.noData.body : V4.notice.body + (v2 ? ` ${V2.freeNote}` : '')) : withNumbers ? T.lead.bodyRange : T.lead.bodyFallback}</p>
+      <p style={{ color: '#374151', fontSize: 15, lineHeight: 1.7, margin: '0 0 16px' }}>{v4Contact ? (v4NoData ? V4.notice.noData.body : (v2 ? V2.noticeBody : V4.notice.body)) : withNumbers ? T.lead.bodyRange : T.lead.bodyFallback}</p>
       <div className="wy-grid">
-        <Field id="wy-name" text={v4Contact ? `${V4.notice.firstName} *` : T.lead.name} error={errs.name}>
+        {!(v4Contact && v2) && <Field id="wy-name" text={v4Contact ? `${V4.notice.firstName} *` : T.lead.name} error={errs.name}>
           <input id="wy-name" className="wy-field" type="text" autoComplete="given-name" required={v4Contact} aria-required={v4Contact} aria-invalid={!!errs.name} value={name} onChange={e => { setName(e.target.value); if (errs.name) setErrs(p => ({ ...p, name: undefined })) }} />
-        </Field>
-        {v4Contact && <Field id="wy-surname" text={V4.notice.lastName}>
+        </Field>}
+        {v4Contact && !v2 && <Field id="wy-surname" text={V4.notice.lastName}>
           <input id="wy-surname" className="wy-field" type="text" autoComplete="family-name" value={surname} onChange={e => setSurname(e.target.value)} />
         </Field>}
-        <Field id="wy-phone" text={`${T.lead.phone} *`} hintText={T.lead.phoneHint} error={errs.phone}>
-          <input id="wy-phone" className="wy-field" type="tel" inputMode="tel" autoComplete="tel" required aria-required="true"
+        <Field id="wy-phone" text={`${T.lead.phone} *`} hintText={v2 ? undefined : T.lead.phoneHint} error={errs.phone}>
+          <input id="wy-phone" className="wy-field" type="tel" inputMode="tel" autoComplete="tel" required aria-required="true" placeholder={v2 ? V2.phonePlaceholder : undefined}
             value={phone} aria-invalid={!!errs.phone} aria-describedby={describedBy('wy-phone', true, !!errs.phone)}
             onChange={e => { setPhone(e.target.value); if (errs.phone) setErrs(p => ({ ...p, phone: undefined })) }} />
         </Field>
       </div>
-      {v4Contact && <div style={{ marginTop: 12 }}>
+      {v4Contact && v2 && <div className="wy-v2-window" role="group" aria-labelledby="wy-v2-window-label" style={{ marginTop: 12 }}>
+        <div id="wy-v2-window-label" style={label}>{V2.windowLabel}</div>
+        <div className="wy-v2-chips">
+          {V4.notice.timeOptions.map(option => (
+            <button key={option.value} type="button" className="wy-v2-chip" aria-pressed={contactWindow === option.value}
+              onClick={() => setContactWindow(contactWindow === option.value ? '' : option.value)}>{option.label}</button>
+          ))}
+        </div>
+      </div>}
+      {v4Contact && !v2 && <div style={{ marginTop: 12 }}>
         <label htmlFor="wy-v4-contact-window" style={label}>{V4.notice.timeLabel}</label>
         <select id="wy-v4-contact-window" className="wy-field" value={contactWindow} onChange={e => setContactWindow(e.target.value)}>
           <option value="">Nie mam preferencji</option>
@@ -672,17 +686,16 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = fals
 
       <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 14 }}>
         <div>
-          {v2 && <p className="wy-v2-consent-link">{V2.consentLinkIntro} <a href="/rodo" target="_blank" rel="noopener noreferrer">{V2.consentLinkLabel}</a></p>}
-          <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+          <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start', ...(v2 ? { flexWrap: 'nowrap' } : {}) }}>
             <input id="wy-consent" className="wy-check" type="checkbox" checked={consent} required aria-required="true"
               aria-invalid={!!errs.consent} aria-describedby={describedBy('wy-consent', false, !!errs.consent)}
               onChange={e => { setConsent(e.target.checked); if (errs.consent) setErrs(p => ({ ...p, consent: undefined })) }}
               style={{ width: 22, height: 22, marginTop: 2, flexShrink: 0, accentColor: '#0d2a5c' }} />
-            <label htmlFor="wy-consent" className="wy-consent-label" style={{ fontSize: 14, color: '#374151', lineHeight: 1.6 }}>{T.lead.consentCall} <strong>{T.lead.consentCallRequired}</strong></label>
+            <label htmlFor="wy-consent" className="wy-consent-label" style={{ fontSize: 14, color: '#374151', lineHeight: 1.6, ...(v2 ? { flex: '1 1 0', minWidth: 0 } : {}) }}>{v2 ? <>{V2.consentShort} <a className="wy-v2-consent-a" href="/rodo" target="_blank" rel="noopener noreferrer">{V2.consentLinkLabel}</a></> : <>{T.lead.consentCall} <strong>{T.lead.consentCallRequired}</strong></>}</label>
           </div>
           {errs.consent && <div id="wy-consent-err" role="alert" style={{ ...errStyle, marginLeft: 34 }}>{errs.consent}</div>}
         </div>
-        <div id="wy-consent-hint" style={hint}>
+        {!v2 && <div id="wy-consent-hint" style={hint}>
           <p style={{ margin: '0 0 8px' }}>{T.lead.consentShort}</p>
           <details className="wy-details">
             <summary>{T.lead.consentInfoSummary}</summary>
@@ -694,7 +707,7 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = fals
           ))}
           </details>
           <p style={{ margin: '8px 0 0' }}>{T.lead.consentInfoMore}<a href="/rodo" target="_blank" rel="noopener noreferrer" style={{ color: '#1a4fa0', textDecoration: 'underline' }}>{T.lead.consentInfoLink}</a>{T.lead.consentInfoSuffix}</p>
-        </div>
+        </div>}
       </div>
 
       {/* Honeypot: ukryte pole, czlowiek go nie widzi ani nie dotyka */}
@@ -729,7 +742,7 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = fals
 
       <div style={{ marginTop: 20 }}>
         <button type="submit" className="wy-btn" disabled={state === 'sending' || queued}>
-          <Phone size={18} aria-hidden="true" /> {state === 'sending' || queued ? T.lead.submitting : v4Contact ? V4.notice.submit : T.lead.submit}
+          <Phone size={18} aria-hidden="true" /> {state === 'sending' || queued ? T.lead.submitting : v4Contact ? (v2 ? V2.submit : V4.notice.submit) : T.lead.submit}
         </button>
       </div>
 

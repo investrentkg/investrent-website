@@ -36,7 +36,20 @@ export const WYCENA_V2_TEXTS = {
   /** Opinia Prawnika 09.11 (poz. 4) i decyzja Daniela 10.11: link do pelnej klauzuli widoczny i klikalny PRZED zaznaczeniem zgody; nowy tag wersji, bo zmienia sie to, co uzytkownik WIDZI w chwili zgody (tresc zgody bez zmian). CRM: dopisac te wersje do CALCULATOR_CONSENT_VERSIONS (jesli ustawiona) PRZED wlaczeniem flagi. */
   /** Makieta 3 + zielone swiatlo Prawnika (poz. 3); Daniel 10.11 potwierdzil, ze telefon od agenta jest bezplatny i nie rodzi zobowiazan. Dopisek do zatwierdzonego 01.11 tekstu bloku kontaktu, tylko w v2. */
   freeNote: 'Bezpłatnie i bez zobowiązań.',
-  consentVersion: 'wycena-2026-11-10-v1',
+  /** Przycisk bloku numeru w v2: zatwierdzony 15.10.2026 (paczka Prawnika poz. 3, OK 09.11). */
+  submit: 'Poproś o bezpłatny telefon od agenta',
+  /** Nagłówek strony po wyniku w v2 (makieta 3). */
+  resultH1: 'Ile może być warte Twoje mieszkanie?',
+  /** Treść bloku numeru w v2 = zatwierdzony 01.11 tekst „Zostaw kontakt” (Daniel 10.11: zostaje) + dopisek freeNote. */
+  noticeBody: 'Kalkulator nie widzi stanu ani standardu Twojej nieruchomości. Zostaw kontakt, a agent powie, ile może być warta, po krótkiej rozmowie. Bezpłatnie i bez zobowiązań.',
+  /** Placeholder pola numeru (makieta 3). */
+  phonePlaceholder: 'np. 600 123 456',
+  /** Pora kontaktu jako trzy chipy (makieta 3); brak wyboru = bez preferencji. */
+  windowLabel: 'Kiedy najwygodniej zadzwonić? (opcjonalnie)',
+  /** Skrócona zgoda (Prawnik OK 10.11: wystarcza, link do pełnej informacji widoczny i klikalny PRZED wysłaniem). Wdrożenie dopiero po akceptacji tekstu przez Daniela. */
+  consentShort: 'Chcę, żeby agent zadzwonił w sprawie dokładniejszej wyceny tej nieruchomości. To nie jest zgoda na oferty marketingowe.',
+  /** Nowy tekst zgody = nowa wersja (zmienia się to, co użytkownik widzi). CRM: dopisać do CALCULATOR_CONSENT_VERSIONS (env) PRZED włączeniem flagi. */
+  consentVersion: 'wycena-2026-11-10-v2',
   consentLinkIntro: 'Zanim zaznaczysz zgodę:',
-  consentLinkLabel: 'pełna informacja o danych',
+  consentLinkLabel: 'Pełna informacja o danych',
 } as const

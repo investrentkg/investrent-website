@@ -147,19 +147,18 @@ function V2MarketCard({ view, areaM2, condition, setCondition, busy }: { view: N
           </>}
         </article>
       </div>
+      {/* Zwinięte do jednej linii (cel: krótszy dystans wynik → numer); pełny tekst w DOM, rozwijany kliknięciem lub linkiem z zastrzeżenia */}
+      <details className="wy-v2-diff" id="wy-v2-diff">
+        <summary><strong>{V2.diff.title}</strong> <span className="wy-v2-diff-more">{V2.diff.more}</span></summary>
+        <p>{V2.diff.body}</p>
+        <p>{V2.diff.moreBody}</p>
+      </details>
       <div className="wy-v2-condition">
         <label htmlFor="wy-v2-cond">{M.conditionLabel}</label>
         <select id="wy-v2-cond" className="wy-field" value={condition ?? ''} onChange={e => setCondition((e.target.value || null) as CardCondition | null)}>
           <option value="">{M.conditionAll}</option>
           {CARD_CONDITIONS.map(c => <option key={c} value={c}>{CONDITION_LABELS[c]}</option>)}
         </select>
-      </div>
-      <div className="wy-v2-diff" id="wy-v2-diff">
-        <p><strong>{V2.diff.title}</strong> {V2.diff.body}</p>
-        <details>
-          <summary>{V2.diff.more}</summary>
-          <p>{V2.diff.moreBody}</p>
-        </details>
       </div>
     </section>
   )
