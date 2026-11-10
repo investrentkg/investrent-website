@@ -40,8 +40,8 @@ export const WYCENA_V2_TEXTS = {
   submit: 'Poproś o bezpłatny telefon od agenta',
   /** Nagłówek strony po wyniku w v2 (makieta 3). */
   resultH1: 'Ile może być warte Twoje mieszkanie?',
-  /** Treść bloku numeru w v2: „Zostaw numer” jak w makiecie 3 (polecenie Dyrektora 10.11); reszta zatwierdzonego tekstu 01.11 bez zmian. */
-  noticeBody: 'Kalkulator nie widzi stanu ani standardu Twojej nieruchomości. Zostaw numer, a agent powie, ile może być warta, po krótkiej rozmowie. Bezpłatnie i bez zobowiązań.',
+  /** Treść bloku numeru w v2 = zatwierdzony 01.11 tekst „Zostaw kontakt” (Daniel 10.11: zostaje) + dopisek freeNote. */
+  noticeBody: 'Kalkulator nie widzi stanu ani standardu Twojej nieruchomości. Zostaw kontakt, a agent powie, ile może być warta, po krótkiej rozmowie. Bezpłatnie i bez zobowiązań.',
   /** Placeholder pola numeru (makieta 3). */
   phonePlaceholder: 'np. 600 123 456',
   /** Pora kontaktu jako trzy chipy (makieta 3); brak wyboru = bez preferencji. */

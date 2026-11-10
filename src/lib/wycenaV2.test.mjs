@@ -71,7 +71,7 @@ test('blok kontaktu v2: dopisek "Bezpłatnie i bez zobowiązań." tylko w v2, za
   assert.equal(V2.freeNote, 'Bezpłatnie i bez zobowiązań.')
   const client = await readFile(new URL('../app/(pl)/wycena/WycenaClient.tsx', import.meta.url), 'utf8')
   assert.match(client, /\(v2 \? V2\.noticeBody : V4\.notice\.body\)/)
-  assert.match(V2.noticeBody, /Zostaw numer, a agent powie/)
+  assert.match(V2.noticeBody, /Zostaw kontakt, a agent powie/)
   assert.match(V2.noticeBody, /Bezpłatnie i bez zobowiązań\.$/)
   assert.equal(V2.phonePlaceholder, 'np. 600 123 456')
   const v4 = await readFile(new URL('../app/(pl)/wycena/wycenaV4Texts.ts', import.meta.url), 'utf8')
