@@ -681,17 +681,16 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = fals
 
       <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 14 }}>
         <div>
-          {v2 && <p className="wy-v2-consent-link">{V2.consentLinkIntro} <a href="/rodo" target="_blank" rel="noopener noreferrer">{V2.consentLinkLabel}</a></p>}
-          <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+          <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start', ...(v2 ? { flexWrap: 'nowrap' } : {}) }}>
             <input id="wy-consent" className="wy-check" type="checkbox" checked={consent} required aria-required="true"
               aria-invalid={!!errs.consent} aria-describedby={describedBy('wy-consent', false, !!errs.consent)}
               onChange={e => { setConsent(e.target.checked); if (errs.consent) setErrs(p => ({ ...p, consent: undefined })) }}
               style={{ width: 22, height: 22, marginTop: 2, flexShrink: 0, accentColor: '#0d2a5c' }} />
-            <label htmlFor="wy-consent" className="wy-consent-label" style={{ fontSize: 14, color: '#374151', lineHeight: 1.6 }}>{T.lead.consentCall} <strong>{T.lead.consentCallRequired}</strong></label>
+            <label htmlFor="wy-consent" className="wy-consent-label" style={{ fontSize: 14, color: '#374151', lineHeight: 1.6, ...(v2 ? { flex: '1 1 0', minWidth: 0 } : {}) }}>{v2 ? <>{V2.consentShort} <a className="wy-v2-consent-a" href="/rodo" target="_blank" rel="noopener noreferrer">{V2.consentLinkLabel}</a></> : <>{T.lead.consentCall} <strong>{T.lead.consentCallRequired}</strong></>}</label>
           </div>
           {errs.consent && <div id="wy-consent-err" role="alert" style={{ ...errStyle, marginLeft: 34 }}>{errs.consent}</div>}
         </div>
-        <div id="wy-consent-hint" style={hint}>
+        {!v2 && <div id="wy-consent-hint" style={hint}>
           <p style={{ margin: '0 0 8px' }}>{T.lead.consentShort}</p>
           <details className="wy-details">
             <summary>{T.lead.consentInfoSummary}</summary>
@@ -703,7 +702,7 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = fals
           ))}
           </details>
           <p style={{ margin: '8px 0 0' }}>{T.lead.consentInfoMore}<a href="/rodo" target="_blank" rel="noopener noreferrer" style={{ color: '#1a4fa0', textDecoration: 'underline' }}>{T.lead.consentInfoLink}</a>{T.lead.consentInfoSuffix}</p>
-        </div>
+        </div>}
       </div>
 
       {/* Honeypot: ukryte pole, czlowiek go nie widzi ani nie dotyka */}

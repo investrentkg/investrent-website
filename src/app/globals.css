@@ -1118,3 +1118,4 @@ h1.m3-h1 > span::after { content: ''; flex-basis: 100%; height: 0; order: 2; }
 .wy-v2-chip[aria-pressed="true"] { background: #0d2a5c; border-color: #0d2a5c; color: #fff; }
 .wy-v2-chip:focus-visible { outline: 3px solid #1a4fa0; outline-offset: 2px; }
 .wy-v2-consent-link a { color: #0d2a5c; text-decoration: underline; font-weight: 600; }
+.wy-v2-consent-a { color: #0d2a5c; text-decoration: underline; font-weight: 600; }

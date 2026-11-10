@@ -57,8 +57,11 @@ test('zgoda v2: nowy tag wersji w formacie wycena-RRRR-MM-DD-vN, link do klauzul
   assert.match(V2.consentVersion, /^wycena-\d{4}-\d{2}-\d{2}-v\d+$/)
   assert.notEqual(V2.consentVersion, 'wycena-2026-09-28-v13')
   const client = await readFile(new URL('../app/(pl)/wycena/WycenaClient.tsx', import.meta.url), 'utf8')
-  const linkAt = client.indexOf('wy-v2-consent-link'), boxAt = client.indexOf('id="wy-consent" className="wy-check"')
-  assert.ok(linkAt > 0 && boxAt > linkAt, 'link do pelnej klauzuli musi byc przed checkboxem')
+  assert.equal(V2.consentShort, 'Chcę, żeby agent zadzwonił w sprawie dokładniejszej wyceny tej nieruchomości. To nie jest zgoda na oferty marketingowe.')
+  assert.equal(V2.consentVersion, 'wycena-2026-11-10-v2')
+  // skrócona zgoda w v2: link "Pełna informacja o danych" jest W etykiecie zgody (widoczny i klikalny przed wysłaniem); poza v2 stara zgoda
+  assert.match(client, /v2 \? <>\{V2\.consentShort\} <a className="wy-v2-consent-a" href="\/rodo"[^>]*>\{V2\.consentLinkLabel\}<\/a><\/> : <>\{T\.lead\.consentCall\}/)
+  assert.match(client, /\{!v2 && <div id="wy-consent-hint"/)
   assert.match(client, /\.\.\.\(v2 \? \{ consentVersion: V2\.consentVersion \} : \{\}\)/)
   const texts = await readFile(new URL('../app/(pl)/wycena/texts.ts', import.meta.url), 'utf8')
   assert.match(texts, /consentCall/) // tresc zgody nadal z texts.ts, nietknieta

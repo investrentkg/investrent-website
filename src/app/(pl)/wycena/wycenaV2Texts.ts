@@ -42,7 +42,10 @@ export const WYCENA_V2_TEXTS = {
   resultH1: 'Ile może być warte Twoje mieszkanie?',
   /** Pora kontaktu jako trzy chipy (makieta 3); brak wyboru = bez preferencji. */
   windowLabel: 'Kiedy najwygodniej zadzwonić? (opcjonalnie)',
-  consentVersion:'wycena-2026-11-10-v1',
+  /** Skrócona zgoda (Prawnik OK 10.11: wystarcza, link do pełnej informacji widoczny i klikalny PRZED wysłaniem). Wdrożenie dopiero po akceptacji tekstu przez Daniela. */
+  consentShort: 'Chcę, żeby agent zadzwonił w sprawie dokładniejszej wyceny tej nieruchomości. To nie jest zgoda na oferty marketingowe.',
+  /** Nowy tekst zgody = nowa wersja (zmienia się to, co użytkownik widzi). CRM: dopisać do CALCULATOR_CONSENT_VERSIONS (env) PRZED włączeniem flagi. */
+  consentVersion: 'wycena-2026-11-10-v2',
   consentLinkIntro: 'Zanim zaznaczysz zgodę:',
-  consentLinkLabel: 'pełna informacja o danych',
+  consentLinkLabel: 'Pełna informacja o danych',
 } as const
