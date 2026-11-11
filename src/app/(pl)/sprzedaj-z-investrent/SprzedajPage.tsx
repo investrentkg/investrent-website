@@ -119,7 +119,7 @@ export default function SprzedajPage() {
     <div className={s.sec}>
       <h2>{afterSend ? 'Co dalej' : 'Jak to wygląda'}</h2>
       <ol className={s.steps}>
-        <li><span className={s.n}>1</span><span>{afterSend ? 'Mamy Twój numer. Oddzwania agent InvestRent.' : 'Dzwonisz albo zostawiasz numer. Oddzwania agent InvestRent.'}</span></li>
+        <li><span className={s.n}>1</span><span>{afterSend ? 'Mamy Twój numer. Oddzwania ktoś z zespołu InvestRent.' : 'Dzwonisz albo zostawiasz numer. Oddzwania ktoś z zespołu InvestRent.'}</span></li>
         <li><span className={s.n}>2</span><span>Rozmawiamy o Twojej nieruchomości i o tym, jak ją sprzedać.</span></li>
         <li><span className={s.n}>3</span><span>Rozmowa i wycena orientacyjna są bezpłatne. Warunki ewentualnej umowy omawiamy osobno.</span></li>
       </ol>
