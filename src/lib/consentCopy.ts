@@ -55,10 +55,11 @@ export const CONSENT_COPY: Record<ConsentLocale, ConsentCopy> = {
       desc: 'pozwalają nam mierzyć skuteczność kampanii reklamowych, np. zapisując, z jakiej kampanii przyszedł użytkownik.',
     },
     ads: {
-      name: 'Reklamowe (Meta)',
+      name: 'Reklamowe',
       badge: 'planowane',
-      liveDesc: 'pozwalają nam mierzyć skuteczność reklam na Facebooku i Instagramie. Po wysłaniu przez Państwa zgłoszenia w kalkulatorze wyceny przekażemy do Meta Platforms Ireland Limited (odrębny administrator danych) informację o tym zdarzeniu — bez imienia, numeru telefonu i adresu e-mail — wraz z identyfikatorami przeglądarki i kliknięcia reklamy oraz adresem IP i danymi przeglądarki. Dane mogą być przekazywane poza Europejski Obszar Gospodarczy. Zgoda jest dobrowolna.',
-      desc: 'obecnie nic tu nie uruchamiamy. Ewentualne udostępnianie danych Meta Platforms Ireland Limited w celu pomiaru reklam na Facebooku i Instagramie będzie wymagało Państwa odrębnej zgody.',
+      // v4 (Prawnik 11.11.2026, forma Państwo): jeden tekst dla liveDesc i desc; "Jeśli korzystamy" pokrywa narzędzia aktywne dziś i w przyszłości (Meta, Google Ads) bez kolejnego podbicia wersji.
+      liveDesc: 'Pozwalają nam mierzyć skuteczność i dopasowanie naszych reklam. Jeśli korzystamy z narzędzi pomiaru reklam (Meta Pixel/Conversions API, znacznik konwersji Google Ads), po wysłaniu przez Państwa zgłoszenia na stronie przekażemy do Meta Platforms Ireland Limited i/lub Google Ireland Limited (odrębni administratorzy danych) informację o tym zdarzeniu — bez imienia, numeru telefonu i adresu e-mail — wraz z identyfikatorami przeglądarki i kliknięcia reklamy (np. fbp/fbc, gclid) oraz adresem IP i danymi przeglądarki. Dane mogą być przekazywane poza Europejski Obszar Gospodarczy. Zgoda jest dobrowolna.',
+      desc: 'Pozwalają nam mierzyć skuteczność i dopasowanie naszych reklam. Jeśli korzystamy z narzędzi pomiaru reklam (Meta Pixel/Conversions API, znacznik konwersji Google Ads), po wysłaniu przez Państwa zgłoszenia na stronie przekażemy do Meta Platforms Ireland Limited i/lub Google Ireland Limited (odrębni administratorzy danych) informację o tym zdarzeniu — bez imienia, numeru telefonu i adresu e-mail — wraz z identyfikatorami przeglądarki i kliknięcia reklamy (np. fbp/fbc, gclid) oraz adresem IP i danymi przeglądarki. Dane mogą być przekazywane poza Europejski Obszar Gospodarczy. Zgoda jest dobrowolna.',
     },
     withdraw: 'Zgodę mogą Państwo w każdej chwili zmienić lub wycofać w „Ustawieniach prywatności” (link w stopce strony).',
     privacyLabel: 'Polityka prywatności',
@@ -88,10 +89,11 @@ export const CONSENT_COPY: Record<ConsentLocale, ConsentCopy> = {
       desc: 'ermöglichen uns, die Wirksamkeit unserer Werbekampagnen zu messen, z. B. indem gespeichert wird, über welche Kampagne Sie zu uns gekommen sind.',
     },
     ads: {
-      name: 'Werbung (Meta)',
+      name: 'Werbung',
       badge: 'geplant',
-      liveDesc: 'ermöglichen uns, die Wirksamkeit von Werbung auf Facebook und Instagram zu messen. Nach dem Absenden Ihrer Anfrage im Bewertungsrechner übermitteln wir Meta Platforms Ireland Limited (eigenständiger Verantwortlicher) eine Information über dieses Ereignis — ohne Ihren Namen, Ihre Telefonnummer und Ihre E-Mail-Adresse — zusammen mit Kennungen Ihres Browsers und des Werbeklicks sowie IP-Adresse und Browserdaten. Die Daten können in Länder außerhalb des Europäischen Wirtschaftsraums übermittelt werden. Die Einwilligung ist freiwillig.',
-      desc: 'derzeit läuft hier nichts. Eine etwaige Weitergabe von Daten an Meta Platforms Ireland Limited zur Messung von Werbung auf Facebook und Instagram erfordert Ihre gesonderte Einwilligung.',
+      // v4: Übersetzung des Prawnik-Textes (11.11.2026); VOR Veröffentlichung Durchsicht durch die DE-Textverantwortliche Person (Ernest) nötig.
+      liveDesc: 'Sie ermöglichen uns, die Wirksamkeit und Ausrichtung unserer Werbung zu messen. Sofern wir Tools zur Anzeigenmessung nutzen (Meta Pixel/Conversions API, Google Ads Conversion-Tracking), übermitteln wir nach dem Absenden Ihrer Anfrage auf unserer Website an Meta Platforms Ireland Limited und/oder Google Ireland Limited (jeweils eigenständige Verantwortliche) Informationen über dieses Ereignis — ohne Namen, Telefonnummer oder E-Mail-Adresse — zusammen mit Browser- und Klick-Kennungen (z. B. fbp/fbc, gclid) sowie der IP-Adresse und Browserdaten. Die Daten können außerhalb des Europäischen Wirtschaftsraums übermittelt werden. Die Einwilligung ist freiwillig.',
+      desc: 'Sie ermöglichen uns, die Wirksamkeit und Ausrichtung unserer Werbung zu messen. Sofern wir Tools zur Anzeigenmessung nutzen (Meta Pixel/Conversions API, Google Ads Conversion-Tracking), übermitteln wir nach dem Absenden Ihrer Anfrage auf unserer Website an Meta Platforms Ireland Limited und/oder Google Ireland Limited (jeweils eigenständige Verantwortliche) Informationen über dieses Ereignis — ohne Namen, Telefonnummer oder E-Mail-Adresse — zusammen mit Browser- und Klick-Kennungen (z. B. fbp/fbc, gclid) sowie der IP-Adresse und Browserdaten. Die Daten können außerhalb des Europäischen Wirtschaftsraums übermittelt werden. Die Einwilligung ist freiwillig.',
     },
     withdraw: 'Sie können Ihre Einwilligung jederzeit in den „Datenschutzeinstellungen” (Link in der Fußzeile) ändern oder widerrufen.',
     privacyLabel: 'Datenschutzerklärung',
