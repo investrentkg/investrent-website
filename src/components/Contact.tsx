@@ -14,7 +14,7 @@ const TOPICS = [
   'Chcę sprzedać nieruchomość',
   'Szukam mieszkania do wynajęcia',
   'Chcę wynajmować swoją nieruchomość',
-  'Sprawa trudna / doradztwo prawne',
+  'Sprawa trudna (spadek, hipoteka, współwłasność)',
   'Kredyt hipoteczny',
   'Ubezpieczenie nieruchomości',
   'Bezpłatna wycena nieruchomości',
