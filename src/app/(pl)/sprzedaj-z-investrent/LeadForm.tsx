@@ -7,6 +7,10 @@ import { submitLead } from '@/lib/api'
 // ROBOCZE: tekst informacyjny/zgody z makiety po TAK Prawnika; tu miejsce na wersje zatwierdzona.
 const SOURCE = 'Google Ads / strona sprzedaj-z-investrent'
 
+// Backend (routes/public.ts) zapisuje w clients.source TYLKO wartosci z webSources, inne -> 'website'; dopoki nie ma wpisu
+// w webSources + migracji CHECK clients_source_check, rozpoznawalnosc kanalu zapewnia ten znacznik w notatce klienta.
+const NOTES_MARKER = 'Kanał: Google Ads, strona /sprzedaj-z-investrent (prośba o telefon)'
+
 function digits(p: string) {
   return p.replace(/\D/g, '').replace(/^48(?=\d{9}$)/, '')
 }
@@ -25,7 +29,7 @@ export default function LeadForm() {
       return
     }
     setStatus('loading')
-    const res = await submitLead({ full_name: name.trim() || undefined, phone: digits(phone), source: SOURCE, client_type: 'seller', hp_field: hp })
+    const res = await submitLead({ full_name: name.trim() || undefined, phone: digits(phone), source: SOURCE, client_type: 'seller', notes: NOTES_MARKER, hp_field: hp })
     setStatus(res?.ok ? 'ok' : 'error')
   }
 
