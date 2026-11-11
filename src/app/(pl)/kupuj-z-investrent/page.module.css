@@ -43,6 +43,7 @@
 .cons strong { color: var(--ink); }
 .cons a, .foot a { color: var(--navy); text-decoration: underline; position: relative; white-space: nowrap; }
 .cons a::after, .foot a::after { content: ''; position: absolute; left: -6px; right: -6px; top: -14px; bottom: -14px; }
+.area { font-size: 14px; line-height: 1.45; color: #3D4557; margin: 6px 0 0; font-weight: 600; }
 .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
 
 .sec { padding: 24px 20px; }

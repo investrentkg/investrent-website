@@ -89,6 +89,7 @@ function Form({ id, status, phone, setPhone, name, setName, hp, setHp, onSubmit,
         Zostawiając numer, prosisz o telefon w sprawie poszukiwania nieruchomości. <strong>To nie jest zgoda na oferty marketingowe.</strong>{' '}
         Administratorem jest Investrent sp. z o.o. Informacje o przetwarzaniu danych: <a href="/rodo" target="_blank" rel="noopener noreferrer">Klauzula informacyjna</a>.
       </p>
+      <p className={s.area}>Oferujemy nieruchomości w Kołobrzegu i okolicach.</p>
     </form>
   )
 }
