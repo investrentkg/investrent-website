@@ -1,5 +1,6 @@
 "use client"
-import { useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import ResultV4f from './ResultV4f'
 import {
   CARD_CONDITIONS, CONDITION_LABELS, fmtAsOfDate, fmtPpm, fmtRange, isSmallTransactionSample,
   type CardCondition, type MarketCardFilters, type OffersView, type TransactionsView,
@@ -164,11 +165,36 @@ function V2MarketCard({ view, areaM2, condition, setCondition, busy }: { view: N
   )
 }
 
-export default function MarketCard({ token, areaM2 = null, onKind, v2 = false, filters }: { token: string | null; areaM2?: number | null; onKind?: (kind: 'card' | 'nodata' | 'none' | null) => void; v2?: boolean; filters?: MarketCardFilters }) {
-  const { view, condition, setCondition, busy } = useMarketCard(token, filters)
-  const kind = view?.kind ?? null
-  useEffect(() => { onKind?.(kind) }, [kind, onKind])
+/** Wynik v4f (flaga NEXT_PUBLIC_WYCENA_RESULT_V4F): miasto i dzielnice z formularza, numer telefonu (slot) i „Wyceń inną” z rodzica. */
+export type V4fOptions = { city: string; districts: readonly string[]; ctaSlot: React.ReactNode; onAgain: () => void }
 
+export default function MarketCard({ token, areaM2 = null, onKind, v2 = false, filters, v4f }: { token: string | null; areaM2?: number | null; onKind?: (kind: 'card' | 'nodata' | 'none' | 'v4f' | null) => void; v2?: boolean; filters?: MarketCardFilters; v4f?: V4fOptions }) {
+  // v4f: pokoje, pietro i dzielnica to stan lokalny (zmiana = jedno nowe zapytanie); startuja od wartosci z ekranu 1
+  const [local, setLocal] = useState<{ rooms: string | null; floor: string | null; district: string | null }>({ rooms: filters?.rooms ?? null, floor: filters?.floor_group ?? null, district: null })
+  const hookFilters = useMemo<MarketCardFilters | undefined>(() => v4f
+    ? { ...(local.rooms ? { rooms: local.rooms as MarketCardFilters['rooms'] } : {}), ...(local.floor ? { floor_group: local.floor as MarketCardFilters['floor_group'] } : {}), ...(local.district ? { district: local.district } : {}) }
+    : filters, [v4f, local.rooms, local.floor, local.district, filters])
+  const { view, condition, setCondition, busy } = useMarketCard(token, hookFilters)
+  const v4Data = v4f && view?.kind === 'card' ? view.v4 ?? null : null
+  const kind = v4Data ? 'v4f' : (view?.kind ?? null)
+  useEffect(() => { onKind?.(kind) }, [kind, onKind])
+  // punkt odniesienia „96 ze 188”: liczba wpisow dla samych filtrow z wejscia (bez stanu i dzielnicy)
+  const [baseCount, setBaseCount] = useState<number | null>(null)
+  useEffect(() => {
+    const o = v4Data?.offers
+    if (o && o.status === 'ok' && !condition && !local.district) setBaseCount(o.requestedCount)
+  }, [v4Data, condition, local.district])
+
+  if (v4f && v4Data && areaM2 && areaM2 > 0) {
+    const bandLabel = view?.kind === 'card' ? view.band : null
+    return <ResultV4f v4={v4Data} areaM2={areaM2} city={v4f.city} bandLabel={bandLabel} busy={busy}
+      filters={{ rooms: local.rooms, floor: local.floor, condition, district: local.district }}
+      setFilters={next => {
+        if ('condition' in next) setCondition((next.condition ?? null) as CardCondition | null)
+        setLocal(cur => ({ rooms: 'rooms' in next ? next.rooms ?? null : cur.rooms, floor: 'floor' in next ? next.floor ?? null : cur.floor, district: 'district' in next ? next.district ?? null : cur.district }))
+      }}
+      baseCount={baseCount} districts={v4f.districts} ctaSlot={v4f.ctaSlot} onAgain={v4f.onAgain} />
+  }
   if (!view) return <p style={hintStyle} role="status">{WYCENA_LAYOUT_V4_ACTIVE ? V4.loading : M.loading}</p>
   if (view.kind === 'nodata' && WYCENA_LAYOUT_V4_ACTIVE) return null
   if (view.kind === 'none' && condition === null) return null // blad/flaga CRM off: bez karty, formularz telefonu dziala dalej

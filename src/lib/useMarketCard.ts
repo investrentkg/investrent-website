@@ -31,7 +31,7 @@ export function useMarketCard(token: string | null, filters?: MarketCardFilters)
     })
 
     return () => { sequence.current += 1 }
-  }, [token, condition, filters?.rooms, filters?.floor_group])
+  }, [token, condition, filters?.rooms, filters?.floor_group, filters?.district])
 
   return { view, condition, setCondition, busy }
 }

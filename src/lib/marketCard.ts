@@ -2,6 +2,7 @@
 // DWIE WARTOSCI OSOBNO (ceny ofertowe, ceny transakcyjne), bez mediany lacznej, bez twierdzen o trendzie rynku.
 // Brak danych (available:false), blad sieci, flaga CRM off (404) = brak karty (model 'none'), nigdy zmyslone liczby.
 import { sendFunnelStep } from './funnel.ts'
+import { parseV4Raw, type V4Raw } from './marketCardV4f.ts'
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.investrent.com.pl'
 export const MARKET_CARD_URL = `${API}/api/public/valuation/market-card`
@@ -21,7 +22,7 @@ export type TransactionsView = { count: number; median: number; p25: number | nu
 export type MarketCardView =
   | { kind: 'none' }                                    // blad / flaga CRM off / odpowiedz niespojna: bez karty i bez komunikatu
   | { kind: 'nodata' }                                  // API odpowiedzialo, ale obie sekcje bez wystarczajacych danych: uczciwy komunikat, bez karty
-  | { kind: 'card'; asOfDate: string | null; band: string | null; offers: OffersView | null; transactions: TransactionsView | null }
+  | { kind: 'card'; asOfDate: string | null; band: string | null; offers: OffersView | null; transactions: TransactionsView | null; v4?: V4Raw }
 
 const num = (v: unknown): number | null => (typeof v === 'number' && Number.isFinite(v) ? v : null)
 const str = (v: unknown): string | null => (typeof v === 'string' && v ? v : null)
@@ -53,11 +54,12 @@ export function interpretMarketCard(status: number, body: unknown): MarketCardVi
     }
   }
   if (!offers && !transactions) return { kind: 'nodata' }
-  return { kind: 'card', asOfDate: str(b.as_of_date), band: str(b.band?.label), offers, transactions }
+  const v4 = parseV4Raw(b.v4) // pole v4: tylko gdy backend ma wlaczona flage PUBLIC_MARKET_CARD_V4_ENABLED; brak/niespojne = dotychczasowa karta
+  return { kind: 'card', asOfDate: str(b.as_of_date), band: str(b.band?.label), offers, transactions, ...(v4 ? { v4 } : {}) }
 }
 
 /** Filtry ekranu 1 v4 (pokoje, grupa pieter) dla cen ofertowych; backend ignoruje je przy wylaczonej fladze PUBLIC_MARKET_CARD_V4_ENABLED. */
-export type MarketCardFilters = { rooms?: '1' | '2' | '3' | '4_plus'; floor_group?: 'parter' | '1_3' | '4_plus' }
+export type MarketCardFilters = { rooms?: '1' | '2' | '3' | '4_plus'; floor_group?: 'parter' | '1_3' | '4_plus'; district?: string }
 export type MarketCardDeps = { fetchImpl?: typeof fetch; url?: string; timeoutMs?: number; filters?: MarketCardFilters }
 
 /** Pobiera karte; nigdy nie rzuca (blad = 'none'). condition = filtr stanu TYLKO dla cen ofertowych. */
@@ -69,7 +71,7 @@ export async function fetchMarketCard(token: string, condition: CardCondition | 
     try {
       const res = await f(deps.url ?? MARKET_CARD_URL, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ valuation_token: token, ...(condition ? { condition } : {}), ...(deps.filters?.rooms ? { rooms: deps.filters.rooms } : {}), ...(deps.filters?.floor_group ? { floor_group: deps.filters.floor_group } : {}) }),
+        body: JSON.stringify({ valuation_token: token, ...(condition ? { condition } : {}), ...(deps.filters?.rooms ? { rooms: deps.filters.rooms } : {}), ...(deps.filters?.floor_group ? { floor_group: deps.filters.floor_group } : {}), ...(deps.filters?.district ? { district: deps.filters.district } : {}) }),
         ...(ctrl ? { signal: ctrl.signal } : {}),
       })
       let body: unknown = null
