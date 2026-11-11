@@ -142,8 +142,6 @@ export default async function SprzedazPage() {
                 <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 11 }}>
                   {[
                     '150+ transakcji w Kołobrzegu i okolicach',
-                    'Cena transakcyjna wyższa o średnio 8% od ceny wywoławczej',
-                    'Pełna obsługa prawna i notarialna w cenie usługi',
                     'Ekspozycja na głównych portalach i nie tylko',
                     'Fotografik, wirtualny spacer 360°, home staging',
                     'Obsługa po-sprzedażowa — dokumentacja, przepisanie',
