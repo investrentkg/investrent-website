@@ -36,7 +36,7 @@ const FALLBACK_OFFICE = { name: 'InvestRent Nieruchomości', logo_url: '/logo.pn
 const VALUES = [
   { icon: Shield,     title: 'Bezpieczeństwo', desc: 'Każda transakcja przeprowadzana jest z pełną weryfikacją prawną. Zero niespodzianek.' },
   { icon: Heart,      title: 'Zaangażowanie',  desc: 'Traktujemy każdego klienta indywidualnie. Nie znikamy po podpisaniu umowy.' },
-  { icon: TrendingUp, title: 'Skuteczność',    desc: 'Z doświadczenia biura InvestRent sprzedaż trwa zwykle od miesiąca do dwóch; zdarza się kilka dni, a trudniejsze nieruchomości sprzedają się 3-4 miesiące.' },
+  { icon: TrendingUp, title: 'Plan sprzedaży pod Twoją nieruchomość', desc: 'Czas sprzedaży zależy od nieruchomości, ceny i rynku. Pomagamy ustalić cenę i sposób pokazania oferty.' },
   { icon: Users,      title: 'Lokalność',      desc: 'Jesteśmy stąd. Znamy każdą ulicę, każdą lokalizację i każdą inwestycję.' },
 ]
 
