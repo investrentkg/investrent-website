@@ -71,6 +71,8 @@
 .sticky .call { height: 52px; font-size: 18px; }
 
 .page a:focus-visible, .page input:focus-visible, .page button:focus-visible { outline: 2px solid #1a56db; outline-offset: 2px; }
+/* Fokus na ciemnym tle (granatowy hero, pigula numeru) i na jasnym pasku sticky: bialy pierscien wewnatrz + niebieski na zewnatrz, widoczny na obu (kontrast >= 3:1). */
+.page .call:focus-visible, .page .pill:focus-visible { outline: 3px solid #1a56db; outline-offset: 3px; box-shadow: 0 0 0 3px #fff; }
 
 @media (min-width: 900px) {
   .topbar { padding: 0 max(24px, calc((100% - 1100px) / 2)); }
