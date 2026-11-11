@@ -137,3 +137,9 @@
   .page section { padding-left: 20px !important; padding-right: 20px !important; }
   .page section.cwrap { padding-left: 0 !important; padding-right: 0 !important; }
 }
+
+/* Waskie telefony (<=380 px): przy bocznym paddingu 20 px cztery chipy z "✓" wystawaly o ok. 6 px poza pole; min-width 44 px zostaje (cel dotykowy). */
+@media (max-width: 380px) {
+  .chips { gap: 3px; }
+  .chp { padding: 0 6px; min-width: 44px; justify-content: center; }
+}
