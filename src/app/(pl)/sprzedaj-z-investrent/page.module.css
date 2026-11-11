@@ -6,6 +6,7 @@
   font-family: var(--font-inter), 'Segoe UI', Arial, sans-serif; box-sizing: border-box;
 }
 .page *, .page *::before, .page *::after { box-sizing: border-box; }
+.page h2 { font-weight: 700; }
 .page h1, .page h2, .logo { font-family: var(--font-montserrat), 'Segoe UI', Arial, sans-serif; }
 
 .topbar { background: var(--navy); color: #fff; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
@@ -101,4 +102,10 @@
   .foot { max-width: 1148px; margin: 0 auto; padding: 20px 24px 40px; }
   .cons { font-size: 14px; }
   .f label { font-size: 14px; }
+}
+
+/* globals.css wymusza na mobile (<=640px) "section { padding-left/right: 16px !important }"; makieta v8n ma 20 px, a .cwrap bez bocznego paddingu. */
+@media (max-width: 640px) {
+  .page section { padding-left: 20px !important; padding-right: 20px !important; }
+  .page section.cwrap { padding-left: 0 !important; padding-right: 0 !important; }
 }
