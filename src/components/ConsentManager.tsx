@@ -7,13 +7,13 @@ import { CONSENT_COPY, localeOfPath } from '@/lib/consentCopy'
 
 // Baner zgód + panel ustawień (teksty zatwierdzone przez Prawnika - lib/consentCopy.ts; podstawa: art. 399 PKE, § 25 TDDDG, art. 6 ust. 1 lit. a RODO).
 // - pokazuje się, gdy brak ważnego wyboru (pierwsza wizyta, wygasły, zmieniona wersja);
-// - "Odrzuć wszystkie" i "Akceptuj wszystkie" mają tę samą wagę wizualną (odmowa tak łatwa jak zgoda);
+// - v4: "Zaakceptuj", "Tylko niezbędne" i "Ustawienia" mają identyczny styl i rozmiar (Prawnik 11.11: jednakowa waga = ten sam kolor i styl);
 // - panel ustawień otwiera też przycisk w stopce (zdarzenie CONSENT_OPEN_EVENT) - wycofanie w każdej chwili;
 // - dwa rozłączne przełączniki (Prawnik 09.10): Marketingowe (zapis atrybucji UTM, dane tylko wewnętrzne) i Reklamowe (przyszły Meta Pixel/CAPI);
 //   do wdrożenia piksela (ADS_AVAILABLE=false) przełącznik Reklamowe jest nieaktywny i zawsze wyłączony. Oba domyślnie wyłączone.
 
 const css = `
-.irc-bar{position:fixed;left:0;right:0;bottom:0;z-index:2147483000;background:#fff;color:#0d2a5c;border-top:3px solid #f5a623;box-shadow:0 -8px 30px rgba(13,42,92,.18);padding:16px 20px calc(16px + env(safe-area-inset-bottom));font-family:var(--font-inter),system-ui,sans-serif}
+.irc-bar{position:fixed;left:0;right:0;bottom:0;z-index:2147483000;background:#fff;color:#0d2a5c;border-top:3px solid #0d2a5c;box-shadow:0 -8px 30px rgba(13,42,92,.18);padding:16px 20px calc(16px + env(safe-area-inset-bottom));font-family:var(--font-inter),system-ui,sans-serif}
 .irc-in{max-width:1180px;margin:0 auto;display:flex;gap:20px;align-items:center;flex-wrap:wrap}
 .irc-txt{flex:1 1 420px;min-width:0}
 .irc-h{font-family:var(--font-montserrat),Arial,sans-serif;font-weight:800;font-size:15px;margin:0 0 4px}
@@ -40,8 +40,8 @@ const css = `
 .irc-soon{font-size:13px;font-weight:700;color:#374151;background:#f3f4f6;border:1px solid #9ca3af;border-radius:999px;padding:3px 10px;white-space:nowrap}
 .irc-sw input:checked+span::after{transform:translateX(20px)}
 @media (prefers-reduced-motion:reduce){.irc-sw span,.irc-sw span::after{transition:none}}
-@media (min-width:641px){.irc-bar .irc-act .irc-btn{min-width:196px}.irc-dlg .irc-act{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.irc-dlg .irc-act .irc-btn{padding:0 8px;white-space:nowrap}}
-@media (max-width:640px){.irc-bar{padding:12px 16px calc(12px + env(safe-area-inset-bottom));max-height:70vh;overflow:auto}.irc-in{gap:10px}.irc-h{font-size:14px}.irc-p{font-size:13.5px;line-height:1.45}.irc-act{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:8px}.irc-act .irc-btn{padding:0 8px;font-size:13.5px}.irc-act .irc-line{grid-column:1/-1;order:3}.irc-dlg .irc-act{position:sticky;bottom:-22px;background:#fff;padding:10px 0 4px;border-top:1px solid #e5e7eb}.irc-dlg .irc-act .irc-btn{grid-column:auto;order:0;font-size:13px;padding:0 4px}.irc-dlg .irc-act .irc-solid{grid-column:1/-1;order:3}}
+@media (min-width:641px){.irc-bar .irc-act .irc-btn{min-width:150px}.irc-dlg .irc-act{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.irc-dlg .irc-act .irc-btn{padding:0 8px;white-space:nowrap}}
+@media (max-width:640px){.irc-bar{padding:10px 16px calc(10px + env(safe-area-inset-bottom));max-height:70vh;overflow:auto}.irc-in{gap:10px}.irc-h{font-size:14px}.irc-p{font-size:13.5px;line-height:1.45}.irc-act{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:8px}.irc-act .irc-btn{padding:0 8px;font-size:13.5px}.irc-act .irc-line{grid-column:1/-1;order:3}.irc-bar .irc-act3{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.irc-bar .irc-act3 .irc-btn{padding:0 4px;font-size:13px;white-space:nowrap;grid-column:auto;order:0}.irc-bar .irc-p{font-size:12.5px;line-height:1.4}.irc-bar .irc-h{font-size:14px;margin:0 0 2px}.irc-bar .irc-in{gap:8px}.irc-dlg .irc-act{position:sticky;bottom:-22px;background:#fff;padding:10px 0 4px;border-top:1px solid #e5e7eb}.irc-dlg .irc-act .irc-btn{grid-column:auto;order:0;font-size:13px;padding:0 4px}.irc-dlg .irc-act .irc-solid{grid-column:1/-1;order:3}}
 `
 
 export default function ConsentManager() {
@@ -122,10 +122,10 @@ export default function ConsentManager() {
                 <a href={t.privacyHref}>{t.privacyLabel}</a>
               </p>
             </div>
-            <div className="irc-act">
-              <button type="button" className="irc-btn irc-solid" onClick={() => choose(REJECT_ALL)}>{t.rejectAll}</button>
+            <div className="irc-act irc-act3">
+              <button type="button" className="irc-btn irc-line" onClick={() => choose(ACCEPT_ALL)}>{t.acceptAll}</button>
+              <button type="button" className="irc-btn irc-line" onClick={() => choose(REJECT_ALL)}>{t.rejectAll}</button>
               <button type="button" className="irc-btn irc-line" onClick={openSettings}>{t.customize}</button>
-              <button type="button" className="irc-btn irc-solid" onClick={() => choose(ACCEPT_ALL)}>{t.acceptAll}</button>
             </div>
           </div>
         </div>

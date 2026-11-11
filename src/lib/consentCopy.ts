@@ -1,3 +1,4 @@
+// v4 (11.11.2026): PL pierwsza warstwa i etykiety przyciskow wg makiety M_v8n, TAK Prawnika (jednakowy styl trzech przyciskow, link do Polityki w pierwszej warstwie).
 // Teksty banera zgód PL/DE - ZATWIERDZONE PRZEZ PRAWNIKA (opinia 03.10.2026:
 // _wspolne_pliki/prawnik_opinia_baner_cookies_pixel_capi_2026_10_03.md, sekcja "Gotowy tekst"), wstawione DOSŁOWNIE.
 // Odstępstwa (do akceptacji Prawnika przy przeglądzie PR):
@@ -34,11 +35,10 @@ export interface ConsentCopy {
 export const CONSENT_COPY: Record<ConsentLocale, ConsentCopy> = {
   pl: {
     title: 'Ustawienia prywatności',
-    intro:
-      'Używamy plików cookies, aby strona działała poprawnie oraz — za Państwa zgodą — do analizy ruchu na stronie i pomiaru skuteczności naszych reklam. Mogą Państwo zaakceptować wszystkie, odrzucić wszystkie poza niezbędnymi lub dostosować wybór.',
-    rejectAll: 'Odrzuć wszystkie',
-    customize: 'Dostosuj',
-    acceptAll: 'Zaakceptuj wszystkie',
+    intro: 'Cookies do działania strony; za Twoją zgodą także statystyki i reklamy.',
+    rejectAll: 'Tylko niezbędne',
+    customize: 'Ustawienia',
+    acceptAll: 'Zaakceptuj',
     save: 'Zapisz wybór',
     settingsTitle: 'Ustawienia prywatności',
     necessary: {

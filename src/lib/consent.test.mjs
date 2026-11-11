@@ -70,10 +70,11 @@ test('nazwy cookies do usunięcia po wycofaniu zgody (GA: _ga, _ga_<ID>, _gid, _
   assert.deepEqual(metaCookieNames(undefined), [])
 })
 
-test('wersja zgody 3: zapisy ze starą wersją (v1, v2) = brak zgody, ponowne pytanie; domyślnie oba marketingowe wyłączone', () => {
-  assert.equal(CONSENT_VERSION, 3)
+test('wersja zgody 4: zapisy ze starą wersją (v1, v2) = brak zgody, ponowne pytanie; domyślnie oba marketingowe wyłączone', () => {
+  assert.equal(CONSENT_VERSION, 4)
   for (const old of [JSON.stringify({ v: 1, analytics: true, marketing: true, ts: NOW }), JSON.stringify({ v: 2, analytics: true, marketing: true, ts: NOW }),
-    JSON.stringify({ v: 2, analytics: true, attribution: true, ads: true, ts: NOW })]) {
+    JSON.stringify({ v: 2, analytics: true, attribution: true, ads: true, ts: NOW }),
+    JSON.stringify({ v: 3, analytics: true, attribution: true, ads: true, ts: NOW })]) {
     assert.equal(parseConsent(old, NOW + 1000), null)
     const s = readStoredConsent({ getItem: () => old, setItem() {} }, NOW + 1000)
     assert.equal(s, null)
@@ -92,7 +93,7 @@ test('rozłączność zgód: attribution (UTM) bez ads i odwrotnie; brak wyboru 
   assert.equal(attributionAllowed(adsOnly), false); assert.equal(adsAllowed(adsOnly), true)
   // parse zachowuje oba klucze niezależnie
   assert.deepEqual(parseConsent(serializeConsent(adsOnly), NOW + 1000), adsOnly)
-  assert.equal(parseConsent(JSON.stringify({ v: 3, analytics: true, attribution: true, ts: NOW }), NOW), null, 'brak klucza ads = nieprawidłowy zapis')
+  assert.equal(parseConsent(JSON.stringify({ v: 4, analytics: true, attribution: true, ts: NOW }), NOW), null, 'brak klucza ads = nieprawidłowy zapis')
 })
 test('wycofanie zgody marketingowej czyści ir_attr i cookies Meta tylko w trybie Pixel; ads pozostaje rozłączne', () => {
   assert.equal(ATTRIBUTION_SESSION_KEY, 'ir_attr')
