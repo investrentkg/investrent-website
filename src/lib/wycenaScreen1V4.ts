@@ -1,6 +1,6 @@
 // Ekran 1 kalkulatora v4 (makieta E1i, zatwierdzona przez Daniela 11.11.2026): metraż, miejscowość oraz opcjonalnie pokoje i piętro (chipy).
 // Czysta logika, bez React i bez I/O. Ramię testu A/B: 'a' = 2 pola (metraż + miejscowość), 'b' = 4 pola (+ pokoje, piętro).
-// Pokoje i piętro zawężają WYŁĄCZNIE kafel ofertowy (karta rynku), nie wycenę z silnika i nie kafel transakcyjny.
+// Pokoje i piętro zawężają WYŁĄCZNIE kafel ofertowy (karta rynku); nie idą do silnika wyceny ani nie zawężają kafla transakcyjnego (liczony wg metrażu).
 
 export type RoomsChoice = '1' | '2' | '3' | '4_plus' | 'unknown'
 export type FloorChoice = 'parter' | '1_3' | '4_plus' | 'unknown'
@@ -16,11 +16,6 @@ export const FLOOR_CHOICES: readonly { value: FloorChoice; label: string }[] = [
 /** Wartość startowa obu pól: „Nie wiem” (nie blokuje i nie zawęża). */
 export const DEFAULT_ROOMS: RoomsChoice = 'unknown'
 export const DEFAULT_FLOOR: FloorChoice = 'unknown'
-
-/** Pole `rooms` dla silnika wyceny (/estimate): liczba całkowita albo pusty tekst. „4+” = 4, „Nie wiem” = brak. Piętro do /estimate NIE jest wysyłane (grupa nie ma jednej wartości). */
-export function roomsForEstimate(c: RoomsChoice): string {
-  return c === '1' || c === '2' || c === '3' ? c : c === '4_plus' ? '4' : ''
-}
 
 /** Filtry dla karty rynku (POST /api/public/valuation/market-card); „Nie wiem” = brak pola, backend nie zawęża. */
 export type CardV4Filters = { rooms?: '1' | '2' | '3' | '4_plus'; floor_group?: 'parter' | '1_3' | '4_plus' }

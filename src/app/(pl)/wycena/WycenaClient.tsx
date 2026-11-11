@@ -12,7 +12,7 @@ import MarketCard from './MarketCard'
 import { showAiEstimate } from '@/lib/wycenaAiVisibility'
 import { PHONE_BLOCK_TEXTS } from './phoneBlockTexts'
 import { PHONE_BLOCK_ON, WYCENA_LAYOUT_V4_ACTIVE, WYCENA_META_TRACKING_ON, WYCENA_RESULT_V2_MODE, WYCENA_RESULT_V2_ELIGIBLE, WYCENA_SCREEN1_V4_ELIGIBLE, WYCENA_SCREEN1_V4_MODE } from '@/lib/wycenaFlags'
-import { DEFAULT_FLOOR, DEFAULT_ROOMS, FLOOR_CHOICES, ROOMS_CHOICES, cardFilters, pickScreen1Arm, roomsForEstimate, screen1Variant, type FloorChoice, type RoomsChoice, type Screen1Arm } from '@/lib/wycenaScreen1V4'
+import { DEFAULT_FLOOR, DEFAULT_ROOMS, FLOOR_CHOICES, ROOMS_CHOICES, cardFilters, pickScreen1Arm, screen1Variant, type FloorChoice, type RoomsChoice, type Screen1Arm } from '@/lib/wycenaScreen1V4'
 import type { MarketCardFilters } from '@/lib/marketCard'
 import { WYCENA_SCREEN1_V4_TEXTS as S1 } from './wycenaScreen1V4Texts'
 import WycenaMetaPixel, { trackWycenaMetaLead } from '@/components/WycenaMetaPixel'
@@ -178,8 +178,8 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
     // Minimalny czas od zaladowania strony (odsiew najprostszych botow). Tylko front, ta sama odpowiedz co przy zwyklym bledzie.
     if (submittedTooFast(loadedAt.current, Date.now())) { setTooFast(true); return }
     setTooFast(false)
-    // ekran 1 v4: tylko mieszkania; pokoje z chipow (piętro nie idzie do silnika, tylko do karty rynku); dzielnica opcjonalna (przenosi sie do "Zawez wynik").
-    const sendValues: FormValues = s1Active ? { ...values, property_type: 'mieszkanie', district: values.district, rooms: roomsForEstimate(s1Arm === 'b' ? roomsChoice : DEFAULT_ROOMS), floor: '' } : values
+    // ekran 1 v4: tylko mieszkania; pokoje i pietro (chipy) NIE ida do silnika wyceny (zawezaja tylko ceny ofertowe w karcie rynku; kafel transakcji liczony wg metrazu, bez pokoi); dzielnica opcjonalna (przenosi sie do "Zawez wynik").
+    const sendValues: FormValues = s1Active ? { ...values, property_type: 'mieszkanie', district: values.district, rooms: '', floor: '' } : values
     const errs = validateForm(sendValues)
     if (s1Active) delete errs.district
     setErrors(errs)

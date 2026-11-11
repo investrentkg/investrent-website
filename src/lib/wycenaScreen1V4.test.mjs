@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
-import { ROOMS_CHOICES, FLOOR_CHOICES, roomsForEstimate, cardFilters, hasCardFilters, pickScreen1Arm, screen1Variant, DEFAULT_ROOMS, DEFAULT_FLOOR } from './wycenaScreen1V4.ts'
+import { ROOMS_CHOICES, FLOOR_CHOICES, cardFilters, hasCardFilters, pickScreen1Arm, screen1Variant, DEFAULT_ROOMS, DEFAULT_FLOOR } from './wycenaScreen1V4.ts'
 import { WYCENA_SCREEN1_V4_TEXTS as S1 } from '../app/(pl)/wycena/wycenaScreen1V4Texts.ts'
 import { fetchMarketCard } from './marketCard.ts'
 
@@ -10,11 +10,6 @@ test('opcje chipów zgodne z makietą E1i', () => {
   assert.deepEqual(ROOMS_CHOICES.map(o => o.label), ['1', '2', '3', '4+', 'Nie wiem'])
   assert.deepEqual(FLOOR_CHOICES.map(o => o.label), ['Parter', '1–3', '4+', 'Nie wiem'])
   assert.equal(DEFAULT_ROOMS, 'unknown'); assert.equal(DEFAULT_FLOOR, 'unknown')
-})
-
-test('pokoje dla silnika wyceny: 1/2/3 → liczba, 4+ → 4, Nie wiem → pusto', () => {
-  assert.equal(roomsForEstimate('1'), '1'); assert.equal(roomsForEstimate('3'), '3')
-  assert.equal(roomsForEstimate('4_plus'), '4'); assert.equal(roomsForEstimate('unknown'), '')
 })
 
 test('filtry karty: „Nie wiem” nie zawęża; wybór przekazuje rooms i floor_group', () => {
@@ -56,7 +51,7 @@ test('fetchMarketCard: filtry trafiają do body tylko gdy ustawione (bez zmiany 
 test('WycenaClient: ekran 1 v4 tylko za flagą i aktywnym układem v4; piętro nie idzie do silnika; dzielnica opcjonalna', async () => {
   const src = await readFile(new URL('../app/(pl)/wycena/WycenaClient.tsx', import.meta.url), 'utf8')
   assert.match(src, /WYCENA_SCREEN1_V4_ELIGIBLE/)
-  assert.match(src, /floor: ''/) // piętro (grupa) nie jest wysyłane do /estimate
+  assert.match(src, /rooms: '', floor: ''/) // pokoje i piętro (chipy) nie idą do /estimate: kafel transakcji liczony wg metrażu
   assert.match(src, /delete errs\.district/)
   const flags = await readFile(new URL('./wycenaFlags.ts', import.meta.url), 'utf8')
   assert.match(flags, /WYCENA_SCREEN1_V4_ELIGIBLE: boolean = WYCENA_SCREEN1_V4_MODE !== 'off' && WYCENA_LAYOUT_V4_ACTIVE/)
