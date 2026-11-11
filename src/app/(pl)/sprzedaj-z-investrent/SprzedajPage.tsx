@@ -167,6 +167,7 @@ export default function SprzedajPage() {
           <section className={`${s.sec} ${s.trustc}`}>
             <h2>Dlaczego InvestRent</h2>
             <div className={s.rate}><i aria-hidden="true">★★★★★</i> {RATING} w Google · {REVIEWS} opinii</div>
+            <p>Ponad 150 zrealizowanych transakcji w historii biura.</p>
             <p>{pin}<span>Biuro w Kołobrzegu: ul. Ratuszowa 12/1 lok.&nbsp;3, <span style={{ whiteSpace: "nowrap" }}>78-100 Kołobrzeg</span>.</span></p>
           </section>
         </div>
