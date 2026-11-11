@@ -24,7 +24,7 @@ const FALLBACK_OFFICE = { name: 'InvestRent Nieruchomości', logo_url: '/logo.pn
 
 const STEPS = [
   { n: '01', title: 'Powiedz nam czego szukasz', desc: 'Zadzwoń lub napisz. Określ budżet, lokalizację i wymagania.' },
-  { n: '02', title: 'Prezentujemy dopasowane oferty', desc: 'W ciągu 24h przygotujemy listę nieruchomości idealnie pasujących do Twoich potrzeb.' },
+  { n: '02', title: 'Prezentujemy dopasowane oferty', desc: 'W ciągu 24h przygotujemy listę nieruchomości dopasowanych do Twoich kryteriów.' },
   { n: '03', title: 'Oglądamy i negocjujemy', desc: 'Organizujemy wizyty, pomagamy w negocjacjach. Reprezentujemy Twoje interesy.' },
   { n: '04', title: 'Bezpieczna finalizacja', desc: 'Sprawdzamy stan prawny, towarzyszymy u notariusza. Klucze w Twoich rękach.' },
 ]
