@@ -143,6 +143,7 @@ export default async function SprzedazPage() {
                     '150+ transakcji w Kołobrzegu i okolicach',
                     'Ekspozycja na głównych portalach i nie tylko',
                     'Fotografik, wirtualny spacer 360°, home staging',
+                    'Pomagamy Ci przy umowach: często przygotowujemy umowę przedwstępną, organizujemy dokumenty i sprawdzamy, czy jest ich komplet.',
                     'Obsługa po-sprzedażowa — dokumentacja, przepisanie',
                   ].map(w => (
                     <div key={w} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
