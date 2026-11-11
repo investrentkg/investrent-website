@@ -118,7 +118,7 @@ export default async function ONasPage() {
                   {cms.mission_text || 'InvestRent Nieruchomości powstało z pasji do lokalnego rynku nadmorskiego i przekonania, że klienci zasługują na więcej niż standardową obsługę agencyjną. Specjalizujemy się w Kołobrzegu i całym Wybrzeżu Bałtyckim.'}
                 </p>
                 <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 12 }}>
-                  {['150+ transakcji w Kołobrzegu i okolicach','Zwykle od miesiąca do dwóch do sprzedaży (z doświadczenia biura)','Pełna obsługa prawna i notarialna w cenie','Ekspozycja na głównych portalach i nie tylko',...(rating ? [`Ocena klientów: ${rating.rating}/5 na podstawie ${rating.total} opinii`] : [])].map(w => (
+                  {['150+ transakcji w Kołobrzegu i okolicach','Ekspozycja na głównych portalach i nie tylko',...(rating ? [`Ocena klientów: ${rating.rating}/5 na podstawie ${rating.total} opinii`] : [])].map(w => (
                     <div key={w} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
                       <CheckCircle size={16} color="#10b981" style={{ flexShrink: 0, marginTop: 2 }} />
                       <span style={{ fontSize: 14, color: '#374151' }}>{w}</span>
