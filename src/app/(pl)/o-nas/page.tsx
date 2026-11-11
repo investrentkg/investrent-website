@@ -34,7 +34,7 @@ export const metadata: Metadata = {
 const FALLBACK_OFFICE = { name: 'InvestRent Nieruchomości', logo_url: '/logo.png', address: 'ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg', phone: '+48 731 554 341', email: 'biuro@investrent.com.pl', website: null, working_hours: null }
 
 const VALUES = [
-  { icon: Shield,     title: 'Bezpieczeństwo', desc: 'Każda transakcja przeprowadzana jest z pełną weryfikacją prawną. Zero niespodzianek.' },
+  { icon: Shield,     title: 'Przejrzysty proces', desc: 'Organizujemy i sprawdzamy komplet dokumentów nieruchomości. Na bieżąco mówimy Ci, na jakim jesteś etapie.' },
   { icon: Heart,      title: 'Zaangażowanie',  desc: 'Traktujemy każdego klienta indywidualnie. Nie znikamy po podpisaniu umowy.' },
   { icon: TrendingUp, title: 'Plan sprzedaży pod Twoją nieruchomość', desc: 'Czas sprzedaży zależy od nieruchomości, ceny i rynku. Pomagamy ustalić cenę i sposób pokazania oferty.' },
   { icon: Users,      title: 'Lokalność',      desc: 'Jesteśmy stąd. Znamy każdą ulicę, każdą lokalizację i każdą inwestycję.' },
