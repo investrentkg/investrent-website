@@ -35,6 +35,11 @@ interface OfferDetail {
   exclusivity: boolean
   no_rent_fee?: boolean
   admin_fee?: number | null
+  // Charakterystyka energetyczna: renderowana tylko gdy pole jest wypelnione (pola doda publiczne API w backendzie; do tego czasu brak wiersza).
+  energy_class?: string | null
+  energy_ep?: number | string | null
+  energy_ek?: number | string | null
+  energy_eu?: number | string | null
   status: string
   created_at: string
   video_url?: string | null
@@ -341,6 +346,7 @@ export default function OfferDetailClient({ offer }: { offer: OfferDetail }) {
   // sprawdzania czy dany typ nieruchomosci w ogole POWINIEN miec to pole
   // (np. jesli w bazie zostala domyslna/pozostawiona wartosc z szablonu).
   const isLand = offer.property_type === 'dzialka'
+  const energyFilled = (v: unknown) => v !== null && v !== undefined && String(v).trim() !== ''
   const details = [
     offer.area        && { label: 'Powierzchnia',   val: `${offer.area} m²` },
     !isLand && offer.rooms_count && { label: 'Liczba pokoi',   val: `${offer.rooms_count}` },
@@ -356,6 +362,11 @@ export default function OfferDetailClient({ offer }: { offer: OfferDetail }) {
     // nie uzyte (martwe pole) - teraz oba pokazane, wzajemnie sie wykluczajace.
     offer.no_rent_fee && { label: 'Czynsz', val: 'Bezczynszowe' },
     !offer.no_rent_fee && offer.admin_fee && { label: 'Czynsz administracyjny', val: `${offer.admin_fee.toLocaleString('pl-PL')} zł` },
+    // Dane z swiadectwa charakterystyki energetycznej: tylko gdy wypelnione (ustawa o charakterystyce energetycznej budynkow); bez wartosci domyslnych.
+    energyFilled(offer.energy_class) && { label: 'Klasa energetyczna', val: String(offer.energy_class).trim() },
+    energyFilled(offer.energy_ep) && { label: 'Wskaźnik EP', val: `${String(offer.energy_ep).trim()} kWh/(m²·rok)` },
+    energyFilled(offer.energy_ek) && { label: 'Wskaźnik EK', val: `${String(offer.energy_ek).trim()} kWh/(m²·rok)` },
+    energyFilled(offer.energy_eu) && { label: 'Wskaźnik EU', val: `${String(offer.energy_eu).trim()} kWh/(m²·rok)` },
     { label: 'Nr oferty', val: offer.ref_number },
   ].filter(Boolean) as Array<{ label: string; val: string }>
 
