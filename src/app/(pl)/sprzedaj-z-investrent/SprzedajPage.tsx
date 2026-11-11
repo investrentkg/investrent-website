@@ -13,9 +13,9 @@ const RATING = '4,9'
 const REVIEWS = 79
 // Godziny 8-20 pokazujemy dopiero po tescie przekierowania po 16:00 i w sob/niedz (warunek Prawnika); do tego czasu flaga OFF.
 const SHOW_HOURS = process.env.NEXT_PUBLIC_ADS_HOURS_8_20 === 'on'
-// Zrodlo leada: backend (routes/public.ts) mapuje nieznane wartosci na 'website'; dopoki 'ads_sprzedaj' nie trafi do webSources
-// i CHECK clients_source_check, rozpoznawalnosc kanalu daje znacznik w notatce.
-const SOURCE = 'Google Ads / strona sprzedaj-z-investrent'
+// Zrodlo leada: kod 'ads_sprzedaj' (Bezp, PR #2460). Do czasu migracji CHECK i flagi ADS_SPRZEDAJ_SOURCE_ENABLED backend
+// bezpiecznie zapisuje 'website'; rozpoznawalnosc kanalu daje wtedy znacznik w notatce (zostaje).
+const SOURCE = 'ads_sprzedaj'
 const NOTES_MARKER = 'Kanał: Google Ads, strona /sprzedaj-z-investrent (prośba o telefon)'
 const ERR_PHONE = 'Podaj 9 cyfr numeru albo zadzwoń do nas.'
 
