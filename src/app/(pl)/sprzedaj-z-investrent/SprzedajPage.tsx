@@ -167,7 +167,7 @@ export default function SprzedajPage() {
           <section className={`${s.sec} ${s.trustc}`}>
             <h2>Dlaczego InvestRent</h2>
             <div className={s.rate}><i aria-hidden="true">★★★★★</i> {RATING} w Google · {REVIEWS} opinii</div>
-            <p>{pin}<span>Biuro w Kołobrzegu: ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg.</span></p>
+            <p>{pin}<span>Biuro w Kołobrzegu: ul. Ratuszowa 12/1 lok.&nbsp;3, <span style={{ whiteSpace: "nowrap" }}>78-100 Kołobrzeg</span>.</span></p>
           </section>
         </div>
 
@@ -184,7 +184,7 @@ export default function SprzedajPage() {
       </main>
 
       <footer className={s.foot}>
-        Investrent sp. z o.o., ul. Ratuszowa 12/1 lok. 3, 78-100 Kołobrzeg · NIP 671 185 85 59 · KRS 0001069797 · biuro@investrent.com.pl<br />
+        Investrent sp. z o.o., ul. Ratuszowa 12/1 lok.&nbsp;3, <span style={{ whiteSpace: "nowrap" }}>78-100 Kołobrzeg</span> · NIP 671 185 85 59 · KRS 0001069797 · biuro@investrent.com.pl<br />
         <a href="/rodo" target="_blank" rel="noopener noreferrer">Polityka prywatności</a> · <a href="#" onClick={e => { e.preventDefault(); window.dispatchEvent(new Event(CONSENT_OPEN_EVENT)) }}>Ustawienia prywatności</a>
       </footer>
 
