@@ -2,7 +2,7 @@
 import { useEffect } from 'react'
 import {
   CARD_CONDITIONS, CONDITION_LABELS, fmtAsOfDate, fmtPpm, fmtRange, isSmallTransactionSample,
-  type CardCondition, type OffersView, type TransactionsView,
+  type CardCondition, type MarketCardFilters, type OffersView, type TransactionsView,
 } from '@/lib/marketCard'
 import { useMarketCard } from '@/lib/useMarketCard'
 import { summarizeMarketCardV4 } from '@/lib/marketCardV4'
@@ -164,8 +164,8 @@ function V2MarketCard({ view, areaM2, condition, setCondition, busy }: { view: N
   )
 }
 
-export default function MarketCard({ token, areaM2 = null, onKind, v2 = false }: { token: string | null; areaM2?: number | null; onKind?: (kind: 'card' | 'nodata' | 'none' | null) => void; v2?: boolean }) {
-  const { view, condition, setCondition, busy } = useMarketCard(token)
+export default function MarketCard({ token, areaM2 = null, onKind, v2 = false, filters }: { token: string | null; areaM2?: number | null; onKind?: (kind: 'card' | 'nodata' | 'none' | null) => void; v2?: boolean; filters?: MarketCardFilters }) {
+  const { view, condition, setCondition, busy } = useMarketCard(token, filters)
   const kind = view?.kind ?? null
   useEffect(() => { onKind?.(kind) }, [kind, onKind])
 

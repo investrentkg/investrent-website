@@ -1,10 +1,10 @@
 "use client"
 
 import { useEffect, useRef, useState } from 'react'
-import { fetchMarketCard, trackCardShown, type CardCondition, type MarketCardView } from './marketCard'
+import { fetchMarketCard, trackCardShown, type CardCondition, type MarketCardFilters, type MarketCardView } from './marketCard'
 
 /** Wspólny stan karty rynku; odrzuca odpowiedzi ze starszego wyszukiwania. */
-export function useMarketCard(token: string | null) {
+export function useMarketCard(token: string | null, filters?: MarketCardFilters) {
   const [view, setView] = useState<MarketCardView | null>(null)
   const [condition, setCondition] = useState<CardCondition | null>(null)
   const [busy, setBusy] = useState(false)
@@ -20,7 +20,7 @@ export function useMarketCard(token: string | null) {
     }
 
     setBusy(true)
-    void fetchMarketCard(token, condition).then(next => {
+    void fetchMarketCard(token, condition, filters ? { filters } : {}).then(next => {
       if (current !== sequence.current) return
       setView(next)
       setBusy(false)
@@ -31,7 +31,7 @@ export function useMarketCard(token: string | null) {
     })
 
     return () => { sequence.current += 1 }
-  }, [token, condition])
+  }, [token, condition, filters?.rooms, filters?.floor_group])
 
   return { view, condition, setCondition, busy }
 }
