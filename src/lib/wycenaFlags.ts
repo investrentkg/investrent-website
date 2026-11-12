@@ -32,3 +32,6 @@ export const WYCENA_SCREEN1_V4_ELIGIBLE: boolean = WYCENA_SCREEN1_V4_MODE !== 'o
 // Wynik v4f (makieta v4f, Daniel 11.11.2026): dwa kafle (transakcje, oferty), zawezanie, trend, szczegoly. Dziala tylko przy aktywnym ukladzie v4 i gdy backend zwroci pole v4 (PUBLIC_MARKET_CARD_V4_ENABLED); inaczej dotychczasowa karta.
 export const WYCENA_RESULT_V4F_FLAG: boolean = process.env.NEXT_PUBLIC_WYCENA_RESULT_V4F === 'on'
 export const WYCENA_RESULT_V4F_ELIGIBLE: boolean = WYCENA_RESULT_V4F_FLAG && WYCENA_LAYOUT_V4_ACTIVE
+
+/** Spojny modul zdarzen lejka (wycenaFunnelEvents.ts): Meta custom events WycenaStart/WycenaWynik (tylko po zgodzie Reklamowych, bez PII) + wariant A/B w custom_data Lead i parametrach GA4. OFF = zero zmian. */
+export const WYCENA_FUNNEL_EVENTS_V2: boolean = process.env.NEXT_PUBLIC_WYCENA_FUNNEL_EVENTS_V2 === 'on'

@@ -3,7 +3,8 @@ import { useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import { hasAdsConsent } from '@/lib/consentStore'
 import { onConsentChange } from '@/lib/consentStore'
-import { WYCENA_META_TRACKING_ON } from '@/lib/wycenaFlags'
+import { WYCENA_META_TRACKING_ON, WYCENA_FUNNEL_EVENTS_V2 } from '@/lib/wycenaFlags'
+import { metaVariantParams } from '@/lib/wycenaFunnelEvents'
 import { initPixelWithoutAutoMatching, pixelConsentAction, trackConsentedWycenaLead } from '@/lib/wycenaMetaPixel'
 
 declare global {
@@ -31,7 +32,7 @@ function loadPixel() {
 }
 
 /** capiSignal = pole meta_capi z odpowiedzi CRM (undefined = brak pola, dotychczasowe zachowanie); Lead tylko przy dispatched===true z tym samym event_id. */
-export function trackWycenaMetaLead(eventId: string | null | undefined, capiSignal?: unknown): void {
+export function trackWycenaMetaLead(eventId: string | null | undefined, capiSignal?: unknown, variant?: string): void {
   if (!WYCENA_META_TRACKING_ON || !PIXEL_ID || !hasAdsConsent() || typeof window === 'undefined' || !window.fbq || !eventId) return
   trackConsentedWycenaLead({
     enabled: WYCENA_META_TRACKING_ON,
@@ -39,8 +40,15 @@ export function trackWycenaMetaLead(eventId: string | null | undefined, capiSign
     pixelAvailable: true,
     eventId,
     capiSignal,
-    track: (event, options) => window.fbq?.('track', event, {}, options),
+    params: WYCENA_FUNNEL_EVENTS_V2 ? metaVariantParams(variant) : undefined,
+    track: (event, options, params) => window.fbq?.('track', event, params ?? {}, options),
   })
+}
+
+/** Custom event Meta etapu lejka (WycenaStart / WycenaWynik) wg planu z wycenaFunnelEvents.ts. Flaga FUNNEL_EVENTS_V2 + flaga Pixela + zgoda Reklamowe; bez eventID i bez danych osobowych. */
+export function trackWycenaMetaCustom(name: string, params: Record<string, string>): void {
+  if (!WYCENA_FUNNEL_EVENTS_V2 || !WYCENA_META_TRACKING_ON || !PIXEL_ID || !hasAdsConsent() || typeof window === 'undefined' || !window.fbq) return
+  try { window.fbq('trackCustom', name, params) } catch { /* pomiar nigdy nie psuje formularza */ }
 }
 
 export default function WycenaMetaPixel() {

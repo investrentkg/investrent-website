@@ -1,4 +1,4 @@
-export type PixelTrack = (event: 'Lead', options: { eventID: string }) => void
+export type PixelTrack = (event: 'Lead', options: { eventID: string }, params?: Record<string, string>) => void
 
 export type WycenaMetaTracking = {
   event_id: string
@@ -8,6 +8,8 @@ export type WycenaMetaTracking = {
   fbp?: string
   fbclid?: string
   utm?: Record<string, string>
+  /** Wariant A/B lejka (np. ekran1_4pola.wynik_v2), tylko gdy flaga WYCENA_FUNNEL_EVENTS_V2; serwer przepisuje do custom_data Lead CAPI. Bez PII. */
+  variant?: string
 }
 
 const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'] as const
@@ -37,6 +39,7 @@ export function buildWycenaMetaTracking(input: {
   readCookie: () => string
   search: string
   attribution?: Record<string, unknown> | null
+  variant?: string | null
 }): WycenaMetaTracking | undefined {
   if (!input.enabled || !input.marketingConsent || !input.eventId || !/^[A-Za-z0-9_-]{16,128}$/.test(input.eventId) || !isPlausibleReceipt(input.consentReceipt)) return undefined
   let cookie = ''
@@ -56,6 +59,7 @@ export function buildWycenaMetaTracking(input: {
     if (typeof value === 'string' && value.trim()) utm[key] = value.trim().slice(0, 100)
   }
   if (Object.keys(utm).length) out.utm = utm
+  if (typeof input.variant === 'string' && /^[a-z0-9_.-]{1,32}$/.test(input.variant)) out.variant = input.variant
   return out
 }
 
@@ -82,10 +86,16 @@ export function trackConsentedWycenaLead(input: {
   track: PixelTrack
   /** Pole meta_capi z odpowiedzi CRM (patrz shouldFireBrowserLead); undefined = brak pola. */
   capiSignal?: unknown
+  /** custom_data Leada (tylko wariant A/B z wycenaFunnelEvents.ts, flaga FUNNEL_EVENTS_V2); brak = dotychczasowe wywolanie. */
+  params?: Record<string, string>
 }): boolean {
   if (!input.enabled || !input.marketingConsent || !input.pixelAvailable || !/^[A-Za-z0-9_-]{16,128}$/.test(input.eventId)) return false
   if (!shouldFireBrowserLead(input.eventId, input.capiSignal)) return false
-  try { input.track('Lead', { eventID: input.eventId }); return true } catch { return false }
+  try {
+    if (input.params && Object.keys(input.params).length) input.track('Lead', { eventID: input.eventId }, input.params)
+    else input.track('Lead', { eventID: input.eventId })
+    return true
+  } catch { return false }
 }
 
 /** Paragon wazny 2 h po stronie serwera; odnawiamy po 90 min, zeby nie wyslac przeterminowanego. */

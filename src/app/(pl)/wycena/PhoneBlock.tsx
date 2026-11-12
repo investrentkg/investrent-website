@@ -8,7 +8,7 @@ import {
   type EstimateOutcome, type FormValues,
 } from '@/lib/valuation'
 import { sendPhoneRequest } from '@/lib/phoneBlockSubmit'
-import { CALLBACK_ON, MARKET_CARD_ACTIVE, WYCENA_LAYOUT_V4_ACTIVE, WYCENA_META_TRACKING_ON } from '@/lib/wycenaFlags'
+import { CALLBACK_ON, MARKET_CARD_ACTIVE, WYCENA_FUNNEL_EVENTS_V2, WYCENA_LAYOUT_V4_ACTIVE, WYCENA_META_TRACKING_ON } from '@/lib/wycenaFlags'
 import { CONSENT_TEXT, CONSENT_VERSION } from '@/lib/wycenaConsentText'
 import { CONTACT_WINDOWS, CONTACT_WINDOW_LABELS, type ContactWindow } from '@/lib/marketCard'
 import { T } from './texts'
@@ -34,7 +34,7 @@ const iab = () => (typeof navigator === 'undefined' ? 'other' : inAppBrowserClas
 const hintStyle: React.CSSProperties = { fontSize: 13, color: '#475569', marginTop: 4 }
 const errStyle: React.CSSProperties = { fontSize: 13, color: '#b91c1c', marginTop: 4, fontWeight: 600 }
 
-export default function PhoneBlock({ outcome, values, onDone }: { outcome: EstimateOutcome; values: FormValues; onDone?: () => void }) {
+export default function PhoneBlock({ outcome, values, onDone, funnelVariant }: { outcome: EstimateOutcome; values: FormValues; onDone?: () => void; funnelVariant?: string }) {
   const [phone, setPhone] = useState('')
   const [errs, setErrs] = useState<{ phone?: string; consent?: string }>({})
   // flaga NEXT_PUBLIC_WYCENA_MARKET_CARD (aktywna tylko z gotowym tekstem zgody): karta rynku + okno kontaktu + checkbox zgody
@@ -91,6 +91,7 @@ export default function PhoneBlock({ outcome, values, onDone }: { outcome: Estim
         readCookie: () => document.cookie,
         search: window.location.search,
         attribution: attribution as Record<string, unknown> | null,
+        variant: WYCENA_FUNNEL_EVENTS_V2 ? funnelVariant : undefined,
       })
       const r = await sendPhoneRequest(
         { phone, valuationToken: token, consentVersion: mc ? CONSENT_VERSION : PHONE_BLOCK_CONSENT_VERSION, values, outcome, utm, turnstileToken: tsToken, honeypot: hp, contactWindow: mc && win ? win : null, metaTracking },
@@ -102,7 +103,7 @@ export default function PhoneBlock({ outcome, values, onDone }: { outcome: Estim
           },
         },
       )
-      if (r.ok) { setState('ok'); trackValuation('wycena_lead', { mode, placement: 'phone_block', via: r.via }); trackWycenaMetaLead(metaTracking?.event_id, r.metaCapi) }
+      if (r.ok) { setState('ok'); trackValuation('wycena_lead', { mode, placement: 'phone_block', via: r.via }); trackWycenaMetaLead(metaTracking?.event_id, r.metaCapi, funnelVariant) }
       else { setState('fail'); trackValuation('wycena_lead_submit_failed', { reason: r.reason, status: '', iab: iab(), placement: 'phone_block' }) }
     } catch {
       setState('fail')
