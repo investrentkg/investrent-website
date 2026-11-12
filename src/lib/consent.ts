@@ -34,12 +34,20 @@ export interface ConsentState {
 /** Czy kategoria Reklamowe (Pixel/CAPI) jest już wdrożona i wybieralna. FALSE = przełącznik w panelu nieaktywny, zgoda `ads` nigdy nie jest zapisywana jako true. */
 export const ADS_AVAILABLE: boolean = process.env.NEXT_PUBLIC_META_PIXEL_ENABLED === 'on'
 
+/**
+ * Consent Mode v2 dla Google Ads (12.11.2026, pomiar kampanii): FLAGA NEXT_PUBLIC_GOOGLE_ADS_CONSENT. OFF (domyslnie) = zachowanie bez zmian: ad_* zawsze 'denied'.
+ * ON = po zgodzie kategorii Reklamowe (ads) ad_storage/ad_user_data/ad_personalization = 'granted' i zgoda `ads` moze byc true.
+ * NIE WLACZAC przed: werdyktem Prawnika (czy Reklamowe obejmuje Google Ads), nowymi tekstami banera/tabeli cookies/polityki PL+DE (dzis opis Reklamowe = Meta),
+ * decyzja Daniela i przegladem DE (Ernest). Panel (ConsentManager) pozostaje oparty o ADS_AVAILABLE do osobnego PR-a z tekstami.
+ */
+export const GOOGLE_ADS_CONSENT_ENABLED: boolean = process.env.NEXT_PUBLIC_GOOGLE_ADS_CONSENT === 'on'
+
 export type ConsentChoice = { analytics: boolean; attribution: boolean; ads: boolean }
 export const REJECT_ALL: ConsentChoice = { analytics: false, attribution: false, ads: false }
 export const ACCEPT_ALL: ConsentChoice = { analytics: true, attribution: true, ads: true }
 
 export function makeConsent(choice: ConsentChoice, now: number = Date.now()): ConsentState {
-  return { v: CONSENT_VERSION, analytics: !!choice.analytics, attribution: !!choice.attribution, ads: ADS_AVAILABLE && !!choice.ads, ts: now }
+  return { v: CONSENT_VERSION, analytics: !!choice.analytics, attribution: !!choice.attribution, ads: (ADS_AVAILABLE || GOOGLE_ADS_CONSENT_ENABLED) && !!choice.ads, ts: now }
 }
 
 /**
@@ -78,9 +86,10 @@ export function writeStoredConsent(storage: StorageLike | null | undefined, stat
 
 /** Argumenty `gtag('consent', 'update', ...)` (Consent Mode v2) dla danego stanu; null stan = wszystko odmowa. */
 export function googleConsentArgs(s: ConsentState | null): Record<'analytics_storage' | 'ad_storage' | 'ad_user_data' | 'ad_personalization', 'granted' | 'denied'> {
-  // Google Analytics to wyłącznie analityka; reklamowe sygnały Google (ad_*) nie są używane - zawsze odmowa
-  // (zgody attribution i ads dotyczą atrybucji UTM i Meta, nie Google Ads).
-  return { analytics_storage: s?.analytics ? 'granted' : 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' }
+  // Flaga GOOGLE_ADS_CONSENT_ENABLED OFF: GA4 to wyłącznie analityka, sygnały reklamowe Google (ad_*) zawsze odmowa.
+  // ON: ad_* = granted tylko przy zgodzie Reklamowe (s.ads); analityka niezależnie od niej.
+  const ad = GOOGLE_ADS_CONSENT_ENABLED && !!s?.ads ? 'granted' : 'denied'
+  return { analytics_storage: s?.analytics ? 'granted' : 'denied', ad_storage: ad, ad_user_data: ad, ad_personalization: ad }
 }
 
 /** Nazwy cookies Google Analytics do usunięcia po wycofaniu zgody na analitykę (`_ga`, `_ga_<ID>`, `_gid`, `_gat*`). */

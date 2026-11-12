@@ -208,3 +208,20 @@ test('Meta: przy fladze OFF (domyslnie) ADS_AVAILABLE=false, ads nigdy true, wyc
   assert.equal(r.next.ads, false)
   assert.equal(r.clearMeta, false)
 })
+test('Google Ads Consent Mode za flaga NEXT_PUBLIC_GOOGLE_ADS_CONSENT: OFF = ad_* zawsze denied; ON = granted tylko przy zgodzie Reklamowe', async () => {
+  assert.equal(googleConsentArgs(makeConsent(ACCEPT_ALL, NOW)).ad_storage, 'denied')
+  const prev = process.env.NEXT_PUBLIC_GOOGLE_ADS_CONSENT
+  process.env.NEXT_PUBLIC_GOOGLE_ADS_CONSENT = 'on'
+  try {
+    const on = await import('./consent.ts?gads-on')
+    assert.equal(on.GOOGLE_ADS_CONSENT_ENABLED, true)
+    const all = on.googleConsentArgs(on.makeConsent(on.ACCEPT_ALL, NOW))
+    assert.deepEqual(all, { analytics_storage: 'granted', ad_storage: 'granted', ad_user_data: 'granted', ad_personalization: 'granted' })
+    const noAds = on.googleConsentArgs(on.makeConsent({ analytics: true, attribution: true, ads: false }, NOW))
+    assert.deepEqual([noAds.analytics_storage, noAds.ad_storage, noAds.ad_user_data, noAds.ad_personalization], ['granted', 'denied', 'denied', 'denied'])
+    assert.equal(on.googleConsentArgs(null).ad_storage, 'denied')
+    assert.equal(on.googleConsentArgs(on.makeConsent({ analytics: false, attribution: false, ads: true }, NOW)).analytics_storage, 'denied')
+  } finally {
+    if (prev === undefined) delete process.env.NEXT_PUBLIC_GOOGLE_ADS_CONSENT; else process.env.NEXT_PUBLIC_GOOGLE_ADS_CONSENT = prev
+  }
+})
