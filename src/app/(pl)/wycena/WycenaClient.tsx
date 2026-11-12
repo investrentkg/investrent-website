@@ -17,7 +17,7 @@ import { DEFAULT_FLOOR, DEFAULT_ROOMS, FLOOR_CHOICES, ROOMS_CHOICES, cardFilters
 import type { MarketCardFilters } from '@/lib/marketCard'
 import { WYCENA_SCREEN1_V4_TEXTS as S1 } from './wycenaScreen1V4Texts'
 import WycenaMetaPixel, { trackWycenaMetaLead, trackWycenaMetaCustom } from '@/components/WycenaMetaPixel'
-import { hasAdsConsent } from '@/lib/consentStore'
+import { hasAdsConsent, onConsentChange } from '@/lib/consentStore'
 import { buildWycenaMetaTracking } from '@/lib/wycenaMetaPixel'
 import { useMetaConsentReceipt } from './useMetaConsentReceipt'
 import { sendFunnelStep } from '@/lib/funnel'
@@ -111,7 +111,17 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
     const plan = planFunnelEvent(stage, { enabled: WYCENA_FUNNEL_EVENTS_V2, adsConsent: hasAdsConsent(), variant: funnelVariant.variant, resultKind })
     sendFunnelStep(plan.funnel.step, plan.funnel.variant ? { variant: plan.funnel.variant } : {})
     if (plan.meta && plan.meta.method === 'trackCustom') trackWycenaMetaCustom(plan.meta.name, plan.meta.params)
+    // start przed zgoda Reklamowych (baner zwykle akceptowany PO wpisaniu metrazu): zapamietujemy i wysylamy raz, dopiero gdy zgoda przyjdzie w tej samej wizycie
+    else if (stage === 'start' && WYCENA_FUNNEL_EVENTS_V2 && !hasAdsConsent()) pendingStartMeta.current = { ...metaVariantParams(funnelVariant.variant) } as Record<string, string>
   }
+  const pendingStartMeta = useRef<Record<string, string> | null>(null)
+  useEffect(() => onConsentChange((_a, _m, ads) => {
+    if (!ads || !pendingStartMeta.current) return
+    const params = pendingStartMeta.current
+    pendingStartMeta.current = null
+    // krotkie opoznienie: WycenaMetaPixel (ten sam sygnal zgody) musi najpierw zaladowac Pixela
+    setTimeout(() => trackWycenaMetaCustom('WycenaStart', params), 300)
+  }), [])
   const ga4Variant: Record<string, string> = WYCENA_FUNNEL_EVENTS_V2 ? metaVariantParams(funnelVariant.variant) : {}
   const showSticky = !v2Active && available && cardKind !== 'v4f' && phase === 'after' && !!outcome && armed && !leadInView && !ctaInView && !leadDone
 
