@@ -46,6 +46,9 @@ test('odpowiedz: no_numbers, 429, 503, 400, smieci', () => {
   const rl = interpretResponse(429, { ok: false, error: 'rate_limited', retry_after_seconds: 3600 })
   assert.equal(rl.kind, 'rate_limited'); assert.equal(rl.retryAfterSeconds, 3600)
   assert.equal(interpretResponse(503, { ok: false, error: 'disabled' }).kind, 'disabled')
+  const un = interpretResponse(503, { ok: false, error: 'unavailable' })
+  assert.equal(un.kind, 'error'); assert.equal(un.reason, 'unavailable')
+  assert.equal(interpretResponse(503, null).reason, 'unavailable')
   assert.equal(interpretResponse(400, { error: 'bad' }).kind, 'invalid')
   assert.equal(interpretResponse(200, { ok: true, mode: 'cos' }).kind, 'error')
   assert.equal(interpretResponse(500, {}).kind, 'error')
@@ -53,9 +56,23 @@ test('odpowiedz: no_numbers, 429, 503, 400, smieci', () => {
 test('requestEstimate: siec, HTML 502, 503 bez JSON, sukces', async () => {
   assert.equal((await requestEstimate('http://x', buildPayload(ok), { fetchImpl: async () => { throw new TypeError('x') } })).reason, 'network')
   assert.equal((await requestEstimate('http://x', buildPayload(ok), { fetchImpl: async () => new Response('<html>', { status: 502 }) })).reason, 'http')
-  assert.equal((await requestEstimate('http://x', buildPayload(ok), { fetchImpl: async () => new Response('', { status: 503 }) })).kind, 'disabled')
+  assert.equal((await requestEstimate('http://x', buildPayload(ok), { retryDelayMs: 1, fetchImpl: async () => new Response('', { status: 503 }) })).reason, 'unavailable')
+  assert.equal((await requestEstimate('http://x', buildPayload(ok), { fetchImpl: async () => new Response(JSON.stringify({ ok: false, error: 'disabled' }), { status: 503 }) })).kind, 'disabled')
   const r = await requestEstimate('http://x', buildPayload(ok), { fetchImpl: json({ ok: true, mode: 'no_numbers' }) })
   assert.equal(r.kind, 'no_numbers')
+})
+test('requestEstimate: 503 niedostepne -> jedno ponowienie, potem sukces; disabled bez ponowienia', async () => {
+  let calls = 0
+  const flaky = async () => (++calls === 1 ? new Response('', { status: 503 }) : new Response(JSON.stringify({ ok: true, mode: 'no_numbers' }), { status: 200 }))
+  const t0 = Date.now()
+  const r = await requestEstimate('http://x', buildPayload(ok), { fetchImpl: flaky, retryDelayMs: 30 })
+  assert.equal(r.kind, 'no_numbers'); assert.equal(calls, 2); assert.ok(Date.now() - t0 >= 25)
+  calls = 0
+  const off = async () => { calls++; return new Response(JSON.stringify({ ok: false, error: 'disabled' }), { status: 503 }) }
+  assert.equal((await requestEstimate('http://x', buildPayload(ok), { fetchImpl: off, retryDelayMs: 1 })).kind, 'disabled'); assert.equal(calls, 1)
+  calls = 0
+  const down = async () => { calls++; return new Response('', { status: 503 }) }
+  assert.equal((await requestEstimate('http://x', buildPayload(ok), { fetchImpl: down, retryDelayMs: 1 })).reason, 'unavailable'); assert.equal(calls, 2)
 })
 test('requestEstimate: timeout -> error timeout', async () => {
   const hang = (_u, init) => new Promise((_, rej) => init.signal.addEventListener('abort', () => rej(new Error('abort'))))

@@ -218,7 +218,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
     }
     if (res.kind === 'error' || res.kind === 'rate_limited') {
       trackValuation('wycena_estimate_error', { kind: res.kind, ...(res.kind === 'error' ? { reason: res.reason } : {}), iab: iabClass() })
-      sendFunnelStep('reject', { ...funnelVariant, reason: res.kind === 'rate_limited' ? 'rate_limited' : res.kind === 'error' ? res.reason : 'error' })
+      sendFunnelStep('reject', { ...funnelVariant, reason: res.kind === 'rate_limited' ? 'rate_limited' : res.kind === 'error' ? (res.reason === 'unavailable' ? 'http' : res.reason) : 'error' })
     }
     if (res.kind === 'disabled') { setAvailable(false); setOutcome(null); setPhase('form'); return }
     setSubmittedValues(sendValues)
