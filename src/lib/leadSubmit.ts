@@ -61,11 +61,20 @@ export async function postLead(
 // Zdarzenie GA4 po UDANYM wyslaniu leada. Wysylamy WYLACZNIE zrodlo formularza -
 // zadnych danych osobowych (telefon, imie, e-mail, tresc wiadomosci).
 // Gdy GA nie jest zaladowane (brak NEXT_PUBLIC_GA_MEASUREMENT_ID, adblock) - no-op.
-export function trackLeadSuccess(source: string | undefined): void {
+// event_id (12.11.2026, pomiar Google Ads): losowy identyfikator zdarzenia, niepowiazany z osoba (dedupe przy imporcie konwersji i zestawieniu z CRM).
+export function newEventId(): string {
+  try {
+    const c = (globalThis as { crypto?: { randomUUID?: () => string } }).crypto
+    if (c && typeof c.randomUUID === 'function') return c.randomUUID()
+  } catch { /* fallback nizej */ }
+  return `e${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}`
+}
+
+export function trackLeadSuccess(source: string | undefined, eventId: string = newEventId()): void {
   try {
     const w = typeof window !== 'undefined' ? (window as unknown as { gtag?: (...a: unknown[]) => void }) : undefined
     if (w && typeof w.gtag === 'function') {
-      w.gtag('event', 'generate_lead', { lead_source: source || 'unknown' })
+      w.gtag('event', 'generate_lead', { lead_source: source || 'unknown', event_id: eventId })
     }
   } catch {
     // analityka nigdy nie moze zepsuc formularza
