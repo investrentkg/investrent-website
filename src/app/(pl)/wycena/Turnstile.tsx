@@ -1,5 +1,6 @@
 "use client"
 import { useEffect, useRef } from 'react'
+import { turnstileErrorAction } from '@/lib/valuation'
 
 // Cloudflare Turnstile (tryb managed, appearance 'interaction-only': widget jest
 // niewidoczny, dopoki Cloudflare nie zazada interakcji). Skrypt ladowany DOPIERO
@@ -15,6 +16,8 @@ type TurnstileApi = {
   execute: (id?: string) => void
 }
 declare global { interface Window { turnstile?: TurnstileApi } }
+
+const TS_ERROR_RETRY_MS = 1500
 
 let scriptPromise: Promise<void> | null = null
 function loadScript(): Promise<void> {
@@ -34,16 +37,18 @@ function loadScript(): Promise<void> {
   return scriptPromise
 }
 
-export default function Turnstile({ siteKey, resetKey, onToken, onFail }: {
+export default function Turnstile({ siteKey, resetKey, onToken, onFail, onError }: {
   siteKey: string
   resetKey: number // zmiana wartosci = nowy token (token jest jednorazowy)
   onToken: (token: string | null) => void
   onFail: () => void
+  onError?: (attempt: number) => void // kazdy blad widgetu (numer proby), do pomiaru
 }) {
   const box = useRef<HTMLDivElement>(null)
   const widgetId = useRef<string | null>(null)
-  const cb = useRef({ onToken, onFail })
-  cb.current = { onToken, onFail }
+  const errorRetries = useRef(0)
+  const cb = useRef({ onToken, onFail, onError })
+  cb.current = { onToken, onFail, onError }
 
   useEffect(() => {
     let cancelled = false
@@ -66,10 +71,21 @@ export default function Turnstile({ siteKey, resetKey, onToken, onFail }: {
         // interakcja jest potrzebna, widget i tak pokaze sie od razu zamiast czekac w nieskonczonosc).
         execution: 'execute',
         language: 'pl',
-        callback: (t: string) => cb.current.onToken(t),
+        callback: (t: string) => { errorRetries.current = 0; cb.current.onToken(t) },
         'expired-callback': () => { cb.current.onToken(null); try { window.turnstile?.reset(widgetId.current ?? undefined); window.turnstile?.execute(widgetId.current ?? undefined) } catch { /* noop */ } },
         'timeout-callback': () => cb.current.onToken(null),
-        'error-callback': () => { cb.current.onToken(null); cb.current.onFail() },
+        // Blad widgetu (np. 300031 "crashed", czesty w przegladarkach wbudowanych/in-app) bywa przejsciowy: 2 ponowne proby reset+execute co 1,5 s,
+        // dopiero potem tryb "sam numer" (onFail). Dotad pierwszy blad od razu wylaczal kalkulator do konca wizyty.
+        'error-callback': () => {
+          cb.current.onToken(null)
+          cb.current.onError?.(errorRetries.current + 1)
+          if (turnstileErrorAction(errorRetries.current) === 'retry') {
+            errorRetries.current += 1
+            setTimeout(() => { try { if (widgetId.current) { window.turnstile?.reset(widgetId.current); window.turnstile?.execute(widgetId.current) } } catch { /* noop */ } }, TS_ERROR_RETRY_MS)
+            return
+          }
+          cb.current.onFail()
+        },
       })
       // v12: ukryte pole odpowiedzi (cf-turnstile-response) nie jest elementem interfejsu - poza drzewem dostepnosci; sam widzet (gdy wymaga interakcji) zostaje dostepny
       box.current.querySelectorAll('input[name="cf-turnstile-response"]').forEach(el => el.setAttribute('aria-hidden', 'true'))

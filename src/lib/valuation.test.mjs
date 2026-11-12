@@ -2,7 +2,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import {
-  validateForm, buildPayload, interpretResponse, requestEstimate, buildLeadNotes,
+  turnstileErrorAction, TS_ERROR_MAX_RETRIES, validateForm, buildPayload, interpretResponse, requestEstimate, buildLeadNotes,
   isValidPhone, readUtm, EMPTY_FORM, fieldApplies, isOutOfScope, submittedTooFast, buildConsentMarker, formatRetryAfter,  CONSENT_VERSION, NOTES_MAX,
 } from './valuation.ts'
 import { OTHER_CITY, OTHER_DISTRICT, canonicalCity, canonicalDistrict, INVESTRENT_CONFIG, CALCULATOR_CONFIG, isHomeCity, isRestrictedDistrict, fold } from './localities.ts'
@@ -73,6 +73,14 @@ test('requestEstimate: 503 niedostepne -> jedno ponowienie, potem sukces; disabl
   calls = 0
   const down = async () => { calls++; return new Response('', { status: 503 }) }
   assert.equal((await requestEstimate('http://x', buildPayload(ok), { fetchImpl: down, retryDelayMs: 1 })).reason, 'unavailable'); assert.equal(calls, 2)
+})
+test('Turnstile: blad widgetu = 2 ponowienia, potem tryb sam numer', () => {
+  assert.equal(turnstileErrorAction(0), 'retry')
+  assert.equal(turnstileErrorAction(1), 'retry')
+  assert.equal(turnstileErrorAction(2), 'fail')
+  assert.equal(turnstileErrorAction(5), 'fail')
+  assert.equal(turnstileErrorAction(0, 0), 'fail')
+  assert.equal(TS_ERROR_MAX_RETRIES, 2)
 })
 test('requestEstimate: timeout -> error timeout', async () => {
   const hang = (_u, init) => new Promise((_, rej) => init.signal.addEventListener('abort', () => rej(new Error('abort'))))
