@@ -70,10 +70,11 @@ test('nazwy cookies do usunięcia po wycofaniu zgody (GA: _ga, _ga_<ID>, _gid, _
   assert.deepEqual(metaCookieNames(undefined), [])
 })
 
-test('wersja zgody 3: zapisy ze starą wersją (v1, v2) = brak zgody, ponowne pytanie; domyślnie oba marketingowe wyłączone', () => {
-  assert.equal(CONSENT_VERSION, 3)
+test('wersja zgody 4: zapisy ze starą wersją (v1, v2) = brak zgody, ponowne pytanie; domyślnie oba marketingowe wyłączone', () => {
+  assert.equal(CONSENT_VERSION, 4)
   for (const old of [JSON.stringify({ v: 1, analytics: true, marketing: true, ts: NOW }), JSON.stringify({ v: 2, analytics: true, marketing: true, ts: NOW }),
-    JSON.stringify({ v: 2, analytics: true, attribution: true, ads: true, ts: NOW })]) {
+    JSON.stringify({ v: 2, analytics: true, attribution: true, ads: true, ts: NOW }),
+    JSON.stringify({ v: 3, analytics: true, attribution: true, ads: true, ts: NOW })]) {
     assert.equal(parseConsent(old, NOW + 1000), null)
     const s = readStoredConsent({ getItem: () => old, setItem() {} }, NOW + 1000)
     assert.equal(s, null)
@@ -92,7 +93,7 @@ test('rozłączność zgód: attribution (UTM) bez ads i odwrotnie; brak wyboru 
   assert.equal(attributionAllowed(adsOnly), false); assert.equal(adsAllowed(adsOnly), true)
   // parse zachowuje oba klucze niezależnie
   assert.deepEqual(parseConsent(serializeConsent(adsOnly), NOW + 1000), adsOnly)
-  assert.equal(parseConsent(JSON.stringify({ v: 3, analytics: true, attribution: true, ts: NOW }), NOW), null, 'brak klucza ads = nieprawidłowy zapis')
+  assert.equal(parseConsent(JSON.stringify({ v: 4, analytics: true, attribution: true, ts: NOW }), NOW), null, 'brak klucza ads = nieprawidłowy zapis')
 })
 test('wycofanie zgody marketingowej czyści ir_attr i cookies Meta tylko w trybie Pixel; ads pozostaje rozłączne', () => {
   assert.equal(ATTRIBUTION_SESSION_KEY, 'ir_attr')
@@ -127,8 +128,10 @@ test('język po ścieżce: /de i /de/... = niemiecki, reszta (także /dekoracje)
     assert.ok(c.necessary.alwaysActive)
     assert.ok(/reklam|Werbung/.test(c.intro), 'pierwsza warstwa informuje o pomiarze reklam')
     assert.ok(!/Meta|Pixel|CAPI/i.test(c.marketing.desc), 'opis Marketingowych (UTM, dane wewnętrzne) nie wspomina o Meta/Pixel')
-    assert.ok(/Meta/.test(c.ads.name) && /Meta/.test(c.ads.desc) && c.ads.badge, 'Reklamowe = Meta, z plakietką planowane')
-    assert.ok(!/(wykorzystujemy|nutzen wir|używamy Pixel)/i.test(c.ads.desc), 'ads.desc nie opisuje niewdrożonego Pixela jako faktu')
+    assert.ok(/Meta/.test(c.ads.desc) && /Google Ireland Limited/.test(c.ads.desc) && c.ads.badge, 'Reklamowe v4 = Meta i Google (warunkowo), z plakietką')
+    assert.ok(/Jeśli korzystamy|Sofern wir/.test(c.ads.desc), 'ads.desc warunkowy: nie opisuje niewdrożonego narzędzia jako faktu')
+    assert.equal(c.ads.desc, c.ads.liveDesc, 'v4: jeden tekst dla stanu aktywnego i planowanego')
+    assert.ok(!/(wykorzystujemy|używamy Pixel)/i.test(c.ads.desc), 'ads.desc nie opisuje niewdrożonego Pixela jako faktu')
   }
   assert.ok(CONSENT_COPY.pl.marketing.desc.startsWith('pozwalają nam mierzyć skuteczność kampanii reklamowych, np. zapisując, z jakiej kampanii przyszedł użytkownik'))
   assert.equal(CONSENT_COPY.pl.privacyHref, '/rodo')

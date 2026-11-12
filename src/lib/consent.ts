@@ -10,10 +10,11 @@
 
 export const CONSENT_STORAGE_KEY = 'ir_consent'
 /** Zwiększyć, gdy zmienia się zakres kategorii/dostawców - wymusza ponowne pytanie. */
-export const CONSENT_VERSION = 3
+export const CONSENT_VERSION = 4
 // v2 (09.10.2026): kategoria Marketingowe zawsze widoczna (zapis atrybucji UTM, website#42).
 // v3 (09.10.2026, doprecyzowanie Prawnika pkt c): rozdzielone zgody - `attribution` (UTM, dane tylko wewnętrzne) i `ads` (Meta Pixel/CAPI, odrębny administrator);
-// zapisy z v1/v2 = brak zgody, ponowne pytanie. Gdy powstanie Pixel/CAPI: ADS_AVAILABLE=true BEZ podbijania wersji (klucz `ads` jest już w zapisie).
+// zapisy z v1/v2 = brak zgody, ponowne pytanie.
+// v4 (11.11.2026, Prawnik TAK, decyzja Daniela): nowy, niski baner (trzy przyciski jednakowego stylu, krotka pierwsza warstwa) i zmiana opisu kategorii Reklamowe; wersja rosnie dla calego serwisu - ponowne pytanie. Gdy powstanie Pixel/CAPI: ADS_AVAILABLE=true BEZ podbijania wersji (klucz `ads` jest już w zapisie).
 /** Ponowne pytanie po 12 miesiącach (propozycja do opinii Prawnika). */
 export const CONSENT_MAX_AGE_MS = 365 * 24 * 60 * 60 * 1000
 /** Zdarzenie okna: otwiera ustawienia cookies (przycisk w stopce / w polityce). */
