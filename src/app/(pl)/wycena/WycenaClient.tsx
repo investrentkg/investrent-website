@@ -11,7 +11,10 @@ import PhoneBlock from './PhoneBlock'
 import MarketCard from './MarketCard'
 import { showAiEstimate } from '@/lib/wycenaAiVisibility'
 import { PHONE_BLOCK_TEXTS } from './phoneBlockTexts'
-import { PHONE_BLOCK_ON, WYCENA_LAYOUT_V4_ACTIVE, WYCENA_META_TRACKING_ON, WYCENA_RESULT_V2_MODE, WYCENA_RESULT_V2_ELIGIBLE } from '@/lib/wycenaFlags'
+import { PHONE_BLOCK_ON, WYCENA_LAYOUT_V4_ACTIVE, WYCENA_META_TRACKING_ON, WYCENA_RESULT_V2_MODE, WYCENA_RESULT_V2_ELIGIBLE, WYCENA_SCREEN1_V4_ELIGIBLE, WYCENA_SCREEN1_V4_MODE } from '@/lib/wycenaFlags'
+import { DEFAULT_FLOOR, DEFAULT_ROOMS, FLOOR_CHOICES, ROOMS_CHOICES, cardFilters, pickScreen1Arm, screen1Variant, type FloorChoice, type RoomsChoice, type Screen1Arm } from '@/lib/wycenaScreen1V4'
+import type { MarketCardFilters } from '@/lib/marketCard'
+import { WYCENA_SCREEN1_V4_TEXTS as S1 } from './wycenaScreen1V4Texts'
 import WycenaMetaPixel, { trackWycenaMetaLead } from '@/components/WycenaMetaPixel'
 import { hasAdsConsent } from '@/lib/consentStore'
 import { buildWycenaMetaTracking } from '@/lib/wycenaMetaPixel'
@@ -89,7 +92,17 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
   const [v2Arm, setV2Arm] = useState<'v2' | 'v1' | null>(WYCENA_RESULT_V2_ELIGIBLE && WYCENA_RESULT_V2_MODE === 'on' ? 'v2' : null)
   useEffect(() => { if (WYCENA_RESULT_V2_ELIGIBLE && WYCENA_RESULT_V2_MODE === 'ab') setV2Arm(Math.random() < 0.5 ? 'v2' : 'v1') }, [])
   const v2Active = WYCENA_RESULT_V2_ELIGIBLE && v2Arm === 'v2'
-  const funnelVariant = WYCENA_RESULT_V2_ELIGIBLE && v2Arm ? { variant: v2Arm === 'v2' ? 'wynik_v2' : 'wynik_v1' } : PHONE_BLOCK_ON ? { variant: 'phone_block' } : {}
+  // ekran 1 v4: tryb 'ab' losuje wariant A (2 pola) / B (4 pola) przy wejsciu, tylko w pamieci strony (bez cookies, storage i identyfikatora); 'on' = zawsze B.
+  const [s1Arm, setS1Arm] = useState<Screen1Arm | null>(WYCENA_SCREEN1_V4_ELIGIBLE ? pickScreen1Arm(WYCENA_SCREEN1_V4_MODE === 'on' ? 'on' : 'off') : null)
+  useEffect(() => { if (WYCENA_SCREEN1_V4_ELIGIBLE && WYCENA_SCREEN1_V4_MODE === 'ab') setS1Arm(pickScreen1Arm('ab')) }, [])
+  const s1Active = WYCENA_SCREEN1_V4_ELIGIBLE && s1Arm !== null
+  const [roomsChoice, setRoomsChoice] = useState<RoomsChoice>(DEFAULT_ROOMS)
+  const [floorChoice, setFloorChoice] = useState<FloorChoice>(DEFAULT_FLOOR)
+  const [s1Filters, setS1Filters] = useState<MarketCardFilters | undefined>(undefined) // filtry zamrozone w chwili wyslania formularza
+  const baseFunnelVariant: { variant?: string } = WYCENA_RESULT_V2_ELIGIBLE && v2Arm ? { variant: v2Arm === 'v2' ? 'wynik_v2' : 'wynik_v1' } : PHONE_BLOCK_ON ? { variant: 'phone_block' } : {}
+  const s1Variant = s1Active && s1Arm ? screen1Variant(s1Arm) : ''
+  // wariant licznika: [a-z0-9_.-], max 32 znaki po stronie CRM (np. ekran1_4pola.wynik_v2)
+  const funnelVariant: { variant?: string } = s1Variant ? { variant: [s1Variant, baseFunnelVariant.variant].filter(Boolean).join('.') } : baseFunnelVariant
   const startLogged = useRef(false)
   const showSticky = !v2Active && available && phase === 'after' && !!outcome && armed && !leadInView && !ctaInView && !leadDone
 
@@ -98,8 +111,9 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
   useEffect(() => { // krok 'entry' po ustaleniu ramienia testu (w trybie 'ab' tuz po losowaniu), zeby wariant byl poprawny
     if (entryLogged.current) return
     if (WYCENA_RESULT_V2_ELIGIBLE && WYCENA_RESULT_V2_MODE === 'ab' && !v2Arm) return
+    if (WYCENA_SCREEN1_V4_ELIGIBLE && WYCENA_SCREEN1_V4_MODE === 'ab' && !s1Arm) return
     entryLogged.current = true; sendFunnelStep('entry', funnelVariant)
-  }, [v2Arm]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [v2Arm, s1Arm]) // eslint-disable-line react-hooks/exhaustive-deps
   // licznik lejka (flaga NEXT_PUBLIC_WYCENA_FUNNEL, domyslnie wylaczony): consent_screen = pojawienie sie bloku/panelu telefonu po wyniku
   const consentLogged = useRef(false)
   useEffect(() => {
@@ -164,7 +178,10 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
     // Minimalny czas od zaladowania strony (odsiew najprostszych botow). Tylko front, ta sama odpowiedz co przy zwyklym bledzie.
     if (submittedTooFast(loadedAt.current, Date.now())) { setTooFast(true); return }
     setTooFast(false)
-    const errs = validateForm(values)
+    // ekran 1 v4: tylko mieszkania; pokoje i pietro (chipy) NIE ida do silnika wyceny (zawezaja tylko ceny ofertowe w karcie rynku; kafel transakcji liczony wg metrazu, bez pokoi); dzielnica opcjonalna (przenosi sie do "Zawez wynik").
+    const sendValues: FormValues = s1Active ? { ...values, property_type: 'mieszkanie', district: values.district, rooms: '', floor: '' } : values
+    const errs = validateForm(sendValues)
+    if (s1Active) delete errs.district
     setErrors(errs)
     if (Object.keys(errs).length) {
       const first = (['property_type', 'city', 'district', 'area_m2', 'rooms', 'floor'] as const).find(k => errs[k])
@@ -175,7 +192,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
     setTsNotice(null)
     inFlight.current = true
     setPhase('loading')
-    const res = await requestEstimate(ESTIMATE_URL, buildPayload(values, honeypot, tsToken, getAttribution()))
+    const res = await requestEstimate(ESTIMATE_URL, buildPayload(sendValues, honeypot, tsToken, getAttribution()))
     inFlight.current = false
     if (TURNSTILE_SITE_KEY) { setTsToken(null); setTsReset(n => n + 1) } // token jest jednorazowy
     if (res.kind === 'invalid') {
@@ -195,7 +212,8 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
       sendFunnelStep('reject', { ...funnelVariant, reason: res.kind === 'rate_limited' ? 'rate_limited' : res.kind === 'error' ? res.reason : 'error' })
     }
     if (res.kind === 'disabled') { setAvailable(false); setOutcome(null); setPhase('form'); return }
-    setSubmittedValues(values)
+    setSubmittedValues(sendValues)
+    setS1Filters(s1Active && s1Arm === 'b' ? cardFilters(roomsChoice, floorChoice) : undefined)
     setOutcome(res)
     if (res.kind === 'range') trackValuation('wycena_estimate_success', { property_type: values.property_type })
     else if (res.kind === 'no_numbers') trackValuation('wycena_estimate_no_numbers', { property_type: values.property_type })
@@ -239,7 +257,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
               </label>
             </div>
 
-            <div className="wy-grid">
+            {s1Active && s1Arm ? (<Screen1V4Fields arm={s1Arm} values={values} errors={errors} set={set} rooms={roomsChoice} setRooms={setRoomsChoice} floor={floorChoice} setFloor={setFloorChoice} />) : (<div className="wy-grid">
               <Field id="wy-property_type" text={`${T.fields.property_type} *`} error={errors.property_type}>
                 <select id="wy-property_type" className="wy-field" required aria-required="true" value={values.property_type}
                   aria-invalid={!!errors.property_type} aria-describedby={describedBy('wy-property_type', false, !!errors.property_type)}
@@ -297,7 +315,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
                   </select>
                 </Field>
               )}
-            </div>
+            </div>)}
 
             {tooFast && <p role="alert" style={{ ...errStyle, marginTop: 16 }}>{T.errors.tryAgain}</p>}
             {Object.keys(errors).some(k => errors[k as keyof FormErrors]) && (
@@ -313,12 +331,12 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
 
             <div style={{ marginTop: 24 }}>
               <button type="submit" className="wy-btn" disabled={phase === 'loading'}>
-                <Calculator size={18} aria-hidden="true" /> {phase === 'loading' ? T.submitting : T.submit}
+                <Calculator size={18} aria-hidden="true" /> {phase === 'loading' ? T.submitting : s1Active ? S1.submit : T.submit}
               </button>
               <p role="status" aria-live="polite" style={{ ...hint, textAlign: 'center' }}>
-                {phase === 'loading' ? T.submitting : T.disclaimerTop}
+                {phase === 'loading' ? T.submitting : s1Active ? S1.noPhone : T.disclaimerTop}
               </p>
-              <p style={{ ...hint, marginTop: 8 }}>{T.disclaimerMore}</p>
+              <p style={{ ...hint, marginTop: 8 }}>{s1Active ? S1.fine : T.disclaimerMore}</p>
               <p style={{ ...hint, textAlign: 'center', marginTop: 12 }}>
                 {T.callInstead}{' '}
                 <button type="button" className="wy-linkbtn" onClick={() => setModalOpen(true)}>{T.callInsteadLink}</button>
@@ -331,7 +349,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
           <div ref={resultRef} tabIndex={-1} style={{ outline: 'none', display: 'flex', flexDirection: 'column', gap: 24, scrollMarginTop: 88 }}>
             {/* flaga NEXT_PUBLIC_WYCENA_PHONE_BLOCK: dla wyniku z liczbami blok telefonu jest BEZPOSREDNIO pod przedzialem (w karcie wyniku), bez osobnej karty kontaktu pod spodem */}
             <OutcomePanel v2={v2Active} showAi={!v2Active && showAiEstimate(cardKind)} outcome={outcome} scoped={!isOutOfScope(submittedValues)} wider={!isKolobrzeg(submittedValues.city)} onAgain={reset} onCta={() => goToLead('result')}
-              marketCardSlot={WYCENA_LAYOUT_V4_ACTIVE && outcome.kind === 'range' ? <MarketCard token={outcome.valuationToken ?? null} onKind={setCardKind} v2={v2Active} areaM2={Number(submittedValues.area_m2.trim().replace(',', '.')) || null} /> : undefined}
+              marketCardSlot={WYCENA_LAYOUT_V4_ACTIVE && outcome.kind === 'range' ? <MarketCard token={outcome.valuationToken ?? null} onKind={setCardKind} v2={v2Active} filters={s1Filters} areaM2={Number(submittedValues.area_m2.trim().replace(',', '.')) || null} /> : undefined}
               leadSlot={WYCENA_LAYOUT_V4_ACTIVE && outcome?.kind === 'range' ? (
                 <div ref={leadWrapRef} id="wy-lead" style={{ scrollMarginTop: 88 }}>
                   <LeadPanel outcome={outcome} values={submittedValues} v4Contact v2={v2Active} v4NoData={cardKind === 'nodata'} onDone={() => { setLeadDone(true); sendFunnelStep('submit', funnelVariant) }} />
@@ -377,6 +395,56 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
   )
 }
 
+function ChipGroup<V extends string>({ id, legend, optionalText, options, value, onChange }: { id: string; legend: string; optionalText: string; options: readonly { value: V; label: string }[]; value: V; onChange: (v: V) => void }) {
+  return (
+    <fieldset id={id} style={{ border: 'none', margin: 0, padding: 0, minWidth: 0 }}>
+      <legend style={{ ...label, padding: 0 }}>{legend} <span style={{ fontWeight: 400, color: '#475569' }}>{optionalText}</span></legend>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+        {options.map(o => {
+          const on = value === o.value
+          return (
+            <button key={o.value} type="button" className="wy-chip" aria-pressed={on} onClick={() => onChange(o.value)}>
+              {on ? <span aria-hidden="true">{'✓ '}</span> : null}{o.label}
+            </button>
+          )
+        })}
+      </div>
+    </fieldset>
+  )
+}
+
+/** Ekran 1 v4 (makieta E1i): metraz i miejscowosc (wariant A) + pokoje i pietro jako chipy (wariant B). Pokoje i pietro zawezaja tylko ceny ofertowe. */
+function Screen1V4Fields({ arm, values, errors, set, rooms, setRooms, floor, setFloor }: {
+  arm: Screen1Arm; values: FormValues; errors: FormErrors
+  set: <K extends keyof FormValues>(k: K, v: FormValues[K]) => void
+  rooms: RoomsChoice; setRooms: (v: RoomsChoice) => void; floor: FloorChoice; setFloor: (v: FloorChoice) => void
+}) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <Field id="wy-area_m2" text={S1.area.label} error={errors.area_m2 ? (values.area_m2.trim() ? errors.area_m2 : S1.area.error) : undefined}>
+        <div style={{ position: 'relative' }}>
+          <input id="wy-area_m2" className="wy-field" type="text" inputMode="decimal" autoComplete="off" required aria-required="true" placeholder={S1.area.placeholder}
+            style={{ paddingRight: 44 }} value={values.area_m2} aria-invalid={!!errors.area_m2} aria-describedby={describedBy('wy-area_m2', false, !!errors.area_m2)}
+            onChange={e => set('area_m2', e.target.value)} />
+          <span aria-hidden="true" style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', color: '#475569' }}>{S1.area.unit}</span>
+        </div>
+      </Field>
+      <Field id="wy-city" text={S1.city.label} error={errors.city}>
+        <input id="wy-city" className="wy-field" type="text" list="wy-city-list" autoComplete="off" required aria-required="true"
+          value={values.city} aria-invalid={!!errors.city} aria-describedby={describedBy('wy-city', false, !!errors.city)}
+          onChange={e => set('city', e.target.value)} />
+        <datalist id="wy-city-list">{[...CITY_LIST, OTHER_CITY].map(c => <option key={c} value={c} />)}</datalist>
+      </Field>
+      {arm === 'b' && (
+        <>
+          <ChipGroup id="wy-rooms" legend={S1.rooms.label} optionalText={S1.rooms.optional} options={ROOMS_CHOICES} value={rooms} onChange={setRooms} />
+          <ChipGroup id="wy-floor" legend={S1.floor.label} optionalText={S1.floor.optional} options={FLOOR_CHOICES} value={floor} onChange={setFloor} />
+          <p style={{ ...hint, margin: 0 }}>{S1.hint}</p>
+        </>
+      )}
+    </div>
+  )
+}
 function PhoneLink() {
   return <a href={phoneHref} style={{ color: '#0d2a5c', fontWeight: 700 }}>{OFFICE_PHONE}</a>
 }

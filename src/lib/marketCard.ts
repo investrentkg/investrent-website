@@ -56,7 +56,9 @@ export function interpretMarketCard(status: number, body: unknown): MarketCardVi
   return { kind: 'card', asOfDate: str(b.as_of_date), band: str(b.band?.label), offers, transactions }
 }
 
-export type MarketCardDeps = { fetchImpl?: typeof fetch; url?: string; timeoutMs?: number }
+/** Filtry ekranu 1 v4 (pokoje, grupa pieter) dla cen ofertowych; backend ignoruje je przy wylaczonej fladze PUBLIC_MARKET_CARD_V4_ENABLED. */
+export type MarketCardFilters = { rooms?: '1' | '2' | '3' | '4_plus'; floor_group?: 'parter' | '1_3' | '4_plus' }
+export type MarketCardDeps = { fetchImpl?: typeof fetch; url?: string; timeoutMs?: number; filters?: MarketCardFilters }
 
 /** Pobiera karte; nigdy nie rzuca (blad = 'none'). condition = filtr stanu TYLKO dla cen ofertowych. */
 export async function fetchMarketCard(token: string, condition: CardCondition | null, deps: MarketCardDeps = {}): Promise<MarketCardView> {
@@ -67,7 +69,7 @@ export async function fetchMarketCard(token: string, condition: CardCondition | 
     try {
       const res = await f(deps.url ?? MARKET_CARD_URL, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ valuation_token: token, ...(condition ? { condition } : {}) }),
+        body: JSON.stringify({ valuation_token: token, ...(condition ? { condition } : {}), ...(deps.filters?.rooms ? { rooms: deps.filters.rooms } : {}), ...(deps.filters?.floor_group ? { floor_group: deps.filters.floor_group } : {}) }),
         ...(ctrl ? { signal: ctrl.signal } : {}),
       })
       let body: unknown = null
