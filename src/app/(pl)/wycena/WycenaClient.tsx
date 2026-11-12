@@ -11,7 +11,7 @@ import PhoneBlock from './PhoneBlock'
 import MarketCard from './MarketCard'
 import { showAiEstimate } from '@/lib/wycenaAiVisibility'
 import { PHONE_BLOCK_TEXTS } from './phoneBlockTexts'
-import { PHONE_BLOCK_ON, WYCENA_LAYOUT_V4_ACTIVE, WYCENA_META_TRACKING_ON, WYCENA_RESULT_V2_MODE, WYCENA_RESULT_V2_ELIGIBLE, WYCENA_SCREEN1_V4_ELIGIBLE, WYCENA_SCREEN1_V4_MODE } from '@/lib/wycenaFlags'
+import { PHONE_BLOCK_ON, WYCENA_LAYOUT_V4_ACTIVE, WYCENA_META_TRACKING_ON, WYCENA_RESULT_V2_MODE, WYCENA_RESULT_V2_ELIGIBLE, WYCENA_SCREEN1_V4_ELIGIBLE, WYCENA_SCREEN1_V4_MODE, WYCENA_RESULT_V4F_ELIGIBLE } from '@/lib/wycenaFlags'
 import { DEFAULT_FLOOR, DEFAULT_ROOMS, FLOOR_CHOICES, ROOMS_CHOICES, cardFilters, pickScreen1Arm, screen1Variant, type FloorChoice, type RoomsChoice, type Screen1Arm } from '@/lib/wycenaScreen1V4'
 import type { MarketCardFilters } from '@/lib/marketCard'
 import { WYCENA_SCREEN1_V4_TEXTS as S1 } from './wycenaScreen1V4Texts'
@@ -29,6 +29,7 @@ import {
 import { T } from './texts'
 import { WYCENA_V4_TEXTS as V4 } from './wycenaV4Texts'
 import { WYCENA_V2_TEXTS as V2 } from './wycenaV2Texts'
+import { WYCENA_RESULT_V4F_TEXTS as R4 } from './wycenaResultV4fTexts'
 import { CITY_LIST, KOLOBRZEG_DISTRICTS, OTHER_CITY, OTHER_DISTRICT } from '@/lib/localities'
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.investrent.com.pl'
@@ -86,7 +87,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
   const [ctaInView, setCtaInView] = useState(false)
   const [armed, setArmed] = useState(false)
   const [leadDone, setLeadDone] = useState(false)
-  const [cardKind, setCardKind] = useState<'card' | 'nodata' | 'none' | null>(null)
+  const [cardKind, setCardKind] = useState<'card' | 'nodata' | 'none' | 'v4f' | null>(null)
   const stickyLogged = useRef(false)
   // wynik_v2: tryb 'ab' losuje wariant 50/50 przy wejsciu (bez cookies i storage); do czasu losowania (SSR/hydracja) obowiazuje uklad dotychczasowy.
   const [v2Arm, setV2Arm] = useState<'v2' | 'v1' | null>(WYCENA_RESULT_V2_ELIGIBLE && WYCENA_RESULT_V2_MODE === 'on' ? 'v2' : null)
@@ -104,7 +105,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
   // wariant licznika: [a-z0-9_.-], max 32 znaki po stronie CRM (np. ekran1_4pola.wynik_v2)
   const funnelVariant: { variant?: string } = s1Variant ? { variant: [s1Variant, baseFunnelVariant.variant].filter(Boolean).join('.') } : baseFunnelVariant
   const startLogged = useRef(false)
-  const showSticky = !v2Active && available && phase === 'after' && !!outcome && armed && !leadInView && !ctaInView && !leadDone
+  const showSticky = !v2Active && available && cardKind !== 'v4f' && phase === 'after' && !!outcome && armed && !leadInView && !ctaInView && !leadDone
 
   useEffect(() => { trackValuation('wycena_view') }, []) // eslint-disable-line react-hooks/exhaustive-deps
   const entryLogged = useRef(false)
@@ -227,6 +228,14 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
     setPhase('form')
   }
 
+  // wynik v4f (flaga NEXT_PUBLIC_WYCENA_RESULT_V4F): blok numeru przenosi sie DO karty wyniku (kolejnosc wg makiety: kafle, szczegoly, numer, trend i zawezanie, zastrzezenie)
+  const v4fActive = cardKind === 'v4f'
+  const leadNode = WYCENA_LAYOUT_V4_ACTIVE && outcome?.kind === 'range' ? (
+    <div ref={leadWrapRef} id="wy-lead" style={{ scrollMarginTop: 88 }}>
+      <LeadPanel outcome={outcome} values={submittedValues} v4Contact v2={v2Active || WYCENA_RESULT_V4F_ELIGIBLE} v4NoData={cardKind === 'nodata'} onDone={() => { setLeadDone(true); sendFunnelStep('submit', funnelVariant) }} />
+    </div>
+  ) : null
+
   return (
     <>
     <WycenaMetaPixel />
@@ -234,7 +243,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
       <div className="container" style={{ maxWidth: 860 }}>
         <Breadcrumb light={true} crumbs={[{ label: 'Strona główna', href: '/' }, { label: 'Wycena nieruchomości' }]} />
         <h1 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 'clamp(26px, 5vw, 38px)', color: 'white', letterSpacing: '-1px', lineHeight: 1.15, marginBottom: 14 }}>
-          {available ? (v2Active && phase === 'after' && outcome?.kind === 'range' ? V2.resultH1 : T.h1) : T.h1Off}
+          {available ? (v2Active && phase === 'after' && outcome?.kind === 'range' ? V2.resultH1 : cardKind === 'v4f' && phase === 'after' && outcome?.kind === 'range' ? R4.h1 : T.h1) : T.h1Off}
         </h1>
         <p className={available ? 'wy-intro-full' : undefined} style={{ color: 'rgba(255,255,255,.9)', fontSize: 16, lineHeight: 1.7, maxWidth: 620, margin: 0 }}>{available ? T.intro : T.introOff}</p>
         {available && <p className="wy-intro-short" style={{ color: 'rgba(255,255,255,.9)', fontSize: 15, lineHeight: 1.55, maxWidth: 620, margin: 0 }}>{PHONE_BLOCK_TEXTS.mobileIntroShort}</p>}
@@ -348,13 +357,10 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
         {available && phase === 'after' && outcome && (
           <div ref={resultRef} tabIndex={-1} style={{ outline: 'none', display: 'flex', flexDirection: 'column', gap: 24, scrollMarginTop: 88 }}>
             {/* flaga NEXT_PUBLIC_WYCENA_PHONE_BLOCK: dla wyniku z liczbami blok telefonu jest BEZPOSREDNIO pod przedzialem (w karcie wyniku), bez osobnej karty kontaktu pod spodem */}
-            <OutcomePanel v2={v2Active} showAi={!v2Active && showAiEstimate(cardKind)} outcome={outcome} scoped={!isOutOfScope(submittedValues)} wider={!isKolobrzeg(submittedValues.city)} onAgain={reset} onCta={() => goToLead('result')}
-              marketCardSlot={WYCENA_LAYOUT_V4_ACTIVE && outcome.kind === 'range' ? <MarketCard token={outcome.valuationToken ?? null} onKind={setCardKind} v2={v2Active} filters={s1Filters} areaM2={Number(submittedValues.area_m2.trim().replace(',', '.')) || null} /> : undefined}
-              leadSlot={WYCENA_LAYOUT_V4_ACTIVE && outcome?.kind === 'range' ? (
-                <div ref={leadWrapRef} id="wy-lead" style={{ scrollMarginTop: 88 }}>
-                  <LeadPanel outcome={outcome} values={submittedValues} v4Contact v2={v2Active} v4NoData={cardKind === 'nodata'} onDone={() => { setLeadDone(true); sendFunnelStep('submit', funnelVariant) }} />
-                </div>
-              ) : PHONE_BLOCK_ON && outcome?.kind === 'range' ? (
+            <OutcomePanel v2={v2Active} v4f={v4fActive} showAi={!v2Active && showAiEstimate(cardKind)} outcome={outcome} scoped={!isOutOfScope(submittedValues)} wider={!isKolobrzeg(submittedValues.city)} onAgain={reset} onCta={() => goToLead('result')}
+              marketCardSlot={WYCENA_LAYOUT_V4_ACTIVE && outcome.kind === 'range' ? <MarketCard token={outcome.valuationToken ?? null} onKind={setCardKind} v2={v2Active} filters={s1Filters} areaM2={Number(submittedValues.area_m2.trim().replace(',', '.')) || null}
+                v4f={WYCENA_RESULT_V4F_ELIGIBLE ? { city: submittedValues.city.trim(), districts: isKolobrzeg(submittedValues.city) ? KOLOBRZEG_DISTRICTS : [], ctaSlot: leadNode, onAgain: reset } : undefined} /> : undefined}
+              leadSlot={WYCENA_LAYOUT_V4_ACTIVE && outcome?.kind === 'range' ? (v4fActive ? <></> : leadNode) : PHONE_BLOCK_ON && outcome?.kind === 'range' ? (
                 <div ref={leadWrapRef} id="wy-lead" style={{ scrollMarginTop: 88 }}>
                   <PhoneBlock outcome={outcome} values={submittedValues} onDone={() => { setLeadDone(true); sendFunnelStep('submit', funnelVariant) }} />
                 </div>
@@ -478,11 +484,11 @@ function ContactFallback({ placement }: { placement: string }) {
   )
 }
 
-function OutcomePanel({ outcome, scoped, wider, onAgain, onCta, marketCardSlot, leadSlot, showAi = true, v2 = false }: { v2?: boolean; outcome: EstimateOutcome; scoped: boolean; wider: boolean; onAgain: () => void; onCta: () => void; marketCardSlot?: React.ReactNode; leadSlot?: React.ReactNode; showAi?: boolean }) {
+function OutcomePanel({ outcome, scoped, wider, onAgain, onCta, marketCardSlot, leadSlot, showAi = true, v2 = false, v4f = false }: { v2?: boolean; v4f?: boolean; outcome: EstimateOutcome; scoped: boolean; wider: boolean; onAgain: () => void; onCta: () => void; marketCardSlot?: React.ReactNode; leadSlot?: React.ReactNode; showAi?: boolean }) {
   if (outcome.kind === 'range') {
     return (
       <section style={card} aria-labelledby="wy-res-title">
-        <h2 id="wy-res-title" style={h2}>{T.result.title}</h2>
+        <h2 id="wy-res-title" style={h2} className={v4f ? 'wy-r4-sr' : undefined}>{T.result.title}</h2>
         {!WYCENA_LAYOUT_V4_ACTIVE && (outcome.rangeCore && outcome.rangeWide ? (
           <>
             <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 14, padding: '18px 20px', margin: '12px 0 8px' }}>
@@ -535,17 +541,19 @@ function OutcomePanel({ outcome, scoped, wider, onAgain, onCta, marketCardSlot, 
           </div>
         )}
         {leadSlot ?? <ResultCta label={T.cta.primary} onClick={onCta} />}
-        {v2 && <p className="wy-v2-disclaimer">{V2.disclaimer} <a href="#wy-v2-diff" onClick={() => { const d = document.getElementById('wy-v2-diff') as HTMLDetailsElement | null; if (d) d.open = true }}>{V2.disclaimerLink}</a></p>}
+        {v2 && !v4f && <p className="wy-v2-disclaimer">{V2.disclaimer} <a href="#wy-v2-diff" onClick={() => { const d = document.getElementById('wy-v2-diff') as HTMLDetailsElement | null; if (d) d.open = true }}>{V2.disclaimerLink}</a></p>}
         {/* v2: V2.disclaimer (OK Prawnika 09.11, poz. 20) zastępuje stary pogrubiony akapit zakresu; ramka disclaimerTop zostaje zawsze */}
-        {!v2 && <>
+        {!v2 && !v4f && <>
         <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '14px 0 8px' }}><strong>{T.result.scopeNote}</strong></p>
         {wider && <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '0 0 8px' }}>{T.result.scopeNoteWider}</p>}
         {outcome.comparables && <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '0 0 8px' }}>{T.result.comparables(outcome.comparables.min, outcome.comparables.max)}</p>}
         </>}
+        {!v4f && <>
         <p style={{ color: '#7c2d12', background: '#fff7ed', border: '1px solid #fed7aa', borderRadius: 10, padding: '10px 14px', fontSize: 14, lineHeight: 1.6, margin: '12px 0 0' }}>
           <strong>{T.disclaimerTop}</strong> {T.result.disclaimerFallback}
         </p>
         <button type="button" className="wy-linkbtn" style={{ marginTop: 8, marginLeft: -6 }} onClick={onAgain}>{T.result.again}</button>
+        </>}
       </section>
     )
   }

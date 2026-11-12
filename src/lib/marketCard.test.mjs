@@ -225,7 +225,10 @@ test('mala proba transakcji: granica 7 (ostrzezenie) / 8 (brak), n=0 bez ostrzez
   const dir = path.join(process.cwd(), 'node_modules', '.cache', 'render-test'); fs.mkdirSync(dir, { recursive: true })
   const hookFile = path.join(dir, 'useMarketCard.mjs')
   fs.writeFileSync(hookFile, 'export function useMarketCard() { return { view: null, condition: null, setCondition() {}, busy: false } }')
+  const resultStub = path.join(dir, 'ResultV4f.mjs')
+  fs.writeFileSync(resultStub, 'export default function ResultV4f() { return null }')
   const js = ts.transpileModule(src, { compilerOptions: { jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 } }).outputText
+    .replace("'./ResultV4f'", `'file:///${resultStub.replace(/\\/g, '/')}'`)
     .replace("'@/lib/marketCard'", `'${here('./marketCard.ts')}'`)
     .replace("'@/lib/marketCardV4'", `'${here('./marketCardV4.ts')}'`)
     .replace("'@/lib/wycenaFlags'", `'${here('./wycenaFlags.ts')}'`)
