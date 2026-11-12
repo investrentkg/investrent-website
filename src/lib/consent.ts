@@ -104,6 +104,22 @@ export function metaCookieNames(cookieString: string): string[] {
   return (cookieString || '').split(';').map(p => p.split('=')[0].trim()).filter(n => n === '_fbp' || n === '_fbc')
 }
 
+/**
+ * Domeny do prob kasowania cookies Google/Meta po wycofaniu zgody: host i KAZDY jego sufiks z min. 2 etykietami, z kropka i bez
+ * (np. www.investrent.com.pl -> www.investrent.com.pl, investrent.com.pl, com.pl; cookies Google bywaja na .investrent.com.pl).
+ * Sufiks publiczny (com.pl) przegladarka odrzuca - bezpieczne.
+ */
+export function cookieDomainCandidates(host: string): string[] {
+  const parts = (host || '').split('.').filter(Boolean)
+  const out: string[] = []
+  for (let i = 0; i <= parts.length - 2; i++) {
+    const d = parts.slice(i).join('.')
+    out.push(d)
+    if (i > 0 || parts.length > 2) out.push('.' + d)
+  }
+  return Array.from(new Set(out))
+}
+
 /** Nazwy cookies Google Ads (`_gcl_aw`, `_gcl_au`) do usunięcia po wycofaniu zgody Reklamowe. */
 export function googleAdsCookieNames(cookieString: string): string[] {
   return (cookieString || '').split(';').map(p => p.split('=')[0].trim()).filter(n => n === '_gcl_aw' || n === '_gcl_au' || /^_gcl_(aw|au)_.+$/.test(n))

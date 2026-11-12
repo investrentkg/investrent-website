@@ -1,7 +1,7 @@
 "use client"
 import { useSyncExternalStore } from 'react'
 import {
-  CONSENT_STORAGE_KEY, CONSENT_CHANGE_EVENT, applyChoice, analyticsAllowed, attributionAllowed, adsAllowed, readStoredConsent, writeStoredConsent, gaCookieNames, metaCookieNames, googleAdsCookieNames, ATTRIBUTION_SESSION_KEY,
+  CONSENT_STORAGE_KEY, CONSENT_CHANGE_EVENT, applyChoice, analyticsAllowed, attributionAllowed, adsAllowed, readStoredConsent, writeStoredConsent, gaCookieNames, metaCookieNames, googleAdsCookieNames, cookieDomainCandidates, ATTRIBUTION_SESSION_KEY,
   type ConsentChoice, type ConsentState,
 } from './consent'
 
@@ -28,8 +28,7 @@ export function getConsent(): ConsentState | null | undefined {
 function deleteCookies(names: string[]) {
   // _ga* bywa ustawiane na domenie nadrzędnej - kasujemy dla bieżącego hosta i domeny nadrzędnej.
   const host = window.location.hostname
-  const parts = host.split('.')
-  const domains = [host, ...(parts.length > 2 ? [parts.slice(-2).join('.')] : []), ...(parts.length >= 2 ? ['.' + parts.slice(-2).join('.')] : [])]
+  const domains = cookieDomainCandidates(host)
   for (const n of names) {
     document.cookie = `${n}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`
     for (const d of domains) document.cookie = `${n}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=${d}`
