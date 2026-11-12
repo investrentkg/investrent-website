@@ -224,8 +224,8 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
     setSubmittedValues(sendValues)
     setS1Filters(s1Active && s1Arm === 'b' ? cardFilters(roomsChoice, floorChoice) : undefined)
     setOutcome(res)
-    if (res.kind === 'range') trackValuation('wycena_estimate_success', { property_type: values.property_type, ...ga4Variant })
-    else if (res.kind === 'no_numbers') trackValuation('wycena_estimate_no_numbers', { property_type: values.property_type, ...ga4Variant })
+    if (res.kind === 'range') trackValuation('wycena_estimate_success', { property_type: sendValues.property_type, ...ga4Variant })
+    else if (res.kind === 'no_numbers') trackValuation('wycena_estimate_no_numbers', { property_type: sendValues.property_type, ...ga4Variant })
     if (res.kind === 'range' || res.kind === 'no_numbers') emitStage('result', res.kind)
     setPhase('after')
   }
