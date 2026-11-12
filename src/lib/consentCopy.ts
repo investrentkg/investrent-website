@@ -51,7 +51,7 @@ export const CONSENT_COPY: Record<ConsentLocale, ConsentCopy> = {
     },
     analytics: {
       name: 'Analityczne',
-      desc: 'Google Analytics (Google Ireland Limited) pomaga nam zrozumieć, jak korzystają Państwo ze strony, żebyśmy mogli ją ulepszać. Dane mogą być przekazywane poza Europejski Obszar Gospodarczy (szczegóły w polityce prywatności).' + (G ? ' Dane z Google Analytics mogą być też wykorzystywane w Google Ads do zbiorczych statystyk skuteczności reklam.' : ''),
+      desc: 'Google Analytics (Google Ireland Limited) pomaga nam zrozumieć, jak korzystają Państwo ze strony, żebyśmy mogli ją ulepszać. Dane mogą być przekazywane poza Europejski Obszar Gospodarczy (szczegóły w polityce prywatności).' + (G ? ' Dane z Google Analytics zasilają także zagregowany model konwersji w Google Ads.' : ''),
     },
     marketing: {
       name: 'Marketingowe',
@@ -85,7 +85,7 @@ export const CONSENT_COPY: Record<ConsentLocale, ConsentCopy> = {
     },
     analytics: {
       name: 'Analyse',
-      desc: 'Google Analytics (Google Ireland Limited) hilft uns zu verstehen, wie Sie die Website nutzen, damit wir sie verbessern können. Daten können außerhalb des Europäischen Wirtschaftsraums verarbeitet werden (Einzelheiten in der Datenschutzerklärung).' + (G ? ' Die Daten aus Google Analytics können zudem in Google Ads für aggregierte Statistiken zur Wirksamkeit von Anzeigen genutzt werden.' : ''),
+      desc: 'Google Analytics (Google Ireland Limited) hilft uns zu verstehen, wie Sie die Website nutzen, damit wir sie verbessern können. Daten können außerhalb des Europäischen Wirtschaftsraums verarbeitet werden (Einzelheiten in der Datenschutzerklärung).' + (G ? ' Die Daten aus Google Analytics speisen zudem das aggregierte Conversion-Modell von Google Ads.' : ''),
     },
     marketing: {
       name: 'Marketing',
