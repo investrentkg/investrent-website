@@ -4,6 +4,7 @@ import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
 import { H2, H3, P, UL, LI } from '@/components/legal/LegalShell'
 import CookieTable from '@/components/legal/CookieTable'
+import { GOOGLE_ADS_CONSENT_ENABLED as GADS } from '@/lib/consent'
 import { getOffice } from '@/lib/api'
 import { RETENTION_A_ITEMS } from '@/app/(pl)/wycena/texts'
 import type { Metadata } from 'next'
@@ -131,9 +132,13 @@ export default async function RodoPage() {
               </P>
               <UL>
                 <LI><strong>Niezbędne</strong> — konieczne do prawidłowego działania strony (np. zapamiętanie Państwa wyboru w banerze zgód). Nie wymagają zgody.</LI>
-                <LI><strong>Analityczne</strong> — pomagają nam zrozumieć, jak korzystają Państwo ze strony (np. Google Analytics 4). Uruchamiane wyłącznie po wyrażeniu zgody.</LI>
+                <LI><strong>Analityczne</strong> — pomagają nam zrozumieć, jak korzystają Państwo ze strony (np. Google Analytics 4). Uruchamiane wyłącznie po wyrażeniu zgody.{GADS && ' Dane z Google Analytics zasilają także zagregowany model konwersji w Google Ads.'}</LI>
                 <LI><strong>Marketingowe</strong> — pozwalają mierzyć skuteczność naszych kampanii reklamowych. Uruchamiane wyłącznie po wyrażeniu zgody. Jeśli wyrazili Państwo zgodę na kategorię Marketingowe, informacja o kampanii, z której Państwo przyszli (parametry UTM oraz znacznik wejścia z linku reklamowego Facebooka), może zostać dołączona do wysłanego przez Państwa zgłoszenia, wyłącznie w celu oceny skuteczności naszych kampanii; sama ta informacja nie zawiera Państwa danych osobowych.</LI>
-                <LI><strong>Reklamowe (Meta)</strong> — Piksel Meta (pliki cookie _fbp i _fbc) mierzy skuteczność reklam na Facebooku i Instagramie wyłącznie na stronie kalkulatora wyceny. Uruchamiany wyłącznie po wyrażeniu odrębnej zgody; po jej wycofaniu pliki cookie są usuwane. Szczegóły: część „Wycena nieruchomości”.</LI>
+                {GADS ? (
+                  <LI><strong>Reklamowe (Google Ads i Meta)</strong> — pozwalają mierzyć skuteczność i dopasowanie naszych reklam. Znacznik Google Ads (Google Ireland Limited; pliki cookie _gcl_aw i _gcl_au, identyfikator kliknięcia reklamy gclid) oraz, o ile jest wdrożony, Piksel Meta (Meta Platforms Ireland Limited; pliki cookie _fbp i _fbc) uruchamiane są wyłącznie po wyrażeniu odrębnej zgody „Reklamowe”. Po wysłaniu przez Państwa zgłoszenia przekazujemy do Google i/lub Meta (odrębni administratorzy danych) informację o tym zdarzeniu — bez imienia, numeru telefonu i adresu e-mail — wraz z identyfikatorami przeglądarki i kliknięcia reklamy oraz adresem IP i danymi przeglądarki; dane mogą być przekazywane poza Europejski Obszar Gospodarczy. Jeśli zgoda „Reklamowe” została udzielona, identyfikator kliknięcia reklamy Google (gclid) może zostać zapisany przy Państwa zgłoszeniu w naszym systemie CRM na okres do 90 dni, wyłącznie w celu rozliczenia skuteczności reklam. Po wycofaniu zgody pliki cookie są usuwane. Zgoda jest dobrowolna.</LI>
+                ) : (
+                  <LI><strong>Reklamowe (Meta)</strong> — Piksel Meta (pliki cookie _fbp i _fbc) mierzy skuteczność reklam na Facebooku i Instagramie wyłącznie na stronie kalkulatora wyceny. Uruchamiany wyłącznie po wyrażeniu odrębnej zgody; po jej wycofaniu pliki cookie są usuwane. Szczegóły: część „Wycena nieruchomości”.</LI>
+                )}
               </UL>
               <P>
                 Zgodę mogą Państwo wyrazić, odrzucić lub dostosować przy pierwszej wizycie na stronie w banerze zgód, a także w dowolnym momencie później poprzez zmianę ustawień. Wybór jest zapamiętywany przez 12 miesięcy, po czym poprosimy o niego ponownie. Opis poszczególnych kategorii dostępny jest w panelu zgód.

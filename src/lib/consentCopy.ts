@@ -1,3 +1,6 @@
+// Flaga Google Ads w zgodach (jak GOOGLE_ADS_CONSENT_ENABLED w consent.ts; tu bez importu, zeby modul byl niezalezny).
+const G: boolean = process.env.NEXT_PUBLIC_GOOGLE_ADS_CONSENT === 'on'
+
 // v4 (11.11.2026): PL pierwsza warstwa i etykiety przyciskow wg makiety M_v8n, TAK Prawnika (jednakowy styl trzech przyciskow, link do Polityki w pierwszej warstwie).
 // Teksty banera zgód PL/DE - ZATWIERDZONE PRZEZ PRAWNIKA (opinia 03.10.2026:
 // _wspolne_pliki/prawnik_opinia_baner_cookies_pixel_capi_2026_10_03.md, sekcja "Gotowy tekst"), wstawione DOSŁOWNIE.
@@ -48,7 +51,7 @@ export const CONSENT_COPY: Record<ConsentLocale, ConsentCopy> = {
     },
     analytics: {
       name: 'Analityczne',
-      desc: 'Google Analytics (Google Ireland Limited) pomaga nam zrozumieć, jak korzystają Państwo ze strony, żebyśmy mogli ją ulepszać. Dane mogą być przekazywane poza Europejski Obszar Gospodarczy (szczegóły w polityce prywatności).',
+      desc: 'Google Analytics (Google Ireland Limited) pomaga nam zrozumieć, jak korzystają Państwo ze strony, żebyśmy mogli ją ulepszać. Dane mogą być przekazywane poza Europejski Obszar Gospodarczy (szczegóły w polityce prywatności).' + (G ? ' Dane z Google Analytics zasilają także zagregowany model konwersji w Google Ads.' : ''),
     },
     marketing: {
       name: 'Marketingowe',
@@ -58,8 +61,8 @@ export const CONSENT_COPY: Record<ConsentLocale, ConsentCopy> = {
       name: 'Reklamowe',
       badge: 'planowane',
       // v4 (Prawnik 11.11.2026, forma Państwo): jeden tekst dla liveDesc i desc; "Jeśli korzystamy" pokrywa narzędzia aktywne dziś i w przyszłości (Meta, Google Ads) bez kolejnego podbicia wersji.
-      liveDesc: 'Pozwalają nam mierzyć skuteczność i dopasowanie naszych reklam. Jeśli korzystamy z narzędzi pomiaru reklam (Meta Pixel/Conversions API, znacznik konwersji Google Ads), po wysłaniu przez Państwa zgłoszenia na stronie przekażemy do Meta Platforms Ireland Limited i/lub Google Ireland Limited (odrębni administratorzy danych) informację o tym zdarzeniu — bez imienia, numeru telefonu i adresu e-mail — wraz z identyfikatorami przeglądarki i kliknięcia reklamy (np. fbp/fbc, gclid) oraz adresem IP i danymi przeglądarki. Dane mogą być przekazywane poza Europejski Obszar Gospodarczy. Zgoda jest dobrowolna.',
-      desc: 'Pozwalają nam mierzyć skuteczność i dopasowanie naszych reklam. Jeśli korzystamy z narzędzi pomiaru reklam (Meta Pixel/Conversions API, znacznik konwersji Google Ads), po wysłaniu przez Państwa zgłoszenia na stronie przekażemy do Meta Platforms Ireland Limited i/lub Google Ireland Limited (odrębni administratorzy danych) informację o tym zdarzeniu — bez imienia, numeru telefonu i adresu e-mail — wraz z identyfikatorami przeglądarki i kliknięcia reklamy (np. fbp/fbc, gclid) oraz adresem IP i danymi przeglądarki. Dane mogą być przekazywane poza Europejski Obszar Gospodarczy. Zgoda jest dobrowolna.',
+      liveDesc: 'Pozwalają nam mierzyć skuteczność i dopasowanie naszych reklam. Jeśli korzystamy z narzędzi pomiaru reklam (Meta Pixel/Conversions API, znacznik konwersji Google Ads), po wysłaniu przez Państwa zgłoszenia na stronie przekażemy do Meta Platforms Ireland Limited i/lub Google Ireland Limited (odrębni administratorzy danych) informację o tym zdarzeniu — bez imienia, numeru telefonu i adresu e-mail — wraz z identyfikatorami przeglądarki i kliknięcia reklamy (np. fbp/fbc, gclid) oraz adresem IP i danymi przeglądarki. Dane mogą być przekazywane poza Europejski Obszar Gospodarczy.' + (G ? ' Po Państwa zgodzie mogą być zapisywane pliki cookie Google (_gcl_aw, _gcl_au) oraz Meta (_fbp, _fbc).' : '') + ' Zgoda jest dobrowolna.',
+      desc: 'Pozwalają nam mierzyć skuteczność i dopasowanie naszych reklam. Jeśli korzystamy z narzędzi pomiaru reklam (Meta Pixel/Conversions API, znacznik konwersji Google Ads), po wysłaniu przez Państwa zgłoszenia na stronie przekażemy do Meta Platforms Ireland Limited i/lub Google Ireland Limited (odrębni administratorzy danych) informację o tym zdarzeniu — bez imienia, numeru telefonu i adresu e-mail — wraz z identyfikatorami przeglądarki i kliknięcia reklamy (np. fbp/fbc, gclid) oraz adresem IP i danymi przeglądarki. Dane mogą być przekazywane poza Europejski Obszar Gospodarczy.' + (G ? ' Po Państwa zgodzie mogą być zapisywane pliki cookie Google (_gcl_aw, _gcl_au) oraz Meta (_fbp, _fbc).' : '') + ' Zgoda jest dobrowolna.',
     },
     withdraw: 'Zgodę mogą Państwo w każdej chwili zmienić lub wycofać w „Ustawieniach prywatności” (link w stopce strony).',
     privacyLabel: 'Polityka prywatności',
@@ -82,7 +85,7 @@ export const CONSENT_COPY: Record<ConsentLocale, ConsentCopy> = {
     },
     analytics: {
       name: 'Analyse',
-      desc: 'Google Analytics (Google Ireland Limited) hilft uns zu verstehen, wie Sie die Website nutzen, damit wir sie verbessern können. Daten können außerhalb des Europäischen Wirtschaftsraums verarbeitet werden (Einzelheiten in der Datenschutzerklärung).',
+      desc: 'Google Analytics (Google Ireland Limited) hilft uns zu verstehen, wie Sie die Website nutzen, damit wir sie verbessern können. Daten können außerhalb des Europäischen Wirtschaftsraums verarbeitet werden (Einzelheiten in der Datenschutzerklärung).' + (G ? ' Die Daten aus Google Analytics speisen zudem das aggregierte Conversion-Modell von Google Ads.' : ''),
     },
     marketing: {
       name: 'Marketing',
@@ -92,8 +95,8 @@ export const CONSENT_COPY: Record<ConsentLocale, ConsentCopy> = {
       name: 'Werbung',
       badge: 'geplant',
       // v4: Übersetzung des Prawnik-Textes (11.11.2026); VOR Veröffentlichung Durchsicht durch die DE-Textverantwortliche Person (Ernest) nötig.
-      liveDesc: 'Sie ermöglichen uns, die Wirksamkeit und Ausrichtung unserer Werbung zu messen. Sofern wir Tools zur Anzeigenmessung nutzen (Meta Pixel/Conversions API, Google Ads Conversion-Tracking), übermitteln wir nach dem Absenden Ihrer Anfrage auf unserer Website an Meta Platforms Ireland Limited und/oder Google Ireland Limited (jeweils eigenständige Verantwortliche) Informationen über dieses Ereignis — ohne Namen, Telefonnummer oder E-Mail-Adresse — zusammen mit Browser- und Klick-Kennungen (z. B. fbp/fbc, gclid) sowie der IP-Adresse und Browserdaten. Die Daten können außerhalb des Europäischen Wirtschaftsraums übermittelt werden. Die Einwilligung ist freiwillig.',
-      desc: 'Sie ermöglichen uns, die Wirksamkeit und Ausrichtung unserer Werbung zu messen. Sofern wir Tools zur Anzeigenmessung nutzen (Meta Pixel/Conversions API, Google Ads Conversion-Tracking), übermitteln wir nach dem Absenden Ihrer Anfrage auf unserer Website an Meta Platforms Ireland Limited und/oder Google Ireland Limited (jeweils eigenständige Verantwortliche) Informationen über dieses Ereignis — ohne Namen, Telefonnummer oder E-Mail-Adresse — zusammen mit Browser- und Klick-Kennungen (z. B. fbp/fbc, gclid) sowie der IP-Adresse und Browserdaten. Die Daten können außerhalb des Europäischen Wirtschaftsraums übermittelt werden. Die Einwilligung ist freiwillig.',
+      liveDesc: 'Sie ermöglichen uns, die Wirksamkeit und Ausrichtung unserer Werbung zu messen. Sofern wir Tools zur Anzeigenmessung nutzen (Meta Pixel/Conversions API, Google Ads Conversion-Tracking), übermitteln wir nach dem Absenden Ihrer Anfrage auf unserer Website an Meta Platforms Ireland Limited und/oder Google Ireland Limited (jeweils eigenständige Verantwortliche) Informationen über dieses Ereignis — ohne Namen, Telefonnummer oder E-Mail-Adresse — zusammen mit Browser- und Klick-Kennungen (z. B. fbp/fbc, gclid) sowie der IP-Adresse und Browserdaten. Die Daten können außerhalb des Europäischen Wirtschaftsraums übermittelt werden.' + (G ? ' Mit Ihrer Einwilligung können Cookies von Google (_gcl_aw, _gcl_au) und Meta (_fbp, _fbc) gespeichert werden.' : '') + ' Die Einwilligung ist freiwillig.',
+      desc: 'Sie ermöglichen uns, die Wirksamkeit und Ausrichtung unserer Werbung zu messen. Sofern wir Tools zur Anzeigenmessung nutzen (Meta Pixel/Conversions API, Google Ads Conversion-Tracking), übermitteln wir nach dem Absenden Ihrer Anfrage auf unserer Website an Meta Platforms Ireland Limited und/oder Google Ireland Limited (jeweils eigenständige Verantwortliche) Informationen über dieses Ereignis — ohne Namen, Telefonnummer oder E-Mail-Adresse — zusammen mit Browser- und Klick-Kennungen (z. B. fbp/fbc, gclid) sowie der IP-Adresse und Browserdaten. Die Daten können außerhalb des Europäischen Wirtschaftsraums übermittelt werden.' + (G ? ' Mit Ihrer Einwilligung können Cookies von Google (_gcl_aw, _gcl_au) und Meta (_fbp, _fbc) gespeichert werden.' : '') + ' Die Einwilligung ist freiwillig.',
     },
     withdraw: 'Sie können Ihre Einwilligung jederzeit in den „Datenschutzeinstellungen” (Link in der Fußzeile) ändern oder widerrufen.',
     privacyLabel: 'Datenschutzerklärung',
