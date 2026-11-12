@@ -253,3 +253,13 @@ test('v5 zgody za flaga NEXT_PUBLIC_GOOGLE_ADS_CONSENT: OFF = wersja 4 i teksty 
     if (prev === undefined) delete process.env.NEXT_PUBLIC_GOOGLE_ADS_CONSENT; else process.env.NEXT_PUBLIC_GOOGLE_ADS_CONSENT = prev
   }
 })
+
+test('kasowanie cookies: kandydaci domen obejmuja .investrent.com.pl dla www.investrent.com.pl (cookies Google na domenie nadrzednej)', async () => {
+  const { cookieDomainCandidates } = await import('./consent.ts')
+  const d = cookieDomainCandidates('www.investrent.com.pl')
+  assert.ok(d.includes('www.investrent.com.pl'))
+  assert.ok(d.includes('.investrent.com.pl'))
+  assert.ok(d.includes('investrent.com.pl'))
+  assert.deepEqual(cookieDomainCandidates('localhost'), [])
+  assert.deepEqual(cookieDomainCandidates('investrent.com.pl').includes('.investrent.com.pl'), true)
+})
