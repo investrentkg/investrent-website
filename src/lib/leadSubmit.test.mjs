@@ -39,7 +39,11 @@ test('GA: no-op bez gtag; event tylko z lead_source (bez danych osobowych)', () 
   const calls = []
   globalThis.window = { gtag: (...a) => calls.push(a) }
   trackLeadSuccess('wycena_modal')
-  assert.deepEqual(calls, [['event', 'generate_lead', { lead_source: 'wycena_modal' }]])
+  assert.equal(calls.length, 1)
+  assert.equal(calls[0][1], 'generate_lead')
+  assert.deepEqual(Object.keys(calls[0][2]).sort(), ['event_id', 'lead_source'])
+  assert.equal(calls[0][2].lead_source, 'wycena_modal')
+  assert.match(calls[0][2].event_id, /^[A-Za-z0-9-]{8,}$/)
   delete globalThis.window
 })
 
