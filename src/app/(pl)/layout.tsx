@@ -44,6 +44,8 @@ export const metadata: Metadata = {
   // usuniecie cofa weryfikacje.
   verification: {
     google: 'DPbWw1Vt5Jf3CsaKHwQUJNbde9eieF0VuieK2S1BICs',
+    // Weryfikacja domeny w Meta Business Manager (kampania Kalkulator, 12.11.2026). NIE USUWAC.
+    other: { 'facebook-domain-verification': '53u6nfjki6vmfu38pphuy0l5qag7oi' },
   },
   icons: {
     icon: '/favicon.ico',
