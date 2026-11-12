@@ -11,11 +11,12 @@ import PhoneBlock from './PhoneBlock'
 import MarketCard from './MarketCard'
 import { showAiEstimate } from '@/lib/wycenaAiVisibility'
 import { PHONE_BLOCK_TEXTS } from './phoneBlockTexts'
-import { PHONE_BLOCK_ON, WYCENA_LAYOUT_V4_ACTIVE, WYCENA_META_TRACKING_ON, WYCENA_RESULT_V2_MODE, WYCENA_RESULT_V2_ELIGIBLE, WYCENA_SCREEN1_V4_ELIGIBLE, WYCENA_SCREEN1_V4_MODE, WYCENA_RESULT_V4F_ELIGIBLE } from '@/lib/wycenaFlags'
+import { PHONE_BLOCK_ON, WYCENA_LAYOUT_V4_ACTIVE, WYCENA_META_TRACKING_ON, WYCENA_RESULT_V2_MODE, WYCENA_RESULT_V2_ELIGIBLE, WYCENA_SCREEN1_V4_ELIGIBLE, WYCENA_SCREEN1_V4_MODE, WYCENA_RESULT_V4F_ELIGIBLE, WYCENA_FUNNEL_EVENTS_V2 } from '@/lib/wycenaFlags'
+import { planFunnelEvent, metaVariantParams, type FunnelStage, type ResultKind } from '@/lib/wycenaFunnelEvents'
 import { DEFAULT_FLOOR, DEFAULT_ROOMS, FLOOR_CHOICES, ROOMS_CHOICES, cardFilters, pickScreen1Arm, screen1Variant, type FloorChoice, type RoomsChoice, type Screen1Arm } from '@/lib/wycenaScreen1V4'
 import type { MarketCardFilters } from '@/lib/marketCard'
 import { WYCENA_SCREEN1_V4_TEXTS as S1 } from './wycenaScreen1V4Texts'
-import WycenaMetaPixel, { trackWycenaMetaLead } from '@/components/WycenaMetaPixel'
+import WycenaMetaPixel, { trackWycenaMetaLead, trackWycenaMetaCustom } from '@/components/WycenaMetaPixel'
 import { hasAdsConsent } from '@/lib/consentStore'
 import { buildWycenaMetaTracking } from '@/lib/wycenaMetaPixel'
 import { useMetaConsentReceipt } from './useMetaConsentReceipt'
@@ -105,6 +106,13 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
   // wariant licznika: [a-z0-9_.-], max 32 znaki po stronie CRM (np. ekran1_4pola.wynik_v2)
   const funnelVariant: { variant?: string } = s1Variant ? { variant: [s1Variant, baseFunnelVariant.variant].filter(Boolean).join('.') } : baseFunnelVariant
   const startLogged = useRef(false)
+  // jeden wykonawca etapow lejka (mapa i plan w wycenaFunnelEvents.ts): licznik CRM zawsze jak dotad, Meta custom tylko przy fladze FUNNEL_EVENTS_V2 i zgodzie Reklamowych
+  const emitStage = (stage: FunnelStage, resultKind?: ResultKind) => {
+    const plan = planFunnelEvent(stage, { enabled: WYCENA_FUNNEL_EVENTS_V2, adsConsent: hasAdsConsent(), variant: funnelVariant.variant, resultKind })
+    sendFunnelStep(plan.funnel.step, plan.funnel.variant ? { variant: plan.funnel.variant } : {})
+    if (plan.meta && plan.meta.method === 'trackCustom') trackWycenaMetaCustom(plan.meta.name, plan.meta.params)
+  }
+  const ga4Variant: Record<string, string> = WYCENA_FUNNEL_EVENTS_V2 ? metaVariantParams(funnelVariant.variant) : {}
   const showSticky = !v2Active && available && cardKind !== 'v4f' && phase === 'after' && !!outcome && armed && !leadInView && !ctaInView && !leadDone
 
   useEffect(() => { trackValuation('wycena_view') }, []) // eslint-disable-line react-hooks/exhaustive-deps
@@ -168,7 +176,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
   }
 
   function set<K extends keyof FormValues>(k: K, v: FormValues[K]) {
-    if (!startLogged.current) { startLogged.current = true; sendFunnelStep('start', funnelVariant) }
+    if (!startLogged.current) { startLogged.current = true; emitStage('start') }
     setValues(prev => ({ ...prev, [k]: v }))
     if (errors[k]) setErrors(prev => ({ ...prev, [k]: undefined }))
   }
@@ -216,9 +224,9 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
     setSubmittedValues(sendValues)
     setS1Filters(s1Active && s1Arm === 'b' ? cardFilters(roomsChoice, floorChoice) : undefined)
     setOutcome(res)
-    if (res.kind === 'range') trackValuation('wycena_estimate_success', { property_type: values.property_type })
-    else if (res.kind === 'no_numbers') trackValuation('wycena_estimate_no_numbers', { property_type: values.property_type })
-    if (res.kind === 'range' || res.kind === 'no_numbers') sendFunnelStep('valuation', funnelVariant)
+    if (res.kind === 'range') trackValuation('wycena_estimate_success', { property_type: values.property_type, ...ga4Variant })
+    else if (res.kind === 'no_numbers') trackValuation('wycena_estimate_no_numbers', { property_type: values.property_type, ...ga4Variant })
+    if (res.kind === 'range' || res.kind === 'no_numbers') emitStage('result', res.kind)
     setPhase('after')
   }
 
@@ -232,7 +240,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
   const v4fActive = cardKind === 'v4f'
   const leadNode = WYCENA_LAYOUT_V4_ACTIVE && outcome?.kind === 'range' ? (
     <div ref={leadWrapRef} id="wy-lead" style={{ scrollMarginTop: 88 }}>
-      <LeadPanel outcome={outcome} values={submittedValues} v4Contact v2={v2Active || WYCENA_RESULT_V4F_ELIGIBLE} v4NoData={cardKind === 'nodata'} onDone={() => { setLeadDone(true); sendFunnelStep('submit', funnelVariant) }} />
+      <LeadPanel outcome={outcome} values={submittedValues} v4Contact v2={v2Active || WYCENA_RESULT_V4F_ELIGIBLE} v4NoData={cardKind === 'nodata'} funnelVariant={funnelVariant.variant} onDone={() => { setLeadDone(true); sendFunnelStep('submit', funnelVariant) }} />
     </div>
   ) : null
 
@@ -362,12 +370,12 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
                 v4f={WYCENA_RESULT_V4F_ELIGIBLE ? { city: submittedValues.city.trim(), districts: isKolobrzeg(submittedValues.city) ? KOLOBRZEG_DISTRICTS : [], ctaSlot: leadNode, onAgain: reset } : undefined} /> : undefined}
               leadSlot={WYCENA_LAYOUT_V4_ACTIVE && outcome?.kind === 'range' ? (v4fActive ? <></> : leadNode) : PHONE_BLOCK_ON && outcome?.kind === 'range' ? (
                 <div ref={leadWrapRef} id="wy-lead" style={{ scrollMarginTop: 88 }}>
-                  <PhoneBlock outcome={outcome} values={submittedValues} onDone={() => { setLeadDone(true); sendFunnelStep('submit', funnelVariant) }} />
+                  <PhoneBlock outcome={outcome} values={submittedValues} funnelVariant={funnelVariant.variant} onDone={() => { setLeadDone(true); sendFunnelStep('submit', funnelVariant) }} />
                 </div>
               ) : undefined} />
             {!(WYCENA_LAYOUT_V4_ACTIVE && outcome?.kind === 'range') && !(PHONE_BLOCK_ON && outcome?.kind === 'range') && (
               <div ref={leadWrapRef} id="wy-lead" style={{ scrollMarginTop: 88 }}>
-                <LeadPanel outcome={outcome} values={submittedValues} onDone={() => { setLeadDone(true); sendFunnelStep('submit', funnelVariant) }} />
+                <LeadPanel outcome={outcome} values={submittedValues} funnelVariant={funnelVariant.variant} onDone={() => { setLeadDone(true); sendFunnelStep('submit', funnelVariant) }} />
               </div>
             )}
           </div>
@@ -580,7 +588,7 @@ function OutcomePanel({ outcome, scoped, wider, onAgain, onCta, marketCardSlot, 
   )
 }
 
-function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = false, v2 = false }: { outcome: EstimateOutcome | null; values: FormValues; onDone?: () => void; v4Contact?: boolean; v4NoData?: boolean; v2?: boolean }) {
+function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = false, v2 = false, funnelVariant }: { outcome: EstimateOutcome | null; values: FormValues; onDone?: () => void; v4Contact?: boolean; v4NoData?: boolean; v2?: boolean; funnelVariant?: string }) {
   const [name, setName] = useState('')
   const [surname, setSurname] = useState('')
   const [phone, setPhone] = useState('')
@@ -702,7 +710,7 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = fals
         attribution: attribution as Record<string, unknown> | null,
       })
       const r = await submitLead({ ...buildLeadRequest({ name, surname: v4Contact ? surname : undefined, phone, values, outcome, utm: readUtm(window.location.search), attribution, turnstileToken: tsToken, honeypot: hp, contactWindow: v4Contact ? contactWindow || null : null, ...(v2 ? { consentVersion: V2.consentVersion } : {}) }), ...(metaTracking ? { meta_tracking: metaTracking } : {}) })
-      if (r?.ok) { setState('ok'); trackValuation('wycena_lead', { mode: outcome?.kind ?? 'none' }); trackWycenaMetaLead(metaTracking?.event_id, r.metaCapi) }
+      if (r?.ok) { setState('ok'); trackValuation('wycena_lead', { mode: outcome?.kind ?? 'none' }); trackWycenaMetaLead(metaTracking?.event_id, r.metaCapi, funnelVariant) }
       else {
         setState('fail')
         trackValuation('wycena_lead_submit_failed', { reason: r && !r.ok ? r.reason : 'unknown', status: r && !r.ok && r.status ? String(r.status) : '', iab: iabClass() })

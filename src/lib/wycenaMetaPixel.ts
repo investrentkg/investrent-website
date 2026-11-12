@@ -1,4 +1,4 @@
-export type PixelTrack = (event: 'Lead', options: { eventID: string }) => void
+export type PixelTrack = (event: 'Lead', options: { eventID: string }, params?: Record<string, string>) => void
 
 export type WycenaMetaTracking = {
   event_id: string
@@ -82,10 +82,16 @@ export function trackConsentedWycenaLead(input: {
   track: PixelTrack
   /** Pole meta_capi z odpowiedzi CRM (patrz shouldFireBrowserLead); undefined = brak pola. */
   capiSignal?: unknown
+  /** custom_data Leada (tylko wariant A/B z wycenaFunnelEvents.ts, flaga FUNNEL_EVENTS_V2); brak = dotychczasowe wywolanie. */
+  params?: Record<string, string>
 }): boolean {
   if (!input.enabled || !input.marketingConsent || !input.pixelAvailable || !/^[A-Za-z0-9_-]{16,128}$/.test(input.eventId)) return false
   if (!shouldFireBrowserLead(input.eventId, input.capiSignal)) return false
-  try { input.track('Lead', { eventID: input.eventId }); return true } catch { return false }
+  try {
+    if (input.params && Object.keys(input.params).length) input.track('Lead', { eventID: input.eventId }, input.params)
+    else input.track('Lead', { eventID: input.eventId })
+    return true
+  } catch { return false }
 }
 
 /** Paragon wazny 2 h po stronie serwera; odnawiamy po 90 min, zeby nie wyslac przeterminowanego. */

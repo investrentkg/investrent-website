@@ -34,7 +34,7 @@ const iab = () => (typeof navigator === 'undefined' ? 'other' : inAppBrowserClas
 const hintStyle: React.CSSProperties = { fontSize: 13, color: '#475569', marginTop: 4 }
 const errStyle: React.CSSProperties = { fontSize: 13, color: '#b91c1c', marginTop: 4, fontWeight: 600 }
 
-export default function PhoneBlock({ outcome, values, onDone }: { outcome: EstimateOutcome; values: FormValues; onDone?: () => void }) {
+export default function PhoneBlock({ outcome, values, onDone, funnelVariant }: { outcome: EstimateOutcome; values: FormValues; onDone?: () => void; funnelVariant?: string }) {
   const [phone, setPhone] = useState('')
   const [errs, setErrs] = useState<{ phone?: string; consent?: string }>({})
   // flaga NEXT_PUBLIC_WYCENA_MARKET_CARD (aktywna tylko z gotowym tekstem zgody): karta rynku + okno kontaktu + checkbox zgody
@@ -102,7 +102,7 @@ export default function PhoneBlock({ outcome, values, onDone }: { outcome: Estim
           },
         },
       )
-      if (r.ok) { setState('ok'); trackValuation('wycena_lead', { mode, placement: 'phone_block', via: r.via }); trackWycenaMetaLead(metaTracking?.event_id, r.metaCapi) }
+      if (r.ok) { setState('ok'); trackValuation('wycena_lead', { mode, placement: 'phone_block', via: r.via }); trackWycenaMetaLead(metaTracking?.event_id, r.metaCapi, funnelVariant) }
       else { setState('fail'); trackValuation('wycena_lead_submit_failed', { reason: r.reason, status: '', iab: iab(), placement: 'phone_block' }) }
     } catch {
       setState('fail')
