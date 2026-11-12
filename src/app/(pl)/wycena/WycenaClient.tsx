@@ -708,6 +708,7 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = fals
         readCookie: () => document.cookie,
         search: window.location.search,
         attribution: attribution as Record<string, unknown> | null,
+        variant: WYCENA_FUNNEL_EVENTS_V2 ? funnelVariant : undefined,
       })
       const r = await submitLead({ ...buildLeadRequest({ name, surname: v4Contact ? surname : undefined, phone, values, outcome, utm: readUtm(window.location.search), attribution, turnstileToken: tsToken, honeypot: hp, contactWindow: v4Contact ? contactWindow || null : null, ...(v2 ? { consentVersion: V2.consentVersion } : {}) }), ...(metaTracking ? { meta_tracking: metaTracking } : {}) })
       if (r?.ok) { setState('ok'); trackValuation('wycena_lead', { mode: outcome?.kind ?? 'none' }); trackWycenaMetaLead(metaTracking?.event_id, r.metaCapi, funnelVariant) }

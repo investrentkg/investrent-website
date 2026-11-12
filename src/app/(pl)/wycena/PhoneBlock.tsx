@@ -8,7 +8,7 @@ import {
   type EstimateOutcome, type FormValues,
 } from '@/lib/valuation'
 import { sendPhoneRequest } from '@/lib/phoneBlockSubmit'
-import { CALLBACK_ON, MARKET_CARD_ACTIVE, WYCENA_LAYOUT_V4_ACTIVE, WYCENA_META_TRACKING_ON } from '@/lib/wycenaFlags'
+import { CALLBACK_ON, MARKET_CARD_ACTIVE, WYCENA_FUNNEL_EVENTS_V2, WYCENA_LAYOUT_V4_ACTIVE, WYCENA_META_TRACKING_ON } from '@/lib/wycenaFlags'
 import { CONSENT_TEXT, CONSENT_VERSION } from '@/lib/wycenaConsentText'
 import { CONTACT_WINDOWS, CONTACT_WINDOW_LABELS, type ContactWindow } from '@/lib/marketCard'
 import { T } from './texts'
@@ -91,6 +91,7 @@ export default function PhoneBlock({ outcome, values, onDone, funnelVariant }: {
         readCookie: () => document.cookie,
         search: window.location.search,
         attribution: attribution as Record<string, unknown> | null,
+        variant: WYCENA_FUNNEL_EVENTS_V2 ? funnelVariant : undefined,
       })
       const r = await sendPhoneRequest(
         { phone, valuationToken: token, consentVersion: mc ? CONSENT_VERSION : PHONE_BLOCK_CONSENT_VERSION, values, outcome, utm, turnstileToken: tsToken, honeypot: hp, contactWindow: mc && win ? win : null, metaTracking },

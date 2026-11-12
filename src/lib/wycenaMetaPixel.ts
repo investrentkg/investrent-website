@@ -8,6 +8,8 @@ export type WycenaMetaTracking = {
   fbp?: string
   fbclid?: string
   utm?: Record<string, string>
+  /** Wariant A/B lejka (np. ekran1_4pola.wynik_v2), tylko gdy flaga WYCENA_FUNNEL_EVENTS_V2; serwer przepisuje do custom_data Lead CAPI. Bez PII. */
+  variant?: string
 }
 
 const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'] as const
@@ -37,6 +39,7 @@ export function buildWycenaMetaTracking(input: {
   readCookie: () => string
   search: string
   attribution?: Record<string, unknown> | null
+  variant?: string | null
 }): WycenaMetaTracking | undefined {
   if (!input.enabled || !input.marketingConsent || !input.eventId || !/^[A-Za-z0-9_-]{16,128}$/.test(input.eventId) || !isPlausibleReceipt(input.consentReceipt)) return undefined
   let cookie = ''
@@ -56,6 +59,7 @@ export function buildWycenaMetaTracking(input: {
     if (typeof value === 'string' && value.trim()) utm[key] = value.trim().slice(0, 100)
   }
   if (Object.keys(utm).length) out.utm = utm
+  if (typeof input.variant === 'string' && /^[a-z0-9_.-]{1,32}$/.test(input.variant)) out.variant = input.variant
   return out
 }
 

@@ -61,7 +61,7 @@ test('tracking metadata has only whitelisted keys and no phone/email (accepted r
     search: '?fbclid=a%40b.pl',
     attribution: { utm_source: 'meta', utm_medium: 'cpc', utm_campaign: 'c', utm_content: 'x', utm_term: 'y', email: 'a@b.pl', phone: '600100200', name: 'Jan', source: 'forged' },
   })
-  const allowedTop = new Set(['event_id', 'consent_receipt', 'fbp', 'fbc', 'fbclid', 'utm'])
+  const allowedTop = new Set(['event_id', 'consent_receipt', 'fbp', 'fbc', 'fbclid', 'utm', 'variant'])
   const allowedUtm = new Set(['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'])
   for (const key of Object.keys(payload)) assert.ok(allowedTop.has(key), `niedozwolony klucz: ${key}`)
   for (const key of Object.keys(payload.utm)) assert.ok(allowedUtm.has(key), `niedozwolony klucz utm: ${key}`)
@@ -76,6 +76,12 @@ test('bez paragonu zgody (brak, zly format, deklaracja boolean) nie powstaje met
     assert.equal(buildWycenaMetaTracking({ enabled: true, marketingConsent: true, eventId, consentReceipt, readCookie: () => { reads++; return '_fbp=x' }, search: '' }), undefined)
   }
   assert.equal(reads, 0)
+})
+
+test('wariant A/B w meta_tracking: tylko poprawny format, bez wariantu brak klucza', () => {
+  const base = { enabled: true, marketingConsent: true, eventId, consentReceipt: receipt, readCookie: () => '', search: '' }
+  assert.equal(buildWycenaMetaTracking({ ...base, variant: 'ekran1_4pola.wynik_v2' }).variant, 'ekran1_4pola.wynik_v2')
+  for (const bad of [undefined, null, '', 'A B', 'jan@x.pl', 'x'.repeat(33), 'UPPER']) assert.ok(!('variant' in buildWycenaMetaTracking({ ...base, variant: bad })))
 })
 
 test('payload z paragonem nie niesie deklaratywnego marketing_consent', () => {
