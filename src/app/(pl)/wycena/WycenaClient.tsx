@@ -230,7 +230,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
       trackValuation('wycena_estimate_error', { kind: res.kind, ...(res.kind === 'error' ? { reason: res.reason } : {}), iab: iabClass() })
       sendFunnelStep('reject', { ...funnelVariant, reason: res.kind === 'rate_limited' ? 'rate_limited' : res.kind === 'error' ? (res.reason === 'unavailable' ? 'http' : res.reason) : 'error' })
     }
-    if (res.kind === 'disabled') { setAvailable(false); setOutcome(null); setPhase('form'); return }
+    if (res.kind === 'disabled') { trackValuation('wycena_sam_numer', { reason: 'disabled', iab: iabClass() }); setAvailable(false); setOutcome(null); setPhase('form'); return }
     setSubmittedValues(sendValues)
     setS1Filters(s1Active && s1Arm === 'b' ? cardFilters(roomsChoice, floorChoice) : undefined)
     setOutcome(res)
@@ -351,7 +351,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
 
             {available && TURNSTILE_SITE_KEY && (
               <div style={{ marginTop: 16 }}>
-                <Turnstile siteKey={TURNSTILE_SITE_KEY} resetKey={tsReset} onToken={t => { setTsToken(t); if (t) setTsNotice(null) }} onFail={() => setAvailable(false)} />
+                <Turnstile siteKey={TURNSTILE_SITE_KEY} resetKey={tsReset} onToken={t => { setTsToken(t); if (t) setTsNotice(null) }} onError={attempt => trackValuation('wycena_turnstile_error', { attempt: String(attempt), iab: iabClass() })} onFail={() => { trackValuation('wycena_sam_numer', { reason: 'turnstile', iab: iabClass() }); setAvailable(false) }} />
                 {tsNotice === 'pending' && <p role="alert" style={errStyle}>{T.errors.turnstilePending}</p>}
               </div>
             )}

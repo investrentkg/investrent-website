@@ -374,6 +374,14 @@ export type ValuationEvent =
   | 'wycena_lead_submit_blocked' | 'wycena_lead_submit' | 'wycena_lead_submit_failed'
   // D2 (09.10.2026): CTA do panelu kontaktu (placement: result | sticky), pojawienie się paska, wysyłka odłożona do czasu tokenu Turnstile
   | 'wycena_cta_click' | 'wycena_sticky_shown' | 'wycena_lead_submit_queued'
+  // 12.11.2026: blad widgetu Turnstile (kazda proba) i przelaczenie na tryb "sam numer" (reason: turnstile | disabled) - odsetek po starcie reklam
+  | 'wycena_turnstile_error' | 'wycena_sam_numer'
+
+// Co zrobic po bledzie widgetu Turnstile: kolejne ponowienie (reset+execute) albo tryb "sam numer". retries = ile ponowien juz wykonano.
+export const TS_ERROR_MAX_RETRIES = 2
+export function turnstileErrorAction(retries: number, max: number = TS_ERROR_MAX_RETRIES): 'retry' | 'fail' {
+  return retries < max ? 'retry' : 'fail'
+}
 
 // Klasa przeglądarki: kampanie Meta otwierają stronę w przeglądarce wbudowanej FB/IG (inne zachowanie Turnstile/ciasteczek).
 // Tylko trzy wartości - nigdy surowy User-Agent.
