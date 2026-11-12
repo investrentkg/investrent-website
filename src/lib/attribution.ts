@@ -23,7 +23,7 @@ export const ATTRIBUTION_MAX_LEN = 64
 const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'] as const
 type UtmKey = (typeof UTM_KEYS)[number]
 
-export type Attribution = Partial<Record<UtmKey, string>> & { fbclid_present?: true; landing_page?: string }
+export type Attribution = Partial<Record<UtmKey, string>> & { fbclid_present?: true; gclid_present?: true; landing_page?: string }
 
 // Strona wejscia w sesji (sciezka od "/", bez domeny, query, hasha). Kontrakt CRM: [a-z0-9/_.-], bez "//", max 80 znakow.
 // Sciezka z innymi znakami (np. polskie litery po kodowaniu) jest pomijana, zeby CRM nie dostal wartosci do odrzucenia.
@@ -44,7 +44,7 @@ export function normalizeAttributionValue(raw: unknown): string | null {
 }
 
 export function isEmptyAttribution(a: Attribution | null | undefined): boolean {
-  return !a || (!a.fbclid_present && !a.landing_page && UTM_KEYS.every(k => !a[k]))
+  return !a || (!a.fbclid_present && !a.gclid_present && !a.landing_page && UTM_KEYS.every(k => !a[k]))
 }
 
 // Parsuje location.search (+ opcjonalnie pathname jako landing_page). Zwraca null, gdy brak utm_* / fbclid / poprawnej sciezki.
@@ -57,6 +57,8 @@ export function parseAttribution(search: string, pathname?: string): Attribution
       if (v) out[k] = v
     }
     if ((p.get('fbclid') ?? '').trim()) out.fbclid_present = true
+    // gclid (Google Ads): jak fbclid - tylko flaga, nigdy wartosc (identyfikator klikniecia = dana osobowa).
+    if ((p.get('gclid') ?? '').trim()) out.gclid_present = true
     const lp = normalizeLandingPage(pathname)
     if (lp) out.landing_page = lp
     return isEmptyAttribution(out) ? null : out
@@ -81,8 +83,9 @@ export function mergeAttribution(stored: Attribution | null, incoming: Attributi
   // Pierwsza strona wejscia w sesji zostaje; uzupelniamy ja tylko gdy jej brakowalo.
   const merged: Attribution = { ...st }
   if (inc.fbclid_present) merged.fbclid_present = true
+  if (inc.gclid_present) merged.gclid_present = true
   if (!st.landing_page && inc.landing_page) merged.landing_page = inc.landing_page
-  return merged.fbclid_present === st.fbclid_present && merged.landing_page === st.landing_page ? st : merged
+  return merged.fbclid_present === st.fbclid_present && merged.gclid_present === st.gclid_present && merged.landing_page === st.landing_page ? st : merged
 }
 
 type StorageLike = Pick<Storage, 'getItem' | 'setItem'>
@@ -116,6 +119,7 @@ export function readStoredAttribution(storage: StorageLike | null = getSessionSt
       if (v) out[k] = v
     }
     if (o.fbclid_present === true) out.fbclid_present = true
+    if (o.gclid_present === true) out.gclid_present = true
     const lp = normalizeLandingPage(o.landing_page)
     if (lp) out.landing_page = lp
     return isEmptyAttribution(out) ? null : out

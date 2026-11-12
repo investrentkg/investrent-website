@@ -204,3 +204,11 @@ test('landing_page: bez pathname zachowanie jak dotad; zapis z storage przechodz
   const p = withAttribution({ a: 1 }, { landing_page: '/kontakt' })
   assert.deepEqual(p, { a: 1, attribution: { landing_page: '/kontakt' } })
 })
+
+test('gclid: tylko flaga, nigdy wartosc; zachowuje sie jak fbclid', () => {
+  assert.deepEqual(parseAttribution('?utm_source=google&gclid=SECRETGCLID'), { utm_source: 'google', gclid_present: true })
+  assert.deepEqual(parseAttribution('?gclid=abc'), { gclid_present: true })
+  assert.equal(parseAttribution('?gclid='), null)
+  assert.deepEqual(mergeAttribution({ utm_source: 'google' }, { gclid_present: true }), { utm_source: 'google', gclid_present: true })
+  assert.ok(!JSON.stringify(parseAttribution('?gclid=SECRETGCLID')).includes('SECRETGCLID'))
+})
