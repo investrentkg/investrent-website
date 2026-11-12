@@ -152,7 +152,7 @@ export type EstimateOutcome =
   | { kind: 'rate_limited'; retryAfterSeconds: number | null }
   | { kind: 'disabled' }
   | { kind: 'invalid'; message: string | null }
-  | { kind: 'error'; reason: 'timeout' | 'network' | 'http' | 'invalid_response' }
+  | { kind: 'error'; reason: 'timeout' | 'network' | 'http' | 'invalid_response' | 'unavailable' }
 
 type FetchLike = (input: string, init?: RequestInit) => Promise<Response>
 
@@ -174,7 +174,10 @@ export function interpretResponse(status: number, body: unknown): EstimateOutcom
     const s = typeof b.retry_after_seconds === 'number' && b.retry_after_seconds > 0 ? b.retry_after_seconds : null
     return { kind: 'rate_limited', retryAfterSeconds: s }
   }
-  if (status === 503 || b.error === 'disabled') return { kind: 'disabled' }
+  // 'disabled' (tryb "sam numer") TYLKO gdy backend jawnie mowi error='disabled'. Inne 503 (restart/deploy API) to chwilowa niedostepnosc:
+  // nie wylaczamy kalkulatora na stale (13.11 poprawka przed startem reklam).
+  if (b.error === 'disabled') return { kind: 'disabled' }
+  if (status === 503) return { kind: 'error', reason: 'unavailable' }
   if (status === 400) return { kind: 'invalid', message: str(b.message) ?? str(b.error) }
   if (status < 200 || status >= 300) return { kind: 'error', reason: 'http' }
   if (b.ok !== true) return { kind: 'error', reason: 'invalid_response' }
@@ -202,7 +205,21 @@ export function interpretResponse(status: number, body: unknown): EstimateOutcom
   return { kind: 'error', reason: 'invalid_response' }
 }
 
+export const ESTIMATE_RETRY_DELAY_MS = 2000
+
+/** Jedno ponowienie po ~2 s, gdy API chwilowo niedostepne (503 inne niz 'disabled': restart/deploy). Inne bledy bez ponowien. */
 export async function requestEstimate(
+  url: string,
+  payload: EstimatePayload,
+  opts: { timeoutMs?: number; fetchImpl?: FetchLike; retryDelayMs?: number } = {}
+): Promise<EstimateOutcome> {
+  const first = await requestEstimateOnce(url, payload, opts)
+  if (first.kind !== 'error' || first.reason !== 'unavailable') return first
+  await new Promise(r => setTimeout(r, opts.retryDelayMs ?? ESTIMATE_RETRY_DELAY_MS))
+  return requestEstimateOnce(url, payload, opts)
+}
+
+async function requestEstimateOnce(
   url: string,
   payload: EstimatePayload,
   opts: { timeoutMs?: number; fetchImpl?: FetchLike } = {}
@@ -221,7 +238,7 @@ export async function requestEstimate(
     let data: unknown = null
     try { data = await res.json() } catch {
       // 502/504 z HTML-em albo pusta odpowiedz
-      if (res.status === 503 || res.status === 429) return interpretResponse(res.status, null)
+      if (res.status === 503 || res.status === 429) return interpretResponse(res.status, null) // 503 bez JSON = 'unavailable' (nie 'disabled')
       return { kind: 'error', reason: res.ok ? 'invalid_response' : 'http' }
     }
     return interpretResponse(res.status, data)
