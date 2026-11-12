@@ -10,10 +10,19 @@
 
 export const CONSENT_STORAGE_KEY = 'ir_consent'
 /** Zwiększyć, gdy zmienia się zakres kategorii/dostawców - wymusza ponowne pytanie. */
-export const CONSENT_VERSION = 4
+/**
+ * Google Ads w kategorii Reklamowe (12.11.2026, werdykt Prawnika + decyzja Daniela): FLAGA NEXT_PUBLIC_GOOGLE_ADS_CONSENT.
+ * OFF (domyslnie) = zachowanie jak dotad: wersja zgody 4, opis Reklamowe bez zmian, ad_* zawsze 'denied'.
+ * ON = wersja zgody 5 (ponowne pytanie wszystkich), kategoria Reklamowe obejmuje Meta + Google Ads (teksty, tabela cookies, polityka),
+ * po zgodzie Reklamowe ad_storage/ad_user_data/ad_personalization = 'granted'.
+ * NIE WLACZAC przed: akceptacja tekstow (Krytyk, Prawnik, trzeci recenzent, przeglad DE Ernesta), decyzja Daniela i testem na zywo w czystej przegladarce.
+ */
+export const GOOGLE_ADS_CONSENT_ENABLED: boolean = process.env.NEXT_PUBLIC_GOOGLE_ADS_CONSENT === 'on'
+export const CONSENT_VERSION = GOOGLE_ADS_CONSENT_ENABLED ? 5 : 4
 // v2 (09.10.2026): kategoria Marketingowe zawsze widoczna (zapis atrybucji UTM, website#42).
 // v3 (09.10.2026, doprecyzowanie Prawnika pkt c): rozdzielone zgody - `attribution` (UTM, dane tylko wewnętrzne) i `ads` (Meta Pixel/CAPI, odrębny administrator);
 // zapisy z v1/v2 = brak zgody, ponowne pytanie.
+// v5 (12.11.2026, za flaga NEXT_PUBLIC_GOOGLE_ADS_CONSENT): Reklamowe obejmuje Meta + Google Ads (cookies _gcl_aw/_gcl_au), zdanie w Analitycznych o modelu konwersji Ads; ponowne pytanie wszystkich.
 // v4 (11.11.2026, Prawnik TAK, decyzja Daniela): nowy, niski baner (trzy przyciski jednakowego stylu, krotka pierwsza warstwa) i zmiana opisu kategorii Reklamowe; wersja rosnie dla calego serwisu - ponowne pytanie. Gdy powstanie Pixel/CAPI: ADS_AVAILABLE=true BEZ podbijania wersji (klucz `ads` jest już w zapisie).
 /** Ponowne pytanie po 12 miesiącach (propozycja do opinii Prawnika). */
 export const CONSENT_MAX_AGE_MS = 365 * 24 * 60 * 60 * 1000
@@ -32,22 +41,15 @@ export interface ConsentState {
 }
 
 /** Czy kategoria Reklamowe (Pixel/CAPI) jest już wdrożona i wybieralna. FALSE = przełącznik w panelu nieaktywny, zgoda `ads` nigdy nie jest zapisywana jako true. */
-export const ADS_AVAILABLE: boolean = process.env.NEXT_PUBLIC_META_PIXEL_ENABLED === 'on'
-
-/**
- * Consent Mode v2 dla Google Ads (12.11.2026, pomiar kampanii): FLAGA NEXT_PUBLIC_GOOGLE_ADS_CONSENT. OFF (domyslnie) = zachowanie bez zmian: ad_* zawsze 'denied'.
- * ON = po zgodzie kategorii Reklamowe (ads) ad_storage/ad_user_data/ad_personalization = 'granted' i zgoda `ads` moze byc true.
- * NIE WLACZAC przed: werdyktem Prawnika (czy Reklamowe obejmuje Google Ads), nowymi tekstami banera/tabeli cookies/polityki PL+DE (dzis opis Reklamowe = Meta),
- * decyzja Daniela i przegladem DE (Ernest). Panel (ConsentManager) pozostaje oparty o ADS_AVAILABLE do osobnego PR-a z tekstami.
- */
-export const GOOGLE_ADS_CONSENT_ENABLED: boolean = process.env.NEXT_PUBLIC_GOOGLE_ADS_CONSENT === 'on'
+export const META_PIXEL_ENABLED: boolean = process.env.NEXT_PUBLIC_META_PIXEL_ENABLED === 'on'
+export const ADS_AVAILABLE: boolean = META_PIXEL_ENABLED || GOOGLE_ADS_CONSENT_ENABLED
 
 export type ConsentChoice = { analytics: boolean; attribution: boolean; ads: boolean }
 export const REJECT_ALL: ConsentChoice = { analytics: false, attribution: false, ads: false }
 export const ACCEPT_ALL: ConsentChoice = { analytics: true, attribution: true, ads: true }
 
 export function makeConsent(choice: ConsentChoice, now: number = Date.now()): ConsentState {
-  return { v: CONSENT_VERSION, analytics: !!choice.analytics, attribution: !!choice.attribution, ads: (ADS_AVAILABLE || GOOGLE_ADS_CONSENT_ENABLED) && !!choice.ads, ts: now }
+  return { v: CONSENT_VERSION, analytics: !!choice.analytics, attribution: !!choice.attribution, ads: ADS_AVAILABLE && !!choice.ads, ts: now }
 }
 
 /**
@@ -100,6 +102,11 @@ export function gaCookieNames(cookieString: string): string[] {
 /** Nazwy cookies Meta (`_fbp`, `_fbc`) do usunięcia po wycofaniu zgody reklamowej (ads). */
 export function metaCookieNames(cookieString: string): string[] {
   return (cookieString || '').split(';').map(p => p.split('=')[0].trim()).filter(n => n === '_fbp' || n === '_fbc')
+}
+
+/** Nazwy cookies Google Ads (`_gcl_aw`, `_gcl_au`) do usunięcia po wycofaniu zgody Reklamowe. */
+export function googleAdsCookieNames(cookieString: string): string[] {
+  return (cookieString || '').split(';').map(p => p.split('=')[0].trim()).filter(n => n === '_gcl_aw' || n === '_gcl_au' || /^_gcl_(aw|au)_.+$/.test(n))
 }
 
 /** Klucz sessionStorage z atrybucją reklamową UTM (website#42, src/lib/attribution.ts: ATTRIBUTION_STORAGE_KEY). Kasowany po wycofaniu zgody marketingowej (attribution). */

@@ -225,3 +225,31 @@ test('Google Ads Consent Mode za flaga NEXT_PUBLIC_GOOGLE_ADS_CONSENT: OFF = ad_
     if (prev === undefined) delete process.env.NEXT_PUBLIC_GOOGLE_ADS_CONSENT; else process.env.NEXT_PUBLIC_GOOGLE_ADS_CONSENT = prev
   }
 })
+
+test('v5 zgody za flaga NEXT_PUBLIC_GOOGLE_ADS_CONSENT: OFF = wersja 4 i teksty bez zmian; ON = wersja 5, Reklamowe z Google Ads i cookies _gcl_*, zdanie o modelu konwersji, ads dostepne', async () => {
+  const offCopy = JSON.stringify(CONSENT_COPY)
+  assert.equal(CONSENT_VERSION, 4)
+  assert.ok(!offCopy.includes('_gcl_aw'))
+  assert.ok(!offCopy.includes('model konwersji'))
+  const prev = process.env.NEXT_PUBLIC_GOOGLE_ADS_CONSENT
+  process.env.NEXT_PUBLIC_GOOGLE_ADS_CONSENT = 'on'
+  try {
+    const c = await import('./consent.ts?v5-on')
+    const copy = await import('./consentCopy.ts?v5-on')
+    assert.equal(c.CONSENT_VERSION, 5)
+    assert.equal(c.ADS_AVAILABLE, true)
+    assert.equal(c.makeConsent(c.ACCEPT_ALL, NOW).v, 5)
+    assert.equal(c.makeConsent(c.ACCEPT_ALL, NOW).ads, true)
+    // zapis z v4 = ponowne pytanie
+    assert.equal(c.parseConsent(JSON.stringify({ v: 4, analytics: true, attribution: true, ads: false, ts: NOW }), NOW), null)
+    for (const l of ['pl', 'de']) {
+      assert.match(copy.CONSENT_COPY[l].ads.liveDesc, /_gcl_aw, _gcl_au/)
+      assert.match(copy.CONSENT_COPY[l].ads.liveDesc, /Google/)
+      assert.match(copy.CONSENT_COPY[l].ads.liveDesc, /Meta/)
+      assert.match(copy.CONSENT_COPY[l].analytics.desc, /Google Ads/)
+    }
+    assert.deepEqual(c.googleAdsCookieNames('_gcl_aw=GCL.1.x; _gcl_au=1.1.2; _ga=GA1.1; _fbp=fb.1; _gcl_aw_xyz=1; sid=1'), ['_gcl_aw', '_gcl_au', '_gcl_aw_xyz'])
+  } finally {
+    if (prev === undefined) delete process.env.NEXT_PUBLIC_GOOGLE_ADS_CONSENT; else process.env.NEXT_PUBLIC_GOOGLE_ADS_CONSENT = prev
+  }
+})

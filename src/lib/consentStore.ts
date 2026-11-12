@@ -1,7 +1,7 @@
 "use client"
 import { useSyncExternalStore } from 'react'
 import {
-  CONSENT_STORAGE_KEY, CONSENT_CHANGE_EVENT, applyChoice, analyticsAllowed, attributionAllowed, adsAllowed, readStoredConsent, writeStoredConsent, gaCookieNames, metaCookieNames, ATTRIBUTION_SESSION_KEY,
+  CONSENT_STORAGE_KEY, CONSENT_CHANGE_EVENT, applyChoice, analyticsAllowed, attributionAllowed, adsAllowed, readStoredConsent, writeStoredConsent, gaCookieNames, metaCookieNames, googleAdsCookieNames, ATTRIBUTION_SESSION_KEY,
   type ConsentChoice, type ConsentState,
 } from './consent'
 
@@ -43,7 +43,7 @@ export function setConsent(choice: ConsentChoice): ConsentState {
   state = next // także gdy storage niedostępny: wybór działa do końca wizyty
   try {
     if (clearGa) deleteCookies(gaCookieNames(document.cookie))
-    if (clearMeta) deleteCookies(metaCookieNames(document.cookie))
+    if (clearMeta) deleteCookies([...metaCookieNames(document.cookie), ...googleAdsCookieNames(document.cookie)])
   } catch { /* czyszczenie cookies nigdy nie może zepsuć strony */ }
   // Wycofanie zgody marketingowej (attribution): kasujemy zapisaną atrybucję UTM (website#42) z sessionStorage.
   if (clearAttribution) { try { window.sessionStorage.removeItem(ATTRIBUTION_SESSION_KEY) } catch { /* brak sessionStorage */ } }

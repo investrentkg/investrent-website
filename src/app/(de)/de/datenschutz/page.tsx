@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import LegalShell, { H2, H3, P, UL, LI } from '@/components/legal/LegalShell'
 import CookieTable from '@/components/legal/CookieTable'
+import { GOOGLE_ADS_CONSENT_ENABLED as GADS } from '@/lib/consent'
 
 // Niemieckie tlumaczenie polskiej polityki prywatnosci (/rodo) + uzupelnienia
 // dla odbiorcow z Niemiec (kalkulator wyceny AI, Cloudflare Turnstile, formularze
@@ -93,8 +94,11 @@ export default function DatenschutzPage() {
       </P>
       <UL>
         <LI><strong>Notwendig</strong> — erforderlich für die ordnungsgemäße Funktion der Website (z. B. Speicherung Ihrer Auswahl im Einwilligungsbanner). Erfordern keine Einwilligung.</LI>
-        <LI><strong>Analyse</strong> — helfen uns zu verstehen, wie Sie unsere Website nutzen (z. B. Google Analytics 4). Werden nur nach erteilter Einwilligung aktiviert.</LI>
+        <LI><strong>Analyse</strong> — helfen uns zu verstehen, wie Sie unsere Website nutzen (z. B. Google Analytics 4). Werden nur nach erteilter Einwilligung aktiviert.{GADS && ' Die Daten aus Google Analytics speisen zudem das aggregierte Conversion-Modell von Google Ads.'}</LI>
         <LI><strong>Marketing</strong> — ermöglichen die Messung der Wirksamkeit unserer Werbekampagnen. Werden nur nach erteilter Einwilligung aktiviert. Haben Sie in die Kategorie Marketing eingewilligt, können die Angaben zu der Kampagne, über die Sie zu uns gekommen sind (UTM-Parameter sowie eine Kennzeichnung, dass der Besuch über einen Werbelink auf Facebook erfolgte), Ihrer abgesendeten Anfrage beigefügt werden, ausschließlich zur Bewertung der Wirksamkeit unserer Kampagnen; diese Angaben selbst enthalten keine personenbezogenen Daten von Ihnen.</LI>
+        {GADS && (
+          <LI><strong>Werbung (Google Ads und Meta)</strong> — ermöglichen uns, die Wirksamkeit und Ausrichtung unserer Werbung zu messen. Das Google-Ads-Tag (Google Ireland Limited; Cookies _gcl_aw und _gcl_au, Klick-Kennung gclid) und, sofern eingesetzt, das Meta-Pixel (Meta Platforms Ireland Limited; Cookies _fbp und _fbc) werden nur nach Ihrer gesonderten Einwilligung „Werbung“ aktiviert. Nach dem Absenden Ihrer Anfrage übermitteln wir an Google und/oder Meta (jeweils eigenständige Verantwortliche) Informationen über dieses Ereignis — ohne Namen, Telefonnummer oder E-Mail-Adresse — zusammen mit Browser- und Klick-Kennungen sowie der IP-Adresse und Browserdaten; die Daten können außerhalb des Europäischen Wirtschaftsraums übermittelt werden. Haben Sie in „Werbung“ eingewilligt, kann die Google-Klick-Kennung (gclid) bei Ihrer Anfrage in unserem CRM-System für bis zu 90 Tage gespeichert werden, ausschließlich zur Auswertung der Werbewirksamkeit. Nach Widerruf der Einwilligung werden die Cookies gelöscht. Die Einwilligung ist freiwillig.</LI>
+        )}
       </UL>
       <P>
         Sie können Ihre Einwilligung bei Ihrem ersten Besuch im Einwilligungsbanner erteilen, ablehnen oder anpassen sowie Ihre Auswahl jederzeit später über die Einstellungen ändern. Ihre Wahl wird 12 Monate lang gespeichert; danach fragen wir erneut. Eine Beschreibung der einzelnen Kategorien finden Sie im Einwilligungspanel.

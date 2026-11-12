@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react'
-import { ADS_AVAILABLE } from '@/lib/consent'
+import { ADS_AVAILABLE, GOOGLE_ADS_CONSENT_ENABLED, META_PIXEL_ENABLED } from '@/lib/consent'
 
 // Tabela cookies i zapisow w pamieci przegladarki dla polityk prywatnosci (/rodo - PL, /de/datenschutz - DE).
 // Rekomendacja Prawnika 09.10.2026 (prawnik_baner_zgod_doprecyzowanie_2026_10_09.md, pkt d): kolumny nazwa / dostawca / cel / czas zycia.
@@ -119,8 +119,24 @@ const nameCell: CSSProperties = { ...cell, fontWeight: 600, color: '#0d2a5c', mi
 const kindStyle: CSSProperties = { display: 'block', fontWeight: 400, fontSize: 12, color: '#64748b' }
 const code: CSSProperties = { fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace' }
 
+// Reklamowe z Google Ads (flaga NEXT_PUBLIC_GOOGLE_ADS_CONSENT, v5 zgody): wiersze Google + (gdy Meta wlaczona) wiersz Meta z konfiguracji powyzej.
+const GOOGLE_ADS_GROUP: Record<Locale, { title: string; row: Row }> = {
+  pl: {
+    title: 'Reklamowe — Google Ads i Meta (tylko po zgodzie)',
+    row: { name: '_gcl_aw, _gcl_au', kind: 'cookie', provider: GOOGLE, purpose: 'Znacznik Google Ads (ładowany dopiero po zgodzie „Reklamowe”): zapisuje identyfikator kliknięcia reklamy i rozpoznaje przeglądarkę, aby mierzyć skuteczność reklam Google. Dane trafiają do Google (odrębny administrator).', lifetime: '90 dni (ustawienie Google); usuwane od razu po wycofaniu zgody' },
+  },
+  de: {
+    title: 'Werbung — Google Ads und Meta (nur mit Einwilligung)',
+    row: { name: '_gcl_aw, _gcl_au', kind: 'Cookie', provider: GOOGLE, purpose: 'Google-Ads-Tag (wird erst nach Ihrer Einwilligung „Werbung“ geladen): speichert die Kennung des Werbeklicks und erkennt den Browser, um die Wirksamkeit der Google-Werbung zu messen. Die Daten werden an Google übermittelt (eigenständiger Verantwortlicher).', lifetime: '90 Tage (Standardeinstellung von Google); werden sofort nach Widerruf der Einwilligung gelöscht' },
+  },
+}
+
 export default function CookieTable({ locale }: { locale: Locale }) {
-  const t = TEXT[locale]
+  const base = TEXT[locale]
+  const last = base.groups[base.groups.length - 1]
+  const t = GOOGLE_ADS_CONSENT_ENABLED
+    ? { ...base, groups: [...base.groups.slice(0, -1), { title: GOOGLE_ADS_GROUP[locale].title, rows: [GOOGLE_ADS_GROUP[locale].row, ...(META_PIXEL_ENABLED ? [last.rows[0]] : [])] }] }
+    : base
   return (
     <div style={wrap} role="region" aria-label={t.scroll} tabIndex={0}>
       <table style={table}>
