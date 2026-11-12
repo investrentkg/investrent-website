@@ -60,7 +60,7 @@
 .c .f label, .c .cons { color: #3D4557; }
 .cLead { margin: 0 0 12px; font-size: 15.5px; color: #3f4a5c; }
 .dOnly { display: none; }
-.foot { padding: 12px 20px 108px; font-size: 13px; color: #3D4557; line-height: 1.5; }
+.foot { padding: 12px 20px 108px; font-size: 14px; color: #3D4557; line-height: 1.5; }
 
 .done { background: #fff; border-radius: 14px; padding: 16px; color: var(--ink); }
 .done h2 { color: var(--ok); margin: 0 0 6px; font-size: 20px; }
