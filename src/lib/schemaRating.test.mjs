@@ -89,3 +89,17 @@ test('pozostale dane strukturalne bez zmian (adres, godziny, sameAs, areaServed,
   assert.deepEqual(s.sameAs, [office.facebook_url, office.instagram_url])
   assert.equal('sameAs' in buildOfficeSchema({ ...office, facebook_url: null, instagram_url: null }, null), false)
 })
+
+test('opinieForm: odmiana 1 / 2-4 / 5+ i wyjatki 12-14', async () => {
+  const { opinieForm, formatRatingPl } = await import('./schemaRating.ts')
+  assert.equal(opinieForm(1), 'opinia')
+  assert.equal(opinieForm(2), 'opinie')
+  assert.equal(opinieForm(4), 'opinie')
+  assert.equal(opinieForm(5), 'opinii')
+  assert.equal(opinieForm(12), 'opinii')
+  assert.equal(opinieForm(22), 'opinie')
+  assert.equal(opinieForm(79), 'opinii')
+  assert.equal(opinieForm(112), 'opinii')
+  assert.equal(formatRatingPl(4.9), '4,9')
+  assert.equal(formatRatingPl(5), '5,0')
+})

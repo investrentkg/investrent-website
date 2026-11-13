@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { submitLead } from '@/lib/api'
 import { CONSENT_OPEN_EVENT } from '@/lib/consent'
+import { formatRatingPl, opinieForm, type VerifiedRating } from '@/lib/schemaRating'
 import s from './page.module.css'
 
 // Strona docelowa reklam Google Ads (sprzedaz/wycena). 1:1 z makieta M_v8n. ROBOCZA: nie wdrazac przed slowem Daniela.
@@ -9,8 +10,6 @@ import s from './page.module.css'
 // W SaaS: dane biura/oceny z konfiguracji tenanta (tu na sztywno, strona robocza dla InvestRent).
 const PHONE_DISPLAY = '731 554 341'
 const PHONE_HREF = 'tel:+48731554341'
-const RATING = '4,9'
-const REVIEWS = 79
 // Godziny 8-20 pokazujemy dopiero po tescie przekierowania po 16:00 i w sob/niedz (warunek Prawnika); do tego czasu flaga OFF.
 const SHOW_HOURS = process.env.NEXT_PUBLIC_ADS_HOURS_8_20 === 'on'
 // Zrodlo leada: kod 'ads_sprzedaj' (Bezp, PR #2460). Do czasu migracji CHECK i flagi ADS_SPRZEDAJ_SOURCE_ENABLED backend
@@ -93,7 +92,7 @@ const pin = (
   </svg>
 )
 
-export default function SprzedajPage() {
+export default function SprzedajPage({ rating }: { rating: VerifiedRating | null }) {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [hp, setHp] = useState('')
@@ -155,7 +154,7 @@ export default function SprzedajPage() {
                 <p className={s.sub}>Zadzwoń lub zostaw numer: porozmawiamy o sprzedaży lub wycenie. Oddzwonimy w ciągu 24&nbsp;godzin.</p>
                 <a ref={heroCallRef} className={s.call} href={PHONE_HREF} data-phone-position="main">Zadzwoń: {PHONE_DISPLAY}</a>
                 {SHOW_HOURS && <div className={s.hours}>Telefon odbieramy codziennie 8:00–20:00</div>}
-                <div className={s.tl}>Biuro nieruchomości w Kołobrzegu · ★ {RATING} w Google ({REVIEWS} opinii)</div>
+                <div className={s.tl}>Biuro nieruchomości w Kołobrzegu{rating && <> · ★ {formatRatingPl(rating.rating)} w Google ({rating.total} {opinieForm(rating.total)})</>}</div>
               </div>
               <div className={s.in}><Form id="hero" {...formProps} /></div>
             </div>
@@ -166,7 +165,7 @@ export default function SprzedajPage() {
           {steps(done)}
           <section className={`${s.sec} ${s.trustc}`}>
             <h2>Dlaczego InvestRent</h2>
-            <div className={s.rate}><i aria-hidden="true">★★★★★</i> {RATING} w Google · {REVIEWS} opinii</div>
+            {rating && <div className={s.rate}><i aria-hidden="true">★★★★★</i> {formatRatingPl(rating.rating)} w Google · {rating.total} {opinieForm(rating.total)}</div>}
             <p>Ponad 150 zrealizowanych transakcji w historii biura.</p>
             <p>{pin}<span>Biuro w Kołobrzegu: ul. Ratuszowa 12/1 lok.&nbsp;3, <span style={{ whiteSpace: "nowrap" }}>78-100 Kołobrzeg</span>.</span></p>
           </section>
