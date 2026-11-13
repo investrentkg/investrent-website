@@ -18,6 +18,12 @@ export const CONSENT_STORAGE_KEY = 'ir_consent'
  * NIE WLACZAC przed: akceptacja tekstow (Krytyk, Prawnik, trzeci recenzent, przeglad DE Ernesta), decyzja Daniela i testem na zywo w czystej przegladarce.
  */
 export const GOOGLE_ADS_CONSENT_ENABLED: boolean = process.env.NEXT_PUBLIC_GOOGLE_ADS_CONSENT === 'on'
+/**
+ * Zdanie w polityce (/rodo, /de/datenschutz) o zapisie gclid w CRM do 90 dni + sama wysylka gclid z kalkulatora (lib/gclid.ts):
+ * FLAGA NEXT_PUBLIC_GCLID_DISCLOSURE (warunek Prawnika 13.11: zdanie wchodzi w TYM SAMYM wdrozeniu co GCLID_FULL_CAPTURE_ENABLED w CRM,
+ * NIE z bumpem zgody v5 - funkcja nieaktywna = zdanie nieprawdziwe). OFF (domyslnie) = zdania nie ma, gclid nie jest zapisywany ani wysylany.
+ */
+export const GCLID_DISCLOSURE_ENABLED: boolean = process.env.NEXT_PUBLIC_GCLID_DISCLOSURE === 'on'
 export const CONSENT_VERSION = GOOGLE_ADS_CONSENT_ENABLED ? 5 : 4
 // v2 (09.10.2026): kategoria Marketingowe zawsze widoczna (zapis atrybucji UTM, website#42).
 // v3 (09.10.2026, doprecyzowanie Prawnika pkt c): rozdzielone zgody - `attribution` (UTM, dane tylko wewnętrzne) i `ads` (Meta Pixel/CAPI, odrębny administrator);
