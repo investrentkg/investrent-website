@@ -20,7 +20,7 @@ test('polityka PL: zdanie o gclid tylko za flaga (zdanie nie jest w tekscie bezw
 
 test('polityka DE: zdanie o gclid tylko za flaga', () => {
   const s = read('../app/(de)/de/datenschutz/page.tsx')
-  assert.match(s, /\{GCLID_DISCLOSURE && ' Haben Sie in „Werbung“ eingewilligt, kann die Google-Klick-Kennung \(gclid\)[^']*90 Tagen[^']*'\}/)
+  assert.match(s, /\{GCLID_DISCLOSURE && ' Haben Sie in „Werbung“ eingewilligt, kann die Google-Klick-ID \(gclid\)[^']*Erfolgsmessung unserer Werbung[^']*90 Tagen[^']*Löschungsantrag[^']*'\}/)
   assert.equal((s.match(/\(gclid\)/g) ?? []).length, 1)
 })
 
