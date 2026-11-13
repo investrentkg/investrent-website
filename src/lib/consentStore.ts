@@ -1,7 +1,7 @@
 "use client"
 import { useSyncExternalStore } from 'react'
 import {
-  CONSENT_STORAGE_KEY, CONSENT_CHANGE_EVENT, applyChoice, analyticsAllowed, attributionAllowed, adsAllowed, readStoredConsent, writeStoredConsent, gaCookieNames, metaCookieNames, googleAdsCookieNames, cookieDomainCandidates, ATTRIBUTION_SESSION_KEY, GOOGLE_ADS_CONSENT_ENABLED,
+  CONSENT_STORAGE_KEY, CONSENT_CHANGE_EVENT, applyChoice, analyticsAllowed, attributionAllowed, adsAllowed, readStoredConsent, writeStoredConsent, gaCookieNames, metaCookieNames, googleAdsCookieNames, cookieDomainCandidates, ATTRIBUTION_SESSION_KEY, GOOGLE_ADS_CONSENT_ENABLED, GCLID_DISCLOSURE_ENABLED,
   type ConsentChoice, type ConsentState,
 } from './consent'
 
@@ -81,7 +81,7 @@ export function hasAttributionConsent(): boolean { return attributionAllowed(get
 /** Reklamowe: Meta Pixel/CAPI (udostępnianie danych Meta). Do wdrożenia piksela zawsze false. */
 export function hasAdsConsent(): boolean { return adsAllowed(getConsent()) }
 /** Reklamowe w wersji 5 (Meta + Google Ads): tylko przy fladze GOOGLE_ADS_CONSENT_ENABLED (wersja zgody 5) ORAZ zgodzie Reklamowe. Bramka dla pelnego gclid (lib/gclid.ts). */
-export function hasGoogleAdsConsent(): boolean { return GOOGLE_ADS_CONSENT_ENABLED && adsAllowed(getConsent()) }
+export function hasGoogleAdsConsent(): boolean { return GOOGLE_ADS_CONSENT_ENABLED && GCLID_DISCLOSURE_ENABLED && adsAllowed(getConsent()) }
 
 /** Wywołuje cb po każdej zmianie wyboru (także z innej karty). Zwraca funkcję wypisującą. */
 export function onConsentChange(cb: (analytics: boolean, attribution: boolean, ads: boolean) => void): () => void {
