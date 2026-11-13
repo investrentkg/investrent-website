@@ -17,7 +17,8 @@ import { DEFAULT_FLOOR, DEFAULT_ROOMS, FLOOR_CHOICES, ROOMS_CHOICES, cardFilters
 import type { MarketCardFilters } from '@/lib/marketCard'
 import { WYCENA_SCREEN1_V4_TEXTS as S1 } from './wycenaScreen1V4Texts'
 import WycenaMetaPixel, { trackWycenaMetaLead, trackWycenaMetaCustom } from '@/components/WycenaMetaPixel'
-import { hasAdsConsent, onConsentChange } from '@/lib/consentStore'
+import { hasAdsConsent, hasGoogleAdsConsent, onConsentChange } from '@/lib/consentStore'
+import { attributionWithGclid } from '@/lib/gclid'
 import { buildWycenaMetaTracking } from '@/lib/wycenaMetaPixel'
 import { useMetaConsentReceipt } from './useMetaConsentReceipt'
 import { sendFunnelStep } from '@/lib/funnel'
@@ -708,7 +709,7 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = fals
     setState('sending')
     trackValuation('wycena_lead_submit', { mode, iab: iabClass() })
     try {
-      const attribution = getAttribution()
+      const attribution = attributionWithGclid(getAttribution(), hasGoogleAdsConsent())
       const metaReceipt = metaConsent.getReceipt()
       const metaTracking = buildWycenaMetaTracking({
         enabled: WYCENA_META_TRACKING_ON,
