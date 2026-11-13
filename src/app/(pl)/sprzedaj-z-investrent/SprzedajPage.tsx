@@ -155,7 +155,7 @@ export default function SprzedajPage() {
                 <p className={s.sub}>Zadzwoń lub zostaw numer: porozmawiamy o sprzedaży lub wycenie. Oddzwonimy w ciągu 24&nbsp;godzin.</p>
                 <a ref={heroCallRef} className={s.call} href={PHONE_HREF} data-phone-position="main">Zadzwoń: {PHONE_DISPLAY}</a>
                 {SHOW_HOURS && <div className={s.hours}>Telefon odbieramy codziennie 8:00–20:00</div>}
-                <div className={s.tl}>Biuro w Kołobrzegu · ★ {RATING} w Google ({REVIEWS} opinii)</div>
+                <div className={s.tl}>Biuro nieruchomości w Kołobrzegu · ★ {RATING} w Google ({REVIEWS} opinii)</div>
               </div>
               <div className={s.in}><Form id="hero" {...formProps} /></div>
             </div>
