@@ -76,3 +76,17 @@ export function getVerifiedRating(data: unknown, now: Date | number = new Date()
 export function shouldEmitAggregateRating(data: unknown, now: Date | number = new Date()): boolean {
   return getVerifiedRating(data, now) !== null
 }
+
+/** Odmiana "opinia": 1 opinia, 2-4 opinie (poza 12-14), reszta opinii. */
+export function opinieForm(n: number): string {
+  const m10 = n % 10
+  const m100 = n % 100
+  if (n === 1) return 'opinia'
+  if (m10 >= 2 && m10 <= 4 && !(m100 >= 12 && m100 <= 14)) return 'opinie'
+  return 'opinii'
+}
+
+/** Ocena po polsku z przecinkiem, np. 4.9 -> "4,9". */
+export function formatRatingPl(r: number): string {
+  return r.toFixed(1).replace('.', ',')
+}

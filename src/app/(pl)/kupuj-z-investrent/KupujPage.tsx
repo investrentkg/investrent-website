@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { submitLead } from '@/lib/api'
 import { CONSENT_OPEN_EVENT } from '@/lib/consent'
+import { formatRatingPl, opinieForm, type VerifiedRating } from '@/lib/schemaRating'
 import s from './page.module.css'
 
 // Strona docelowa reklam Google Ads (kupno). 1:1 z makieta M_k5 (zatwierdzona przez Daniela 11.11.2026). Wzorzec jak /sprzedaj-z-investrent.
@@ -9,8 +10,6 @@ import s from './page.module.css'
 // W SaaS: dane biura/oceny z konfiguracji tenanta (tu na sztywno, strona robocza dla InvestRent).
 const PHONE_DISPLAY = '731 554 341'
 const PHONE_HREF = 'tel:+48731554341'
-const RATING = '4,9'
-const REVIEWS = 79
 // Godziny 8-20 pokazujemy dopiero po tescie przekierowania po 16:00 i w sob/niedz (warunek Prawnika); do tego czasu flaga OFF.
 const SHOW_HOURS = process.env.NEXT_PUBLIC_ADS_HOURS_8_20 === 'on'
 // Zrodlo leada: 'ads_kupno' (Bezp, #2460). Do czasu flagi ADS_KUPNO_SOURCE_ENABLED backend zapisuje 'website';
@@ -128,7 +127,7 @@ const pin = (
 // Adres bez lamania w kodzie pocztowym i w "lok. 3," (makieta k5).
 const address = (<>ul. Ratuszowa 12/1 <span className={s.nw}>lok. 3,</span> <span className={s.nw}>78-100 Kołobrzeg</span></>)
 
-export default function KupujPage() {
+export default function KupujPage({ rating }: { rating: VerifiedRating | null }) {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [hp, setHp] = useState('')
@@ -202,7 +201,7 @@ export default function KupujPage() {
                 <p className={s.sub}>Zadzwoń lub zostaw numer: porozmawiamy, czego szukasz. Oddzwonimy&nbsp;w&nbsp;ciągu&nbsp;24&nbsp;godzin.</p>
                 <a ref={heroCallRef} className={s.call} href={PHONE_HREF} data-phone-position="main">Zadzwoń: {PHONE_DISPLAY}</a>
                 {SHOW_HOURS && <div className={s.hours}>Telefon odbieramy codziennie 8:00–20:00</div>}
-                <div className={s.tl}>Biuro w Kołobrzegu · ★ {RATING} w Google ({REVIEWS} opinii)</div>
+                <div className={s.tl}>Biuro w Kołobrzegu{rating && <> · ★ {formatRatingPl(rating.rating)} w Google ({rating.total} {opinieForm(rating.total)})</>}</div>
               </div>
               <div className={s.in}><Form id="hero" {...formProps} /></div>
             </div>
@@ -213,7 +212,7 @@ export default function KupujPage() {
           {steps(done)}
           <section className={`${s.sec} ${s.trustc}`}>
             <h2>Dlaczego InvestRent</h2>
-            <div className={s.rate}><i aria-hidden="true">★★★★★</i> {RATING} w Google · {REVIEWS} opinii</div>
+            {rating && <div className={s.rate}><i aria-hidden="true">★★★★★</i> {formatRatingPl(rating.rating)} w Google · {rating.total} {opinieForm(rating.total)}</div>}
             <p>{pin}<span>Biuro w Kołobrzegu: {address}</span></p>
           </section>
         </div>
