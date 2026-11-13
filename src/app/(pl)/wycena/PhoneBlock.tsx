@@ -13,7 +13,8 @@ import { CONSENT_TEXT, CONSENT_VERSION } from '@/lib/wycenaConsentText'
 import { CONTACT_WINDOWS, CONTACT_WINDOW_LABELS, type ContactWindow } from '@/lib/marketCard'
 import { T } from './texts'
 import { PHONE_BLOCK_CONSENT_VERSION, PHONE_BLOCK_LEGAL as L, PHONE_BLOCK_TEXTS as P } from './phoneBlockTexts'
-import { hasAdsConsent } from '@/lib/consentStore'
+import { hasAdsConsent, hasGoogleAdsConsent } from '@/lib/consentStore'
+import { attributionWithGclid } from '@/lib/gclid'
 import { buildWycenaMetaTracking } from '@/lib/wycenaMetaPixel'
 import { useMetaConsentReceipt } from './useMetaConsentReceipt'
 import { trackWycenaMetaLead } from '@/components/WycenaMetaPixel'
@@ -81,7 +82,7 @@ export default function PhoneBlock({ outcome, values, onDone, funnelVariant }: {
     trackValuation('wycena_lead_submit', { mode, iab: iab(), placement: 'phone_block' })
     const utm = readUtm(window.location.search)
     try {
-      const attribution = getAttribution()
+      const attribution = attributionWithGclid(getAttribution(), hasGoogleAdsConsent())
       const metaReceipt = metaConsent.getReceipt()
       const metaTracking = buildWycenaMetaTracking({
         enabled: WYCENA_META_TRACKING_ON,
