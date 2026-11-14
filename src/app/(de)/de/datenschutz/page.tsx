@@ -210,7 +210,7 @@ export default function DatenschutzPage() {
         <LI>Apify und Bright Data – Abruf öffentlich zugänglicher Immobilienanzeigen von Portalen sowie Bildbearbeitungsdienste für Objektfotos;</LI>
         <LI>Cloudflare, Inc. (USA) – Schutz vor automatisierten Zugriffen (Turnstile, nur auf der polnischsprachigen Rechner-Seite);</LI>
         <LI>Meta Platforms Ireland Limited (Irland) – Kontaktformulare auf Facebook/Instagram sowie, soweit Sie uns Ihre Einwilligung erteilt haben, Kontaktaufnahme über WhatsApp (WhatsApp Business);</LI>
-        {GADS && <LI>Google Ireland Limited (Irland) – nach Ihrer Einwilligung „Werbung“: Cookies _gcl_aw und _gcl_au sowie Einwilligungssignale für Werbung in Google Analytics zur Messung der Wirksamkeit von Google-Ads-Werbung (eigenständiger Verantwortlicher);</LI>}
+        {GADS && <LI>Google Ireland Limited (Irland) – nach Ihrer Einwilligung „Werbung“: Cookies _gcl_aw und _gcl_au, ein Eintrag im Browserspeicher (localStorage) _gcl_ls sowie Einwilligungssignale für Werbung in Google Analytics zur Messung der Wirksamkeit von Google-Ads-Werbung (eigenständiger Verantwortlicher);</LI>}
         <LI>Google Ireland Limited (Irland) – Google-Dienste (siehe Abschnitte 3 und 9).</LI>
       </UL>
       {/* ERLEDIGT (Przeglad 3.8, uwaga 15): kategorie odbiorcow wg prawnika + doprecyzowanie kancelarii/ksiegowych. Daniel/Backend (pkt 9 listy): potwierdzic, czy Brevo jest faktycznie uzywane (jesli nie - usunac pozycje tu i w /rodo); lista dostawcow to jedno zrodlo prawdy z /rodo (art. 30, art. 28). */}

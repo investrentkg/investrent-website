@@ -269,7 +269,7 @@ export default async function RodoPage() {
                 <LI>Apify i Bright Data – pobieranie publicznie dostępnych ogłoszeń nieruchomości z portali oraz usługi obróbki zdjęć ofert;</LI>
                 <LI>Cloudflare, Inc. (USA) – ochrona przed automatycznymi wejściami (Turnstile, tylko na stronie kalkulatora);</LI>
                 <LI>Meta Platforms Ireland Limited (Irlandia) – formularze kontaktowe na Facebooku/Instagramie oraz, po wyrażeniu zgody „{GADS ? 'Reklamowe' : 'Reklamowe (Meta)'}”, zdarzenia Meta Pixel/Conversions API z kalkulatora wyceny;</LI>
-                {GADS && <LI>Google Ireland Limited (Irlandia) – po wyrażeniu zgody „Reklamowe”: pliki cookie _gcl_aw i _gcl_au oraz sygnały zgody na reklamy w Google Analytics, służące mierzeniu skuteczności reklam Google Ads (odrębny administrator);</LI>}
+                {GADS && <LI>Google Ireland Limited (Irlandia) – po wyrażeniu zgody „Reklamowe”: pliki cookie _gcl_aw i _gcl_au, wpis w pamięci przeglądarki (localStorage) _gcl_ls oraz sygnały zgody na reklamy w Google Analytics, służące mierzeniu skuteczności reklam Google Ads (odrębny administrator);</LI>}
                 <LI>Google Ireland Limited (Irlandia) – usługi Google (mapy, wideo, API – patrz wyżej), w tym Kalendarz Google pracowników biura, jeśli pracownik połączył go z naszym systemem: tworzymy w nim zadanie oddzwonienia z imieniem osoby i odnośnikiem do jej karty w naszym systemie.</LI>
               </UL>
               {/* Lista dostawcow = jedno zrodlo prawdy z /de/datenschutz (sekcja 10). Zmieniac obie wersje razem. Brevo potwierdzone jako uzywane (od 13.09.2026). */}
