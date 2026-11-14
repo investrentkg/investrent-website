@@ -2,6 +2,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { submitLead } from '@/lib/api'
 import { CONSENT_OPEN_EVENT } from '@/lib/consent'
+import { hasGoogleAdsConsent } from '@/lib/consentStore'
+import { getAttribution } from '@/lib/attribution'
+import { sprzedajLeadAds } from '@/lib/sprzedajAds'
 import { formatRatingPl, opinieForm, type VerifiedRating } from '@/lib/schemaRating'
 import s from './page.module.css'
 
@@ -106,7 +109,9 @@ export default function SprzedajPage({ rating }: { rating: VerifiedRating | null
     const digits = nineDigits(phone)
     if (!digits) { setStatus('invalid'); return }
     setStatus('loading')
-    const res = await submitLead({ full_name: name.trim() || undefined, phone: digits, source: SOURCE, client_type: 'seller', notes: NOTES_MARKER, hp_field: hp })
+    // gclid do CRM tylko przy zgodzie Reklamowe v5 (hasGoogleAdsConsent) + własny znacznik [Zgoda-reklamowe] w notes; bez zgody payload bez zmian.
+    const ads = sprzedajLeadAds({ adsOk: hasGoogleAdsConsent(), notes: NOTES_MARKER, attribution: getAttribution() })
+    const res = await submitLead({ full_name: name.trim() || undefined, phone: digits, source: SOURCE, client_type: 'seller', notes: ads.notes, hp_field: hp, ...(ads.attribution ? { attribution: ads.attribution } : {}) })
     if (res?.ok) { setSentPhone(digits); setStatus('ok') } else setStatus('error')
   }
 
