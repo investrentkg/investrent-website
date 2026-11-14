@@ -123,11 +123,11 @@ const code: CSSProperties = { fontFamily: 'ui-monospace, SFMono-Regular, Menlo, 
 const GOOGLE_ADS_GROUP: Record<Locale, { title: string; row: Row }> = {
   pl: {
     title: 'Reklamowe — Google Ads i Meta (tylko po zgodzie)',
-    row: { name: '_gcl_aw, _gcl_au', kind: 'cookie', provider: GOOGLE, purpose: 'Pliki cookie Google powiązane z reklamami (ustawiane przez Google Analytics dopiero po zgodzie „Reklamowe”): zapisują identyfikator kliknięcia reklamy Google i rozpoznają przeglądarkę, aby mierzyć skuteczność reklam Google. Dane trafiają do Google (odrębny administrator).', lifetime: '90 dni (ustawienie Google); usuwane po wycofaniu zgody' },
+    row: { name: '_gcl_aw, _gcl_au, _gcl_ls', kind: 'cookie / localStorage', provider: GOOGLE, purpose: 'Pliki cookie i wpis w pamięci przeglądarki (localStorage: _gcl_ls) Google powiązane z reklamami (ustawiane przez Google Analytics dopiero po zgodzie „Reklamowe”): zapisują identyfikator kliknięcia reklamy Google i rozpoznają przeglądarkę, aby mierzyć skuteczność reklam Google. Dane trafiają do Google (odrębny administrator).', lifetime: '90 dni (ustawienie Google); usuwane po wycofaniu zgody' },
   },
   de: {
     title: 'Werbung — Google Ads und Meta (nur mit Einwilligung)',
-    row: { name: '_gcl_aw, _gcl_au', kind: 'Cookie', provider: GOOGLE, purpose: 'Werbebezogene Google-Cookies (von Google Analytics erst nach Ihrer Einwilligung „Werbung“ gesetzt): speichern die Kennung des Google-Werbeklicks und erkennen den Browser, um die Wirksamkeit der Google-Werbung zu messen. Die Daten werden an Google übermittelt (eigenständiger Verantwortlicher).', lifetime: '90 Tage (Standardeinstellung von Google); werden nach Widerruf der Einwilligung gelöscht' },
+    row: { name: '_gcl_aw, _gcl_au, _gcl_ls', kind: 'Cookie / localStorage', provider: GOOGLE, purpose: 'Werbebezogene Google-Cookies und ein Eintrag im Browserspeicher (localStorage: _gcl_ls) (von Google Analytics erst nach Ihrer Einwilligung „Werbung“ gesetzt): speichern die Kennung des Google-Werbeklicks und erkennen den Browser, um die Wirksamkeit der Google-Werbung zu messen. Die Daten werden an Google übermittelt (eigenständiger Verantwortlicher).', lifetime: '90 Tage (Standardeinstellung von Google); werden nach Widerruf der Einwilligung gelöscht' },
   },
 }
 
