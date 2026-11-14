@@ -46,6 +46,8 @@ export function setConsent(choice: ConsentChoice): ConsentState {
   } catch { /* czyszczenie cookies nigdy nie może zepsuć strony */ }
   // Wycofanie zgody Reklamowe: kasujemy zapisany gclid (lib/gclid.ts) z sessionStorage.
   if (clearMeta) { try { window.sessionStorage.removeItem('ir_gclid') } catch { /* brak sessionStorage */ } }
+  // Tag Google (gtag) trzyma gclid tez w localStorage (`_gcl_ls`, ~90 dni) - cookies _gcl_* kasujemy wyzej, ten wpis tez (test 0.4, 14.11: po wycofaniu zostawal).
+  if (clearMeta) { try { window.localStorage.removeItem('_gcl_ls') } catch { /* brak localStorage */ } }
   // Wycofanie zgody marketingowej (attribution): kasujemy zapisaną atrybucję UTM (website#42) z sessionStorage.
   if (clearAttribution) { try { window.sessionStorage.removeItem(ATTRIBUTION_SESSION_KEY) } catch { /* brak sessionStorage */ } }
   notify()
