@@ -10,6 +10,13 @@ import { formatPhoneHref } from './phone.ts'
 // 54.17705 / 15.57682. UWAGA: to dane z OSM, NIE z wizytowki Google - przy
 // najblizszej okazji potwierdzic pineske w Google Maps (wizytowka "Invest Rent
 // Nieruchomosci") i w razie rozbieznosci poprawic te stale.
+// Stale profile zewnetrzne (14.11.2026): wizytowka Google (CID z listingu w Mapach)
+// i profil firmy na Otodom - sameAs laczy te byty z jednym obiektem #biuro.
+export const OFFICE_SAMEAS_STATIC = [
+  'https://maps.google.com/?cid=17529081579915777783',
+  'https://www.otodom.pl/pl/firmy/biura-nieruchomosci/invest-rent-nieruchomosci-ID10487006',
+] as const
+
 export const OFFICE_GEO = { latitude: 54.17705, longitude: 15.57682 } as const
 
 /**
@@ -18,7 +25,7 @@ export const OFFICE_GEO = { latitude: 54.17705, longitude: 15.57682 } as const
  * aggregateRating jest POMIJANE (zamiast sztywnych liczb zapasowych).
  */
 export function buildOfficeSchema(office: Office | null, rating?: VerifiedRating | null) {
-  const sameAs = [office?.facebook_url, office?.instagram_url].filter((u): u is string => !!u)
+  const sameAs = [office?.facebook_url, office?.instagram_url, ...OFFICE_SAMEAS_STATIC].filter((u): u is string => !!u)
   // NAP: telefon w CRM to surowe cyfry ("731554341"), bez kodu kraju - Google
   // zaleca format miedzynarodowy (E.164), a widoczny numer to +48 731 554 341.
   const telephone = formatPhoneHref(office?.phone) || '+48731554341'
@@ -63,10 +70,29 @@ export function buildOfficeSchema(office: Office | null, rating?: VerifiedRating
       { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "opens": "08:00", "closes": "16:00" },
       { "@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "10:00", "closes": "15:00" },
     ],
-    // sameAs tylko z profili faktycznie ustawionych w Ustawieniach biura (CRM).
+    // sameAs: profile z Ustawien biura (CRM) + stale profile zewnetrzne (Google Maps, Otodom).
     ...(sameAs.length > 0 ? { "sameAs": sameAs } : {}),
     // aggregateRating TYLKO z wiarygodnych, swiezych danych (patrz schemaRating.ts);
     // wartosci jako liczby - te same, co widoczny widget (jeden obiekt zrodlowy).
     ...(rating ? { "aggregateRating": { "@type": "AggregateRating", "ratingValue": rating.rating, "reviewCount": rating.total } } : {}),
+  }
+}
+
+/**
+ * Schemat WebSite tylko dla strony glownej: nazwa witryny dla Google
+ * ("Invest Rent Nieruchomosci", nazwa alternatywna "InvestRent"). Bez tego
+ * Google sklada nazwe z logo w naglowku i w wynikach pokazuje sklejone
+ * "INVEST RENTNIERUCHOMOSCI" (14.11.2026).
+ */
+export function buildWebSiteSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": "https://www.investrent.com.pl/#website",
+    "url": "https://www.investrent.com.pl/",
+    "name": "Invest Rent Nieruchomości",
+    "alternateName": ["InvestRent Nieruchomości", "InvestRent", "Invest Rent"],
+    "inLanguage": "pl-PL",
+    "publisher": { "@id": "https://www.investrent.com.pl/#biuro" },
   }
 }

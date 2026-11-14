@@ -23,6 +23,8 @@ import About         from '@/components/About'
 import ValuationCTA  from '@/components/ValuationCTA'
 import Reviews       from '@/components/Reviews'
 import { JsonLd }    from '@/components/JsonLd'
+import { buildWebSiteSchema } from '@/lib/officeSchema'
+import { serializeJsonLd } from '@/lib/jsonLd'
 import Team          from '@/components/Team'
 import Contact       from '@/components/Contact'
 import RelatedLinks from '@/components/RelatedLinks'
@@ -114,6 +116,7 @@ export default async function Home() {
   return (
     <>
       <JsonLd office={office} rating={rating} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(buildWebSiteSchema()) }} />
       {/* Wczesne wczytanie obrazu tla hero (poprawa LCP na telefonie) */}
       <link rel="preload" as="image" href="/hero-m.webp" media="(max-width: 768px)" fetchPriority="high" />
       <link rel="preload" as="image" href="/hero.webp" media="(min-width: 769px)" fetchPriority="high" />

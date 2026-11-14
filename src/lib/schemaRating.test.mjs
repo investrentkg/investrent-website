@@ -2,7 +2,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { getVerifiedRating, shouldEmitAggregateRating, RATING_MAX_AGE_DAYS } from './schemaRating.ts'
-import { buildOfficeSchema, OFFICE_GEO } from './officeSchema.ts'
+import { buildOfficeSchema, OFFICE_GEO, OFFICE_SAMEAS_STATIC } from './officeSchema.ts'
 
 const NOW = new Date('2026-10-03T12:00:00Z')
 const daysAgo = (d) => new Date(NOW.getTime() - d * 86400000).toISOString()
@@ -86,8 +86,8 @@ test('pozostale dane strukturalne bez zmian (adres, godziny, sameAs, areaServed,
   assert.deepEqual(s.address, { '@type': 'PostalAddress', streetAddress: 'ul. Ratuszowa 12/1 lok. 3', addressLocality: 'Kołobrzeg', postalCode: '78-100', addressRegion: 'Zachodniopomorskie', addressCountry: 'PL' })
   assert.equal(s.openingHoursSpecification.length, 2)
   assert.equal(s.areaServed.length, 5)
-  assert.deepEqual(s.sameAs, [office.facebook_url, office.instagram_url])
-  assert.equal('sameAs' in buildOfficeSchema({ ...office, facebook_url: null, instagram_url: null }, null), false)
+  assert.deepEqual(s.sameAs, [office.facebook_url, office.instagram_url, ...OFFICE_SAMEAS_STATIC])
+  assert.deepEqual(buildOfficeSchema({ ...office, facebook_url: null, instagram_url: null }, null).sameAs, [...OFFICE_SAMEAS_STATIC])
 })
 
 test('opinieForm: odmiana 1 / 2-4 / 5+ i wyjatki 12-14', async () => {
