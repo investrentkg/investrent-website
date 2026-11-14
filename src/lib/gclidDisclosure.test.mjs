@@ -28,3 +28,9 @@ test('wysylka gclid: hasGoogleAdsConsent wymaga flagi v5 ORAZ flagi ujawnienia O
   const s = read('./consentStore.ts')
   assert.match(s, /hasGoogleAdsConsent\(\): boolean \{ return GOOGLE_ADS_CONSENT_ENABLED && GCLID_DISCLOSURE_ENABLED && adsAllowed\(getConsent\(\)\) \}/)
 })
+
+test('wycofanie zgody Reklamowe kasuje tez localStorage _gcl_ls (gclid trzymany przez tag Google), test 0.4 14.11', async () => {
+  const { readFileSync } = await import('node:fs')
+  const src = readFileSync(new URL('./consentStore.ts', import.meta.url), 'utf8')
+  assert.match(src, /if \(clearMeta\) \{ try \{ window\.localStorage\.removeItem\('_gcl_ls'\)/)
+})
