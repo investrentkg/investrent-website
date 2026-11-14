@@ -39,7 +39,9 @@ test('GA: no-op bez gtag; event tylko z lead_source (bez danych osobowych)', () 
   const calls = []
   globalThis.window = { gtag: (...a) => calls.push(a) }
   trackLeadSuccess('wycena_modal')
-  assert.equal(calls.length, 1)
+  assert.equal(calls.length, 2) // generate_lead + generate_lead_sprzedaz (wycena_modal = lead sprzedazowy)
+  assert.equal(calls[1][1], 'generate_lead_sprzedaz')
+  assert.deepEqual(calls[1][2], calls[0][2]) // ten sam event_id i lead_source, zadnych danych osobowych
   assert.equal(calls[0][1], 'generate_lead')
   assert.deepEqual(Object.keys(calls[0][2]).sort(), ['event_id', 'lead_source'])
   assert.equal(calls[0][2].lead_source, 'wycena_modal')
@@ -69,4 +71,15 @@ test('postLead: pole meta_capi z odpowiedzi jest przekazane jako metaCapi; bez p
   assert.deepEqual(await postLead('https://api.test/leads', {}, mk({ ok: true, meta_capi: { event_id: 'wyc_1234567890abcdef', dispatched: false } })), { ok: true, metaCapi: { event_id: 'wyc_1234567890abcdef', dispatched: false } })
   assert.deepEqual(await postLead('https://api.test/leads', {}, mk({ ok: true, meta_capi: null })), { ok: true, metaCapi: null })
   assert.deepEqual(await postLead('https://api.test/leads', {}, mk({ ok: true })), { ok: true })
+})
+
+test('generate_lead_sprzedaz tylko dla zrodel sprzedazowych (ads_sprzedaj, hero_sell, wycena_modal); kalkulator i kupujacy bez niego', () => {
+  for (const [src, n] of [['ads_sprzedaj', 2], ['hero_sell', 2], ['wycena_modal', 2], ['wycena_lp', 1], ['offer_detail', 1], ['contact', 1], [undefined, 1]]) {
+    const calls = []
+    globalThis.window = { gtag: (...a) => calls.push(a) }
+    trackLeadSuccess(src)
+    assert.equal(calls.length, n, String(src))
+    assert.equal(calls[0][1], 'generate_lead')
+    delete globalThis.window
+  }
 })
