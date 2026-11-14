@@ -70,11 +70,18 @@ export function newEventId(): string {
   return `e${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}`
 }
 
+// Zrodla leadow SPRZEDAZOWYCH (wlasciciel prosi o telefon w sprawie sprzedazy/wyceny): osobne zdarzenie generate_lead_sprzedaz = cel PODSTAWOWY
+// kampanii Google Ads sprzedazowej; generate_lead zostaje bez zmian (dodatkowe, wszystkie formularze). Bez kalkulatora (wycena_lp) i formularzy kupujacych.
+export const SPRZEDAZ_LEAD_SOURCES: readonly string[] = ['ads_sprzedaj', 'hero_sell', 'wycena_modal']
+
 export function trackLeadSuccess(source: string | undefined, eventId: string = newEventId()): void {
   try {
     const w = typeof window !== 'undefined' ? (window as unknown as { gtag?: (...a: unknown[]) => void }) : undefined
     if (w && typeof w.gtag === 'function') {
       w.gtag('event', 'generate_lead', { lead_source: source || 'unknown', event_id: eventId })
+      if (source && SPRZEDAZ_LEAD_SOURCES.includes(source)) {
+        w.gtag('event', 'generate_lead_sprzedaz', { lead_source: source, event_id: eventId })
+      }
     }
   } catch {
     // analityka nigdy nie moze zepsuc formularza
