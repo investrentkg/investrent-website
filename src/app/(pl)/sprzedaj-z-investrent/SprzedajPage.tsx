@@ -15,6 +15,9 @@ const PHONE_DISPLAY = '731 554 341'
 const PHONE_HREF = 'tel:+48731554341'
 // Godziny 8-20 pokazujemy dopiero po tescie przekierowania po 16:00 i w sob/niedz (warunek Prawnika); do tego czasu flaga OFF.
 const SHOW_HOURS = process.env.NEXT_PUBLIC_ADS_HOURS_8_20 === 'on'
+// CRO v1 (15.11.2026, Dyrektor): naglowek zgodny z fraza reklamy Google. Domyslnie OFF (merge nie zmienia produkcji); wlaczenie = NEXT_PUBLIC_LP_CRO_V1=on + redeploy.
+const LP_CRO_V1 = process.env.NEXT_PUBLIC_LP_CRO_V1 === 'on'
+const H1_TEXT = LP_CRO_V1 ? 'Sprzedaj mieszkanie w Kołobrzegu z lokalnym biurem' : 'Sprzedaż mieszkania lub domu w Kołobrzegu'
 // Zrodlo leada: kod 'ads_sprzedaj' (Bezp, PR #2460). Do czasu migracji CHECK i flagi ADS_SPRZEDAJ_SOURCE_ENABLED backend
 // bezpiecznie zapisuje 'website'; rozpoznawalnosc kanalu daje wtedy znacznik w notatce (zostaje).
 const SOURCE = 'ads_sprzedaj'
@@ -141,7 +144,7 @@ export default function SprzedajPage({ rating }: { rating: VerifiedRating | null
         {done ? (
           <section className={s.hero}>
             <div className={`${s.wrapd} ${s.oneH1}`}>
-              <div className={s.in}><h1>Sprzedaż mieszkania lub domu w Kołobrzegu</h1></div>
+              <div className={s.in}><h1>{H1_TEXT}</h1></div>
               <div className={s.in}>
                 <div className={s.done} role="status">
                   <h2>Dziękujemy, numer zapisany</h2>
@@ -155,9 +158,9 @@ export default function SprzedajPage({ rating }: { rating: VerifiedRating | null
           <section className={s.hero}>
             <div className={s.wrapd}>
               <div className={s.in}>
-                <h1>Sprzedaż mieszkania lub domu w Kołobrzegu</h1>
+                <h1>{H1_TEXT}</h1>
                 <p className={s.sub}>Zadzwoń lub zostaw numer: porozmawiamy o sprzedaży lub wycenie. Oddzwonimy w ciągu 24&nbsp;godzin.</p>
-                <a ref={heroCallRef} className={s.call} href={PHONE_HREF} data-phone-position="main">Zadzwoń: {PHONE_DISPLAY}</a>
+                <a ref={heroCallRef} className={s.call} href={PHONE_HREF} data-phone-position="main">{SHOW_HOURS ? `Zadzwoń 8–20: ${PHONE_DISPLAY}` : `Zadzwoń: ${PHONE_DISPLAY}`}</a>
                 {SHOW_HOURS && <div className={s.hours}>Telefon odbieramy codziennie 8:00–20:00</div>}
                 <div className={s.tl}>Biuro nieruchomości w Kołobrzegu{rating && <> · ★ {formatRatingPl(rating.rating)} w Google ({rating.total} {opinieForm(rating.total)})</>}</div>
               </div>
