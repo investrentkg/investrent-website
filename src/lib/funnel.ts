@@ -2,7 +2,7 @@
 // Wylaczony domyslnie (NEXT_PUBLIC_WYCENA_FUNNEL=on wlaczamy po migracji i fladze CRM). Kroki: entry, start, valuation, consent_screen, submit, reject (z kodem).
 import { FUNNEL_ON } from './wycenaFlags.ts'
 
-export type FunnelStep = 'entry' | 'start' | 'valuation' | 'consent_screen' | 'submit' | 'reject'
+export type FunnelStep = 'entry' | 'start' | 'valuation' | 'consent_screen' | 'submit' | 'reject' | 'landing_view'
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.investrent.com.pl'
 export const FUNNEL_URL = `${API}/api/public/valuation/funnel-step`

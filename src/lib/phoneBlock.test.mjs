@@ -96,6 +96,10 @@ test('licznik lejka: wylaczony = nic; wlaczony = fetch keepalive (credentials om
   assert.equal(captured.i.keepalive, true); assert.equal(captured.i.credentials, 'omit'); assert.equal(captured.i.method, 'POST')
   assert.deepEqual(JSON.parse(captured.i.body), { step: 'entry', utm_source: 'meta', utm_campaign: 'kol' })
   assert.ok(!/512345678|fbclid/.test(captured.i.body), 'bez telefonu i fbclid')
+  // landing_view (strona reklam /sprzedaj-z-investrent): tylko dwa UTM, gclid i reszta zapytania nigdy nie wychodza
+  assert.equal(sendFunnelStep('landing_view', {}, { enabled: true, search: '?utm_source=google&utm_medium=cpc&utm_campaign=search_sprzedaz_wycena_kolobrzeg&gclid=ABC123', fetchImpl }), true)
+  assert.deepEqual(JSON.parse(captured.i.body), { step: 'landing_view', utm_source: 'google', utm_campaign: 'search_sprzedaz_wycena_kolobrzeg' })
+  assert.ok(!/gclid|ABC123/.test(captured.i.body), 'gclid nie trafia do licznika')
   sendFunnelStep('reject', { variant: 'phone_block', reason: 'rate_limited' }, { enabled: true, search: '', fetchImpl })
   assert.deepEqual(JSON.parse(captured.i.body), { step: 'reject', variant: 'phone_block', reason: 'rate_limited' })
   // brak fetch: NIE ma zapasu w postaci sendBeacon (credentials=include)
