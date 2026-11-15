@@ -4,6 +4,7 @@ import { submitLead } from '@/lib/api'
 import { CONSENT_OPEN_EVENT } from '@/lib/consent'
 import { hasGoogleAdsConsent } from '@/lib/consentStore'
 import { getAttribution } from '@/lib/attribution'
+import { sendFunnelStep } from '@/lib/funnel'
 import { sprzedajLeadAds } from '@/lib/sprzedajAds'
 import { formatRatingPl, opinieForm, type VerifiedRating } from '@/lib/schemaRating'
 import s from './page.module.css'
@@ -105,6 +106,15 @@ export default function SprzedajPage({ rating }: { rating: VerifiedRating | null
   const [status, setStatus] = useState<Status>('idle')
   const [sentPhone, setSentPhone] = useState('')
   const heroCallRef = useRef<HTMLAnchorElement>(null)
+  const viewLogged = useRef(false)
+
+  // Licznik wejsc na landing reklam (Bezp 15.11.2026): agregat dzienny z utm_source/utm_campaign przez istniejacy lejek (CRM funnel-step, krok landing_view).
+  // Bez cookies i bez danych osobowych; gclid NIE jest wysylany (utmFromSearch bierze tylko dwa klucze UTM). Wylaczony razem z lejkiem (NEXT_PUBLIC_WYCENA_FUNNEL).
+  useEffect(() => {
+    if (viewLogged.current) return
+    viewLogged.current = true
+    sendFunnelStep('landing_view')
+  }, [])
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
