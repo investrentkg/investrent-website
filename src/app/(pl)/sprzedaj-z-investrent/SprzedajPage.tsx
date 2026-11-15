@@ -160,7 +160,7 @@ export default function SprzedajPage({ rating }: { rating: VerifiedRating | null
               <div className={s.in}>
                 <h1>{H1_TEXT}</h1>
                 <p className={s.sub}>Zadzwoń lub zostaw numer: porozmawiamy o sprzedaży lub wycenie. Oddzwonimy w ciągu 24&nbsp;godzin.</p>
-                <a ref={heroCallRef} className={s.call} href={PHONE_HREF} data-phone-position="main">Zadzwoń: {PHONE_DISPLAY}</a>
+                <a ref={heroCallRef} className={s.call} href={PHONE_HREF} data-phone-position="main">{SHOW_HOURS ? `Zadzwoń 8–20: ${PHONE_DISPLAY}` : `Zadzwoń: ${PHONE_DISPLAY}`}</a>
                 {SHOW_HOURS && <div className={s.hours}>Telefon odbieramy codziennie 8:00–20:00</div>}
                 <div className={s.tl}>Biuro nieruchomości w Kołobrzegu{rating && <> · ★ {formatRatingPl(rating.rating)} w Google ({rating.total} {opinieForm(rating.total)})</>}</div>
               </div>
