@@ -23,7 +23,7 @@ export const ATTRIBUTION_MAX_LEN = 64
 const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'] as const
 type UtmKey = (typeof UTM_KEYS)[number]
 
-export type Attribution = Partial<Record<UtmKey, string>> & { fbclid_present?: true; gclid_present?: true; landing_page?: string; gclid?: string }
+export type Attribution = Partial<Record<UtmKey, string>> & { fbclid_present?: true; gclid_present?: true; landing_page?: string; gclid?: string; gbraid?: string; wbraid?: string }
 
 // Strona wejscia w sesji (sciezka od "/", bez domeny, query, hasha). Kontrakt CRM: [a-z0-9/_.-], bez "//", max 80 znakow.
 // Sciezka z innymi znakami (np. polskie litery po kodowaniu) jest pomijana, zeby CRM nie dostal wartosci do odrzucenia.
@@ -44,7 +44,7 @@ export function normalizeAttributionValue(raw: unknown): string | null {
 }
 
 export function isEmptyAttribution(a: Attribution | null | undefined): boolean {
-  return !a || (!a.fbclid_present && !a.gclid_present && !a.gclid && !a.landing_page && UTM_KEYS.every(k => !a[k]))
+  return !a || (!a.fbclid_present && !a.gclid_present && !a.gclid && !a.gbraid && !a.wbraid && !a.landing_page && UTM_KEYS.every(k => !a[k]))
 }
 
 // Parsuje location.search (+ opcjonalnie pathname jako landing_page). Zwraca null, gdy brak utm_* / fbclid / poprawnej sciezki.
@@ -58,7 +58,7 @@ export function parseAttribution(search: string, pathname?: string): Attribution
     }
     if ((p.get('fbclid') ?? '').trim()) out.fbclid_present = true
     // gclid (Google Ads): jak fbclid - tylko flaga, nigdy wartosc (identyfikator klikniecia = dana osobowa).
-    if ((p.get('gclid') ?? '').trim()) out.gclid_present = true
+    if (['gclid', 'gbraid', 'wbraid'].some(k => (p.get(k) ?? '').trim())) out.gclid_present = true
     const lp = normalizeLandingPage(pathname)
     if (lp) out.landing_page = lp
     return isEmptyAttribution(out) ? null : out
