@@ -1,5 +1,6 @@
 "use client"
 import { useSyncExternalStore } from 'react'
+import { clearGclid } from './gclid'
 import {
   CONSENT_STORAGE_KEY, CONSENT_CHANGE_EVENT, applyChoice, analyticsAllowed, attributionAllowed, adsAllowed, readStoredConsent, writeStoredConsent, gaCookieNames, metaCookieNames, googleAdsCookieNames, cookieDomainCandidates, ATTRIBUTION_SESSION_KEY, GOOGLE_ADS_CONSENT_ENABLED, GCLID_DISCLOSURE_ENABLED,
   type ConsentChoice, type ConsentState,
@@ -45,8 +46,7 @@ export function setConsent(choice: ConsentChoice): ConsentState {
     if (clearMeta) deleteCookies([...metaCookieNames(document.cookie), ...googleAdsCookieNames(document.cookie)])
   } catch { /* czyszczenie cookies nigdy nie może zepsuć strony */ }
   // Wycofanie zgody Reklamowe: kasujemy zapisany gclid (lib/gclid.ts) z sessionStorage.
-  if (clearMeta) { try { window.sessionStorage.removeItem('ir_gclid') } catch { /* brak sessionStorage */ } }
-  if (clearMeta) { try { window.sessionStorage.removeItem('ir_gclid_type') } catch { /* brak sessionStorage */ } }
+  if (clearMeta) clearGclid(window.sessionStorage)
   // Tag Google (gtag) trzyma gclid tez w localStorage (`_gcl_ls`, ~90 dni) - cookies _gcl_* kasujemy wyzej, ten wpis tez (test 0.4, 14.11: po wycofaniu zostawal).
   if (clearMeta) { try { window.localStorage.removeItem('_gcl_ls') } catch { /* brak localStorage */ } }
   // Wycofanie zgody marketingowej (attribution): kasujemy zapisaną atrybucję UTM (website#42) z sessionStorage.

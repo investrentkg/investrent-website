@@ -2,12 +2,12 @@
 // Pelna wartosc gclid do CRM TYLKO przy zgodzie "Reklamowe" v5 (decyzja Daniela 13.11).
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { GCLID_STORAGE_KEY, GCLID_TYPE_STORAGE_KEY, parseClickIdValue, parseGclidValue, captureGclid, readGclid, attributionWithGclid } from './gclid.ts'
+import { GCLID_STORAGE_KEY, GCLID_TYPE_STORAGE_KEY, parseClickIdValue, parseGclidValue, captureGclid, readGclid, clearGclid, attributionWithGclid } from './gclid.ts'
 import { buildLeadRequest } from './valuation.ts'
 
 function memStorage(initial = {}) {
   const m = new Map(Object.entries(initial))
-  return { getItem: k => (m.has(k) ? m.get(k) : null), setItem: (k, v) => { m.set(k, String(v)) }, _m: m }
+  return { getItem: k => (m.has(k) ? m.get(k) : null), setItem: (k, v) => { m.set(k, String(v)) }, removeItem: k => m.delete(k), _m: m }
 }
 const brokenStorage = { getItem() { throw new Error('SecurityError') }, setItem() { throw new Error('QuotaExceeded') } }
 const G = 'TEST1234567890'
@@ -59,6 +59,13 @@ test('zgoda OFF: nie zapisuje wartosci ani typu gbraid', () => {
 test('zgoda OFF: nie odczytuje nawet gdy wartosc zostala w storage (wycofanie zgody)', () => {
   const s = memStorage({ [GCLID_STORAGE_KEY]: G })
   assert.equal(readGclid(false, s), null)
+})
+
+test('wycofanie zgody: czysci wartosc i typ click id', () => {
+  const s = memStorage({ [GCLID_STORAGE_KEY]: 'Other123456789', [GCLID_TYPE_STORAGE_KEY]: 'gbraid' })
+  clearGclid(s)
+  assert.equal(s._m.has(GCLID_STORAGE_KEY), false)
+  assert.equal(s._m.has(GCLID_TYPE_STORAGE_KEY), false)
 })
 
 test('odczyt: zepsuta wartosc w storage jest odrzucana', () => {

@@ -12,7 +12,7 @@ export const GCLID_RE = /^[A-Za-z0-9_-]{10,128}$/
 export type ClickIdType = 'gclid' | 'gbraid' | 'wbraid'
 export type ClickId = { type: ClickIdType; value: string }
 
-type StorageLike = Pick<Storage, 'getItem' | 'setItem'>
+type StorageLike = Pick<Storage, 'getItem' | 'setItem'> & Partial<Pick<Storage, 'removeItem'>>
 
 function getSessionStorage(): StorageLike | null {
   try { return typeof window !== 'undefined' && window.sessionStorage ? window.sessionStorage : null } catch { return null }
@@ -55,6 +55,14 @@ export function readGclid(adsOk: boolean, storage: StorageLike | null = getSessi
     const raw = storage?.getItem(GCLID_STORAGE_KEY)
     return raw && GCLID_RE.test(raw) ? raw : null
   } catch { return null }
+}
+
+/** Kasuje wartosc i jej typ po wycofaniu zgody Reklamowe. */
+export function clearGclid(storage: StorageLike | null = getSessionStorage()): void {
+  try {
+    storage?.removeItem?.(GCLID_STORAGE_KEY)
+    storage?.removeItem?.(GCLID_TYPE_STORAGE_KEY)
+  } catch { /* storage niedostepny - trudno */ }
 }
 
 /** Dokleja gclid do atrybucji leada (tylko przy zgodzie i poprawnej wartosci); bez tego zwraca atrybucje bez zmian. */
