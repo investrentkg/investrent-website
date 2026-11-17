@@ -3,7 +3,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import {
   ATTRIBUTION_STORAGE_KEY, captureAttribution, getAttribution, mergeAttribution,
-  normalizeAttributionValue, normalizeLandingPage, parseAttribution, readStoredAttribution, withAttribution, registerMarketingConsentCheck,
+  normalizeAttributionValue, normalizeLandingPage, normalizeUtmContent, parseAttribution, readStoredAttribution, withAttribution, registerMarketingConsentCheck,
 } from './attribution.ts'
 import { attributionAllowed, adsAllowed, makeConsent } from './consent.ts'
 import { postLead } from './leadSubmit.ts'
@@ -37,6 +37,44 @@ test('parsowanie: cztery pola utm, nieznane parametry ignorowane, zle wartosci o
   assert.equal(parseAttribution('?utm_campaign=a+b'), null)
   assert.equal(parseAttribution(''), null)
   assert.equal(parseAttribution('?foo=1'), null)
+})
+
+test('K-151 utm_content: nazwa reklamy Meta ze spacjami jest normalizowana, nie odrzucana', () => {
+  assert.equal(normalizeUtmContent('Wycena kalkulator R3 lokalne biuro'), 'wycena_kalkulator_r3_lokalne_biuro')
+  assert.equal(normalizeUtmContent('A%20B+C'), 'a_b_c')
+  assert.equal(normalizeUtmContent('Wycena%20kalkulator%20R3'), 'wycena_kalkulator_r3')
+  assert.equal(normalizeUtmContent('Wycena%20kalkulator'), 'wycena_kalkulator') // wartosc po URLSearchParams.get z podwojnie zakodowanego URL (%2520)
+  assert.deepEqual(parseAttribution('?utm_content=Wycena%2520kalkulator'), { utm_content: 'wycena_kalkulator' })
+  assert.equal(normalizeUtmContent('Żółta  łódź – Ćma'), null) // "–" (pauza) jest spoza listy po normalizacji => odrzucone w calosci
+  assert.equal(normalizeUtmContent('Żółta   łódź   Ćma'), 'zolta_lodz_cma')
+  assert.equal(normalizeUtmContent('a   b\t\nc'), 'a_b_c')
+  assert.equal(normalizeUtmContent('  x__y  '), 'x_y')
+  assert.equal(normalizeUtmContent('ad-7'), 'ad-7')
+  assert.equal(normalizeUtmContent('%E0%A4%A'), null) // zle kodowanie (decode rzuca) -> wartosc surowa nie przechodzi bialej listy
+  assert.equal(normalizeUtmContent('a'.repeat(100)), 'a'.repeat(64))
+})
+
+test('K-151 utm_content: znak spoza listy po normalizacji nadal odrzuca wartosc; pusta/null bez zmian', () => {
+  assert.equal(normalizeUtmContent('<x>'), null)
+  assert.equal(normalizeUtmContent('http://x.pl'), null)
+  assert.equal(normalizeUtmContent('<b>x</b>'), null)
+  assert.equal(normalizeUtmContent(''), null)
+  assert.equal(normalizeUtmContent('   '), null)
+  assert.equal(normalizeUtmContent(null), null)
+  assert.equal(normalizeUtmContent(undefined), null)
+  assert.equal(normalizeUtmContent(123), null)
+})
+
+test('K-151 parseAttribution/readStoredAttribution: normalizacja tylko utm_content, reszta pol bez zmian', () => {
+  const a = parseAttribution('?utm_source=facebook&utm_medium=paid&utm_campaign=wycena_kalkulator_11_2026&utm_content=Wycena%20kalkulator%20R3%20lokalne%20biuro')
+  assert.deepEqual(a, { utm_source: 'facebook', utm_medium: 'paid', utm_campaign: 'wycena_kalkulator_11_2026', utm_content: 'wycena_kalkulator_r3_lokalne_biuro' })
+  // plus w innych polach nadal odrzuca pole (jak dotad)
+  assert.deepEqual(parseAttribution('?utm_source=ok&utm_campaign=a+b&utm_content=a+b'), { utm_source: 'ok', utm_content: 'a_b' })
+  // wartosc w storage (reka zmieniona) przechodzi te sama normalizacje, zapis juz poprawny pozostaje bez zmian
+  const st = memStorage({ [ATTRIBUTION_STORAGE_KEY]: JSON.stringify({ utm_source: 'meta', utm_content: 'Wycena kalkulator R3' }) })
+  assert.deepEqual(readStoredAttribution(st), { utm_source: 'meta', utm_content: 'wycena_kalkulator_r3' })
+  const ok = memStorage({ [ATTRIBUTION_STORAGE_KEY]: JSON.stringify({ utm_content: 'wycena_kalkulator_r3' }) })
+  assert.deepEqual(readStoredAttribution(ok), { utm_content: 'wycena_kalkulator_r3' })
 })
 
 test('fbclid: tylko flaga, nigdy wartosc', () => {

@@ -43,6 +43,27 @@ export function normalizeAttributionValue(raw: unknown): string | null {
   return v
 }
 
+// utm_content z reklam Meta to {{ad.name}}: nazwa reklamy ze spacjami ("Wycena kalkulator R3 lokalne biuro"), czasem z polskimi
+// znakami lub podwojnie zakodowana. Zamiast odrzucac caly parametr (lead bez utm_content = brak atrybucji per reklama),
+// NORMALIZUJEMY go (tylko utm_content): decodeURIComponent (try/catch), male litery, polskie znaki -> ASCII, ciagi bialych znakow
+// i "+" -> pojedyncze "_", zwiniecie "_", obciecie brzegowych "_", a dopiero potem ta sama biala lista co dla pozostalych pol
+// ([a-z0-9_.-], max 64). Znak spoza listy po normalizacji (np. "<x>") nadal odrzuca wartosc. Zgodne z walidacja CRM
+// (backend/src/lib/leadAttribution.ts: ta sama biala lista i limit).
+const PL_ASCII: Record<string, string> = { 'ą': 'a', 'ć': 'c', 'ę': 'e', 'ł': 'l', 'ń': 'n', 'ó': 'o', 'ś': 's', 'ź': 'z', 'ż': 'z' }
+export function normalizeUtmContent(raw: unknown): string | null {
+  if (typeof raw !== 'string') return null
+  let s = raw.trim()
+  if (!s) return null
+  try { s = decodeURIComponent(s) } catch { /* niepoprawne kodowanie - zostaje wartosc surowa */ }
+  s = s.toLowerCase().replace(/[ąćęłńóśźż]/g, c => PL_ASCII[c] ?? c)
+  s = s.replace(/[\s+]+/g, '_').replace(/_{2,}/g, '_').replace(/^_+|_+$/g, '')
+  return normalizeAttributionValue(s)
+}
+
+function normalizeUtmValue(key: UtmKey, raw: unknown): string | null {
+  return key === 'utm_content' ? normalizeUtmContent(raw) : normalizeAttributionValue(raw)
+}
+
 export function isEmptyAttribution(a: Attribution | null | undefined): boolean {
   return !a || (!a.fbclid_present && !a.gclid_present && !a.gclid && !a.landing_page && UTM_KEYS.every(k => !a[k]))
 }
@@ -53,7 +74,7 @@ export function parseAttribution(search: string, pathname?: string): Attribution
     const p = new URLSearchParams(search)
     const out: Attribution = {}
     for (const k of UTM_KEYS) {
-      const v = normalizeAttributionValue(p.get(k))
+      const v = normalizeUtmValue(k, p.get(k))
       if (v) out[k] = v
     }
     if ((p.get('fbclid') ?? '').trim()) out.fbclid_present = true
@@ -115,7 +136,7 @@ export function readStoredAttribution(storage: StorageLike | null = getSessionSt
     if (!o || typeof o !== 'object') return null
     const out: Attribution = {}
     for (const k of UTM_KEYS) {
-      const v = normalizeAttributionValue(o[k])
+      const v = normalizeUtmValue(k, o[k])
       if (v) out[k] = v
     }
     if (o.fbclid_present === true) out.fbclid_present = true
