@@ -127,7 +127,7 @@ test('licznik lejka: wylaczony = nic; wlaczony = fetch keepalive (credentials om
 })
 test('strona: blok telefonu tylko za flaga, pod przedzialem (leadSlot przed noty zakresu), osobna karta kontaktu pomijana tylko gdy blok aktywny; teksty zgod nietkniete', () => {
   const src = fs.readFileSync(new URL('../app/(pl)/wycena/WycenaClient.tsx', import.meta.url), 'utf8')
-  assert.ok(src.includes("PHONE_BLOCK_ON && outcome?.kind === 'range'"))
+  assert.ok(src.includes("PHONE_BLOCK_ON && !WYCENA_CONTACT_LITE_ON && outcome?.kind === 'range'"))
   assert.ok(src.includes('{leadSlot ?? <ResultCta'))
   const range = src.slice(src.indexOf("if (outcome.kind === 'range')"), src.indexOf("if (outcome.kind === 'no_numbers')"))
   assert.ok(range.indexOf('{leadSlot ??') > range.indexOf('formatRange(outcome.rangeWide)') && range.indexOf('{leadSlot ??') < range.indexOf('{T.result.scopeNote}'), 'blok miedzy przedzialami a notami')
