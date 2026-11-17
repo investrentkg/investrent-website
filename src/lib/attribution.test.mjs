@@ -65,6 +65,16 @@ test('K-151 utm_content: znak spoza listy po normalizacji nadal odrzuca wartosc;
   assert.equal(normalizeUtmContent(123), null)
 })
 
+test('K-151 utm_content: przypadki graniczne (same separatory, %00/%0A, bardzo dlugie wejscie)', () => {
+  assert.equal(normalizeUtmContent('+++'), null)
+  assert.equal(normalizeUtmContent('%20%20'), null)
+  assert.equal(normalizeUtmContent('a%00b'), null)
+  assert.equal(normalizeUtmContent('%0Aabc%0A'), 'abc')
+  assert.equal(normalizeUtmContent('a'.repeat(200)), 'a'.repeat(64))
+  assert.equal(normalizeUtmContent('a '.repeat(500)), 'a_'.repeat(32))
+  assert.equal(normalizeUtmContent('İ'), null)
+})
+
 test('K-151 parseAttribution/readStoredAttribution: normalizacja tylko utm_content, reszta pol bez zmian', () => {
   const a = parseAttribution('?utm_source=facebook&utm_medium=paid&utm_campaign=wycena_kalkulator_11_2026&utm_content=Wycena%20kalkulator%20R3%20lokalne%20biuro')
   assert.deepEqual(a, { utm_source: 'facebook', utm_medium: 'paid', utm_campaign: 'wycena_kalkulator_11_2026', utm_content: 'wycena_kalkulator_r3_lokalne_biuro' })

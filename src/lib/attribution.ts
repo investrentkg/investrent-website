@@ -52,7 +52,7 @@ export function normalizeAttributionValue(raw: unknown): string | null {
 const PL_ASCII: Record<string, string> = { 'ą': 'a', 'ć': 'c', 'ę': 'e', 'ł': 'l', 'ń': 'n', 'ó': 'o', 'ś': 's', 'ź': 'z', 'ż': 'z' }
 export function normalizeUtmContent(raw: unknown): string | null {
   if (typeof raw !== 'string') return null
-  let s = raw.trim()
+  let s = raw.trim().slice(0, 256) // tanie ograniczenie wejscia przed dekodowaniem (wynik i tak <= ATTRIBUTION_MAX_LEN)
   if (!s) return null
   try { s = decodeURIComponent(s) } catch { /* niepoprawne kodowanie - zostaje wartosc surowa */ }
   s = s.toLowerCase().replace(/[ąćęłńóśźż]/g, c => PL_ASCII[c] ?? c)
