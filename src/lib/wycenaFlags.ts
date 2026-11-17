@@ -35,3 +35,6 @@ export const WYCENA_RESULT_V4F_ELIGIBLE: boolean = WYCENA_RESULT_V4F_FLAG && WYC
 
 /** Spojny modul zdarzen lejka (wycenaFunnelEvents.ts): Meta custom events WycenaStart/WycenaWynik (tylko po zgodzie Reklamowych, bez PII) + wariant A/B w custom_data Lead i parametrach GA4. OFF = zero zmian. */
 export const WYCENA_FUNNEL_EVENTS_V2: boolean = process.env.NEXT_PUBLIC_WYCENA_FUNNEL_EVENTS_V2 === 'on'
+
+/** Lekki krok kontaktu /wycena: po wyniku najpierw pokazuje istniejącą zgodę, potem tylko telefon. Domyślnie OFF. */
+export const WYCENA_CONTACT_LITE_ON: boolean = process.env.NEXT_PUBLIC_WYCENA_CONTACT_LITE === 'on'

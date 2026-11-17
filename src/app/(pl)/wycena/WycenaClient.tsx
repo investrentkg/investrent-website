@@ -11,7 +11,7 @@ import PhoneBlock from './PhoneBlock'
 import MarketCard from './MarketCard'
 import { showAiEstimate } from '@/lib/wycenaAiVisibility'
 import { PHONE_BLOCK_TEXTS } from './phoneBlockTexts'
-import { PHONE_BLOCK_ON, WYCENA_LAYOUT_V4_ACTIVE, WYCENA_META_TRACKING_ON, WYCENA_RESULT_V2_MODE, WYCENA_RESULT_V2_ELIGIBLE, WYCENA_SCREEN1_V4_ELIGIBLE, WYCENA_SCREEN1_V4_MODE, WYCENA_RESULT_V4F_ELIGIBLE, WYCENA_FUNNEL_EVENTS_V2 } from '@/lib/wycenaFlags'
+import { PHONE_BLOCK_ON, WYCENA_LAYOUT_V4_ACTIVE, WYCENA_META_TRACKING_ON, WYCENA_RESULT_V2_MODE, WYCENA_RESULT_V2_ELIGIBLE, WYCENA_SCREEN1_V4_ELIGIBLE, WYCENA_SCREEN1_V4_MODE, WYCENA_RESULT_V4F_ELIGIBLE, WYCENA_FUNNEL_EVENTS_V2, WYCENA_CONTACT_LITE_ON } from '@/lib/wycenaFlags'
 import { planFunnelEvent, metaVariantParams, type FunnelStage, type ResultKind } from '@/lib/wycenaFunnelEvents'
 import { DEFAULT_FLOOR, DEFAULT_ROOMS, FLOOR_CHOICES, ROOMS_CHOICES, cardFilters, pickScreen1Arm, screen1Variant, type FloorChoice, type RoomsChoice, type Screen1Arm } from '@/lib/wycenaScreen1V4'
 import type { MarketCardFilters } from '@/lib/marketCard'
@@ -61,6 +61,41 @@ function Field({ id, text, hintText, error, children }: { id: string; text: stri
       {error && <div id={`${id}-err`} role="alert" style={errStyle}>{error}</div>}
     </div>
   )
+}
+
+function ConsentControl({ consent, setConsent, errs, setErrs }: {
+  consent: boolean
+  setConsent: (value: boolean) => void
+  errs: { name?: string; phone?: string; consent?: string }
+  setErrs: React.Dispatch<React.SetStateAction<{ name?: string; phone?: string; consent?: string }>>
+}) {
+  return <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+    <div>
+      <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+        <input id="wy-consent" className="wy-check" type="checkbox" checked={consent} required aria-required="true"
+          aria-invalid={!!errs.consent} aria-describedby={describedBy('wy-consent', false, !!errs.consent)}
+          onChange={e => { setConsent(e.target.checked); if (errs.consent) setErrs(p => ({ ...p, consent: undefined })) }}
+          style={{ width: 22, height: 22, marginTop: 2, flexShrink: 0, accentColor: '#0d2a5c' }} />
+        <label htmlFor="wy-consent" className="wy-consent-label" style={{ fontSize: 14, color: '#374151', lineHeight: 1.6 }}>
+          {T.lead.consentCall} <strong>{T.lead.consentCallRequired}</strong>
+        </label>
+      </div>
+      {errs.consent && <div id="wy-consent-err" role="alert" style={{ ...errStyle, marginLeft: 34 }}>{errs.consent}</div>}
+    </div>
+    <div id="wy-consent-hint" style={hint}>
+      <p style={{ margin: '0 0 8px' }}>{T.lead.consentShort}</p>
+      <details className="wy-details">
+        <summary>{T.lead.consentInfoSummary}</summary>
+        {T.lead.consentInfo.map(c => (
+          <div key={c.h} style={{ margin: '0 0 8px', ...('highlight' in c && c.highlight ? { border: '1px solid #bfdbfe', background: '#eff6ff', borderRadius: 8, padding: '8px 10px' } : {}) }}>
+            <p style={{ margin: 0 }}><strong>{c.h}</strong> {c.t}</p>
+            {'items' in c && c.items && <ul style={{ margin: '4px 0 0', paddingLeft: 18 }}>{c.items.map(i => <li key={i} style={{ marginBottom: 3 }}>{i}</li>)}</ul>}
+          </div>
+        ))}
+      </details>
+      <p style={{ margin: '8px 0 0' }}>{T.lead.consentInfoMore}<a href="/rodo" target="_blank" rel="noopener noreferrer" style={{ color: '#1a4fa0', textDecoration: 'underline' }}>{T.lead.consentInfoLink}</a>{T.lead.consentInfoSuffix}</p>
+    </div>
+  </div>
 }
 
 function describedBy(id: string, hasHint: boolean, hasErr: boolean) {
@@ -183,7 +218,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
     if (!el) return
     // bez animacji ("instant"): niezawodne w przeglądarkach wbudowanych FB/IG i zgodne z prefers-reduced-motion
     el.scrollIntoView({ behavior: 'instant', block: 'start' })
-    document.getElementById('wy-phone')?.focus({ preventScroll: true })
+    document.getElementById(WYCENA_CONTACT_LITE_ON ? 'wy-consent' : 'wy-phone')?.focus({ preventScroll: true })
   }
 
   function set<K extends keyof FormValues>(k: K, v: FormValues[K]) {
@@ -251,7 +286,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
   const v4fActive = cardKind === 'v4f'
   const leadNode = WYCENA_LAYOUT_V4_ACTIVE && outcome?.kind === 'range' ? (
     <div ref={leadWrapRef} id="wy-lead" style={{ scrollMarginTop: 88 }}>
-      <LeadPanel outcome={outcome} values={submittedValues} v4Contact v2={v2Active || WYCENA_RESULT_V4F_ELIGIBLE} v4NoData={cardKind === 'nodata'} funnelVariant={funnelVariant.variant} onDone={() => { setLeadDone(true); sendFunnelStep('submit', funnelVariant) }} />
+      <LeadPanel outcome={outcome} values={submittedValues} v4Contact v2={v2Active || WYCENA_RESULT_V4F_ELIGIBLE} lightContact={WYCENA_CONTACT_LITE_ON} v4NoData={cardKind === 'nodata'} funnelVariant={funnelVariant.variant} onDone={() => { setLeadDone(true); sendFunnelStep('submit', funnelVariant) }} />
     </div>
   ) : null
 
@@ -379,14 +414,14 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
             <OutcomePanel v2={v2Active} v4f={v4fActive} showAi={!v2Active && showAiEstimate(cardKind)} outcome={outcome} scoped={!isOutOfScope(submittedValues)} wider={!isKolobrzeg(submittedValues.city)} onAgain={reset} onCta={() => goToLead('result')}
               marketCardSlot={WYCENA_LAYOUT_V4_ACTIVE && outcome.kind === 'range' ? <MarketCard token={outcome.valuationToken ?? null} onKind={setCardKind} v2={v2Active} filters={s1Filters} areaM2={Number(submittedValues.area_m2.trim().replace(',', '.')) || null}
                 v4f={WYCENA_RESULT_V4F_ELIGIBLE ? { city: submittedValues.city.trim(), districts: isKolobrzeg(submittedValues.city) ? KOLOBRZEG_DISTRICTS : [], ctaSlot: leadNode, onAgain: reset } : undefined} /> : undefined}
-              leadSlot={WYCENA_LAYOUT_V4_ACTIVE && outcome?.kind === 'range' ? (v4fActive ? <></> : leadNode) : PHONE_BLOCK_ON && outcome?.kind === 'range' ? (
+              leadSlot={WYCENA_LAYOUT_V4_ACTIVE && outcome?.kind === 'range' ? (v4fActive ? <></> : leadNode) : PHONE_BLOCK_ON && !WYCENA_CONTACT_LITE_ON && outcome?.kind === 'range' ? (
                 <div ref={leadWrapRef} id="wy-lead" style={{ scrollMarginTop: 88 }}>
                   <PhoneBlock outcome={outcome} values={submittedValues} funnelVariant={funnelVariant.variant} onDone={() => { setLeadDone(true); sendFunnelStep('submit', funnelVariant) }} />
                 </div>
               ) : undefined} />
-            {!(WYCENA_LAYOUT_V4_ACTIVE && outcome?.kind === 'range') && !(PHONE_BLOCK_ON && outcome?.kind === 'range') && (
+            {!(WYCENA_LAYOUT_V4_ACTIVE && outcome?.kind === 'range') && !(PHONE_BLOCK_ON && !WYCENA_CONTACT_LITE_ON && outcome?.kind === 'range') && (
               <div ref={leadWrapRef} id="wy-lead" style={{ scrollMarginTop: 88 }}>
-                <LeadPanel outcome={outcome} values={submittedValues} funnelVariant={funnelVariant.variant} onDone={() => { setLeadDone(true); sendFunnelStep('submit', funnelVariant) }} />
+                <LeadPanel outcome={outcome} values={submittedValues} lightContact={WYCENA_CONTACT_LITE_ON} funnelVariant={funnelVariant.variant} onDone={() => { setLeadDone(true); sendFunnelStep('submit', funnelVariant) }} />
               </div>
             )}
           </div>
@@ -599,7 +634,7 @@ function OutcomePanel({ outcome, scoped, wider, onAgain, onCta, marketCardSlot, 
   )
 }
 
-function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = false, v2 = false, funnelVariant }: { outcome: EstimateOutcome | null; values: FormValues; onDone?: () => void; v4Contact?: boolean; v4NoData?: boolean; v2?: boolean; funnelVariant?: string }) {
+function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = false, v2 = false, lightContact = false, funnelVariant }: { outcome: EstimateOutcome | null; values: FormValues; onDone?: () => void; v4Contact?: boolean; v4NoData?: boolean; v2?: boolean; lightContact?: boolean; funnelVariant?: string }) {
   const [name, setName] = useState('')
   const [surname, setSurname] = useState('')
   const [phone, setPhone] = useState('')
@@ -680,7 +715,7 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = fals
   async function attempt(fromQueue: boolean) {
     if (inFlight.current) return
     const next: typeof errs = {}
-    if (v4Contact && !v2 && !name.trim()) next.name = 'Podaj imię.' // v2: sam numer (imię opcjonalne, nie ma pola)
+    if (v4Contact && !v2 && !lightContact && !name.trim()) next.name = 'Podaj imię.' // v2/contact-lite: sam numer
     if (!isValidPhone(phone)) next.phone = T.lead.errPhone
     if (!consent) next.consent = T.lead.errConsent
     setErrs(next)
@@ -721,7 +756,7 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = fals
         attribution: attribution as Record<string, unknown> | null,
         variant: WYCENA_FUNNEL_EVENTS_V2 ? funnelVariant : undefined,
       })
-      const r = await submitLead({ ...buildLeadRequest({ name, surname: v4Contact ? surname : undefined, phone, values, outcome, utm: readUtm(window.location.search), attribution, turnstileToken: tsToken, honeypot: hp, contactWindow: v4Contact ? contactWindow || null : null, ...(v2 ? { consentVersion: V2.consentVersion } : {}) }), ...(metaTracking ? { meta_tracking: metaTracking } : {}) })
+      const r = await submitLead({ ...buildLeadRequest({ name: lightContact ? '' : name, surname: v4Contact && !lightContact ? surname : undefined, phone, values, outcome, utm: readUtm(window.location.search), attribution, turnstileToken: tsToken, honeypot: hp, contactWindow: v4Contact && !lightContact ? contactWindow || null : null, ...(v2 && !lightContact ? { consentVersion: V2.consentVersion } : {}) }), ...(metaTracking ? { meta_tracking: metaTracking } : {}) })
       if (r?.ok) { setState('ok'); trackValuation('wycena_lead', { mode: outcome?.kind ?? 'none' }); trackWycenaMetaLead(metaTracking?.event_id, r.metaCapi, funnelVariant) }
       else {
         setState('fail')
@@ -750,20 +785,23 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = fals
     <form ref={formRef} onSubmit={send} noValidate style={v4Contact && v2 ? flatLead : card} aria-labelledby="wy-lead-title">
       <h2 id="wy-lead-title" style={h2}>{v4Contact ? (v4NoData ? V4.notice.noData.title : V4.notice.title) : withNumbers ? T.lead.titleRange : T.lead.titleFallback}</h2>
       <p style={{ color: '#374151', fontSize: 15, lineHeight: 1.7, margin: '0 0 16px' }}>{v4Contact ? (v4NoData ? V4.notice.noData.body : (v2 ? V2.noticeBody : V4.notice.body)) : withNumbers ? T.lead.bodyRange : T.lead.bodyFallback}</p>
+      {lightContact && <div style={{ margin: '0 0 16px' }}>
+        <ConsentControl errs={errs} consent={consent} setConsent={setConsent} setErrs={setErrs} />
+      </div>}
       <div className="wy-grid">
-        {!(v4Contact && v2) && <Field id="wy-name" text={v4Contact ? `${V4.notice.firstName} *` : T.lead.name} error={errs.name}>
+        {!lightContact && !(v4Contact && v2) && <Field id="wy-name" text={v4Contact ? `${V4.notice.firstName} *` : T.lead.name} error={errs.name}>
           <input id="wy-name" className="wy-field" type="text" autoComplete="given-name" required={v4Contact} aria-required={v4Contact} aria-invalid={!!errs.name} value={name} onChange={e => { setName(e.target.value); if (errs.name) setErrs(p => ({ ...p, name: undefined })) }} />
         </Field>}
-        {v4Contact && !v2 && <Field id="wy-surname" text={V4.notice.lastName}>
+        {!lightContact && v4Contact && !v2 && <Field id="wy-surname" text={V4.notice.lastName}>
           <input id="wy-surname" className="wy-field" type="text" autoComplete="family-name" value={surname} onChange={e => setSurname(e.target.value)} />
         </Field>}
-        <Field id="wy-phone" text={`${T.lead.phone} *`} hintText={v2 ? undefined : T.lead.phoneHint} error={errs.phone}>
+        {(!lightContact || consent) && <Field id="wy-phone" text={`${T.lead.phone} *`} hintText={v2 ? undefined : T.lead.phoneHint} error={errs.phone}>
           <input id="wy-phone" className="wy-field" type="tel" inputMode="tel" autoComplete="tel" required aria-required="true" placeholder={v2 ? V2.phonePlaceholder : undefined}
             value={phone} aria-invalid={!!errs.phone} aria-describedby={describedBy('wy-phone', true, !!errs.phone)}
             onChange={e => { setPhone(e.target.value); if (errs.phone) setErrs(p => ({ ...p, phone: undefined })) }} />
-        </Field>
+        </Field>}
       </div>
-      {v4Contact && v2 && <div className="wy-v2-window" role="group" aria-labelledby="wy-v2-window-label" style={{ marginTop: 12 }}>
+      {!lightContact && v4Contact && v2 && <div className="wy-v2-window" role="group" aria-labelledby="wy-v2-window-label" style={{ marginTop: 12 }}>
         <div id="wy-v2-window-label" style={label}>{V2.windowLabel}</div>
         <div className="wy-v2-chips">
           {V4.notice.timeOptions.map(option => (
@@ -772,7 +810,7 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = fals
           ))}
         </div>
       </div>}
-      {v4Contact && !v2 && <div style={{ marginTop: 12 }}>
+      {!lightContact && v4Contact && !v2 && <div style={{ marginTop: 12 }}>
         <label htmlFor="wy-v4-contact-window" style={label}>{V4.notice.timeLabel}</label>
         <select id="wy-v4-contact-window" className="wy-field" value={contactWindow} onChange={e => setContactWindow(e.target.value)}>
           <option value="">Nie mam preferencji</option>
@@ -780,7 +818,7 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = fals
         </select>
       </div>}
 
-      <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 14 }}>
+      {!lightContact && <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 14 }}>
         <div>
           <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start', ...(v2 ? { flexWrap: 'nowrap' } : {}) }}>
             <input id="wy-consent" className="wy-check" type="checkbox" checked={consent} required aria-required="true"
@@ -804,7 +842,7 @@ function LeadPanel({ outcome, values, onDone, v4Contact = false, v4NoData = fals
           </details>
           <p style={{ margin: '8px 0 0' }}>{T.lead.consentInfoMore}<a href="/rodo" target="_blank" rel="noopener noreferrer" style={{ color: '#1a4fa0', textDecoration: 'underline' }}>{T.lead.consentInfoLink}</a>{T.lead.consentInfoSuffix}</p>
         </div>}
-      </div>
+      </div>}
 
       {/* Honeypot: ukryte pole, czlowiek go nie widzi ani nie dotyka */}
       <div className="wy-hp" aria-hidden="true">
