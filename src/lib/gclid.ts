@@ -7,29 +7,45 @@
 import type { Attribution } from './attribution.ts'
 
 export const GCLID_STORAGE_KEY = 'ir_gclid'
+export const GCLID_TYPE_STORAGE_KEY = 'ir_gclid_type'
 export const GCLID_RE = /^[A-Za-z0-9_-]{10,128}$/
+export type ClickIdType = 'gclid' | 'gbraid' | 'wbraid'
+export type ClickId = { type: ClickIdType; value: string }
 
-type StorageLike = Pick<Storage, 'getItem' | 'setItem'>
+type StorageLike = Pick<Storage, 'getItem' | 'setItem'> & Partial<Pick<Storage, 'removeItem'>>
 
 function getSessionStorage(): StorageLike | null {
   try { return typeof window !== 'undefined' && window.sessionStorage ? window.sessionStorage : null } catch { return null }
 }
 
-/** Zwalidowany gclid z location.search albo null. Wielkosc liter zachowana (identyfikator jest wrazliwy na wielkosc). */
-export function parseGclidValue(search: string): string | null {
+/** Zwalidowany identyfikator klikniecia z pierwszenstwem gclid > gbraid > wbraid. */
+export function parseClickIdValue(search: string): ClickId | null {
   try {
-    const v = (new URLSearchParams(search).get('gclid') ?? '').trim()
-    return GCLID_RE.test(v) ? v : null
+    const params = new URLSearchParams(search)
+    for (const type of ['gclid', 'gbraid', 'wbraid'] as const) {
+      const value = (params.get(type) ?? '').trim()
+      if (GCLID_RE.test(value)) return { type, value }
+    }
+    return null
   } catch { return null }
+}
+
+/** Kompatybilny odczyt samego gclid. */
+export function parseGclidValue(search: string): string | null {
+  const clickId = parseClickIdValue(search)
+  return clickId?.type === 'gclid' ? clickId.value : null
 }
 
 /** Zapis gclid z biezacego adresu. Bez zgody Reklamowe (adsOk=false) = nic nie zapisuje. Zwraca zapisana wartosc albo null. */
 export function captureGclid(search: string, adsOk: boolean, storage: StorageLike | null = getSessionStorage()): string | null {
   if (!adsOk) return null
-  const v = parseGclidValue(search)
-  if (!v) return null
-  try { storage?.setItem(GCLID_STORAGE_KEY, v) } catch { /* storage niedostepny - trudno */ }
-  return v
+  const clickId = parseClickIdValue(search)
+  if (!clickId) return null
+  try {
+    storage?.setItem(GCLID_STORAGE_KEY, clickId.value)
+    storage?.setItem(GCLID_TYPE_STORAGE_KEY, clickId.type)
+  } catch { /* storage niedostepny - trudno */ }
+  return clickId.value
 }
 
 /** Odczyt do wyslania z leadem; bez zgody Reklamowe zawsze null (nawet gdy wartosc zostala w storage). Ponowna walidacja ksztaltu. */
@@ -41,9 +57,23 @@ export function readGclid(adsOk: boolean, storage: StorageLike | null = getSessi
   } catch { return null }
 }
 
+/** Kasuje wartosc i jej typ po wycofaniu zgody Reklamowe. */
+export function clearGclid(storage: StorageLike | null = getSessionStorage()): void {
+  try {
+    storage?.removeItem?.(GCLID_STORAGE_KEY)
+    storage?.removeItem?.(GCLID_TYPE_STORAGE_KEY)
+  } catch { /* storage niedostepny - trudno */ }
+}
+
 /** Dokleja gclid do atrybucji leada (tylko przy zgodzie i poprawnej wartosci); bez tego zwraca atrybucje bez zmian. */
 export function attributionWithGclid(attribution: Attribution | null, adsOk: boolean, storage?: StorageLike | null): Attribution | null {
-  const g = readGclid(adsOk, storage === undefined ? getSessionStorage() : storage)
+  const activeStorage = storage === undefined ? getSessionStorage() : storage
+  const g = readGclid(adsOk, activeStorage)
   if (!g) return attribution
-  return { ...(attribution ?? {}), gclid: g }
+  let type: ClickIdType = 'gclid'
+  try {
+    const storedType = activeStorage?.getItem(GCLID_TYPE_STORAGE_KEY)
+    if (storedType === 'gbraid' || storedType === 'wbraid') type = storedType
+  } catch { /* wsteczna kompatybilnosc: brak typu oznacza gclid */ }
+  return { ...(attribution ?? {}), [type]: g }
 }

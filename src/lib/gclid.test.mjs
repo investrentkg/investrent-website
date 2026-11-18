@@ -2,18 +2,22 @@
 // Pelna wartosc gclid do CRM TYLKO przy zgodzie "Reklamowe" v5 (decyzja Daniela 13.11).
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { GCLID_STORAGE_KEY, parseGclidValue, captureGclid, readGclid, attributionWithGclid } from './gclid.ts'
+import { GCLID_STORAGE_KEY, GCLID_TYPE_STORAGE_KEY, parseClickIdValue, parseGclidValue, captureGclid, readGclid, clearGclid, attributionWithGclid } from './gclid.ts'
 import { buildLeadRequest } from './valuation.ts'
 
 function memStorage(initial = {}) {
   const m = new Map(Object.entries(initial))
-  return { getItem: k => (m.has(k) ? m.get(k) : null), setItem: (k, v) => { m.set(k, String(v)) }, _m: m }
+  return { getItem: k => (m.has(k) ? m.get(k) : null), setItem: (k, v) => { m.set(k, String(v)) }, removeItem: k => m.delete(k), _m: m }
 }
 const brokenStorage = { getItem() { throw new Error('SecurityError') }, setItem() { throw new Error('QuotaExceeded') } }
 const G = 'TEST1234567890'
 const values = { property_type: 'mieszkanie', city: 'Kołobrzeg', district: '', area_m2: '50', rooms: '2', floor: '', condition: '' }
 
-test('parseGclidValue: poprawny ksztalt, zachowana wielkosc liter', () => {
+test('parseClickIdValue: gclid > gbraid > wbraid; walidacja i wielkosc liter', () => {
+  assert.deepEqual(parseClickIdValue('?wbraid=TEST1234567890&gbraid=Other123456789&gclid=' + G), { type: 'gclid', value: G })
+  assert.deepEqual(parseClickIdValue('?gbraid=Other123456789&wbraid=Second1234567'), { type: 'gbraid', value: 'Other123456789' })
+  assert.deepEqual(parseClickIdValue('?wbraid=Second1234567'), { type: 'wbraid', value: 'Second1234567' })
+  assert.equal(parseGclidValue('?gbraid=Other123456789'), null)
   assert.equal(parseGclidValue('?gclid=' + G), G)
   assert.equal(parseGclidValue('?utm_source=google&gclid=Cj0KCQ_abc-DEF123'), 'Cj0KCQ_abc-DEF123')
 })
@@ -32,15 +36,36 @@ test('zgoda ON: gclid zapisany i odczytany', () => {
   assert.equal(readGclid(true, s), G)
 })
 
+test('zgoda ON: gbraid i typ zapisane oraz wyslane pod attribution.gbraid', () => {
+  const s = memStorage()
+  assert.equal(captureGclid('?gbraid=Other123456789', true, s), 'Other123456789')
+  assert.equal(s._m.get(GCLID_STORAGE_KEY), 'Other123456789')
+  assert.equal(s._m.get(GCLID_TYPE_STORAGE_KEY), 'gbraid')
+  assert.deepEqual(attributionWithGclid(null, true, s), { gbraid: 'Other123456789' })
+})
+
 test('zgoda OFF: nic nie zapisuje', () => {
   const s = memStorage()
   assert.equal(captureGclid('?gclid=' + G, false, s), null)
   assert.equal(s._m.size, 0)
 })
 
+test('zgoda OFF: nie zapisuje wartosci ani typu gbraid', () => {
+  const s = memStorage()
+  assert.equal(captureGclid('?gbraid=Other123456789', false, s), null)
+  assert.equal(s._m.size, 0)
+})
+
 test('zgoda OFF: nie odczytuje nawet gdy wartosc zostala w storage (wycofanie zgody)', () => {
   const s = memStorage({ [GCLID_STORAGE_KEY]: G })
   assert.equal(readGclid(false, s), null)
+})
+
+test('wycofanie zgody: czysci wartosc i typ click id', () => {
+  const s = memStorage({ [GCLID_STORAGE_KEY]: 'Other123456789', [GCLID_TYPE_STORAGE_KEY]: 'gbraid' })
+  clearGclid(s)
+  assert.equal(s._m.has(GCLID_STORAGE_KEY), false)
+  assert.equal(s._m.has(GCLID_TYPE_STORAGE_KEY), false)
 })
 
 test('odczyt: zepsuta wartosc w storage jest odrzucana', () => {
@@ -63,6 +88,12 @@ test('attributionWithGclid: zgoda OFF -> atrybucja bez zmian, brak gclid', () =>
   const a = { utm_source: 'google', gclid_present: true }
   assert.equal(attributionWithGclid(a, false, s), a)
   assert.equal(attributionWithGclid(null, false, s), null)
+})
+
+test('odrzuca zly ksztalt gbraid i nie dokleja wartosci', () => {
+  const s = memStorage()
+  assert.equal(captureGclid('?gbraid=short', true, s), null)
+  assert.equal(attributionWithGclid(null, true, s), null)
 })
 
 test('lead request: zgoda ON -> attribution.gclid w zadaniu; OFF -> brak', () => {

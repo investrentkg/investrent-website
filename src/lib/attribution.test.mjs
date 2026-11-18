@@ -260,3 +260,9 @@ test('gclid: tylko flaga, nigdy wartosc; zachowuje sie jak fbclid', () => {
   assert.deepEqual(mergeAttribution({ utm_source: 'google' }, { gclid_present: true }), { utm_source: 'google', gclid_present: true })
   assert.ok(!JSON.stringify(parseAttribution('?gclid=SECRETGCLID')).includes('SECRETGCLID'))
 })
+
+test('gbraid/wbraid: w URL tylko flaga gclid_present, bez wartosci', () => {
+  assert.deepEqual(parseAttribution('?gbraid=SECRETBRAID'), { gclid_present: true })
+  assert.deepEqual(parseAttribution('?wbraid=SECRETBRAID'), { gclid_present: true })
+  assert.ok(!JSON.stringify(parseAttribution('?gbraid=SECRETBRAID')).includes('SECRETBRAID'))
+})
