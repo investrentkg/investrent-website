@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react'
-import { ADS_AVAILABLE, GOOGLE_ADS_CONSENT_ENABLED, META_PIXEL_ENABLED } from '@/lib/consent'
+import { ADS_AVAILABLE, GCLID_DISCLOSURE_ENABLED, GOOGLE_ADS_CONSENT_ENABLED, META_PIXEL_ENABLED } from '@/lib/consent'
 
 // Tabela cookies i zapisow w pamieci przegladarki dla polityk prywatnosci (/rodo - PL, /de/datenschutz - DE).
 // Rekomendacja Prawnika 09.10.2026 (prawnik_baner_zgod_doprecyzowanie_2026_10_09.md, pkt d): kolumny nazwa / dostawca / cel / czas zycia.
@@ -46,7 +46,7 @@ const TEXT: Record<Locale, {
       {
         title: 'Marketingowe (tylko po zgodzie)',
         rows: [
-          { name: 'ir_attr', kind: 'pamięć sesji (sessionStorage)', provider: OWN.pl, purpose: 'Zapisuje, z jakiej kampanii Państwo przyszli (parametry UTM i znacznik wejścia z linku reklamowego Facebooka), aby dołączyć to do wysłanego zgłoszenia i mierzyć skuteczność kampanii. Dane pozostają w systemach InvestRent.', lifetime: 'do zamknięcia karty przeglądarki; usuwany od razu po wycofaniu zgody' },
+          { name: 'ir_attr', kind: 'pamięć sesji (sessionStorage)', provider: OWN.pl, purpose: 'Zapisuje, z jakiej kampanii Państwo przyszli (parametry UTM i znacznik wejścia z linku reklamowego Facebooka; z reklamy Google tylko informacja, że wejście z niej nastąpiło, bez wartości identyfikatora), aby dołączyć to do wysłanego zgłoszenia i mierzyć skuteczność kampanii. Dane pozostają w systemach InvestRent.', lifetime: 'do zamknięcia karty przeglądarki; usuwany od razu po wycofaniu zgody' },
         ],
       },
       {
@@ -88,7 +88,7 @@ const TEXT: Record<Locale, {
       {
         title: 'Marketing (nur nach Einwilligung)',
         rows: [
-          { name: 'ir_attr', kind: 'Sitzungsspeicher (sessionStorage)', provider: OWN.de, purpose: 'Speichert, über welche Kampagne Sie zu uns gekommen sind (UTM-Parameter und eine Kennzeichnung des Besuchs über einen Werbelink auf Facebook), um dies Ihrer abgesendeten Anfrage beizufügen und die Wirksamkeit der Kampagnen zu messen. Die Angaben verbleiben in den Systemen von InvestRent.', lifetime: 'bis zum Schließen des Browser-Tabs; wird bei Widerruf der Einwilligung sofort gelöscht' },
+          { name: 'ir_attr', kind: 'Sitzungsspeicher (sessionStorage)', provider: OWN.de, purpose: 'Speichert, über welche Kampagne Sie zu uns gekommen sind (UTM-Parameter und eine Kennzeichnung des Besuchs über einen Werbelink auf Facebook; bei Google-Werbung nur die Information, dass der Besuch darüber erfolgte, ohne den Wert der Kennung), um dies Ihrer abgesendeten Anfrage beizufügen und die Wirksamkeit der Kampagnen zu messen. Die Angaben verbleiben in den Systemen von InvestRent.', lifetime: 'bis zum Schließen des Browser-Tabs; wird bei Widerruf der Einwilligung sofort gelöscht' },
         ],
       },
       {
@@ -120,14 +120,23 @@ const kindStyle: CSSProperties = { display: 'block', fontWeight: 400, fontSize: 
 const code: CSSProperties = { fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace' }
 
 // Reklamowe z Google Ads (flaga NEXT_PUBLIC_GOOGLE_ADS_CONSENT, v5 zgody): wiersze Google + (gdy Meta wlaczona) wiersz Meta z konfiguracji powyzej.
-const GOOGLE_ADS_GROUP: Record<Locale, { title: string; row: Row }> = {
+// Wiersze ir_gclid / ir_gclid_type (lib/gclid.ts, sessionStorage; zapis tylko po zgodzie Reklamowe + GCLID_DISCLOSURE; kasowane w consentStore.ts po wycofaniu zgody) - przegląd Prawnika E9 pkt 2 (18.11.2026).
+const GOOGLE_ADS_GROUP: Record<Locale, { title: string; rows: Row[]; clickIdRows: Row[] }> = {
   pl: {
     title: 'Reklamowe — Google Ads i Meta (tylko po zgodzie)',
-    row: { name: '_gcl_aw, _gcl_au', kind: 'cookie', provider: GOOGLE, purpose: 'Pliki cookie Google powiązane z reklamami (ustawiane przez Google Analytics dopiero po zgodzie „Reklamowe”): zapisują identyfikator kliknięcia reklamy Google i rozpoznają przeglądarkę, aby mierzyć skuteczność reklam Google. Dane trafiają do Google (odrębny administrator).', lifetime: '90 dni (ustawienie Google); usuwane po wycofaniu zgody' },
+    rows: [{ name: '_gcl_aw, _gcl_au, _gcl_ls', kind: 'cookie / localStorage', provider: GOOGLE, purpose: 'Pliki cookie i wpis w pamięci przeglądarki (localStorage: _gcl_ls) Google powiązane z reklamami (ustawiane przez Google Analytics dopiero po zgodzie „Reklamowe”): zapisują identyfikator kliknięcia reklamy Google i rozpoznają przeglądarkę, aby mierzyć skuteczność reklam Google. Dane trafiają do Google (odrębny administrator).', lifetime: '90 dni (ustawienie Google); usuwane po wycofaniu zgody' }],
+    clickIdRows: [
+      { name: 'ir_gclid', kind: 'pamięć sesji (sessionStorage)', provider: OWN.pl, purpose: 'Zapamiętuje identyfikator kliknięcia z reklamy Google (gclid, gbraid lub wbraid), aby dołączyć go do zgłoszenia wysłanego formularzem. Zapisywany tylko po zgodzie „Reklamowe”.', lifetime: 'do zamknięcia karty przeglądarki; usuwany po wycofaniu zgody „Reklamowe”' },
+      { name: 'ir_gclid_type', kind: 'pamięć sesji (sessionStorage)', provider: OWN.pl, purpose: 'Zapamiętuje rodzaj identyfikatora kliknięcia (gclid, gbraid lub wbraid). Zapisywany tylko po zgodzie „Reklamowe”.', lifetime: 'do zamknięcia karty przeglądarki; usuwany po wycofaniu zgody „Reklamowe”' },
+    ],
   },
   de: {
     title: 'Werbung — Google Ads und Meta (nur mit Einwilligung)',
-    row: { name: '_gcl_aw, _gcl_au', kind: 'Cookie', provider: GOOGLE, purpose: 'Werbebezogene Google-Cookies (von Google Analytics erst nach Ihrer Einwilligung „Werbung“ gesetzt): speichern die Kennung des Google-Werbeklicks und erkennen den Browser, um die Wirksamkeit der Google-Werbung zu messen. Die Daten werden an Google übermittelt (eigenständiger Verantwortlicher).', lifetime: '90 Tage (Standardeinstellung von Google); werden nach Widerruf der Einwilligung gelöscht' },
+    rows: [{ name: '_gcl_aw, _gcl_au, _gcl_ls', kind: 'Cookie / localStorage', provider: GOOGLE, purpose: 'Werbebezogene Google-Cookies und ein Eintrag im Browserspeicher (localStorage: _gcl_ls) (von Google Analytics erst nach Ihrer Einwilligung „Werbung“ gesetzt): speichern die Kennung des Google-Werbeklicks und erkennen den Browser, um die Wirksamkeit der Google-Werbung zu messen. Die Daten werden an Google übermittelt (eigenständiger Verantwortlicher).', lifetime: '90 Tage (Standardeinstellung von Google); werden nach Widerruf der Einwilligung gelöscht' }],
+    clickIdRows: [
+      { name: 'ir_gclid', kind: 'Sitzungsspeicher (sessionStorage)', provider: OWN.de, purpose: 'Speichert die Klick-Kennung aus einer Google-Anzeige (gclid, gbraid oder wbraid), um sie der über das Formular gesendeten Anfrage beizufügen. Wird nur nach Einwilligung „Werbung“ gespeichert.', lifetime: 'bis zum Schließen des Browser-Tabs; wird bei Widerruf der Einwilligung „Werbung“ gelöscht' },
+      { name: 'ir_gclid_type', kind: 'Sitzungsspeicher (sessionStorage)', provider: OWN.de, purpose: 'Speichert die Art der Klick-Kennung (gclid, gbraid oder wbraid). Wird nur nach Einwilligung „Werbung“ gespeichert.', lifetime: 'bis zum Schließen des Browser-Tabs; wird bei Widerruf der Einwilligung „Werbung“ gelöscht' },
+    ],
   },
 }
 
@@ -135,7 +144,7 @@ export default function CookieTable({ locale }: { locale: Locale }) {
   const base = TEXT[locale]
   const last = base.groups[base.groups.length - 1]
   const t = GOOGLE_ADS_CONSENT_ENABLED
-    ? { ...base, groups: [...base.groups.slice(0, -1), { title: GOOGLE_ADS_GROUP[locale].title, rows: [GOOGLE_ADS_GROUP[locale].row, ...(META_PIXEL_ENABLED ? [last.rows[0]] : [])] }] }
+    ? { ...base, groups: [...base.groups.slice(0, -1), { title: GOOGLE_ADS_GROUP[locale].title, rows: [...GOOGLE_ADS_GROUP[locale].rows, ...(GCLID_DISCLOSURE_ENABLED ? GOOGLE_ADS_GROUP[locale].clickIdRows : []), ...(META_PIXEL_ENABLED ? [last.rows[0]] : [])] }] }
     : base
   return (
     <div style={wrap} role="region" aria-label={t.scroll} tabIndex={0}>
