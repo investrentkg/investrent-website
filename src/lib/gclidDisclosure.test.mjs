@@ -14,14 +14,16 @@ test('consent.ts: flaga GCLID_DISCLOSURE_ENABLED domyslnie OFF (tylko "on" wlacz
 
 test('polityka PL: zdanie o gclid tylko za flaga (zdanie nie jest w tekscie bezwarunkowo)', () => {
   const s = read('../app/(pl)/rodo/page.tsx')
-  assert.match(s, /\{GCLID_DISCLOSURE && ' Jeśli zgoda „Reklamowe” została udzielona, identyfikator kliknięcia reklamy Google \(gclid\)[^']*90 dniach[^']*'\}/)
-  assert.equal((s.match(/\(gclid\)/g) ?? []).length, 1)
+  assert.match(s, /\{GCLID_DISCLOSURE \? ' Po wycofaniu zgody „Reklamowe” nasza strona usuwa[^']*\(gclid, gbraid lub wbraid\)[^']*90 dniach[^']*nie później niż w terminie miesiąca[^']*' : ' Po wycofaniu zgody pliki cookie są usuwane natychmiast\.'\}/)
+  assert.equal((s.match(/\(gclid, gbraid lub wbraid\)/g) ?? []).length, 1)
+  assert.match(s, /ir_gclid, ir_gclid_type/)
 })
 
 test('polityka DE: zdanie o gclid tylko za flaga', () => {
   const s = read('../app/(de)/de/datenschutz/page.tsx')
-  assert.match(s, /\{GCLID_DISCLOSURE && ' Haben Sie in „Werbung“ eingewilligt, kann die Google-Klick-ID \(gclid\)[^']*Erfolgsmessung unserer Werbung[^']*90 Tagen[^']*Löschungsantrag[^']*'\}/)
-  assert.equal((s.match(/\(gclid\)/g) ?? []).length, 1)
+  assert.match(s, /\{GCLID_DISCLOSURE \? ' Nach Widerruf der Einwilligung „Werbung“ löscht unsere Website[^']*\(gclid, gbraid oder wbraid\)[^']*Erfolgsmessung unserer Werbung[^']*90 Tage[^']*innerhalb eines Monats[^']*' : ' Nach Widerruf der Einwilligung werden die Cookies sofort gelöscht\.'\}/)
+  assert.equal((s.match(/\(gclid, gbraid oder wbraid\)/g) ?? []).length, 1)
+  assert.match(s, /ir_gclid, ir_gclid_type/)
 })
 
 test('wysylka gclid: hasGoogleAdsConsent wymaga flagi v5 ORAZ flagi ujawnienia ORAZ zgody Reklamowe', () => {
