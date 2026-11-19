@@ -35,3 +35,10 @@ export const WYCENA_RESULT_V4F_ELIGIBLE: boolean = WYCENA_RESULT_V4F_FLAG && WYC
 
 /** Spojny modul zdarzen lejka (wycenaFunnelEvents.ts): Meta custom events WycenaStart/WycenaWynik (tylko po zgodzie Reklamowych, bez PII) + wariant A/B w custom_data Lead i parametrach GA4. OFF = zero zmian. */
 export const WYCENA_FUNNEL_EVENTS_V2: boolean = process.env.NEXT_PUBLIC_WYCENA_FUNNEL_EVENTS_V2 === 'on'
+
+/** Urzadzenie (mobile|tablet|desktop z szerokosci okna) w kroku licznika lejka; wymaga migracji CRM #2790 i FUNNEL_DEVICE_ENABLED w CRM. OFF = brak pola device. */
+export const WYCENA_FUNNEL_DEVICE_ON: boolean = process.env.NEXT_PUBLIC_WYCENA_FUNNEL_DEVICE === 'on'
+/** Krok contact_click (klikniecie tel/WhatsApp na /wycena i /sprzedaj-z-investrent); wymaga migracji CRM #2791 i FUNNEL_CONTACT_CLICK_ENABLED w CRM. OFF = brak wywolan. */
+export const WYCENA_CONTACT_CLICK_ON: boolean = process.env.NEXT_PUBLIC_WYCENA_CONTACT_CLICK === 'on'
+/** Nowy gotowy tekst WhatsApp kalkulatora (zatwierdzony przez Daniela 19.11.2026); CRM rozpoznaje go po rdzeniu "kalkulatora InvestRent" (CRM #2793). OFF = dotychczasowy tekst. */
+export const WYCENA_WA_TEXT_V2_ON: boolean = process.env.NEXT_PUBLIC_WYCENA_WA_TEXT_V2 === 'on'

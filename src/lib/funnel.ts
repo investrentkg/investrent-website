@@ -1,8 +1,20 @@
 // Licznik lejka kalkulatora /wycena (CRM #1066: POST /api/public/valuation/funnel-step). Fire-and-forget, bez cookies, bez danych osobowych.
 // Wylaczony domyslnie (NEXT_PUBLIC_WYCENA_FUNNEL=on wlaczamy po migracji i fladze CRM). Kroki: entry, start, valuation, consent_screen, submit, reject (z kodem).
-import { FUNNEL_ON } from './wycenaFlags.ts'
+import { FUNNEL_ON, WYCENA_FUNNEL_DEVICE_ON } from './wycenaFlags.ts'
 
-export type FunnelStep = 'entry' | 'start' | 'valuation' | 'consent_screen' | 'submit' | 'reject' | 'landing_view'
+export type FunnelStep = 'entry' | 'start' | 'valuation' | 'consent_screen' | 'submit' | 'reject' | 'landing_view' | 'contact_click'
+
+/** Strony, na ktorych klikniecie tel/WhatsApp liczymy jako contact_click: kalkulator /wycena i landing reklam /sprzedaj-z-investrent. */
+export function isContactClickPath(pathname: string | null | undefined): boolean {
+  const p = String(pathname || '')
+  return p === '/wycena' || p.startsWith('/wycena/') || p === '/sprzedaj-z-investrent' || p.startsWith('/sprzedaj-z-investrent/')
+}
+
+/** Urzadzenie z szerokosci okna (bez user-agenta i fingerprintu): <768 mobile, <1024 tablet, reszta desktop. Nieznana szerokosc = null (pole pomijamy). */
+export function deviceFromWidth(w: unknown): 'mobile' | 'tablet' | 'desktop' | null {
+  if (typeof w !== 'number' || !Number.isFinite(w) || w <= 0) return null
+  return w < 768 ? 'mobile' : w < 1024 ? 'tablet' : 'desktop'
+}
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.investrent.com.pl'
 export const FUNNEL_URL = `${API}/api/public/valuation/funnel-step`
@@ -25,7 +37,7 @@ export function utmFromSearch(search: string): { utm_source?: string; utm_campai
     return out
   } catch { return {} }
 }
-type Deps = { enabled?: boolean; search?: string; fetchImpl?: typeof fetch }
+type Deps = { enabled?: boolean; search?: string; fetchImpl?: typeof fetch; deviceEnabled?: boolean; width?: number }
 
 /**
  * Wysyla krok (nigdy nie rzuca, nie blokuje UX). `variant` krotki kod (np. phone_block), `reason` tylko dla reject.
@@ -36,7 +48,8 @@ export function sendFunnelStep(step: FunnelStep, extra: { variant?: string; reas
   if (!enabled) return false
   try {
     const search = deps.search ?? (typeof window !== 'undefined' ? window.location.search : '')
-    const body = JSON.stringify({ step, ...utmFromSearch(search), ...(extra.variant ? { variant: extra.variant } : {}), ...(extra.reason ? { reason: extra.reason } : {}) })
+    const device = (deps.deviceEnabled ?? WYCENA_FUNNEL_DEVICE_ON) ? deviceFromWidth(deps.width ?? (typeof window !== 'undefined' ? window.innerWidth : undefined)) : null
+    const body = JSON.stringify({ step, ...utmFromSearch(search), ...(extra.variant ? { variant: extra.variant } : {}), ...(extra.reason ? { reason: extra.reason } : {}), ...(device ? { device } : {}) })
     const f = deps.fetchImpl ?? (typeof fetch === 'function' ? fetch : null)
     if (f) {
       void Promise.resolve(f(FUNNEL_URL, { method: 'POST', headers: { 'content-type': 'application/json' }, body, keepalive: true, credentials: 'omit' })).catch(() => {})

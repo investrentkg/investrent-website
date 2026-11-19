@@ -11,7 +11,8 @@ import PhoneBlock from './PhoneBlock'
 import MarketCard from './MarketCard'
 import { showAiEstimate } from '@/lib/wycenaAiVisibility'
 import { PHONE_BLOCK_TEXTS } from './phoneBlockTexts'
-import { PHONE_BLOCK_ON, WYCENA_LAYOUT_V4_ACTIVE, WYCENA_META_TRACKING_ON, WYCENA_RESULT_V2_MODE, WYCENA_RESULT_V2_ELIGIBLE, WYCENA_SCREEN1_V4_ELIGIBLE, WYCENA_SCREEN1_V4_MODE, WYCENA_RESULT_V4F_ELIGIBLE, WYCENA_FUNNEL_EVENTS_V2 } from '@/lib/wycenaFlags'
+import { PHONE_BLOCK_ON, WYCENA_LAYOUT_V4_ACTIVE, WYCENA_META_TRACKING_ON, WYCENA_RESULT_V2_MODE, WYCENA_RESULT_V2_ELIGIBLE, WYCENA_SCREEN1_V4_ELIGIBLE, WYCENA_SCREEN1_V4_MODE, WYCENA_RESULT_V4F_ELIGIBLE, WYCENA_FUNNEL_EVENTS_V2, WYCENA_WA_TEXT_V2_ON } from '@/lib/wycenaFlags'
+import { whatsappTextFor } from '@/lib/wycenaWhatsapp'
 import { planFunnelEvent, metaVariantParams, type FunnelStage, type ResultKind } from '@/lib/wycenaFunnelEvents'
 import { DEFAULT_FLOOR, DEFAULT_ROOMS, FLOOR_CHOICES, ROOMS_CHOICES, cardFilters, pickScreen1Arm, screen1Variant, type FloorChoice, type RoomsChoice, type Screen1Arm } from '@/lib/wycenaScreen1V4'
 import type { MarketCardFilters } from '@/lib/marketCard'
@@ -47,7 +48,7 @@ const errStyle: React.CSSProperties = { fontSize: 13, color: '#b91c1c', marginTo
 const h2: React.CSSProperties = { fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 22, color: '#0d2a5c', margin: '0 0 8px', lineHeight: 1.25 }
 
 const phoneHref = 'tel:+48731554341'
-const whatsappHref = `https://wa.me/48731554341?text=${encodeURIComponent(T.lead.whatsappText)}`
+const whatsappHref = `https://wa.me/48731554341?text=${encodeURIComponent(whatsappTextFor(WYCENA_WA_TEXT_V2_ON, T.lead.whatsappText))}`
 const iabClass = () => (typeof navigator === 'undefined' ? 'other' : inAppBrowserClass(navigator.userAgent))
 // Przyklejony pasek jest tylko na telefonie (CSS: ukryty od 768 px) - pomiar i podniesienie launchera tylko tam.
 const isPhoneWidth = () => typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 767px)').matches
