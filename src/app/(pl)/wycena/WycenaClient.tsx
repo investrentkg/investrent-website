@@ -305,7 +305,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
               <Field id="wy-city" text={`${T.fields.city} *`} hintText={T.fields.city_hint} error={errors.city}>
                 <input id="wy-city" className="wy-field" type="text" list="wy-city-list" autoComplete="off" required aria-required="true"
                   value={values.city} aria-invalid={!!errors.city} aria-describedby={describedBy('wy-city', true, !!errors.city)}
-                  onChange={e => set('city', e.target.value)} />
+                  onChange={e => set('city', e.target.value)} onFocus={e => e.currentTarget.select()} placeholder="Wpisz miejscowość" />
                 <datalist id="wy-city-list">{[...CITY_LIST, OTHER_CITY].map(c => <option key={c} value={c} />)}</datalist>
               </Field>
 
@@ -458,7 +458,7 @@ function Screen1V4Fields({ arm, values, errors, set, rooms, setRooms, floor, set
       <Field id="wy-city" text={S1.city.label} error={errors.city}>
         <input id="wy-city" className="wy-field" type="text" list="wy-city-list" autoComplete="off" required aria-required="true"
           value={values.city} aria-invalid={!!errors.city} aria-describedby={describedBy('wy-city', false, !!errors.city)}
-          onChange={e => set('city', e.target.value)} />
+          onChange={e => set('city', e.target.value)} onFocus={e => e.currentTarget.select()} placeholder="Wpisz miejscowość" />
         <datalist id="wy-city-list">{[...CITY_LIST, OTHER_CITY].map(c => <option key={c} value={c} />)}</datalist>
       </Field>
       {arm === 'b' && (
