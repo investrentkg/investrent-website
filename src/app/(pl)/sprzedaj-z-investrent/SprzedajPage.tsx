@@ -172,7 +172,7 @@ export default function SprzedajPage({ rating }: { rating: VerifiedRating | null
                 <p className={s.sub}>Zadzwoń lub zostaw numer: porozmawiamy o sprzedaży lub wycenie. Oddzwonimy w ciągu 24&nbsp;godzin.</p>
                 <a ref={heroCallRef} className={s.call} href={PHONE_HREF} data-phone-position="main">{SHOW_HOURS ? `Zadzwoń 8–20: ${PHONE_DISPLAY}` : `Zadzwoń: ${PHONE_DISPLAY}`}</a>
                 {SHOW_HOURS && <div className={s.hours}>Telefon odbieramy codziennie 8:00–20:00</div>}
-                <div className={s.tl}>Biuro nieruchomości w Kołobrzegu{rating && <> · ★ {formatRatingPl(rating.rating)} w Google ({rating.total} {opinieForm(rating.total)})</>}</div>
+                <div className={s.tl}>Biuro w Kołobrzegu{rating && <> · ★ {formatRatingPl(rating.rating)} w Google ({rating.total} {opinieForm(rating.total)})</>}</div>
               </div>
               <div className={s.in}><Form id="hero" {...formProps} /></div>
             </div>
@@ -184,8 +184,8 @@ export default function SprzedajPage({ rating }: { rating: VerifiedRating | null
           <section className={`${s.sec} ${s.trustc}`}>
             <h2>Dlaczego InvestRent</h2>
             {rating && <div className={s.rate}><i aria-hidden="true">★★★★★</i> {formatRatingPl(rating.rating)} w Google · {rating.total} {opinieForm(rating.total)}</div>}
-            <p>Ponad 150 zrealizowanych transakcji w historii biura.</p>
             <p>{pin}<span>Biuro w Kołobrzegu: ul. Ratuszowa 12/1 lok.&nbsp;3, <span style={{ whiteSpace: "nowrap" }}>78-100 Kołobrzeg</span>.</span></p>
+            <p>{pin}<span>Ponad 150 zrealizowanych transakcji w historii biura.</span></p>
           </section>
         </div>
 
