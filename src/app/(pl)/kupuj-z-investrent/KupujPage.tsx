@@ -10,8 +10,6 @@ import s from './page.module.css'
 // W SaaS: dane biura/oceny z konfiguracji tenanta (tu na sztywno, strona robocza dla InvestRent).
 const PHONE_DISPLAY = '731 554 341'
 const PHONE_HREF = 'tel:+48731554341'
-// Godziny 8-20 pokazujemy dopiero po tescie przekierowania po 16:00 i w sob/niedz (warunek Prawnika); do tego czasu flaga OFF.
-const SHOW_HOURS = process.env.NEXT_PUBLIC_ADS_HOURS_8_20 === 'on'
 // Zrodlo leada: 'ads_kupno' (Bezp, #2460). Do czasu flagi ADS_KUPNO_SOURCE_ENABLED backend zapisuje 'website';
 // kanal zostaje rozpoznawalny po znaczniku w notatce klienta.
 const SOURCE = 'ads_kupno'
@@ -88,7 +86,6 @@ function Form({ id, status, phone, setPhone, name, setName, hp, setHp, onSubmit,
         Zostawiając numer, prosisz o telefon w sprawie poszukiwania nieruchomości. <strong>To nie jest zgoda na oferty marketingowe.</strong>{' '}
         Administratorem jest Investrent sp. z o.o. Informacje o przetwarzaniu danych: <a href="/rodo" target="_blank" rel="noopener noreferrer">Klauzula informacyjna</a>.
       </p>
-      <p className={s.area}>Oferujemy nieruchomości w Kołobrzegu i okolicach.</p>
     </form>
   )
 }
@@ -200,7 +197,7 @@ export default function KupujPage({ rating }: { rating: VerifiedRating | null })
                 <h1>Kupno mieszkania lub domu w Kołobrzegu</h1>
                 <p className={s.sub}>Zadzwoń lub zostaw numer: porozmawiamy, czego szukasz. Oddzwonimy&nbsp;w&nbsp;ciągu&nbsp;24&nbsp;godzin.</p>
                 <a ref={heroCallRef} className={s.call} href={PHONE_HREF} data-phone-position="main">Zadzwoń: {PHONE_DISPLAY}</a>
-                {SHOW_HOURS && <div className={s.hours}>Telefon odbieramy codziennie 8:00–20:00</div>}
+                <div className={s.hours}>Telefon odbieramy 8:00–20:00</div>
                 <div className={s.tl}>Biuro w Kołobrzegu{rating && <> · ★ {formatRatingPl(rating.rating)} w Google ({rating.total} {opinieForm(rating.total)})</>}</div>
               </div>
               <div className={s.in}><Form id="hero" {...formProps} /></div>

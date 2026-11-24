@@ -24,6 +24,10 @@ test('payload leada: source ads_kupno, client_type buyer, znacznik kanalu, prefe
   assert.match(client, /preferred_city/)
   assert.match(client, /Kanał: Google Ads, strona \/kupuj-z-investrent/)
 })
+test('teksty hero zgodne z makieta k5', () => {
+  assert.match(client, /Telefon odbieramy 8:00–20:00/)
+  assert.ok(!client.includes('Oferujemy nieruchomości w Kołobrzegu i okolicach.'))
+})
 test('zakazy tresci: bez "bezplatnie" i bez "agent InvestRent"', () => {
   assert.ok(!/bezp[łl]atn/i.test(client))
   assert.ok(!/agent InvestRent/i.test(client))
