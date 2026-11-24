@@ -378,7 +378,7 @@ export default function WycenaClient({ initialEnabled = true }: { initialEnabled
           <div ref={resultRef} tabIndex={-1} style={{ outline: 'none', display: 'flex', flexDirection: 'column', gap: 24, scrollMarginTop: 88 }}>
             {/* flaga NEXT_PUBLIC_WYCENA_PHONE_BLOCK: dla wyniku z liczbami blok telefonu jest BEZPOSREDNIO pod przedzialem (w karcie wyniku), bez osobnej karty kontaktu pod spodem */}
             <OutcomePanel v2={v2Active} v4f={v4fActive} showAi={!v2Active && showAiEstimate(cardKind)} outcome={outcome} scoped={!isOutOfScope(submittedValues)} wider={!isKolobrzeg(submittedValues.city)} onAgain={reset} onCta={() => goToLead('result')}
-              marketCardSlot={WYCENA_LAYOUT_V4_ACTIVE && outcome.kind === 'range' ? <MarketCard token={outcome.valuationToken ?? null} onKind={setCardKind} v2={v2Active} filters={s1Filters} areaM2={Number(submittedValues.area_m2.trim().replace(',', '.')) || null}
+              marketCardSlot={WYCENA_LAYOUT_V4_ACTIVE && outcome.kind === 'range' ? <MarketCard token={outcome.valuationToken ?? null} onKind={setCardKind} v2={v2Active} filters={s1Filters} city={submittedValues.city.trim()} areaM2={Number(submittedValues.area_m2.trim().replace(',', '.')) || null}
                 v4f={WYCENA_RESULT_V4F_ELIGIBLE ? { city: submittedValues.city.trim(), districts: isKolobrzeg(submittedValues.city) ? KOLOBRZEG_DISTRICTS : [], ctaSlot: leadNode, onAgain: reset } : undefined} /> : undefined}
               leadSlot={WYCENA_LAYOUT_V4_ACTIVE && outcome?.kind === 'range' ? (v4fActive ? <></> : leadNode) : PHONE_BLOCK_ON && outcome?.kind === 'range' ? (
                 <div ref={leadWrapRef} id="wy-lead" style={{ scrollMarginTop: 88 }}>
@@ -569,9 +569,9 @@ function OutcomePanel({ outcome, scoped, wider, onAgain, onCta, marketCardSlot, 
         {outcome.comparables && <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '0 0 8px' }}>{T.result.comparables(outcome.comparables.min, outcome.comparables.max)}</p>}
         </>}
         {!v4f && <>
-        <p style={{ color: '#7c2d12', background: '#fff7ed', border: '1px solid #fed7aa', borderRadius: 10, padding: '10px 14px', fontSize: 14, lineHeight: 1.6, margin: '12px 0 0' }}>
+        {!v2 && <p style={{ color: '#7c2d12', background: '#fff7ed', border: '1px solid #fed7aa', borderRadius: 10, padding: '10px 14px', fontSize: 14, lineHeight: 1.6, margin: '12px 0 0' }}>
           <strong>{T.disclaimerTop}</strong> {T.result.disclaimerFallback}
-        </p>
+        </p>}
         <button type="button" className="wy-linkbtn" style={{ marginTop: 8, marginLeft: -6 }} onClick={onAgain}>{T.result.again}</button>
         </>}
       </section>

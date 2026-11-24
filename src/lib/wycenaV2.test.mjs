@@ -7,19 +7,20 @@ import { WYCENA_V2_TEXTS as V2 } from '../app/(pl)/wycena/wycenaV2Texts.ts'
 const allText = JSON.stringify(V2) + ['title', 'desc', 'meta'].map(() => '').join('')
 
 test('teksty v2: zero nazwy dostawcy i skrotu RCN, zero slowa "Cenogram"', () => {
-  const sample = [V2.offers.desc(50, false), V2.sold.desc(50), V2.sold.meta(66, '10.2026'), V2.offers.meta(212, '09.11.2026'), V2.diff.body, V2.diff.moreBody, V2.disclaimer, V2.sold.emptyBody, allText].join(' ')
+  const sample = [V2.offers.desc(50, 'Kołobrzeg'), V2.sold.desc(50, 'Kołobrzeg'), V2.sold.meta(66, '10.2026'), V2.offers.meta(212, '09.11.2026'), V2.diff.body, V2.diff.moreBody, V2.disclaimer, V2.sold.emptyBody, allText].join(' ')
   assert.doesNotMatch(sample, /cenogram|RCN/i)
 })
 
-test('"bez uwzględnienia stanu" jest w opisie sprzedanych oraz ofert bez filtra stanu', () => {
-  assert.match(V2.sold.desc(50), /bez uwzględnienia stanu/)
-  assert.match(V2.offers.desc(50, false), /bez uwzględnienia stanu/)
-  assert.doesNotMatch(V2.offers.desc(50, true), /bez uwzględnienia stanu/) // przy wybranym stanie oferty sa filtrowane
+test('"bez uwzględnienia stanu" jest w opisie obu przedziałów ofert i sprzedaży', () => {
+  assert.match(V2.sold.desc(50, 'Kołobrzeg'), /bez uwzględnienia stanu/)
+  assert.match(V2.offers.desc(50, 'Kołobrzeg'), /bez uwzględnienia stanu/)
+  assert.match(V2.offers.desc(50, 'Kołobrzeg'), /w miejscowości Kołobrzeg/)
+  assert.match(V2.sold.desc(50, 'Kołobrzeg'), /w miejscowości Kołobrzeg/)
 })
 
 test('oferta = prosza, sprzedane = faktycznie zaplacili; ramka mowi o starszych zasobach i slabszych stanach; nie uśredniamy', () => {
-  assert.match(V2.offers.desc(50, false), /proszą/)
-  assert.match(V2.sold.desc(50), /faktycznie zapłacili/)
+  assert.match(V2.offers.desc(50, 'Kołobrzeg'), /proszą/)
+  assert.match(V2.sold.desc(50, 'Kołobrzeg'), /faktycznie zapłacili/)
   assert.match(V2.diff.body, /starsze mieszkania i słabsze stany/)
   assert.match(V2.diff.body, /nie uśredniamy/)
   assert.match(V2.diff.moreBody, /symbolicznej/)
