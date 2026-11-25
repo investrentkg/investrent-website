@@ -5,6 +5,7 @@ import PrivacyNote from '@/components/PrivacyNote'
 import LiveNumber from '@/components/LiveNumber'
 import ScrollReveal from '@/components/ScrollReveal'
 import SuccessBadge from '@/components/SuccessBadge'
+import { LEAD_ERROR_MESSAGE } from '@/lib/leadSubmit'
 
 const DEFAULT_RATE = 7.5  // fallback gdy API niedostępne
 
@@ -159,6 +160,7 @@ export default function MortgageCalcSection() {
                   </button>
                 </div>
               )}
+              {leadStatus === 'error' && <p role="alert" style={{ color: '#b91c1c', fontSize: 13, margin: '8px 0 0' }}>{LEAD_ERROR_MESSAGE}</p>}
               {leadStatus !== 'ok' && <PrivacyNote color="#5a6680" size={11} style={{ marginTop: 8 }} />}
             </div>
 
