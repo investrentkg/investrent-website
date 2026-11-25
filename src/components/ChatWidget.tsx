@@ -6,6 +6,7 @@ import { submitLead } from '@/lib/api'
 import PrivacyNote from '@/components/PrivacyNote'
 import { CHAT_RESPONSE_NOTE } from '@/lib/responseTime'
 import { trackContactEvent } from '@/lib/track'
+import { LEAD_ERROR_MESSAGE } from '@/lib/leadSubmit'
 
 // Launcher kontaktu: JEDEN pływający przycisk (prawy dolny róg) -> menu WhatsApp /
 // "Napisz do nas" (panel z formularzem telefonu) / "Zadzwoń". Zastępuje dawne FloatingWA
@@ -250,6 +251,7 @@ export default function ChatWidget() {
                       border: `1.5px solid ${status === 'error' || chatError ? '#ef4444' : '#e2e8f0'}`,
                       fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
                   {chatError && <div role="alert" style={{ color: '#ef4444', fontSize: 12 }}>{chatError}</div>}
+                  {status === 'error' && !chatError && <div role="alert" style={{ color: '#b91c1c', fontSize: 12 }}>{LEAD_ERROR_MESSAGE}</div>}
                   <input type="text" placeholder="Czego szukasz? (opcjonalnie)" aria-label="Czego szukasz"
                     value={msg} onChange={e => setMsg(e.target.value)}
                     style={{ padding: '10px 14px', borderRadius: 10, border: '1.5px solid #e2e8f0',
