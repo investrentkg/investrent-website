@@ -115,7 +115,7 @@ function V4MarketCard({ view, areaM2, condition, setCondition, busy }: { view: N
 }
 
 /** wynik_v2 (makieta 3): dwa rownorzedne bloki obok siebie, oferty i sprzedane, bez laczenia i usredniania; filtr stanu dotyczy tylko ofert. */
-function V2MarketCard({ view, areaM2, condition, setCondition, busy }: { view: NonNullable<ReturnType<typeof useMarketCard>['view']>; areaM2: number | null; condition: CardCondition | null; setCondition: (value: CardCondition | null) => void; busy: boolean }) {
+function V2MarketCard({ view, areaM2, city, condition, setCondition, busy }: { view: NonNullable<ReturnType<typeof useMarketCard>['view']>; areaM2: number | null; city: string; condition: CardCondition | null; setCondition: (value: CardCondition | null) => void; busy: boolean }) {
   const summary = summarizeMarketCardV4(view, areaM2)
   const offers = view.kind === 'card' ? view.offers : null
   const transactions = view.kind === 'card' ? view.transactions : null
@@ -125,13 +125,13 @@ function V2MarketCard({ view, areaM2, condition, setCondition, busy }: { view: N
   if (!area || (!summary.transactions && !summary.offers && !transactions)) return null
   return (
     <section className="wy-v2" aria-label="Ceny w okolicy dla podobnego metrażu" aria-busy={busy}>
-      <p className="wy-v2-heading">{V2.heading(area)}</p>
+      <p className="wy-v2-heading">{V2.heading(area, city)}</p>
       <div className="wy-v2-grid">
         <article className="wy-v2-box wy-v2-offers" aria-labelledby="wy-v2-offers-title">
           <h4 id="wy-v2-offers-title">{V2.offers.title}</h4>
           {summary.offers ? <>
             <p className="wy-v2-amount">{V2.offers.amount(summary.offers.low, summary.offers.high)}</p>
-            <p className="wy-v2-desc">{V2.offers.desc(area, condition !== null)}</p>
+            <p className="wy-v2-desc">{V2.offers.desc(area, city, condition !== null)}</p>
             <p className="wy-v2-meta">{V2.offers.meta(offerCount, asOfDate)}</p>
           </> : <p className="wy-v2-desc">{V2.offers.empty}</p>}
         </article>
@@ -139,7 +139,7 @@ function V2MarketCard({ view, areaM2, condition, setCondition, busy }: { view: N
           <h4 id="wy-v2-sold-title">{V2.sold.title}</h4>
           {summary.transactions && transactions ? <>
             <p className="wy-v2-amount">{V2.sold.amount(summary.transactions.low, summary.transactions.high)}</p>
-            <p className="wy-v2-desc">{V2.sold.desc(area)}</p>
+            <p className="wy-v2-desc">{V2.sold.desc(area, city)}</p>
             <p className="wy-v2-meta">{V2.sold.meta(transactions.count, transactions.asOf)}</p>
           </> : <>
             <p className="wy-v2-amount wy-v2-amount-empty">{V2.sold.emptyTitle}</p>
@@ -149,11 +149,13 @@ function V2MarketCard({ view, areaM2, condition, setCondition, busy }: { view: N
         </article>
       </div>
       {/* Zwinięte do jednej linii (cel: krótszy dystans wynik → numer); pełny tekst w DOM, rozwijany kliknięciem lub linkiem z zastrzeżenia */}
-      <details className="wy-v2-diff" id="wy-v2-diff">
-        <summary><strong>{V2.diff.title}</strong> <span className="wy-v2-diff-more">{V2.diff.more}</span></summary>
-        <p>{V2.diff.body}</p>
-        <p>{V2.diff.moreBody}</p>
-      </details>
+      <div className="wy-v2-diff">
+        <p><strong>{V2.diff.title}</strong> {V2.diff.body}</p>
+        <details id="wy-v2-diff">
+          <summary><span className="wy-v2-diff-more">{V2.diff.more}</span></summary>
+          <p>{V2.diff.moreBody}</p>
+        </details>
+      </div>
       <div className="wy-v2-condition">
         <label htmlFor="wy-v2-cond">{M.conditionLabel}</label>
         <select id="wy-v2-cond" className="wy-field" value={condition ?? ''} onChange={e => setCondition((e.target.value || null) as CardCondition | null)}>
@@ -168,7 +170,7 @@ function V2MarketCard({ view, areaM2, condition, setCondition, busy }: { view: N
 /** Wynik v4f (flaga NEXT_PUBLIC_WYCENA_RESULT_V4F): miasto i dzielnice z formularza, numer telefonu (slot) i „Wyceń inną” z rodzica. */
 export type V4fOptions = { city: string; districts: readonly string[]; ctaSlot: React.ReactNode; onAgain: () => void }
 
-export default function MarketCard({ token, areaM2 = null, onKind, v2 = false, filters, v4f }: { token: string | null; areaM2?: number | null; onKind?: (kind: 'card' | 'nodata' | 'none' | 'v4f' | null) => void; v2?: boolean; filters?: MarketCardFilters; v4f?: V4fOptions }) {
+export default function MarketCard({ token, areaM2 = null, city = '', onKind, v2 = false, filters, v4f }: { token: string | null; areaM2?: number | null; city?: string; onKind?: (kind: 'card' | 'nodata' | 'none' | 'v4f' | null) => void; v2?: boolean; filters?: MarketCardFilters; v4f?: V4fOptions }) {
   // v4f: pokoje, pietro i dzielnica to stan lokalny (zmiana = jedno nowe zapytanie); startuja od wartosci z ekranu 1
   const [local, setLocal] = useState<{ rooms: string | null; floor: string | null; district: string | null }>({ rooms: filters?.rooms ?? null, floor: filters?.floor_group ?? null, district: null })
   const hookFilters = useMemo<MarketCardFilters | undefined>(() => v4f
@@ -199,7 +201,7 @@ export default function MarketCard({ token, areaM2 = null, onKind, v2 = false, f
   if (view.kind === 'nodata' && WYCENA_LAYOUT_V4_ACTIVE) return null
   if (view.kind === 'none' && condition === null) return null // blad/flaga CRM off: bez karty, formularz telefonu dziala dalej
   if (view.kind === 'nodata' && condition === null && !WYCENA_LAYOUT_V4_ACTIVE) return <p role="status" style={{ ...hintStyle, margin: '0 0 12px' }}>{M.noData}</p>
-  if (WYCENA_LAYOUT_V4_ACTIVE && v2) return <V2MarketCard view={view} areaM2={areaM2} condition={condition} setCondition={setCondition} busy={busy} />
+  if (WYCENA_LAYOUT_V4_ACTIVE && v2) return <V2MarketCard view={view} areaM2={areaM2} city={city} condition={condition} setCondition={setCondition} busy={busy} />
   if (WYCENA_LAYOUT_V4_ACTIVE) return <V4MarketCard view={view} areaM2={areaM2} condition={condition} setCondition={setCondition} busy={busy} />
   const card = view.kind === 'card' ? view : { asOfDate: null, band: null, offers: null, transactions: null }
   return (
