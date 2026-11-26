@@ -475,7 +475,7 @@ function PhoneLink() {
   return <a href={phoneHref} style={{ color: '#0d2a5c', fontWeight: 700 }}>{OFFICE_PHONE}</a>
 }
 
-// v14: front ZAWSZE pokazuje teksty z texts.ts; pola backendu outcome.message i outcome.disclaimer sa ignorowane (API bez zmian). Jedno zastrzezenie: disclaimerTop (zawsze widoczny przy wyniku) + zdanie o czynnikach ceny.
+// v14: front ZAWSZE pokazuje teksty z texts.ts; pola backendu outcome.message i outcome.disclaimer sa ignorowane (API bez zmian). Jedno zastrzezenie przy wyniku: poza v2/v4f disclaimerTop + zdanie o czynnikach ceny; w v2 zamiast nich V2.disclaimer.
 // D2: CTA widoczne od razu przy wyniku (prowadzi do panelu kontaktu niżej; zgoda i klauzula zostają w panelu) + wyjście bez formularza.
 function ResultCta({ label, hintText = T.cta.hint, onClick }: { label: string; hintText?: string; onClick: () => void }) {
   return (
@@ -562,7 +562,7 @@ function OutcomePanel({ outcome, scoped, wider, onAgain, onCta, marketCardSlot, 
         )}
         {leadSlot ?? <ResultCta label={T.cta.primary} onClick={onCta} />}
         {v2 && !v4f && <p className="wy-v2-disclaimer">{V2.disclaimer} <a href="#wy-v2-diff" onClick={() => { const d = document.getElementById('wy-v2-diff') as HTMLDetailsElement | null; if (d) d.open = true }}>{V2.disclaimerLink}</a></p>}
-        {/* v2: V2.disclaimer (OK Prawnika 09.11, poz. 20) zastępuje stary pogrubiony akapit zakresu; ramka disclaimerTop zostaje zawsze */}
+        {/* v2: V2.disclaimer (OK Prawnika 09.11, poz. 20) zastępuje stary pogrubiony akapit zakresu; w v2 ramka disclaimerTop (z disclaimerFallback) nie jest renderowana, zostaje tylko poza v2 i v4f */}
         {!v2 && !v4f && <>
         <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '14px 0 8px' }}><strong>{T.result.scopeNote}</strong></p>
         {wider && <p style={{ color: '#374151', fontSize: 14.5, lineHeight: 1.7, margin: '0 0 8px' }}>{T.result.scopeNoteWider}</p>}

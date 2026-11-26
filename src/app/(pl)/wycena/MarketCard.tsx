@@ -131,7 +131,7 @@ function V2MarketCard({ view, areaM2, city, condition, setCondition, busy }: { v
           <h4 id="wy-v2-offers-title">{V2.offers.title}</h4>
           {summary.offers ? <>
             <p className="wy-v2-amount">{V2.offers.amount(summary.offers.low, summary.offers.high)}</p>
-            <p className="wy-v2-desc">{V2.offers.desc(area, city)}</p>
+            <p className="wy-v2-desc">{V2.offers.desc(area, city, condition !== null)}</p>
             <p className="wy-v2-meta">{V2.offers.meta(offerCount, asOfDate)}</p>
           </> : <p className="wy-v2-desc">{V2.offers.empty}</p>}
         </article>

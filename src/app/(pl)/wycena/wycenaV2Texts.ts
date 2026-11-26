@@ -8,8 +8,8 @@ export const WYCENA_V2_TEXTS = {
   heading: (areaM2: number, city: string) => `Orientacyjne ceny · mieszkanie ${areaM2} m², ${city}`,
   offers: {
     title: 'Ceny ofert z ogłoszeń',
-    desc: (areaM2: number, city: string) =>
-      `Tyle właściciele proszą za podobne mieszkania o metrażu ${areaM2} m² w miejscowości ${city} (środkowe ok. 50% ogłoszeń). Orientacyjnie, bez uwzględnienia stanu.`,
+    desc: (areaM2: number, city: string, condition: boolean) =>
+      `Tyle właściciele proszą za podobne mieszkania o metrażu ${areaM2} m² w miejscowości ${city} (środkowe ok. 50% ogłoszeń).${condition ? '' : ' Orientacyjnie, bez uwzględnienia stanu.'}`,
     meta: (n: number, date: string | null) => `Porównanie: ${n} ${n === 1 ? 'ogłoszenie' : (n % 10 >= 2 && n % 10 <= 4 && !(n % 100 >= 12 && n % 100 <= 14) ? 'ogłoszenia' : 'ogłoszeń')} · dane z portali${date ? `, stan na ${date}` : ''}`,
     empty: 'Za mało danych o cenach ofert dla tego segmentu.',
     amount: range,
