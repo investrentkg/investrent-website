@@ -5,7 +5,7 @@ import Footer from '@/components/Footer'
 import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
 import OffersPageClient from '@/app/(pl)/oferty/OffersPageClient'
-import { getPublicOffers, getOffice } from '@/lib/api'
+import { getPublicOffers, getOffice, getPageContent } from '@/lib/api'
 import { Search, ShieldCheck, Clock, Award, ArrowRight } from 'lucide-react'
 import type { Metadata } from 'next'
 import { buildBreadcrumbJsonLd, buildServiceJsonLd } from '@/lib/seoSchemas'
@@ -41,8 +41,7 @@ export default async function KupnoPage() {
   const [data, officeData, contentData] = await Promise.all([
     getPublicOffers({ limit: 9, transaction_type: 'sprzedaz' }),
     getOffice(),
-    fetch('https://api.investrent.com.pl/api/public/content/kupno')
-      .then(r => r.json()).catch(() => null),
+    getPageContent('kupno'),
   ])
   const office = officeData ?? FALLBACK_OFFICE
   const cms: Record<string, string> = contentData?.blocks || {}

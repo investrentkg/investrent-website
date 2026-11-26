@@ -6,7 +6,7 @@ import SocialSidebar from '@/components/SocialSidebar'
 import Contact from '@/components/Contact'
 import Breadcrumb from '@/components/Breadcrumb'
 import Link from 'next/link'
-import { getOffice } from '@/lib/api'
+import { getOffice, getPageContent } from '@/lib/api'
 import { getVerifiedRating } from '@/lib/schemaRating'
 import { DollarSign, Camera, Globe, FileCheck, Key, CheckCircle, ArrowRight, FileText, Building, Users, Shield } from 'lucide-react'
 import type { Metadata } from 'next'
@@ -60,8 +60,7 @@ export default async function SprzedazPage() {
     getOffice(),
     fetch('https://api.investrent.com.pl/api/public/google-reviews')
       .then(r => r.json()).catch(() => null),
-    fetch('https://api.investrent.com.pl/api/public/content/sprzedaz')
-      .then(r => r.json()).catch(() => null),
+    getPageContent('sprzedaz'),
   ])
   const office = officeData ?? FALLBACK_OFFICE
   // ZMIANA (04.10.2026): bez sztywnych 4.9/5 i 55 - ten sam obiekt co w JSON-LD (schemaRating.ts);
