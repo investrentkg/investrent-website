@@ -197,7 +197,7 @@ export default function KupujPage({ rating }: { rating: VerifiedRating | null })
                 <h1>Kupno mieszkania lub domu w Kołobrzegu</h1>
                 <p className={s.sub}>Zadzwoń lub zostaw numer: porozmawiamy, czego szukasz. Oddzwonimy&nbsp;w&nbsp;ciągu&nbsp;24&nbsp;godzin.</p>
                 <a ref={heroCallRef} className={s.call} href={PHONE_HREF} data-phone-position="main">Zadzwoń: {PHONE_DISPLAY}</a>
-                <div className={s.hours}>Telefon odbieramy 8:00–20:00</div>
+                <div className={s.hours}>Telefon odbieramy codziennie 8:00–20:00</div>
                 <div className={s.tl}>Biuro w Kołobrzegu{rating && <> · ★ {formatRatingPl(rating.rating)} w Google ({rating.total} {opinieForm(rating.total)})</>}</div>
               </div>
               <div className={s.in}><Form id="hero" {...formProps} /></div>
