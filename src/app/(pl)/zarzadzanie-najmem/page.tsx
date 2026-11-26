@@ -4,7 +4,7 @@ import Footer from '@/components/Footer'
 import SocialSidebar from '@/components/SocialSidebar'
 import Contact from '@/components/Contact'
 import Breadcrumb from '@/components/Breadcrumb'
-import { getOffice } from '@/lib/api'
+import { getOffice, getPageContent } from '@/lib/api'
 import { Shield, Users, TrendingUp, Wrench, FileCheck, CheckCircle, Phone, Key } from 'lucide-react'
 import type { Metadata } from 'next'
 import { buildPageMeta } from '@/lib/buildPageMeta'
@@ -57,8 +57,7 @@ const BENEFITS = [
 export default async function ZarzadzanieNajmemPage() {
   const [officeData, contentData] = await Promise.all([
     getOffice(),
-    fetch('https://api.investrent.com.pl/api/public/content/zarzadzanie-najmem')
-      .then(r => r.json()).catch(() => null),
+    getPageContent('zarzadzanie-najmem'),
   ])
   const office = officeData ?? FALLBACK_OFFICE
   const cms: Record<string, string> = contentData?.blocks || {}

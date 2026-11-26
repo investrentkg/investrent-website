@@ -4,7 +4,7 @@ import Footer from '@/components/Footer'
 import SocialSidebar from '@/components/SocialSidebar'
 import Breadcrumb from '@/components/Breadcrumb'
 import OffersPageClient from '@/app/(pl)/oferty/OffersPageClient'
-import { getPublicOffers, getOffice } from '@/lib/api'
+import { getPublicOffers, getOffice, getPageContent } from '@/lib/api'
 import ReadAlso from '@/components/ReadAlso'
 import { RENTAL_INTRO, OWNER_HEADING } from './wynajemContent'
 import { KeyRound, Shield, Clock, Star, ArrowRight } from 'lucide-react'
@@ -34,8 +34,7 @@ export default async function WynajemPage() {
   const [data, officeData, contentData] = await Promise.all([
     getPublicOffers({ limit: 9, transaction_type: 'wynajem' } as any),
     getOffice(),
-    fetch('https://api.investrent.com.pl/api/public/content/wynajem')
-      .then(r => r.json()).catch(() => null),
+    getPageContent('wynajem'),
   ])
   const office = officeData ?? FALLBACK_OFFICE
   const cms: Record<string, string> = contentData?.blocks || {}

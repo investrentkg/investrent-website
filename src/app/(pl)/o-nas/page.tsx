@@ -17,7 +17,7 @@ import { JsonLd } from '@/components/JsonLd'
 import { serializeJsonLd } from '@/lib/jsonLd'
 import Breadcrumb from '@/components/Breadcrumb'
 import MapEmbed from '@/components/ConsentEmbed'
-import { getTeamWithOfferCounts, getStats, getOffice } from '@/lib/api'
+import { getTeamWithOfferCounts, getStats, getOffice, getPageContent } from '@/lib/api'
 import { getVerifiedRating } from '@/lib/schemaRating'
 import { MapPin, Phone, Mail, Shield, Heart, TrendingUp, Users, CheckCircle } from 'lucide-react'
 import type { Metadata } from 'next'
@@ -48,8 +48,7 @@ export default async function ONasPage() {
     // NOWE (Daniel 03.08): edytowalna tresc z CRM - bezpieczny fallback do
     // dotychczasowego, zaszytego tekstu ponizej, jesli nikt nic nie
     // dostosowal. Patrz backend/src/routes/websiteContent.ts.
-    fetch('https://api.investrent.com.pl/api/public/content/o-nas')
-      .then(r => r.json()).catch(() => null),
+    getPageContent('o-nas'),
   ])
   const office = officeData ?? FALLBACK_OFFICE
   const trans = Math.max(statsData?.completed_transactions ?? 0, 150)
