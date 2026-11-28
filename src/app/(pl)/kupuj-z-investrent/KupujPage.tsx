@@ -59,11 +59,11 @@ function Form({ id, status, phone, setPhone, name, setName, hp, setHp, onSubmit,
         </button>
         {more && (
           <div className={s.mb} id={`${id}-more`}>
-            <fieldset className={s.chips} aria-label="Typ nieruchomości">
+            <div className={s.f}><label id={`${id}-type`}>Typ nieruchomości</label><fieldset className={s.chips} aria-labelledby={`${id}-type`}>
               {TYPES.map(t => (
                 <button key={t} type="button" className={s.chp} aria-pressed={type === t} onClick={() => setType(type === t ? '' : t)}>{t}</button>
               ))}
-            </fieldset>
+            </fieldset></div>
             <div className={s.f}>
               <label htmlFor={`${id}-budget`}>Budżet</label>
               <input id={`${id}-budget`} type="text" name="budget" placeholder="np. do 600 tys. zł" maxLength={80} value={budget} onChange={e => setBudget(e.target.value)} />
