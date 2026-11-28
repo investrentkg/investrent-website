@@ -33,5 +33,5 @@ test('zakazy tresci: bez "bezplatnie" i bez "agent InvestRent"', () => {
   assert.ok(!/agent InvestRent/i.test(client))
 })
 test('widoczny napis "Typ nieruchomości" nad przyciskami typu (makieta k5)', () => {
-  assert.match(client, /<label id=\{[^}]*-type[^>]*>Typ nieruchomości<\/label>/)
+  assert.match(client, /<label id=\{`\$\{id\}-type`\}>Typ nieruchomości<\/label>/)
 })
